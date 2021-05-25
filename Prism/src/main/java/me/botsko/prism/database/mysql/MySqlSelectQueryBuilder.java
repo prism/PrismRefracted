@@ -12,23 +12,14 @@ public class MySqlSelectQueryBuilder extends SqlSelectQueryBuilder {
 
     @Override
     protected String select() {
-
         String query = "";
 
         query += "SELECT ";
-        if (shouldGroup) {
-            columns.add("any_value(id) id");
-            columns.add("any_value(epoch) epoch");
-            columns.add("any_value(action_id) action_id");
-            columns.add("any_value(player) player");
-            columns.add("any_value(world_id) world_id");
-        } else {
-            columns.add("id");
-            columns.add("epoch");
-            columns.add("action_id");
-            columns.add("player");
-            columns.add("world_id");
-        }
+        columns.add("id");
+        columns.add("epoch");
+        columns.add("action_id");
+        columns.add("player");
+        columns.add("world_id");
 
         if (shouldGroup) {
             columns.add("AVG(x)");
@@ -40,12 +31,12 @@ public class MySqlSelectQueryBuilder extends SqlSelectQueryBuilder {
             columns.add("z");
         }
 
-        columns.add("any_value(block_id) block_id");
-        columns.add("any_value(block_subid) block_subid");
-        columns.add("any_value(old_block_id) old_block_id");
-        columns.add("any_value(old_block_subid) old_block_subid");
-        columns.add("any_value(data) data");
-        columns.add("any_value(HEX(player_uuid)) AS uuid");
+        columns.add("block_id");
+        columns.add("block_subid");
+        columns.add("old_block_id");
+        columns.add("old_block_subid");
+        columns.add("data");
+        columns.add("HEX(player_uuid)");
 
         if (shouldGroup) {
             columns.add("COUNT(*) counted");
@@ -62,7 +53,7 @@ public class MySqlSelectQueryBuilder extends SqlSelectQueryBuilder {
         // Joins
         query += "INNER JOIN " + prefix + "players p ON p.player_id = " + tableNameData + ".player_id ";
         query += "LEFT JOIN " + tableNameDataExtra + " ex ON ex.data_id = " + tableNameData + ".id ";
-
+        
         return query;
 
     }
@@ -76,7 +67,7 @@ public class MySqlSelectQueryBuilder extends SqlSelectQueryBuilder {
 
         if (shouldGroup) {
             return " ORDER BY MAX(" + tableNameData + ".epoch) " + sort_dir
-                    + ", AVG(x) ASC, AVG(z) ASC, AVG(y) ASC, any_value(id) " + sort_dir;
+                    + ", AVG(x) ASC, AVG(z) ASC, AVG(y) ASC, id " + sort_dir;
         }
 
         return " ORDER BY " + tableNameData + ".epoch " + sort_dir + ", x ASC, z ASC, y ASC, id " + sort_dir;

@@ -127,20 +127,17 @@ public class MySqlPrismDataSource extends SqlPrismDataSource {
 
     private void detectNonStandardSql() {
         try (
-                Connection conn = getConnection();
-                PreparedStatement st = (conn != null) ? conn.prepareStatement("SHOW VARIABLES") : null;
-                PreparedStatement st1 = (conn != null) ? conn.prepareStatement("SELECT ANY_VALUE(1)") : null;
-                ResultSet rs = (st != null) ? st.executeQuery() : null;
-                ResultSet rs1 = (st1 != null) ? st1.executeQuery() : null
-
+            Connection conn = getConnection();
+            PreparedStatement st = (conn != null) ? conn.prepareStatement("SHOW VARIABLES") : null;
+            ResultSet rs = (st != null) ? st.executeQuery() : null;
         ) {
-            if (rs == null || rs1 == null) {
+            if (rs == null ) {
                 throw new SQLNonTransientConnectionException("Database did not configure correctly.");
             }
             while (rs.next()) {
                 dbInfo.put(rs.getString(1).toLowerCase(), rs.getString(2));
             }
-            rs1.next();
+
             String version = dbInfo.get("version");
             String versionComment = dbInfo.get("version_comment");
             Prism.log("Prism detected your database is version:" + version + " / " + versionComment);
