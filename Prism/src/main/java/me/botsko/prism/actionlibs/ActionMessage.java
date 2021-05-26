@@ -121,7 +121,7 @@ public class ActionMessage {
     private String getFormattedLocation() {
         Location l = handler.getLoc();
         if (l.getWorld() != null) {
-            return l.getWorld().getName() + " @ " + l.getBlockX() + " "
+            return l.getWorld().getName() + "@ " + l.getBlockX() + " "
                     + l.getBlockY() + " " + l.getBlockZ();
         }
         return "INVALID";

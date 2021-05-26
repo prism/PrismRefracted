@@ -53,7 +53,7 @@ public class MySqlSelectQueryBuilder extends SqlSelectQueryBuilder {
         // Joins
         query += "INNER JOIN " + prefix + "players p ON p.player_id = " + tableNameData + ".player_id ";
         query += "LEFT JOIN " + tableNameDataExtra + " ex ON ex.data_id = " + tableNameData + ".id ";
-        
+
         return query;
 
     }
