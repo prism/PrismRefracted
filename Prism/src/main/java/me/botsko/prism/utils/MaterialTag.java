@@ -34,7 +34,8 @@ public class MaterialTag implements Tag<Material> {
             Material.PUMPKIN_STEM, Material.ATTACHED_PUMPKIN_STEM);
     public static final Tag<Material> SOIL_CANDIDATES = new MaterialTag(Material.AIR, Material.WATER, Material.LAVA,
             Material.DIRT, Material.GRASS_BLOCK, Material.PODZOL, Material.MYCELIUM, Material.COARSE_DIRT,
-            Material.FARMLAND, Material.GRASS_PATH, Material.WARPED_NYLIUM, Material.CRIMSON_NYLIUM);
+            //Material.FARMLAND, Material.GRASS_PATH, Material.WARPED_NYLIUM, Material.CRIMSON_NYLIUM);
+            Material.FARMLAND, Material.WARPED_NYLIUM, Material.CRIMSON_NYLIUM);
     public static final MaterialTag WALL_SKULLS = new MaterialTag(Material.SKELETON_WALL_SKULL,
             Material.WITHER_SKELETON_WALL_SKULL, Material.CREEPER_WALL_HEAD, Material.DRAGON_WALL_HEAD,
             Material.PLAYER_WALL_HEAD, Material.ZOMBIE_WALL_HEAD);

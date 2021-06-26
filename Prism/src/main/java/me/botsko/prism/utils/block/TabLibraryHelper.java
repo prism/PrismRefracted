@@ -182,7 +182,7 @@ public class TabLibraryHelper {
         baseMaterials.put(Material.MYCELIUM, Material.DIRT);
         baseMaterials.put(Material.PODZOL, Material.DIRT);
         baseMaterials.put(Material.FARMLAND, Material.DIRT);
-        baseMaterials.put(Material.GRASS_PATH, Material.DIRT);
+//        baseMaterials.put(Material.GRASS_PATH, Material.DIRT);
     }
 
     /**

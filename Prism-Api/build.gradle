@@ -1,0 +1,18 @@
+apply plugin: 'java'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+
+    // Spigot
+    maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+}
+
+group = "me.botsko"
+version = project.property("version")
+sourceCompatibility = targetCompatibility = JavaVersion.VERSION_16
+
+dependencies {
+    compileOnly 'org.spigotmc:spigot-api:1.17-R0.1-SNAPSHOT'
+    compileOnly 'org.jetbrains:annotations:21.0.1'
+}

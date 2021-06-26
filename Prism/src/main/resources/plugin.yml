@@ -1,11 +1,11 @@
 name: Prism
 main: me.botsko.prism.Prism
-version: ${plugin.version}
+version: 1.0.0
 softdepend: [WorldEdit,DripReporter]
 author: AddstarMC
-authors: [add5tar, Narimm, viveleroi]
+authors: [viveleroi, add5tar, Narimm]
 website: https://github.com/AddstarMC/Prism-Bukkit/wiki
-api-version: ${spigot.api.version}
+api-version: 1.17
 commands:
    prism:
       description: Base command for everything Prism

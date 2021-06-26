@@ -100,8 +100,6 @@ public class MySqlPrismDataSource extends SqlPrismDataSource {
         dbConfig.addHealthCheckProperty("connectivityCheckTimeoutMs", "1000");
         dbConfig.addHealthCheckProperty("expected99thPercentileMs", "10");
         if (Prism.getInstance().monitoring) {
-            dbConfig.setMetricRegistry(ApiHandler.monitor.getRegistry());
-            dbConfig.setHealthCheckRegistry(ApiHandler.monitor.getHealthRegistry());
             Prism.log("Hikari is configured with Metric Reporting.");
         } else {
             Prism.log("No metric recorder found to hook into Hikari.");

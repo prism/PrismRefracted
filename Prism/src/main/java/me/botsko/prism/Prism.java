@@ -10,7 +10,6 @@ import me.botsko.prism.actionlibs.QueryParameters;
 import me.botsko.prism.actionlibs.QueryResult;
 import me.botsko.prism.actionlibs.QueueDrain;
 import me.botsko.prism.actionlibs.RecordingTask;
-import me.botsko.prism.actions.ActionMeter;
 import me.botsko.prism.api.PrismApi;
 import me.botsko.prism.api.PrismParameters;
 import me.botsko.prism.api.Result;
@@ -652,8 +651,6 @@ public class Prism extends JavaPlugin implements PrismApi {
     }
 
     private void checkPluginDependencies() {
-        //DripReporter
-        ApiHandler.configureMonitor();
         // WorldEdit
         ApiHandler.hookWorldEdit();
         //bstats
@@ -664,9 +661,6 @@ public class Prism extends JavaPlugin implements PrismApi {
             if (!metrics.isEnabled()) {
                 Prism.warn("bStats failed to initialise! Please check Prism/bStats configs.");
             }
-            Metrics.MultiLineChart blockBreaksHour =
-                    new Metrics.MultiLineChart("//TODO", ActionMeter::getMetricMeter);
-            metrics.addCustomChart(blockBreaksHour);
         }
     }
 
@@ -826,9 +820,6 @@ public class Prism extends JavaPlugin implements PrismApi {
         if (getConfig().getBoolean("prism.query.force-write-queue-on-shutdown")) {
             final QueueDrain drainer = new QueueDrain(this);
             drainer.forceDrainQueue();
-        }
-        if (!ApiHandler.disable()) {
-            log("Possible errors unhooking dependencies...");
         }
 
         Bukkit.getScheduler().cancelTasks(this);

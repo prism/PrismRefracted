@@ -1,8 +1,4 @@
-jooq_codegen
-deploy.sh
-pass.txt
-dev.sh
-dependency-reduced-pom.xml
+.gradle
 
 # Numerous always-ignore extensions
 *.diff
