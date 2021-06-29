@@ -1,6 +1,5 @@
 package me.botsko.prism.events;
 
-
 import me.botsko.prism.api.BlockStateChange;
 import me.botsko.prism.api.PrismParameters;
 import me.botsko.prism.api.objects.ApplierResult;
@@ -10,10 +9,6 @@ import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
-/**
- * Created for use for the Add5tar MC Minecraft server
- * Created by benjamincharlton on 11/01/2021.
- */
 public class PrismRollBackEvent extends Event {
 
 

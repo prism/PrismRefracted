@@ -6,10 +6,6 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-/**
- * Created for use for the Add5tar MC Minecraft server
- * Created by benjamincharlton on 5/04/2019.
- */
 public interface IdMapQuery {
     void findMaterial(int blockId, int blockSubid, BiConsumer<String, String> success);
 

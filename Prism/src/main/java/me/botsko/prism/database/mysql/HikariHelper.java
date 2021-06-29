@@ -11,10 +11,6 @@ import java.io.OutputStream;
 import java.util.Properties;
 import java.util.Set;
 
-/**
- * Created for use for the Add5tar MC Minecraft server
- * Created by benjamincharlton on 1/01/2021.
- */
 class HikariHelper {
 
     public static void createPropertiesFile(File propFile, HikariConfig dbConfig, boolean skipCoreValue) {

@@ -8,10 +8,6 @@ import org.jetbrains.annotations.PropertyKey;
 
 import java.util.regex.Pattern;
 
-/**
- * Created for the Prism-Bukkit Project.
- * Created by Narimm on 6/08/2020.
- */
 public class ReplaceableTextComponent {
 
     private Component component;

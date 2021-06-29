@@ -2,10 +2,6 @@ package me.botsko.prism.database;
 
 import me.botsko.prism.api.actions.Handler;
 
-/**
- * Created for use for the Add5tar MC Minecraft server
- * Created by benjamincharlton on 1/06/2019.
- */
 public interface InsertQuery {
     /**
      * Returns the id of the action.

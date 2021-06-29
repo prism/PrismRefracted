@@ -27,10 +27,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Created for use for the Add5tar MC Minecraft server
- * Created by narimm on 3/03/2020.
- */
 public class DebugCommand implements SubHandler {
 
     @Override

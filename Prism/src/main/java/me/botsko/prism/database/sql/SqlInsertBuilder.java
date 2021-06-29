@@ -18,10 +18,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-/**
- * Created for use for the Add5tar MC Minecraft server
- * Created by Narimm on 1/06/2019.
- */
 public class SqlInsertBuilder extends QueryBuilder implements InsertQuery {
     final ArrayList<Handler> extraDataQueue = new ArrayList<>();
     private PreparedStatement batchStatement;

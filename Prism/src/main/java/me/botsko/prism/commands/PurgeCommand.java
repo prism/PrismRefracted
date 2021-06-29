@@ -12,9 +12,6 @@ import org.bukkit.Bukkit;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * Created by Narimm on 5/06/2017.
- */
 public class PurgeCommand implements SubHandler {
 
     private final Prism plugin;

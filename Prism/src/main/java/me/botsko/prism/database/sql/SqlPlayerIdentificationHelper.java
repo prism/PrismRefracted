@@ -14,10 +14,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.UUID;
 
-/**
- * Created for use for the Add5tar MC Minecraft server
- * Created by benjamincharlton on 3/01/2021.
- */
 public class SqlPlayerIdentificationHelper {
 
     private static String prefix = Prism.getPrismDataSource().getPrefix();

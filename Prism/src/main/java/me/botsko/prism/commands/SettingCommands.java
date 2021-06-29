@@ -6,10 +6,6 @@ import me.botsko.prism.commandlibs.CallInfo;
 
 import java.util.List;
 
-/**
- * Created for use for the Add5tar MC Minecraft server
- * Created by benjamincharlton on 7/08/2020.
- */
 public class SettingCommands extends AbstractCommand {
     @Override
     public void handle(CallInfo call) {

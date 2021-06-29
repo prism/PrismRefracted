@@ -10,10 +10,6 @@ import org.bukkit.plugin.Plugin;
 import java.util.ArrayList;
 import java.util.Collection;
 
-/**
- * Created for the Prism Project.
- * Created by Narimm on 20/05/2020.
- */
 public class ApiHandler {
     private static final Collection<String> enabledPlugins = new ArrayList<>();
     public static WorldEditPlugin worldEditPlugin = null;

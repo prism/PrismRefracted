@@ -10,10 +10,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-/**
- * Created for use for the Add5tar MC Minecraft server
- * Created by benjamincharlton on 6/04/2019.
- */
 public class SqlSettingsQuery extends AbstractSettingsQuery implements SettingsQuery {
     private final SqlPrismDataSource dataSource;
     private static String prefix = "prism_";

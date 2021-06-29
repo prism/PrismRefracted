@@ -10,10 +10,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 
-/**
- * Created for use for the Add5tar MC Minecraft server
- * Created by benjamincharlton on 4/04/2019.
- */
 public class PrismDatabaseFactory {
 
     private static PrismDataSource database = null;

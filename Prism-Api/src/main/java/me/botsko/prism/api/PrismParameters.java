@@ -14,10 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * Created for use for the Add5tar MC Minecraft server
- * Created by benjamincharlton on 10/01/2021.
- */
 public interface PrismParameters {
 
     /**

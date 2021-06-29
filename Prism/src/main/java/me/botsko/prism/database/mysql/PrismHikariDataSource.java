@@ -10,12 +10,6 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.File;
 
-
-
-/**
- * Created for use for the Add5tar MC Minecraft server
- * Created by benjamincharlton on 1/01/2021.
- */
 public class PrismHikariDataSource extends SqlPrismDataSource {
 
     private static final File propFile = new File(Prism.getInstance().getDataFolder(),

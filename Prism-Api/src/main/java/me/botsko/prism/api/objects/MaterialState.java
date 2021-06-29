@@ -9,10 +9,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Locale;
 
-/**
- * Created for Prism
- * Created by Narimm on 10/01/2021.
- */
 public class MaterialState {
     public Material material;
     public String state;

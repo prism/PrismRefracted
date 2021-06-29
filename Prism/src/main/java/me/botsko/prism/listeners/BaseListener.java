@@ -13,10 +13,6 @@ import org.bukkit.event.Listener;
 
 import java.util.List;
 
-/**
- * Created for the Prism-Bukkit Project.
- * Created by Narimm on 4/09/2020.
- */
 public abstract class BaseListener implements Listener {
 
     protected final Prism plugin;

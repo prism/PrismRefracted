@@ -8,11 +8,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-/**
- * THis Class will return an id set for a specific query OR it can return the min and max ID's
- * Created for use for the Add5tar MC Minecraft server
- * Created by benjamincharlton on 31/03/2019.
- */
 public class SqlSelectIdQueryBuilder extends SqlSelectQueryBuilder implements SelectIdQuery {
     /**
      * Constructor.

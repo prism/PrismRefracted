@@ -10,10 +10,6 @@ import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.List;
 
-/**
- * Created for use for the Add5tar MC Minecraft server
- * Created by benjamincharlton on 29/04/2020.
- */
 public abstract class AbstractCommand implements SubHandler {
 
     final StringBuilder checkIfDefaultUsed(QueryParameters parameters) {

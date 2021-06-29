@@ -13,10 +13,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-/**
- * Created for use for the Add5tar MC Minecraft server
- * Created by benjamincharlton on 6/04/2019.
- */
 public class SqlSelectProcessQuery extends SqlSelectQueryBuilder implements SelectProcessActionQuery {
     private boolean getLastID;
 

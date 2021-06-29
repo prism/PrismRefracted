@@ -8,10 +8,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-/**
- * Created for use for the Add5tar MC Minecraft server
- * Created by benjamincharlton on 5/04/2019.
- */
 public class SqlPrismDataSourceUpdater implements PrismDataSourceUpdater {
     private final PrismDataSource dataSource;
     private static String  prefix = "prism_";

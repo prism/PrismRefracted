@@ -10,10 +10,6 @@ import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Locale;
 
-/**
- * Created for use for the Add5tar MC Minecraft server
- * Created by benjamincharlton on 23/05/2020.
- */
 public class TabLibraryHelper {
     // Material at a location that are commonly acceptable to replace.
     protected static final Tag<Material> replaceableMaterials = new MaterialTag(

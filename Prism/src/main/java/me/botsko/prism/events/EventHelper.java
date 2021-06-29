@@ -9,10 +9,6 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created for the Prism-Bukkit Project.
- * Created by Narimm on 13/01/2021.
- */
 public class EventHelper {
 
     public static PrismRollBackEvent createRollBackEvent(List<BlockStateChange> blockStateChanges,

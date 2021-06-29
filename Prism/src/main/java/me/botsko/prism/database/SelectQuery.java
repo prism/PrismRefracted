@@ -4,11 +4,6 @@ import me.botsko.prism.actionlibs.QueryResult;
 import me.botsko.prism.api.PrismParameters;
 import me.botsko.prism.measurement.TimeTaken;
 
-/**
- * A Select Query returns a query that selects a data set.
- * Created for use for the Add5tar MC Minecraft server
- * Created by benjamincharlton on 5/04/2019.
- */
 public interface SelectQuery {
     String getQuery(PrismParameters parameters, boolean shouldGroup);
 

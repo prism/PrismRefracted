@@ -7,10 +7,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
 
-/**
- * Created for use for the Add5tar MC Minecraft server
- * Created by benjamincharlton on 5/04/2019.
- */
 public interface PrismDataSource {
 
     boolean isPaused();

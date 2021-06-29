@@ -19,10 +19,6 @@ import java.sql.SQLException;
 import java.sql.SQLNonTransientConnectionException;
 import java.util.HashMap;
 
-/**
- * Created for use for the Add5tar MC Minecraft server
- * Created by Narimm on 5/04/2019.
- */
 public class MySqlPrismDataSource extends SqlPrismDataSource {
 
     private static final File propFile = new File(Prism.getInstance().getDataFolder(),

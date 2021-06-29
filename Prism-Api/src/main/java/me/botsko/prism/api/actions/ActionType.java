@@ -1,9 +1,5 @@
 package me.botsko.prism.api.actions;
 
-/**
- * Created for use for the Add5tar MC Minecraft server
- * Created by benjamincharlton on 10/01/2021.
- */
 public interface ActionType {
 
 
