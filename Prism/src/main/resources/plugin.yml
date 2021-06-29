@@ -1,10 +1,9 @@
 name: Prism
 main: me.botsko.prism.Prism
 version: 1.0.0
-softdepend: [WorldEdit,DripReporter]
-author: AddstarMC
-authors: [viveleroi, add5tar, Narimm]
-website: https://github.com/AddstarMC/Prism-Bukkit/wiki
+softdepend: [WorldEdit]
+author: viveleroi
+website: https://github.com/darkhelmet-gaming/PrismRefracted
 api-version: 1.17
 commands:
    prism:
