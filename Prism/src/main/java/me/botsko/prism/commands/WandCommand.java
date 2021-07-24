@@ -41,7 +41,7 @@ public class WandCommand extends AbstractCommand {
     @Override
     public void handle(CallInfo call) {
         String type = "i";
-        final boolean isInspect = call.getArg(0).equalsIgnoreCase("inspect") || call.getArg(0).equalsIgnoreCase("i");
+        final boolean isInspect = call.getArg(0).equalsIgnoreCase("inspect") || call.getArg(0).equalsIgnoreCase("i") || call.getArg(0).equalsIgnoreCase("检查");
         if (!isInspect) {
             if (call.getArgs().length < 2) {
                 Prism.messenger.sendMessage(call.getPlayer(),
@@ -98,7 +98,7 @@ public class WandCommand extends AbstractCommand {
         StringBuilder parameters = new StringBuilder();
         if (itemMaterial != null) {
             itemName = Prism.getItems().getAlias(itemMaterial, null);
-            wandOn += " on a " + itemName;
+            wandOn += " 在 " + itemName;
         }
 
         for (int i = (isInspect ? 1 : 2); i < call.getArgs().length; i++) {
@@ -122,6 +122,7 @@ public class WandCommand extends AbstractCommand {
         switch (type.toLowerCase()) {
             case "i":
             case "inpect":
+            case "检查":
                 if (checkNoPermissions(call.getPlayer(), "prism.lookup", "prism.wand.inspect")) {
                     return;
                 }
@@ -135,6 +136,7 @@ public class WandCommand extends AbstractCommand {
                 break;
             case "p":
             case "profile":
+            case "简介":
                 if (checkNoPermissions(call.getPlayer(), "prism.lookup", "prism.wand.profile")) {
                     return;
                 }
@@ -148,6 +150,7 @@ public class WandCommand extends AbstractCommand {
                 break;
             case "rollback":
             case "rb":
+            case "回滚":
                 if (checkNoPermissions(call.getSender(), "prism.rollback", "prism.wand.rollback")) {
                     return;
                 }
@@ -161,6 +164,7 @@ public class WandCommand extends AbstractCommand {
                 break;
             case "restore":
             case "rs":
+            case "还原":
                 if (checkNoPermissions(call.getPlayer(), "prism.restor", "prism.wand.restore")) {
                     return;
                 }
@@ -174,6 +178,8 @@ public class WandCommand extends AbstractCommand {
                 }
                 break;
             case "off":
+            case "关闭":
+            case "关":
                 sendWandStatus(call.getPlayer(), "wand-current", false, wandOn, parameters.toString());
                 break;
             default:
@@ -205,7 +211,21 @@ public class WandCommand extends AbstractCommand {
             wand.setWandMode(mode);
             wand.setItem(item);
 
-            Prism.debug("Wand activated for player - mode: " + mode + " Item:" + item);
+            String localisation = mode;
+            switch (mode) {
+                case "hand":
+                    localisation = "空手";
+                    break;
+                case "item":
+                    localisation = "物品";
+                    break;
+                case "block":
+                    localisation = "方块";
+                    break;
+                default:
+            }
+
+            Prism.debug("为玩家激活魔杖 - 模式: " + localisation + " 物品:" + item);
 
             // Move any existing item to the hand, otherwise give it to them
             if (plugin.getConfig().getBoolean("prism.wands.auto-equip")) {

@@ -34,7 +34,7 @@ public class AboutCommand implements SubHandler {
                                 .replaceText(Pattern.compile("<version>"),
                                     builder -> Component.text().content(plugin.getPrismVersion()))));
         Prism.messenger.sendMessage(call.getSender(), Prism.messenger.playerSubduedHeaderMsg(
-                Component.text("Help: ")
+                Component.text("指令帮助: ")
                         .append(Component.text("/pr ?")
                                 .color(NamedTextColor.WHITE))));
         Prism.messenger.sendMessage(call.getSender(),
@@ -46,7 +46,7 @@ public class AboutCommand implements SubHandler {
                                 .build()));
         Prism.messenger.sendMessage(call.getSender(),
                 Prism.messenger.playerSubduedHeaderMsg(
-                        Component.text().content("Wiki: ")
+                        Component.text().content("维基: ")
                                 .append(Component.text(Il8nHelper.getRawMessage("wiki-url"))
                                         .color(NamedTextColor.WHITE))
                                 .clickEvent(ClickEvent.openUrl(Il8nHelper.getRawMessage("wiki-url")))

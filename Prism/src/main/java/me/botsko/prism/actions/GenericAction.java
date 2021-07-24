@@ -130,7 +130,7 @@ public abstract class GenericAction implements Handler {
         long diffInSeconds = System.currentTimeMillis() / 1000 - epoch;
 
         if (diffInSeconds < 60) {
-            return "just now";
+            return "就在刚刚";
         }
 
         long period = 24 * 60 * 60;
@@ -144,20 +144,20 @@ public abstract class GenericAction implements Handler {
         StringBuilder timeAgo = new StringBuilder();
 
         if (diff[0] > 0) {
-            timeAgo.append(diff[0]).append('d');
+            timeAgo.append(diff[0]).append('天');
         }
 
         if (diff[1] > 0) {
-            timeAgo.append(diff[1]).append('h');
+            timeAgo.append(diff[1]).append('时');
         }
 
         if (diff[2] > 0) {
-            timeAgo.append(diff[2]).append('m');
+            timeAgo.append(diff[2]).append('分');
         }
 
         // 'time_ago' will have something at this point, because if all 'diff's
         // were 0, the first if check would have caught and returned "just now"
-        return timeAgo.append(" ago").toString();
+        return timeAgo.append("前").toString();
 
     }
 

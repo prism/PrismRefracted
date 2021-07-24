@@ -1,6 +1,7 @@
 package me.botsko.prism.listeners;
 
 import me.botsko.prism.Prism;
+import me.botsko.prism.PrismLocalization;
 import me.botsko.prism.actionlibs.ActionFactory;
 import me.botsko.prism.actionlibs.RecordingQueue;
 import me.botsko.prism.utils.DeathUtils;
@@ -66,12 +67,15 @@ import java.util.UUID;
 
 public class PrismEntityEvents extends BaseListener {
 
+    private final PrismLocalization prismLocalization;
+
     /**
      * Constructor.
      * @param plugin Plugin
      */
     public PrismEntityEvents(Prism plugin) {
         super(plugin);
+        prismLocalization = plugin.getPrismLocalization();
     }
 
     /**
@@ -123,7 +127,8 @@ public class PrismEntityEvents extends BaseListener {
         if (!(entity instanceof Player)) {
             // Log item drops
             if (Prism.getIgnore().event("item-drop", entity.getWorld())) {
-                String name = entity.getType().name().toLowerCase();
+                String name = prismLocalization.hasEntityLocale(entity.getType().name()) ?
+                        prismLocalization.getEntityLocale(entity.getType().name()) : entity.getType().name().toLowerCase();
 
                 // Inventory
                 if (entity instanceof InventoryHolder) {
@@ -213,10 +218,97 @@ public class PrismEntityEvents extends BaseListener {
                     return;
                 }
 
-                String name = "unknown";
+                String name = "未知";
 
                 if (damageEvent != null && !damageEvent.isCancelled()) {
-                    name = damageEvent.getCause().name().toLowerCase(Locale.ENGLISH).replace('_', ' ');
+                    switch (damageEvent.getCause()) {
+                        case LIGHTNING:
+                            name = "闪电";
+                            break;
+                        case CUSTOM:
+                            name = "自定义";
+                            break;
+                        case FIRE:
+                            name = "火焰";
+                            break;
+                        case FIRE_TICK:
+                            name = "火焰刻";
+                            break;
+                        case FALL:
+                            name = "摔落";
+                            break;
+                        case LAVA:
+                            name = "熔岩";
+                            break;
+                        case VOID:
+                            name = "虚空";
+                            break;
+                        case MAGIC:
+                            name = "魔法";
+                            break;
+                        case DRYOUT:
+                            name = "缺水窒息";
+                            break;
+                        case POISON:
+                            name = "药水";
+                            break;
+                        case THORNS:
+                            name = "荆棘附魔";
+                            break;
+                        case WITHER:
+                            name = "凋零效果";
+                            break;
+                        case CONTACT:
+                            name = "接触方块";
+                            break;
+                        case MELTING:
+                            name = "融化";
+                            break;
+                        case SUICIDE:
+                            name = "自杀";
+                            break;
+                        case CRAMMING:
+                            name = "过于拥挤";
+                            break;
+                        case DROWNING:
+                            name = "溺水窒息";
+                            break;
+                        case HOT_FLOOR:
+                            name = "踩岩浆块";
+                            break;
+                        case PROJECTILE:
+                            name = "弹射物";
+                            break;
+                        case STARVATION:
+                            name = "饥饿度";
+                            break;
+                        case SUFFOCATION:
+                            name = "方块窒息";
+                            break;
+                        case DRAGON_BREATH:
+                            name = "龙息";
+                            break;
+                        case ENTITY_ATTACK:
+                            name = "实体攻击";
+                            break;
+                        case FALLING_BLOCK:
+                            name = "坠落的方块";
+                            break;
+                        case FLY_INTO_WALL:
+                            name = "飞进墙里";
+                            break;
+                        case BLOCK_EXPLOSION:
+                            name = "方块爆炸";
+                            break;
+                        case ENTITY_EXPLOSION:
+                            name = "实体爆炸";
+                            break;
+                        case ENTITY_SWEEP_ATTACK:
+                            name = "横扫攻击";
+                            break;
+                        default:
+                            name = damageEvent.getCause().name().toLowerCase(Locale.ENGLISH).replace('_', ' ');
+                    }
                 }
 
                 RecordingQueue.addToQueue(ActionFactory.createEntity("entity-kill", entity, name));
@@ -287,9 +379,9 @@ public class PrismEntityEvents extends BaseListener {
             if (Prism.getIgnore().event("player-death", p)) {
                 final String cause = DeathUtils.getCauseNiceName(p);
                 String attacker = DeathUtils.getAttackerName(p);
-                if (attacker.equals("pvpwolf")) {
+                if (attacker.equals("pvp狼")) {
                     final String owner = DeathUtils.getTameWolfOwner(event);
-                    attacker = owner + "'s wolf";
+                    attacker = owner + "的狼";
                 }
                 RecordingQueue.addToQueue(ActionFactory.createPlayerDeath("player-death", p, cause, attacker));
             }
@@ -315,8 +407,117 @@ public class PrismEntityEvents extends BaseListener {
         if (!Prism.getIgnore().event("entity-spawn", event.getEntity().getWorld())) {
             return;
         }
-        final String reason = event.getSpawnReason().name().toLowerCase().replace("_", " ");
-        if (reason.equals("natural")) {
+        final String reason;
+        switch (event.getSpawnReason()) {
+            case ENDER_PEARL:
+                reason = "末影珍珠";
+                break;
+            case COMMAND:
+                reason = "指令";
+                break;
+            case NETHER_PORTAL:
+                reason = "下界传送门";
+                break;
+            case EGG:
+                reason = "鸡蛋";
+                break;
+            case RAID:
+                reason = "突袭";
+                break;
+            case TRAP:
+                reason = "触发";
+                break;
+            case CURED:
+                reason = "治愈村民";
+                break;
+            case MOUNT:
+                reason = "坐骑";
+                break;
+            case CUSTOM:
+                reason = "自定义";
+                break;
+            case JOCKEY:
+                reason = "骑士";
+                break;
+            case PATROL:
+                reason = "灾厄巡逻队";
+                break;
+            case BEEHIVE:
+                reason = "蜂箱";
+                break;
+            case DEFAULT:
+                reason = "默认值";
+                break;
+            case DROWNED:
+                reason = "溺死";
+                break;
+            case NATURAL:
+                reason = "自然";
+                break;
+            case SHEARED:
+                reason = "剪哞菇";
+                break;
+            case SPAWNER:
+                reason = "刷怪笼";
+                break;
+            case BREEDING:
+                reason = "喂养";
+                break;
+            case EXPLOSION:
+                reason = "爆炸";
+                break;
+            case INFECTION:
+                reason = "感染";
+                break;
+            case LIGHTNING:
+                reason = "闪电";
+                break;
+            case OCELOT_BABY:
+                reason = "海龟宝宝";
+                break;
+            case SLIME_SPLIT:
+                reason = "史莱姆分裂";
+                break;
+            case SPAWNER_EGG:
+                reason = "刷怪蛋";
+                break;
+            case BUILD_WITHER:
+                reason = "摆放凋灵";
+                break;
+            case DISPENSE_EGG:
+                reason = "发射器发射鸡蛋";
+                break;
+            case BUILD_SNOWMAN:
+                reason = "摆放雪傀儡";
+                break;
+            case REINFORCEMENTS:
+                reason = "增援";
+                break;
+            case BUILD_IRONGOLEM:
+                reason = "摆放铁傀儡";
+                break;
+            case SHOULDER_ENTITY:
+                reason = "肩膀实体";
+                break;
+            case VILLAGE_DEFENSE:
+                reason = "村庄防御";
+                break;
+            case PIGLIN_ZOMBIFIED:
+                reason = "猪灵转化";
+                break;
+            case SILVERFISH_BLOCK:
+                reason = "蠹虫刷怪石";
+                break;
+            case VILLAGE_INVASION:
+                reason = "僵尸围城";
+                break;
+            case CHUNK_GEN:
+                reason = "区块生成";
+                break;
+            default:
+                reason = event.getSpawnReason().name().toLowerCase().replace("_", " ");
+        }
+        if (reason.equals("自然")) {
             return;
         }
         RecordingQueue.addToQueue(ActionFactory.createEntity("entity-spawn", event.getEntity(), reason));
@@ -490,7 +691,8 @@ public class PrismEntityEvents extends BaseListener {
             return;
         }
         RecordingQueue.addToQueue(ActionFactory.createBlock("entity-break", event.getBlock(),
-                event.getEntityType().name().toLowerCase()));
+                prismLocalization.hasEntityLocale(event.getEntityType().name()) ?
+                        prismLocalization.getEntityLocale(event.getEntityType().name()) : event.getEntityType().name().toLowerCase()));
     }
 
     /**
@@ -526,8 +728,25 @@ public class PrismEntityEvents extends BaseListener {
         if (!Prism.getIgnore().event("entity-unleash")) {
             return;
         }
+        final String reason;
+        switch (event.getReason()) {
+            case UNKNOWN:
+                reason = "未知";
+                break;
+            case DISTANCE:
+                reason = "距离";
+                break;
+            case HOLDER_GONE:
+                reason = "生物消失";
+                break;
+            case PLAYER_UNLEASH:
+                reason = "解栓";
+                break;
+            default:
+                reason = event.getReason().toString().toLowerCase();
+        }
         RecordingQueue.addToQueue(ActionFactory.createEntity("entity-unleash", event.getEntity(),
-                event.getReason().toString().toLowerCase()));
+                reason));
     }
 
     /**
@@ -555,7 +774,8 @@ public class PrismEntityEvents extends BaseListener {
         final Collection<PotionEffect> potion = event.getPotion().getEffects();
         String name = "";
         for (final PotionEffect eff : potion) {
-            name = eff.getType().getName().toLowerCase();
+            name = prismLocalization.hasEffectLocale(eff.getType().getName()) ?
+                    prismLocalization.getEffectLocale(eff.getType().getName()) : eff.getType().getName().toLowerCase();
         }
 
         RecordingQueue.addToQueue(ActionFactory.createPlayer("potion-splash", player, name));
@@ -611,7 +831,7 @@ public class PrismEntityEvents extends BaseListener {
         String value = plugin.preplannedBlockFalls.remove(coord_key);
 
         if (value == null) {
-            value = "unknown";
+            value = "未知";
         }
 
         Player player = null;
@@ -671,7 +891,8 @@ public class PrismEntityEvents extends BaseListener {
         if (!Prism.getIgnore().event("hangingitem-break", event.getEntity().getWorld())) {
             return;
         }
-        String breakingName = (remover == null) ? "NULL" : remover.getType().name().toLowerCase();
+        String breakingName = (remover == null) ? "NULL" : prismLocalization.hasEntityLocale(remover.getType().name()) ?
+                prismLocalization.getEntityLocale(remover.getType().name()) : remover.getType().name().toLowerCase();
         if (player != null) {
             RecordingQueue.addToQueue(ActionFactory.createHangingItem("hangingitem-break", event.getEntity(), player));
         } else {
@@ -759,7 +980,8 @@ public class PrismEntityEvents extends BaseListener {
             RecordingQueue.addToQueue(ActionFactory.createBlockChange("entity-form", loc, block.getType(),
                     block.getBlockData(), newState.getType(), newState.getBlockData(), player));
         } else {
-            final String entity = event.getEntity().getType().name().toLowerCase();
+            final String entity = prismLocalization.hasEntityLocale(event.getEntity().getType().name()) ?
+                    prismLocalization.getEntityLocale(event.getEntity().getType().name()) : event.getEntity().getType().name().toLowerCase();
             RecordingQueue.addToQueue(ActionFactory.createBlockChange("entity-form", loc, block.getType(),
                     block.getBlockData(), newState.getType(), newState.getBlockData(), entity));
         }
@@ -783,7 +1005,7 @@ public class PrismEntityEvents extends BaseListener {
                     return;
                 }
                 action = "creeper-explode";
-                name = "creeper";
+                name = "苦力怕";
             } else if (event.getEntity() instanceof TNTPrimed) {
                 if (!Prism.getIgnore().event("tnt-explode", event.getEntity().getWorld())) {
                     return;
@@ -796,7 +1018,7 @@ public class PrismEntityEvents extends BaseListener {
                     return;
                 }
                 action = "dragon-eat";
-                name = "enderdragon";
+                name = "末影龙";
             } else {
                 if (!Prism.getIgnore().event("entity-explode", event.getLocation().getWorld())) {
                     return;
@@ -805,14 +1027,14 @@ public class PrismEntityEvents extends BaseListener {
                     name = event.getEntity().getType().name().toLowerCase().replace("_", " ");
                     name = name.length() > 15 ? name.substring(0, 15) : name; // I
                 } catch (final NullPointerException e) {
-                    name = "unknown";
+                    name = "未知";
                 }
             }
         } else {
             if (!Prism.getIgnore().event("entity-explode", event.getLocation().getWorld())) {
                 return;
             }
-            name = "magic";
+            name = "魔法";
         }
         contructBlockEvent(action,name,event.blockList());
     }
@@ -827,17 +1049,18 @@ public class PrismEntityEvents extends BaseListener {
                 initial = (((TNTPrimed) initial).getSource());
                 if (counter < 0 && initial != null) {
                     Location last = initial.getLocation();
-                    plugin.getLogger().warning("TnT chain has exceeded one million, will not continue!");
-                    plugin.getLogger().warning("Last Tnt was at " + last.getX() + ", " + last.getY() + ". "
-                            + last.getZ() + " in world " + last.getWorld());
-                    return "tnt";
+                    plugin.getLogger().warning("连锁TNT已超过一百万, 不会继续跟踪!");
+                    plugin.getLogger().warning("最后一个TNT在 " + last.getX() + ", " + last.getY() + ". "
+                            + last.getZ() + " 世界为 " + last.getWorld());
+                    return "TNT";
                 }
                 counter--;
             } else {
-                return initial.getType().name();
+                return prismLocalization.hasEntityLocale(initial.getType().name()) ?
+                        prismLocalization.getEntityLocale(initial.getType().name()) : initial.getType().name();
             }
         }
 
-        return "tnt";
+        return "TNT";
     }
 }

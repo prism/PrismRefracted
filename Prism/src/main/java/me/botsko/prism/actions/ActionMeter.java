@@ -36,7 +36,7 @@ public class ActionMeter {
             addClass(SignAction.class);
             addClass(VehicleAction.class);
             meter.put("UnknownHandler", getMeter(Handler.class));
-            Prism.log("Action Meter metrics enabled. " + meter.size() + " metrics registered");
+            Prism.log("已启用 行为仪表 指标. " + meter.size() + " 个指标已注册");
             monitoring = true;
         }
     }

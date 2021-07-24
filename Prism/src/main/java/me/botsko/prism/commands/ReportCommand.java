@@ -44,11 +44,16 @@ public class ReportCommand extends AbstractCommand {
         this.plugin = plugin;
         secondaries = new ArrayList<>();
         secondaries.add("queue");
+        secondaries.add("队列");
         secondaries.add("db");
+        secondaries.add("数据库");
         secondaries.add("sum");
+        secondaries.add("总计");
         sumTertiaries = new ArrayList<>();
         sumTertiaries.add("blocks");
+        sumTertiaries.add("方块");
         sumTertiaries.add("actions");
+        sumTertiaries.add("行为");
     }
 
     /**
@@ -64,17 +69,17 @@ public class ReportCommand extends AbstractCommand {
         }
 
         // /prism report queue
-        if (call.getArg(1).equals("queue")) {
+        if (call.getArg(1).equals("queue") || call.getArg(1).equals("队列")) {
             queueReport(call.getSender());
         }
 
         // /prism report db
-        if (call.getArg(1).equals("db")) {
+        if (call.getArg(1).equals("db") || call.getArg(1).equals("数据库")) {
             databaseReport(call.getSender());
         }
 
         // /prism report queue
-        if (call.getArg(1).equals("sum")) {
+        if (call.getArg(1).equals("sum") || call.getArg(1).equals("总计")) {
 
             if (call.getArgs().length < 3) {
                 Prism.messenger.sendMessage(call.getSender(),
@@ -88,11 +93,11 @@ public class ReportCommand extends AbstractCommand {
                 return;
             }
 
-            if (call.getArg(2).equals("blocks")) {
+            if (call.getArg(2).equals("blocks") || call.getArg(2).equals("方块")) {
                 blockSumReports(call);
             }
 
-            if (call.getArg(2).equals("actions")) {
+            if (call.getArg(2).equals("actions") || call.getArg(2).equals("行为")) {
                 actionTypeCountReport(call);
             }
         }
@@ -103,7 +108,7 @@ public class ReportCommand extends AbstractCommand {
         if (call.getArgs().length == 2) {
             return MiscUtils.getStartingWith(call.getArg(1), secondaries);
         }
-        if (call.getArg(1).equals("sum")) {
+        if (call.getArg(1).equals("sum") || call.getArg(1).equals("总计")) {
             if (call.getArgs().length == 3) {
                 return MiscUtils.getStartingWith(call.getArg(2), sumTertiaries);
             }

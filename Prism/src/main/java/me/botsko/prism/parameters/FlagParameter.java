@@ -39,7 +39,7 @@ public class FlagParameter implements PrismParameterHandler {
         try {
             flag = Flag.valueOf(flagComponents[0].replace("-", "_").toUpperCase());
         } catch (final IllegalArgumentException ex) {
-            throw new IllegalArgumentException("Flag -" + flagComponents[0] + " not found", ex);
+            throw new IllegalArgumentException("找不到 标记 -" + flagComponents[0] , ex);
         }
         if (!(query.hasFlag(flag))) {
 
@@ -52,19 +52,19 @@ public class FlagParameter implements PrismParameterHandler {
                         query.setPerPage(Integer.parseInt(flagComponents[1]));
                     } else {
                         throw new IllegalArgumentException(
-                                "Per-page flag value must be a number. Use /prism ? for help.");
+                                "每页(Per-page) 标记值必须为一个数值. 请使用 /pr ? 来获取帮助.");
                     }
                 } else if (flag.equals(Flag.SHARE)) {
                     for (final String sharePlayer : flagComponents[1].split(",")) {
                         if (sharePlayer.equals(sender.getName())) {
-                            throw new IllegalArgumentException("You can't share lookup results with yourself!");
+                            throw new IllegalArgumentException("您不能分享查询结果给你自己!");
                         }
                         final Player shareWith = Bukkit.getServer().getPlayer(sharePlayer);
                         if (shareWith != null) {
                             query.addSharedPlayer(shareWith);
                         } else {
                             throw new IllegalArgumentException(
-                                    "Can't share with " + sharePlayer + ". Are they online?");
+                                    "不能分享给 " + sharePlayer + ". 他们在线吗?");
                         }
                     }
                 }

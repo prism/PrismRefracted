@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 public class ActionParameter extends SimplePrismParameterHandler {
 
     public ActionParameter() {
-        super("Action", Pattern.compile("[~|!]?[\\w,-]+"), "a");
+        super("Action", Pattern.compile("[~|!]?[\\w,-]+"), "a", "行为");
     }
 
     @Override
@@ -62,31 +62,32 @@ public class ActionParameter extends SimplePrismParameterHandler {
                     }
 
                     if (!noPermission.isEmpty()) {
-                        String message = "Ignoring action '" + action + "' because you don't have permission for ";
+                        String message = "忽略了行为 '" + action + "' , 由于您没有";
                         if (noPermission.size() != 1) {
-                            message += "any of " + Joiner.on(',').join(noPermission) + ".";
+                            message += "任何 " + Joiner.on(',').join(noPermission) + " 其中之一";
                         } else if (noPermission.get(0).equals(action)) {
-                            message += "it.";
+                            message += "它";
                         } else {
-                            message += noPermission.get(0) + ".";
+                            message += noPermission.get(0);
                         }
+                        message += "的权限.";
                         Prism.messenger.sendMessage(sender, Prism.messenger.playerError(message));
                     }
 
                 } else {
                     if (sender != null) {
                         Prism.messenger.sendMessage(sender,
-                                Prism.messenger.playerError("Ignoring action '"
+                                Prism.messenger.playerError("忽略了行为 '"
                                         + action.replace("!", "")
-                                        + "' because it's unrecognized. Did you mean '"
+                                        + "' , 因为我们无法识别它. 可能您是想要使用 '"
                                         + LevenshteinDistance.getClosestAction(action)
-                                        + "'? Type '/prism params' for help."));
+                                        + "'? 请输入 '/prism params' 来获取帮助."));
                     }
                 }
             }
             // If none were valid, we end here.
             if (query.getActionTypes().size() == 0) {
-                throw new IllegalArgumentException("Action parameter value not recognized. Try /pr ? for help");
+                throw new IllegalArgumentException("无法识别行为参数值. 请使用 /pr ? 来获取帮助.");
             }
         }
     }

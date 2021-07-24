@@ -99,12 +99,12 @@ public class PurgeTask implements Runnable {
         plugin.maxCycleTime = Math.max(plugin.maxCycleTime, cycleTime);
 
         Prism.debug("------------------- ");
-        Prism.debug("params: " + param.getOriginalCommand());
-        Prism.debug("minId: " + minId);
-        Prism.debug("maxId: " + maxId);
-        Prism.debug("newMinId: " + newMinId);
-        Prism.debug("cycleRowsAffected: " + cycleRowsAffected);
-        Prism.debug("cycleComplete: " + cycleComplete);
+        Prism.debug("参数: " + param.getOriginalCommand());
+        Prism.debug("最小ID: " + minId);
+        Prism.debug("最大ID: " + maxId);
+        Prism.debug("新最小ID: " + newMinId);
+        Prism.debug("周期影响行数: " + cycleRowsAffected);
+        Prism.debug("周期完成状况: " + cycleComplete);
         Prism.debug("plugin.total_records_affected: " + plugin.totalRecordsAffected);
         Prism.debug("-------------------");
 
@@ -112,8 +112,8 @@ public class PurgeTask implements Runnable {
         callback.cycle(param, cycleRowsAffected, plugin.totalRecordsAffected, cycleComplete, plugin.maxCycleTime);
 
         if (!plugin.isEnabled()) {
-            Prism.log("Can't schedule new purge tasks as plugin is now disabled. "
-                            + "If you're shutting down the server, ignore me.");
+            Prism.log("由于插件现已关闭, 无法计划新的数据清理任务. "
+                            + "如果您正在关闭服务器, 则可忽略这个问题.");
             return;
         }
 
@@ -130,7 +130,7 @@ public class PurgeTask implements Runnable {
                 return;
             }
 
-            Prism.log("Moving on to next purge rule...");
+            Prism.log("正在进行下一数据清理规则...");
 
             // schedule a new task with next param
             plugin.getPurgeManager().deleteTask = plugin.getServer().getScheduler().runTaskLaterAsynchronously(plugin,

@@ -31,7 +31,7 @@ public class RecorderCommand extends AbstractCommand {
         boolean recorderActive = checkRecorderActive(plugin);
 
         // Allow for canceling recorders
-        if (call.getArg(1).equals("cancel")) {
+        if (call.getArg(1).equals("cancel") || call.getArg(1).equals("取消")) {
             if (recorderActive) {
                 plugin.recordingTask.cancel();
                 plugin.recordingTask = null;
@@ -47,7 +47,7 @@ public class RecorderCommand extends AbstractCommand {
         }
 
         // Allow for force-restarting recorders
-        if (call.getArg(1).equals("start")) {
+        if (call.getArg(1).equals("start") || call.getArg(1).equals("启动")) {
             if (recorderActive) {
                 Prism.messenger.sendMessage(call.getSender(),
                         Prism.messenger.playerError(Il8nHelper.getMessage("report-already-running")));

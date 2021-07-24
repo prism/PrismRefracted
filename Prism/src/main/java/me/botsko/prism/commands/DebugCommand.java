@@ -39,9 +39,11 @@ public class DebugCommand implements SubHandler {
             String arg = call.getArg(1);
             switch (arg.toLowerCase()) {
                 case "on":
+                case "开":
                     Prism.setDebug(true);
                     break;
                 case "off":
+                case "关":
                     Prism.setDebug(false);
                     break;
                 default: //toggle.
@@ -79,13 +81,13 @@ public class DebugCommand implements SubHandler {
 
     private String getMainInfo() {
         StringBuilder mainInfo = new StringBuilder();
-        mainInfo.append(Bukkit.getName()).append(" version: ").append(Bukkit.getServer()
+        mainInfo.append(Bukkit.getName()).append(" 版本: ").append(Bukkit.getServer()
                 .getVersion()).append(System.lineSeparator());
-        mainInfo.append("Plugin version: ").append(Prism.getInstance().getDescription()
+        mainInfo.append("插件版本: ").append(Prism.getInstance().getDescription()
                 .getVersion()).append(System.lineSeparator());
-        mainInfo.append("Java version: ").append(System.getProperty("java.version")).append('\n');
+        mainInfo.append("Java 版本: ").append(System.getProperty("java.version")).append('\n');
         mainInfo.append(System.lineSeparator());
-        mainInfo.append("Plugins:").append(System.lineSeparator());
+        mainInfo.append("插件列表:").append(System.lineSeparator());
         for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
             mainInfo.append(' ').append(plugin.getName()).append(" - ").append(
                     plugin.getDescription().getVersion()).append(System.lineSeparator());
@@ -98,24 +100,24 @@ public class DebugCommand implements SubHandler {
         PrismDataSource dataSource = Prism.getPrismDataSource();
         StringBuilder out = new StringBuilder();
         String name = dataSource.getClass().getName();
-        out.append("DataSource Name: ").append(name).append(System.lineSeparator());
+        out.append("数据源名称: ").append(name).append(System.lineSeparator());
         if (dataSource.getDataSource() instanceof HikariDataSource) {
             HikariDataSource ds = (HikariDataSource) dataSource.getDataSource();
-            out.append("Running: ").append(ds.isRunning())
-                    .append("Total Connections: ")
+            out.append("运行中: ").append(ds.isRunning())
+                    .append("总共连接数: ")
                     .append(ds.getHikariPoolMXBean().getTotalConnections())
                     .append(System.lineSeparator())
-                    .append("Total Connections: ")
+                    .append("总共连接数: ")
                     .append(ds.getHikariPoolMXBean().getActiveConnections())
                     .append(System.lineSeparator());
         }
-        out.append("Illegal Blocks:").append(System.lineSeparator());
+        out.append("非法方块:").append(System.lineSeparator());
         for (Material mat : Prism.getIllegalBlocks()) {
             out.append("   ").append(mat.name()).append(System.lineSeparator());
         }
-        out.append("Worlds Tracked: ").append(Prism.prismWorlds.size()).append(System.lineSeparator());
-        out.append("Players Tracked: ").append(Prism.prismPlayers.size()).append(System.lineSeparator());
-        out.append("Players with Tools: ").append(Prism.playersWithActiveTools.size())
+        out.append("追踪世界数: ").append(Prism.prismWorlds.size()).append(System.lineSeparator());
+        out.append("追踪玩家数: ").append(Prism.prismPlayers.size()).append(System.lineSeparator());
+        out.append("使用工具的玩家: ").append(Prism.playersWithActiveTools.size())
                 .append(System.lineSeparator());
         return out.toString();
     }
@@ -130,21 +132,21 @@ public class DebugCommand implements SubHandler {
         if (prismLog.toFile().length() < 2000000L) {
             pLog = getFile(prismLog);
         } else {
-            pLog = "TRUNCATED DUE TO LARGE SIZE: you may need to manually paste. <pluginDir>/prism.log";
+            pLog = "由于文件过大而被裁剪: 您么能需要手动粘贴. <pluginDir>/prism.log";
         }
-        PasteBuilder.PasteResult result = new PasteBuilder().name("Prism Debug Output")
+        PasteBuilder.PasteResult result = new PasteBuilder().name("Prism 调试信息输出")
                 .visibility(Visibility.UNLISTED)
                 .setApiKey(Prism.getPasteKey())
                 .expires(ZonedDateTime.now().plusDays(1)) //1 day
-                .addFile(new PasteFile("Main Info",
+                .addFile(new PasteFile("主要信息",
                         new PasteContent(PasteContent.ContentType.TEXT, getMainInfo())))
                 .addFile(new PasteFile("config.yml",
                         new PasteContent(PasteContent.ContentType.TEXT, getFile(prismConfig))))
                 .addFile(new PasteFile("hikari.properties",
                         new PasteContent(PasteContent.ContentType.TEXT, getFile(hikariProps))))
-                .addFile(new PasteFile("dataSource Properties",
+                .addFile(new PasteFile("数据源配置",
                         new PasteContent(PasteContent.ContentType.TEXT, getDataSourceInfo())))
-                .addFile(new PasteFile("Prism Log",
+                .addFile(new PasteFile("Prism 日志",
                         new PasteContent(PasteContent.ContentType.TEXT, pLog)))
                 .build();
         if (result.getPaste().isPresent()) {
@@ -164,7 +166,7 @@ public class DebugCommand implements SubHandler {
                                                   Component.text()
                                                           .content(s)
                                                           .clickEvent(ClickEvent.copyToClipboard(s)))));
-                          Prism.log("Deletion Key:" + s);
+                          Prism.log("删除秘钥:" + s);
                   }
             );
         } else {
@@ -180,7 +182,7 @@ public class DebugCommand implements SubHandler {
 
     @Override
     public String[] getHelp() {
-        return new String[]{"Debug Help"};
+        return new String[]{"调试帮助"};
     }
 
     @Override

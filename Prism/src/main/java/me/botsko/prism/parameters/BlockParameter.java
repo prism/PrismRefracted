@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 public class BlockParameter extends SimplePrismParameterHandler {
 
     public BlockParameter() {
-        super("Block", Pattern.compile("[\\w,:\\[\\]=]+"), "b");
+        super("Block", Pattern.compile("[\\w,:\\[\\]=]+"), "b", "方块");
     }
 
     @Override
@@ -63,7 +63,7 @@ public class BlockParameter extends SimplePrismParameterHandler {
                     if (part1.indexOf(':') != -1) {
                         // Trailing colon, ie 'stone_slab:' or 'stone_slab:[half=top]'
                         Prism.messenger.sendMessage(sender, Prism.messenger
-                                .playerError("Skipping removed block format 'block:data' used in '" + b + "'"));
+                                .playerError("跳过了'" + b + "' 中使用的移除方块格式 '方块:data值'"));
 
                         continue;
                     }
@@ -80,17 +80,17 @@ public class BlockParameter extends SimplePrismParameterHandler {
                                 query.addBlockDataFilter(new MaterialState(mat, part2));
                             } catch (IllegalArgumentException e) {
                                 Prism.messenger.sendMessage(sender, Prism.messenger.playerError(
-                                        "Skipping invalid block data '" + part2 + "' for material '" + part1 + "'"));
+                                        "跳过了非法的方块 data值 '" + part2 + "', 材料为 '" + part1 + "'"));
                             }
                         }
                     } else {
                         try {
                             Integer.parseInt(part1);
                             Prism.messenger.sendMessage(sender, Prism.messenger
-                                    .playerError("Skipping numeric id '" + part1 + "', please use materials instead"));
+                                    .playerError("跳过了 数字ID '" + part1 + "', 请使用材料来代替"));
                         } catch (NumberFormatException e) {
                             Prism.messenger.sendMessage(sender,
-                                    Prism.messenger.playerError("Skipping unknown material '" + part1 + "'"));
+                                    Prism.messenger.playerError("跳过了未知的材料 '" + part1 + "'"));
                         }
                     }
                 }

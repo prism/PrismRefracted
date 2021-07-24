@@ -102,21 +102,21 @@ public class PrismDatabaseFactory {
         }
         switch (dataSource) {
             case "mysql":
-                Prism.log("Attempting to configure datasource as mysql");
+                Prism.log("正在尝试作为 mysql 配置数据源");
                 database = new MySqlPrismDataSource(dataSourceProperties);
                 break;
             case "sqlite":
-                Prism.warn("ERROR: This version of Prism no longer supports SQLite.");
+                Prism.warn("错误: 该版本的 Prism 已不再支持 SQLite.");
                 break;
             case "derby":
-                Prism.warn("ERROR: This version of Prism no longer supports Derby. Please use Hikari.");
+                Prism.warn("错误: 该版本的 Prism 已不再支持 Derby. 请使用 Hikari.");
             case "hikari":
             default:
-                Prism.log("Attempting to configure datasource as " + dataSource);
-                Prism.warn("ERROR: This version of Prism no longer supports " + dataSource);
-                Prism.log("Attempting to configure datasource as hikari");
+                Prism.log("正在尝试作为 " + dataSource + " 配置数据源");
+                Prism.warn("错误: 该版本的 Prism 已不再支持 " + dataSource);
+                Prism.log("正在尝试作为 hikari 配置数据源");
                 database = new PrismHikariDataSource(dataSourceProperties);
-                Prism.log("HIKARI: prism will configure itself using the hikari parameters");
+                Prism.log("HIKARI: Prism 将使用 Hikari 参数配置本身.");
                 break;
         }
         return database;

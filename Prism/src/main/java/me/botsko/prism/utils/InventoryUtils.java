@@ -88,7 +88,7 @@ public class InventoryUtils {
             case HEAD:
                 return equipment.getHelmet();
             default:
-                throw new IllegalArgumentException("EquipmentSlot " + slot.name() + " not recognised");
+                throw new IllegalArgumentException("无法识别的装备槽 " + slot.name());
         }
     }
 
@@ -170,7 +170,7 @@ public class InventoryUtils {
     public static ItemStack extractItemsMatchingHeldItemFromPlayer(Player player, int desiredQuantity) {
 
         if (player == null || !ItemUtils.isValidItem(player.getInventory().getItemInMainHand())) {
-            throw new IllegalArgumentException("Invalid player or invalid held item.");
+            throw new IllegalArgumentException("非法的玩家或非法的手持物品.");
         }
 
         int quantityFound = 0;

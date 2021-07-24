@@ -85,9 +85,9 @@ public class PreprocessArgs {
         if (foundArgsList.isEmpty() && !optional) {
             if (sender != null) {
                 Prism.messenger.sendMessage(sender, Prism.messenger
-                        .playerError("You're missing valid parameters. Use /prism ? for assistance."));
+                        .playerError("您遗漏了有效的参数. 使用 /prism ? 来获取帮助."));
             } else {
-                Prism.log("Missing valid parameters");
+                Prism.log("遗漏了有效的参数");
             }
             return null;
         }
@@ -124,7 +124,7 @@ public class PreprocessArgs {
         if (sender != null && !sender.hasPermission("prism.parameters.action-filter-bypass")
                 && parameters.getActionTypes().isEmpty()) {
             Prism.messenger.sendMessage(sender,
-                    Prism.messenger.playerError("You're missing valid actions. Use /prism ? for assistance."));
+                    Prism.messenger.playerError("您遗漏了有效的行为. 使用 /prism ? 来获取帮助."));
             return null;
         }
 
@@ -191,19 +191,19 @@ public class PreprocessArgs {
             case NotFound:
                 if (sender != null) {
                     Prism.messenger.sendMessage(sender,
-                            Prism.messenger.playerError("Unrecognized parameter '"
-                                    + arg + "'. Use /prism ? for help."));
+                            Prism.messenger.playerError("无法解析参数 '"
+                                    + arg + "'. 使用 /prism ? 来获取参数."));
                 } else {
-                    Prism.log("Unrecognized parameter '" + arg + "'");
+                    Prism.log("无法解析参数 '" + arg + "'");
                 }
                 break;
             case NoPermission:
                 if (sender != null) {
                     Prism.messenger.sendMessage(sender,
-                            Prism.messenger.playerError("No permission for parameter '"
-                                    + arg + "', skipped."));
+                            Prism.messenger.playerError("没有参数的权限 '"
+                                    + arg + "', 已忽略."));
                 } else {
-                    Prism.log("No permission for parameter '" + arg + "'");
+                    Prism.log("没有参数 '" + arg + "' 的权限");
                 }
                 break;
             default:

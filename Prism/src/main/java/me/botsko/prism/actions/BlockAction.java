@@ -90,6 +90,7 @@ public class BlockAction extends GenericAction {
     }
 
     private void createActionData(BlockState state) {
+        //TODO: Rothes - 也许会缺失翻译的地方
         switch (state.getType()) {
             case SPAWNER:
                 final SpawnerActionData spawnerActionData = new SpawnerActionData();
@@ -227,7 +228,7 @@ public class BlockAction extends GenericAction {
             name += ChatColor.RESET + " (" + blockActionData.customName + ChatColor.RESET + ") ";
         }
         if (getActionType().getName().equals("crop-trample") && getMaterial() == AIR) {
-            return "empty soil";
+            return "空耕地";
         }
         return name;
     }
@@ -235,7 +236,7 @@ public class BlockAction extends GenericAction {
     @Override
     public String getCustomDesc() {
         if (getActionType().getName().equals("water-bucket") && getBlockData() instanceof Waterlogged) {
-            return "waterlogged";
+            return "湿润";
         }
 
         return null;

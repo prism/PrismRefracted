@@ -179,7 +179,7 @@ public class Preview implements Previewable {
         worldChangeQueueTaskId = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
 
             if (plugin.getConfig().getBoolean("prism.debug")) {
-                Prism.debug("World change queue size: " + worldChangeQueue.size());
+                Prism.debug("世界更改队列大小: " + worldChangeQueue.size());
             }
 
             if (worldChangeQueue.isEmpty()) {
@@ -250,10 +250,10 @@ public class Preview implements Previewable {
                             iterator.remove();
                         }
                     } catch (final Exception e) {
-                        String msg = e.getMessage() == null ? "unknown cause" : e.getMessage();
-                        Prism.log(String.format("Applier error: %s (ID: %d)", msg, a.getId()));
-                        Prism.log(String.format("Block type: %s (old %s)", a.getMaterial(), a.getOldMaterial()));
-                        Prism.log(String.format("Block location: %d, %d, %d",
+                        String msg = e.getMessage() == null ? "未知原因" : e.getMessage();
+                        Prism.log(String.format("应用器错误: %s (ID: %d)", msg, a.getId()));
+                        Prism.log(String.format("方块类型: %s (原 %s)", a.getMaterial(), a.getOldMaterial()));
+                        Prism.log(String.format("方块坐标: %d, %d, %d",
                                 a.getLoc().getBlockX(),
                                 a.getLoc().getBlockY(),
                                 a.getLoc().getBlockZ()));
@@ -348,15 +348,15 @@ public class Preview implements Previewable {
             plugin.getServer().getPluginManager().callEvent(event);
         }
 
-        plugin.eventTimer.recordTimedEvent("applier function complete");
+        plugin.eventTimer.recordTimedEvent("应用器函数已完成");
 
         // record timed events to log
         if (plugin.getConfig().getBoolean("prism.debug")) {
             // Flush timed data
             plugin.eventTimer.printTimeRecord();
-            Prism.debug("Changes: " + changesAppliedCount);
-            Prism.debug("Planned: " + changesPlannedCount);
-            Prism.debug("Skipped: " + skippedBlockCount);
+            Prism.debug("变化数: " + changesAppliedCount);
+            Prism.debug("计划数: " + changesPlannedCount);
+            Prism.debug("跳过数: " + skippedBlockCount);
         }
     }
 }

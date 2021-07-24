@@ -44,14 +44,12 @@ public class NearCommand implements SubHandler {
                     radius = _tmp_radius;
                 } else {
                     Prism.messenger.sendMessage(call.getPlayer(), Prism.messenger.playerError(
-                            "Radius must be greater than zero. Or leave it off to use the default. "
-                                    + "Use /prism ? for help."));
+                            "半径必须大于0. 或者忽略它以使用默认值.  使用 '/prism ?' 获取帮助."));
                     return;
                 }
             } else {
                 Prism.messenger.sendMessage(call.getPlayer(), Prism.messenger.playerError(
-                        "Radius must be a number. Or leave it off to use the default."
-                                + " Use /prism ? for help."));
+                        "半径必须为一个数值. 或者忽略它以使用默认值. 使用 '/prism ?' 获取帮助."));
                 return;
             }
         }
@@ -91,11 +89,11 @@ public class NearCommand implements SubHandler {
 
                 } else {
                     Prism.messenger.sendMessage(call.getPlayer(), Prism.messenger
-                            .playerError("Pagination can't find anything. Do you have the right page number?"));
+                            .playerError("无法在此页码中找到任何东西. 请检查您是否输入了正确的页码."));
                 }
             } else {
                 Prism.messenger.sendMessage(call.getPlayer(),
-                        Prism.messenger.playerError("Couldn't find anything."));
+                        Prism.messenger.playerError("没有找到任何数据记录."));
             }
         });
     }

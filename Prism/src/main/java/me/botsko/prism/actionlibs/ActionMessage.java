@@ -84,7 +84,7 @@ public class ActionMessage {
         return Component.text()
                 .content("")
                 .append(result)
-                .hoverEvent(HoverEvent.showText(Component.text("Click to teleport")
+                .hoverEvent(HoverEvent.showText(Component.text("点击传送")
                         .color(NamedTextColor.DARK_AQUA)))
                 .clickEvent(ClickEvent.runCommand("/pr tp " + index))
                 .build();
@@ -124,7 +124,7 @@ public class ActionMessage {
             return l.getWorld().getName() + " @ " + l.getBlockX() + " "
                     + l.getBlockY() + " " + l.getBlockZ();
         }
-        return "INVALID";
+        return "未知坐标";
     }
 
 
@@ -144,7 +144,7 @@ public class ActionMessage {
     }
 
     private TextComponent.Builder getActor(ActionTypeImpl action, TextColor highlight) {
-        String target = "unknown";
+        String target = "未知";
         if (action.getHandler() != null) {
             if (!handler.getNiceName().isEmpty()) {
                 target = handler.getNiceName();
@@ -154,9 +154,9 @@ public class ActionMessage {
             // make
             // a custom handler.
             if (action.getName().equals("lava-bucket")) {
-                target = "lava";
+                target = "熔岩";
             } else if (action.getName().equals("water-bucket")) {
-                target = "water";
+                target = "水";
             }
         }
         return Component.text()

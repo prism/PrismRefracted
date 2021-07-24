@@ -65,7 +65,7 @@ public class InspectorWand extends QueryWandBase {
             } catch (final CloneNotSupportedException ex) {
                 params = new QueryParameters();
                 Prism.messenger.sendMessage(player, Prism.messenger
-                        .playerError("Error retrieving parameters. Checking with default parameters."));
+                        .playerError("错误的检索参数. 正在使用默认参数检查."));
             }
             params.setWorld(player.getWorld().getName());
             params.setSpecificBlockLocation(loc);
@@ -113,11 +113,13 @@ public class InspectorWand extends QueryWandBase {
                 }
                 MiscUtils.sendPageButtons(results, player);
             } else {
-                final String space_name = (block.getType().equals(Material.AIR) ? "space"
+                final String space_name = (block.getType().equals(Material.AIR) ? "空方块"
+                        : prismLocalization.hasMaterialLocale(block.getType().name())?
+                        prismLocalization.getMaterialLocale(block.getType().name())
                         : block.getType().toString().replaceAll("_", " ").toLowerCase()
-                        + (block.getType().toString().endsWith("BLOCK") ? "" : " block"));
+                        + (block.getType().toString().endsWith("BLOCK") ? "" : " 方块"));
                 Prism.messenger.sendMessage(player,
-                        Prism.messenger.playerError("No history for this " + space_name + " found."));
+                        Prism.messenger.playerError("没有在这个 " + space_name + " 处查找到任何历史数据."));
             }
         });
     }

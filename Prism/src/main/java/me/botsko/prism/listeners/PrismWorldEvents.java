@@ -38,7 +38,7 @@ public class PrismWorldEvents implements Listener {
                 if (event.getPlayer() != null) {
                     RecordingQueue.addToQueue(ActionFactory.createGrow(type, block, event.getPlayer()));
                 } else {
-                    RecordingQueue.addToQueue(ActionFactory.createGrow(type, block, "Environment"));
+                    RecordingQueue.addToQueue(ActionFactory.createGrow(type, block, "环境"));
                 }
             }
         }
@@ -67,7 +67,7 @@ public class PrismWorldEvents implements Listener {
         final String type = "portal-create";
         if (!Prism.getIgnore().event(type, event.getWorld())) {
             return;
-        }
+        }2200
         if (event.getReason() == PortalCreateEvent.CreateReason.FIRE) {
             for (final BlockState newBlock : event.getBlocks()) {
                 // Include only the nether portal blocks that were created.
