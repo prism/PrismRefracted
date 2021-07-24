@@ -32,7 +32,7 @@ public class PrismConfig extends ConfigBase {
         // set defaults
         config.addDefault("prism.debug", false);
         config.addDefault("prism.preload-materials", false);
-        // config.addDefault("prism.language", "en-us");
+        // config.addDefault("prism.language", "zh-cn");
 
         config.addDefault("prism.allow-metrics", true);
 
@@ -41,7 +41,7 @@ public class PrismConfig extends ConfigBase {
 
         // paste.gg sharing.
         config.addDefault("prism.paste.enable", true);
-        config.addDefault("prism.paste.api-key", "API key from http://paste.gg");
+        config.addDefault("prism.paste.api-key", "http://paste.gg 的 API key");
         // Wands
         config.addDefault("prism.wands.default-mode", "hand"); // hand, item,
         // or block

@@ -8,11 +8,7 @@ import org.bukkit.entity.Boat;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.minecart.ExplosiveMinecart;
-import org.bukkit.entity.minecart.HopperMinecart;
-import org.bukkit.entity.minecart.PoweredMinecart;
-import org.bukkit.entity.minecart.SpawnerMinecart;
-import org.bukkit.entity.minecart.StorageMinecart;
+import org.bukkit.entity.minecart.*;
 
 public class VehicleAction extends GenericAction {
     private String vehicleName;
@@ -23,16 +19,22 @@ public class VehicleAction extends GenericAction {
      */
     public void setVehicle(Entity vehicle) {
 
-        if (vehicle instanceof PoweredMinecart) {
-            vehicleName = "powered minecart";
-        } else if (vehicle instanceof HopperMinecart) {
-            vehicleName = "minecart hopper";
-        } else if (vehicle instanceof SpawnerMinecart) {
-            vehicleName = "spawner minecart";
+        if (vehicle instanceof CommandMinecart) {
+            vehicleName = "命令方块矿车";
         } else if (vehicle instanceof ExplosiveMinecart) {
-            vehicleName = "tnt minecart";
+            vehicleName = "TNT矿车";
+        } else if (vehicle instanceof HopperMinecart) {
+            vehicleName = "漏斗矿车";
+        } else if (vehicle instanceof PoweredMinecart) {
+            vehicleName = "动力矿车";
+        } else if (vehicle instanceof RideableMinecart) {
+            vehicleName = "矿车";
+        } else if (vehicle instanceof SpawnerMinecart) {
+            vehicleName = "刷怪笼矿车";
         } else if (vehicle instanceof StorageMinecart) {
-            vehicleName = "storage minecart";
+            vehicleName = "运输矿车";
+        } else if (vehicle instanceof Boat) {
+            vehicleName = "船";
         } else {
             vehicleName = vehicle.getType().name().toLowerCase();
         }
@@ -71,25 +73,26 @@ public class VehicleAction extends GenericAction {
             case "command block minecart":
                 vehicle = getWorld().spawn(getLoc(), CommandMinecart.class);
                 break;
-            case "powered minecart":
+            case "命令方块矿车":
+            case "动力矿车":
                 vehicle = getWorld().spawn(getLoc(), PoweredMinecart.class);
                 break;
-            case "storage minecart":
+            case "运输矿车":
                 vehicle = getWorld().spawn(getLoc(), StorageMinecart.class);
                 break;
-            case "tnt minecart":
+            case "TNT矿车":
                 vehicle = getWorld().spawn(getLoc(), ExplosiveMinecart.class);
                 break;
-            case "spawner minecart":
+            case "刷怪笼矿车":
                 vehicle = getWorld().spawn(getLoc(), SpawnerMinecart.class);
                 break;
-            case "minecart hopper":
+            case "漏斗矿车":
                 vehicle = getWorld().spawn(getLoc(), HopperMinecart.class);
                 break;
-            case "minecart":
+            case "矿车":
                 vehicle = getWorld().spawn(getLoc(), Minecart.class);
                 break;
-            case "boat":
+            case "船":
                 vehicle = getWorld().spawn(getLoc(), Boat.class);
                 break;
             default:

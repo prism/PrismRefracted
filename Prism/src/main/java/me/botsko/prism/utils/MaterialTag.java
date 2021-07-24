@@ -235,7 +235,7 @@ public class MaterialTag implements Tag<Material> {
                 }
                 break;
             default:
-                throw new IllegalArgumentException(mode.name() + " is NOT a valid rule");
+                throw new IllegalArgumentException(mode.name() + " 不是一个有效的匹配规则");
         }
 
         return this;

@@ -33,13 +33,23 @@ public class DrainCommand implements SubHandler {
 
         String drainType = "";
         int radius = plugin.getConfig().getInt("prism.drain.default-radius");
+
+        if (call.getArgs().length > 1) {
+            String[] args = call.getArgs();
+            if (args[1].equals("水")) {
+                args[1] = "water";
+            } else if (args[1].equals("岩浆") || args[1].equals("熔岩")) {
+                args[1] = "lava";
+            }
+        }
+
         if (call.getArgs().length == 3) {
             if (call.getArg(1).equalsIgnoreCase("water") || call.getArg(1).equalsIgnoreCase("lava")) {
                 drainType = call.getArg(1);
             } else {
 
                 Prism.messenger.sendMessage(call.getPlayer(),
-                        Prism.messenger.playerError("Invalid drain type. Must be lava, water, or left out."));
+                        Prism.messenger.playerError("未知的排水类型. 必须为 熔岩(lava), 水(water), 或者留空."));
                 return;
             }
             // Validate radius
@@ -52,7 +62,7 @@ public class DrainCommand implements SubHandler {
                     drainType = call.getArg(1);
                 } else {
                     Prism.messenger.sendMessage(call.getPlayer(),
-                            Prism.messenger.playerError("Invalid drain type. Must be lava, water, or left out."));
+                            Prism.messenger.playerError("未知的排水类型. 必须为 熔岩(lava), 水(water), 或者留空."));
                     return;
                 }
             }

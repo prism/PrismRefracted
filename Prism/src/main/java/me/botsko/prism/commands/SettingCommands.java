@@ -16,6 +16,7 @@ public class SettingCommands extends AbstractCommand {
         if (call.getArgs().length > 1) {
             switch (call.getArg(0).toLowerCase()) {
                 case "batchsize":
+                case "批量大小":
                     int actions = Integer.parseInt(call.getArg(1));
                     RecordingTask.setActionsPerInsert(actions);
                     //todo add some feedback

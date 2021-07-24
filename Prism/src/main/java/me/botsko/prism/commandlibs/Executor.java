@@ -67,7 +67,7 @@ public class Executor implements CommandExecutor, TabCompleter {
         if (sub == null) {
             sub = subCommands.get(defaultSubCommand);
             if (sub == null) {
-                sender.sendMessage("Invalid command");
+                sender.sendMessage("未知的指令");
                 return true;
             } else {
                 // The default is used, we must switch back to command mode
@@ -77,17 +77,17 @@ public class Executor implements CommandExecutor, TabCompleter {
 
         // Ensure they have permission
         if (player != null && !(sub.playerHasPermission(player))) {
-            sender.sendMessage("You do not have permission to use this command");
+            sender.sendMessage("您没有权限使用此指令");
             return true;
         } else if ((currentMode.equals("subcommand") && (args.length - 1) < sub.getMinArgs())
                 || (currentMode.equals("command") && (args.length) < sub.getMinArgs())) {
-            sender.sendMessage("You're missing arguments for this command");
+            sender.sendMessage("您输入的指令缺失了参数");
             return true;
         }
         // Ensure command allows console
         if (!(sender instanceof Player)) {
             if (!sub.isConsoleAllowed()) {
-                sender.sendMessage("You must be in-game to use this command");
+                sender.sendMessage("此指令只能在游戏内使用");
                 return true;
             }
         }
@@ -184,7 +184,7 @@ public class Executor implements CommandExecutor, TabCompleter {
         if (sub == null) {
             sub = subCommands.get(defaultSubCommand);
             if (sub == null) {
-                sender.sendMessage("Invalid command");
+                sender.sendMessage("未知的指令");
                 return null;
             } else {
                 // The default is used, we must switch back to command mode
@@ -194,17 +194,17 @@ public class Executor implements CommandExecutor, TabCompleter {
 
         // Ensure they have permission
         if (player != null && !(sub.playerHasPermission(player))) {
-            sender.sendMessage("You do not have permission to use this command");
+            sender.sendMessage("您没有权限使用此指令");
             return null;
         } else if ((currentMode.equals("subcommand") && (args.length - 1) < sub.getMinArgs())
                 || (currentMode.equals("command") && (args.length) < sub.getMinArgs())) {
-            sender.sendMessage("You're missing arguments for this command");
+            sender.sendMessage("您输入的指令缺失了参数");
             return null;
         }
         // Ensure command allows console
         if (!(sender instanceof Player)) {
             if (!sub.isConsoleAllowed()) {
-                sender.sendMessage("You must be in-game to use this command");
+                sender.sendMessage("此指令只能在游戏内使用");
                 return null;
             }
         }

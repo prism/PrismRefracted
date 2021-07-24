@@ -20,28 +20,28 @@ public class QueueDrain {
      */
     public void forceDrainQueue() {
 
-        Prism.log("Forcing recorder queue to run a new batch before shutdown...");
+        Prism.log("正在强制记录器队列在关闭前运行新一批次...");
 
         final RecordingTask recorderTask = new RecordingTask(plugin);
 
         // Force queue to empty
         while (!RecordingQueue.getQueue().isEmpty()) {
 
-            Prism.log("Starting drain batch...");
-            Prism.log("Current queue size: " + RecordingQueue.getQueue().size());
+            Prism.log("正在开始排水批次...");
+            Prism.log("目前队列大小: " + RecordingQueue.getQueue().size());
 
             // run insert
             try {
                 recorderTask.insertActionsIntoDatabase();
             } catch (final Exception e) {
                 e.printStackTrace();
-                Prism.log("Stopping queue drain due to caught exception. Queue items lost: "
+                Prism.log("停止队列排水, 由于捕获到异常. 失去的队列条目: "
                         + RecordingQueue.getQueue().size());
                 break;
             }
 
             if (RecordingManager.failedDbConnectionCount > 0) {
-                Prism.log("Stopping queue drain due to detected database error. Queue items lost: "
+                Prism.log("停止队列排水, 由于检测到数据库错误. 失去的队列条目: "
                         + RecordingQueue.getQueue().size());
             }
         }

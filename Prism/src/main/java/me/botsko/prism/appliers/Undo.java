@@ -21,6 +21,6 @@ public class Undo extends Preview {
 
     @Override
     public void preview() {
-        Prism.messenger.sendMessage(player, Prism.messenger.playerError("You can't preview an undo."));
+        Prism.messenger.sendMessage(player, Prism.messenger.playerError("您不可以预览撤销操作."));
     }
 }

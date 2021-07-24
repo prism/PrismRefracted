@@ -584,7 +584,7 @@ public class QueryParameters implements PrismParameters, Cloneable {
 
     @Override
     public String toString() {
-        return "Original Command: " + originalCommand;
+        return "原指令: " + originalCommand;
     }
 
     /**

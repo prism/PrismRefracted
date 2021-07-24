@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 public class RadiusParameter extends SimplePrismParameterHandler {
 
     public RadiusParameter() {
-        super("Radius", Pattern.compile("[\\w,:-]+"), "r");
+        super("Radius", Pattern.compile("[\\w,:-]+"), "r", "半径");
     }
 
     @Override
@@ -46,12 +46,12 @@ public class RadiusParameter extends SimplePrismParameterHandler {
                     // x,y,z
                     final String[] coordinates = radiusLocOrPlayer.split(",");
                     if (coordinates.length != 3) {
-                        throw new IllegalArgumentException("Couldn't parse the coordinates '" + radiusLocOrPlayer
-                                + "'. Perhaps you have more than two commas?");
+                        throw new IllegalArgumentException("无法解析坐标 '" + radiusLocOrPlayer
+                                + "'. 也许你输入了超过2个逗号?");
                     }
                     for (final String s : coordinates) {
                         if (!TypeUtils.isNumeric(s)) {
-                            throw new IllegalArgumentException("The coordinate '" + s + "' is not a number.");
+                            throw new IllegalArgumentException("坐标 '" + s + "' 不是一个数值.");
                         }
                     }
                     coordsLoc = (new Location(player.getWorld(), Integer.parseInt(coordinates[0]),
@@ -60,8 +60,8 @@ public class RadiusParameter extends SimplePrismParameterHandler {
                     // Try to find an online player
                     Player p2 = Bukkit.getServer().getPlayer(radiusLocOrPlayer);
                     if (p2 == null) {
-                        throw new IllegalArgumentException("Couldn't find the player named '" + radiusLocOrPlayer
-                                + "'. Perhaps they are not online or you misspelled their name?");
+                        throw new IllegalArgumentException("找不到叫做 '" + radiusLocOrPlayer
+                                + "' 的玩家. 也许他们不在线, 或者您输错了名字?");
                     }
                     player = p2;
                 }
@@ -70,14 +70,14 @@ public class RadiusParameter extends SimplePrismParameterHandler {
             }
             if (desiredRadius <= 0) {
                 throw new IllegalArgumentException(
-                        "Radius must be greater than zero. Or leave it off to use the default. Use /prism ? for help.");
+                        "半径必须大于 0. 或者忽略它来使用默认值. 请使用 /pr ? 来获取帮助.");
             }
 
             // If neither sender or a named player found, die here
             if (player == null) {
                 throw new IllegalArgumentException(
-                        "The radius parameter must be used by a player. Use w:worldname if attempting "
-                                + "to limit to a world.");
+                        "只有玩家可以使用半径参数. 如果您想限制到一个世界, "
+                                + "可以使用 '世界:世界名' 或 'w:世界名'.");
             }
 
             // Clamp radius based on perms, configs

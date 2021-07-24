@@ -12,13 +12,20 @@ public class PlayerAction extends GenericAction {
         if (extraInfo != null && !extraInfo.isEmpty()) {
             switch (getActionType().getName()) {
                 case "player-join":
-                    return "from " + extraInfo;
+                    return "来自 " + extraInfo;
 
                 case "xp-pickup":
-                    return extraInfo + " xp";
+                    return extraInfo + " 经验";
 
                 case "bucket-fill":
-                    return "a " + extraInfo + " bucket";
+                    switch (extraInfo) {
+                        case "lava":
+                            return "一个 熔岩桶";
+                        case "water":
+                            return "一个 水桶";
+                        default:
+                            return "一个 " + extraInfo + " 桶";
+                    }
 
                 default:
                     return extraInfo;

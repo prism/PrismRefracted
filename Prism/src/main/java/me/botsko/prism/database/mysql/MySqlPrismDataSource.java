@@ -32,11 +32,10 @@ public class MySqlPrismDataSource extends SqlPrismDataSource {
 
     static {
         if (propFile.exists()) {
-            Prism.log("Configuring Hikari from " + propFile.getName());
-            Prism.debug("This file will not save the jdbcURL, username or password - these are loaded"
-                    + " by default from the standard prism configuration file.  If you set these "
-                    + "explicitly in the properties file the settings in the standard config will be"
-                    + "ignored.");
+            Prism.log("正在根据 " + propFile.getName() + " 配置 Hikari");
+            Prism.debug("此文件不会存储 jdbcURL, username 或 password - 默认下它们会从普通的 Prism "
+                    + "配置文件中加载.  但如果您明确地在 properties配置文件 中设定了这些设置, "
+                    + "普通的配置文件中的设置会被忽略.");
             dbConfig = new HikariConfig(propFile.getPath());
         } else {
             dbConfig = new HikariConfig();
@@ -102,16 +101,16 @@ public class MySqlPrismDataSource extends SqlPrismDataSource {
         if (Prism.getInstance().monitoring) {
             dbConfig.setMetricRegistry(ApiHandler.monitor.getRegistry());
             dbConfig.setHealthCheckRegistry(ApiHandler.monitor.getHealthRegistry());
-            Prism.log("Hikari is configured with Metric Reporting.");
+            Prism.log("Hikari 已配置 Metric 监控.");
         } else {
-            Prism.log("No metric recorder found to hook into Hikari.");
+            Prism.log("未发现挂钩到 Hikari 的 metric 记录器.");
         }
         try {
             database = new HikariDataSource(dbConfig);
             createSettingsQuery();
             return this;
         } catch (HikariPool.PoolInitializationException e) {
-            Prism.warn("Hikari Pool did not Initialize: " + e.getMessage());
+            Prism.warn("Hikari 数据池没有初始化: " + e.getMessage());
             database = null;
         }
         return this;
@@ -141,7 +140,7 @@ public class MySqlPrismDataSource extends SqlPrismDataSource {
 
         ) {
             if (rs == null || rs1 == null) {
-                throw new SQLNonTransientConnectionException("Database did not configure correctly.");
+                throw new SQLNonTransientConnectionException("数据库没有正确地初始化.");
             }
             while (rs.next()) {
                 dbInfo.put(rs.getString(1).toLowerCase(), rs.getString(2));
@@ -149,19 +148,19 @@ public class MySqlPrismDataSource extends SqlPrismDataSource {
             rs1.next();
             String version = dbInfo.get("version");
             String versionComment = dbInfo.get("version_comment");
-            Prism.log("Prism detected you database is version:" + version + " / " + versionComment);
-            Prism.log("You have set nonStandardSql to " + nonStandardSql);
-            Prism.log("You are able to use non standard SQL");
+            Prism.log("Prism 已检测到您的数据库版本为:" + version + " / " + versionComment);
+            Prism.log("您已设定 nonStandardSql 为 " + nonStandardSql);
+            Prism.log("您可以使用 不规范的 SQL");
             if (!nonStandardSql) {
-                Prism.log("Prism will use standard sql queries");
+                Prism.log("Prism 将会使用规范的 sql 查询");
             }
         } catch (SQLNonTransientConnectionException e) {
             Prism.warn(e.getMessage());
         } catch (SQLException e) {
-            Prism.log("You are not able to use non standard Sql");
+            Prism.log("您不可以使用 不规范的 SQL");
             if (nonStandardSql) {
-                Prism.log("This sounds like a configuration error.  If you have database access"
-                        + "errors please set nonStandardSql to false");
+                Prism.log("看起来这是一个配置错误.  如果您有数据库访问错误, "
+                        + "请设置 nonStandardSql 为 false");
             }
         }
     }

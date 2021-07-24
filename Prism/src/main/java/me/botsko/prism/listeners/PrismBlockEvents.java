@@ -293,7 +293,7 @@ public class PrismBlockEvents extends BaseListener {
         final BlockState s = event.getNewState();
 
         RecordingQueue.addToQueue(ActionFactory.createBlockChange(type, b.getLocation(), b.getType(), b.getBlockData(),
-                s.getType(), s.getBlockData(), "Environment"));
+                s.getType(), s.getBlockData(), "环境"));
     }
 
     /**
@@ -309,7 +309,7 @@ public class PrismBlockEvents extends BaseListener {
         final BlockState s = event.getNewState();
 
         RecordingQueue.addToQueue(ActionFactory.createBlockChange("block-form", b.getLocation(), b.getType(),
-                b.getBlockData(), s.getType(), s.getBlockData(), "Environment"));
+                b.getBlockData(), s.getType(), s.getBlockData(), "环境"));
     }
 
     /**
@@ -328,7 +328,7 @@ public class PrismBlockEvents extends BaseListener {
         final BlockState s = event.getNewState();
 
         RecordingQueue.addToQueue(ActionFactory.createBlockChange("block-fade", b.getLocation(), b.getType(),
-                b.getBlockData(), s.getType(), s.getBlockData(), "Environment"));
+                b.getBlockData(), s.getType(), s.getBlockData(), "环境"));
     }
 
     /**
@@ -341,7 +341,7 @@ public class PrismBlockEvents extends BaseListener {
             return;
         }
         RecordingQueue.addToQueue(ActionFactory.createBlock("leaf-decay", event.getBlock(),
-                "Environment"));
+                "环境"));
     }
 
     /**
@@ -392,7 +392,7 @@ public class PrismBlockEvents extends BaseListener {
             return;
         }
         Block block = event.getBlock();
-        RecordingQueue.addToQueue(ActionFactory.createBlock("block-burn", block, "Environment"));
+        RecordingQueue.addToQueue(ActionFactory.createBlock("block-burn", block, "环境"));
 
         // Change handling a bit if it's a long block
         final Block sibling = Utilities.getSiblingForDoubleLengthBlock(block);
@@ -402,7 +402,7 @@ public class PrismBlockEvents extends BaseListener {
         }
 
         // check for block relationships
-        logBlockRelationshipsForBlock("Environment", block);
+        logBlockRelationshipsForBlock("环境", block);
 
     }
 
@@ -453,18 +453,30 @@ public class PrismBlockEvents extends BaseListener {
             final Player player = event.getPlayer();
 
             if (player != null) {
-                if ((cause.equals("lighter") || cause.equals("fireball"))
-                        && plugin.getConfig().getBoolean("prism.alerts.uses.lighter")
-                        && !player.hasPermission("prism.alerts.use.lighter.ignore")
-                        && !player.hasPermission("prism.alerts.ignore")) {
-                    plugin.useMonitor.alertOnItemUse(player, "used a " + cause, "prism.alerts.use.lighter");
+                switch (cause) {
+                    case "lighter":
+                        if (plugin.getConfig().getBoolean("prism.alerts.uses.lighter")
+                                && !player.hasPermission("prism.alerts.use.lighter.ignore")
+                                && !player.hasPermission("prism.alerts.ignore")) {
+                            plugin.useMonitor.alertOnItemUse(player, "使用了 打火石 来点火", "prism.alerts.use.lighter");
+                        }
+                        break;
+                    case "fireball":
+                        if (plugin.getConfig().getBoolean("prism.alerts.uses.lighter")
+                                && !player.hasPermission("prism.alerts.use.lighter.ignore")
+                                && !player.hasPermission("prism.alerts.ignore")) {
+                            plugin.useMonitor.alertOnItemUse(player, "使用了 火球 来点火", "prism.alerts.use.lighter");
+                        }
+                        break;
+                    default:
+                        break;
                 }
             }
 
             if (player != null) {
                 RecordingQueue.addToQueue(ActionFactory.createBlock(cause, event.getBlock(), player));
             } else {
-                RecordingQueue.addToQueue(ActionFactory.createBlock(cause, event.getBlock(), "Environment"));
+                RecordingQueue.addToQueue(ActionFactory.createBlock(cause, event.getBlock(), "环境"));
             }
 
         }
@@ -480,7 +492,7 @@ public class PrismBlockEvents extends BaseListener {
             return;
         }
         RecordingQueue.addToQueue(ActionFactory.createItemStack("block-dispense", event.getItem(),
-                event.getItem().getAmount(), -1, null, event.getBlock().getLocation(), "dispenser"));
+                event.getItem().getAmount(), -1, null, event.getBlock().getLocation(), "发射器"));
     }
 
     /**
@@ -497,7 +509,7 @@ public class PrismBlockEvents extends BaseListener {
                 final Location loc = pl.getLocation();
                 if (loc.getBlockX() == noPlayer.getX() && loc.getBlockY() == noPlayer.getY()
                         && loc.getBlockZ() == noPlayer.getZ()) {
-                    plugin.useMonitor.alertOnVanillaXray(pl, "possibly used a vanilla piston/xray trick", null);
+                    plugin.useMonitor.alertOnVanillaXray(pl, "有可能使用了原版的 活塞卡透视 特性", null);
                     break;
                 }
             }
@@ -520,7 +532,7 @@ public class PrismBlockEvents extends BaseListener {
                 // We should record the from coords, to coords, and block
                 // replaced, as well as the block moved.
                 RecordingQueue.addToQueue(ActionFactory.createBlockShift("block-shift", block,
-                        block.getRelative(event.getDirection()).getLocation(), "Piston"));
+                        block.getRelative(event.getDirection()).getLocation(), "活塞"));
 
             }
         }
@@ -547,7 +559,7 @@ public class PrismBlockEvents extends BaseListener {
                 continue;
             }
             RecordingQueue.addToQueue(ActionFactory.createBlockShift("block-shift", block,
-                    block.getRelative(facing).getLocation(), "Piston"));
+                    block.getRelative(facing).getLocation(), "活塞"));
         }
     }
 
@@ -570,11 +582,11 @@ public class PrismBlockEvents extends BaseListener {
         if (Utilities.canFlowBreakMaterial(to.getType())) {
             if (from.getType() == Material.WATER) {
                 if (Prism.getIgnore().event("water-break", event.getBlock())) {
-                    RecordingQueue.addToQueue(ActionFactory.createBlock("water-break", event.getToBlock(), "Water"));
+                    RecordingQueue.addToQueue(ActionFactory.createBlock("water-break", event.getToBlock(), "水"));
                 }
             } else if (from.getType() == Material.LAVA) {
                 if (Prism.getIgnore().event("lava-break", event.getBlock())) {
-                    RecordingQueue.addToQueue(ActionFactory.createBlock("lava-break", event.getToBlock(), "Lava"));
+                    RecordingQueue.addToQueue(ActionFactory.createBlock("lava-break", event.getToBlock(), "熔岩"));
                 }
             }
         }
@@ -582,14 +594,14 @@ public class PrismBlockEvents extends BaseListener {
         // Record water flow
         if (from.getType() == Material.WATER) {
             if (Prism.getIgnore().event("water-flow", event.getBlock())) {
-                RecordingQueue.addToQueue(ActionFactory.createBlock("water-flow", event.getBlock(), "Water"));
+                RecordingQueue.addToQueue(ActionFactory.createBlock("water-flow", event.getBlock(), "水"));
             }
         }
 
         // Record lava flow
         if (from.getType() == Material.LAVA) {
             if (Prism.getIgnore().event("lava-flow", event.getBlock())) {
-                RecordingQueue.addToQueue(ActionFactory.createBlock("lava-flow", event.getBlock(), "Lava"));
+                RecordingQueue.addToQueue(ActionFactory.createBlock("lava-flow", event.getBlock(), "熔岩"));
             }
         }
     }

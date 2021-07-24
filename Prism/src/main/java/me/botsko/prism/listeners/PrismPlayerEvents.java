@@ -81,11 +81,11 @@ public class PrismPlayerEvents implements Listener {
 
         if (plugin.getConfig().getBoolean("prism.alerts.illegal-commands.enabled")) {
             if (illegalCommands.contains(primaryCmd)) {
-                final String msg = player.getName() + " attempted an illegal command: " + primaryCmd + ". Originally: "
+                final String msg = player.getName() + " 尝试了非法的指令: " + primaryCmd + ". 原始: "
                         + cmd;
                 TextComponent send = Component.text(msg);
                 Prism.messenger.sendMessage(player,
-                        Prism.messenger.playerError("Sorry, this command is not available in-game."));
+                        Prism.messenger.playerError("抱歉, 此指令不可在游戏中使用."));
                 plugin.alertPlayers(null, send, null);
                 event.setCancelled(true);
                 // Log to console
@@ -302,7 +302,7 @@ public class PrismPlayerEvents implements Listener {
         if (plugin.getConfig().getBoolean("prism.alerts.uses.lava") && event.getBucket() == Material.LAVA_BUCKET
                 && !player.hasPermission("prism.alerts.use.lavabucket.ignore")
                 && !player.hasPermission("prism.alerts.ignore")) {
-            plugin.useMonitor.alertOnItemUse(player, "poured lava", "prism.alerts.use.lavabucket");
+            plugin.useMonitor.alertOnItemUse(player, "倒出了熔岩", "prism.alerts.use.lavabucket");
         }
     }
 
@@ -397,7 +397,7 @@ public class PrismPlayerEvents implements Listener {
                 }
 
                 if ((event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.LEFT_CLICK_BLOCK)) {
-                    Prism.debug("Cancelling event for wand use.");
+                    Prism.debug("正在取消事件, 由于魔棒的使用.");
                     event.setCancelled(true);
                     InventoryUtils.updateInventory(player);
                     return;

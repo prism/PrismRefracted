@@ -81,7 +81,7 @@ public class ActionsQuery {
             }
         }
 
-        plugin.eventTimer.recordTimedEvent("results object completed");
+        plugin.eventTimer.recordTimedEvent("结果对象已完成");
 
         // Return it
         return res;

@@ -24,23 +24,23 @@ public class PrismHikariDataSource extends SqlPrismDataSource {
 
     static {
         if (propFile.exists()) {
-            Prism.log("Configuring Hikari from " + propFile.getName());
+            Prism.log("正在根据 " + propFile.getName() + " 配置 Hikari");
             dbConfig = new HikariConfig(propFile.getPath());
         } else {
-            Prism.log("You may need to adjust these settings for your setup.");
-            Prism.log("To set a table prefix you will need to create a config entry under");
+            Prism.log("您可能需要为您的设定调整这些设置.");
+            Prism.log("要设置表的前缀, 您需要创建一个配置, 如下:");
             Prism.log("prism:");
             Prism.log("  datasource:");
-            Prism.log("    prefix: your-prefix");
+            Prism.log("    prefix: 你的前缀");
             String jdbcUrl = "jdbc:mysql://localhost:3306/prism?useUnicode=true&characterEncoding=UTF-8&useSSL=false";
-            Prism.log("Default jdbcUrl: " + jdbcUrl);
-            Prism.log("Default Username: username");
-            Prism.log("Default Password: password");
-            Prism.log("You will need to provide the required jar libraries that support your database.");
+            Prism.log("默认 jdbcUrl: " + jdbcUrl);
+            Prism.log("默认 Username: 用户名");
+            Prism.log("默认 Password: 密码");
+            Prism.log("您需要为您的数据库提供所需的jar库.");
             dbConfig = new HikariConfig();
             dbConfig.setJdbcUrl(jdbcUrl);
-            dbConfig.setUsername("username");
-            dbConfig.setPassword("password");
+            dbConfig.setUsername("用户名");
+            dbConfig.setPassword("密码");
             HikariHelper.createPropertiesFile(propFile, dbConfig, false);
         }
     }

@@ -36,7 +36,7 @@ public class PurgeCommand implements SubHandler {
                     .replace("<poolString>", plugin.getSchedulePool().toString())
                     .build()));
         } else if (call.getArgs().length > 1) {
-            if (Objects.equals(call.getArgs()[1], "execute")) {
+            if (Objects.equals(call.getArgs()[1], "execute") || Objects.equals(call.getArgs()[1], "执行")) {
                 Prism.messenger.sendMessage(call.getSender(),
                         Prism.messenger.playerHeaderMsg(Il8nHelper.getMessage("purge-execute")));
                 Bukkit.getScheduler().runTaskAsynchronously(plugin, plugin.getPurgeManager());

@@ -32,7 +32,7 @@ public class ApiHandler {
         Plugin drip = Prism.getInstance().getServer().getPluginManager().getPlugin("DripReporter");
         if (drip != null && drip.isEnabled()) {
             monitor = (DripReporterApi) drip;
-            Prism.log("Prism hooked DripReporterApi instance: " + drip.getName() + " "
+            Prism.log("Prism 已挂钩到 DripReporterApi 实例: " + drip.getName() + " "
                     + drip.getDescription().getVersion());
             enabledPlugins.add(drip.getName());
             Prism.getInstance().monitoring = true;
@@ -58,15 +58,15 @@ public class ApiHandler {
             // Easier and foolproof way.
             try {
                 WorldEdit.getInstance().getEventBus().register(new PrismBlockEditHandler());
-                Prism.log("WorldEdit found. Associated features enabled.");
+                Prism.log("检测到 WorldEdit. 关联的功能已启用.");
             } catch (Throwable error) {
-                Prism.log("Required WorldEdit version is 7.1.0 or greater!"
-                        + " Certain optional features of Prism disabled.");
+                Prism.log("需要 WorldEdit 7.1.0 或更高的版本!"
+                        + " 一些 Prism 的可选功能已禁用.");
                 Prism.debug(error.getMessage());
             }
 
         } else {
-            Prism.log("WorldEdit not found. Certain optional features of Prism disabled.");
+            Prism.log("未检测到 WorldEdit. 一些 Prism 的可选功能已禁用.");
         }
     }
 
@@ -92,12 +92,12 @@ public class ApiHandler {
         if (worldEditPlugin != null) {
             try {
                 WorldEdit.getInstance().getEventBus().unregister(new PrismBlockEditHandler());
-                Prism.log("WorldEdit unhooked");
+                Prism.log("已取消挂钩 WorldEdit");
                 enabledPlugins.remove(worldEditPlugin.getName());
                 worldEditPlugin = null;
                 return true;
             } catch (Throwable error) {
-                Prism.log("We could not unhook worldEdit...was it enabled???");
+                Prism.log("无法取消挂钩 worldEdit...它是否正常启用???");
                 Prism.debug(error.getMessage());
                 return false;
             }

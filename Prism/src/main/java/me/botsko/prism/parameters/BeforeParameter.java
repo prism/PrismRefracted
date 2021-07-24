@@ -10,7 +10,7 @@ public class BeforeParameter extends SimplePrismParameterHandler {
 
 
     public BeforeParameter() {
-        super("Before", Pattern.compile("[\\w]+"), "before");
+        super("Before", Pattern.compile("[\\w秒分时天周]+"), "before", "早于");
     }
 
     @Override
@@ -20,7 +20,7 @@ public class BeforeParameter extends SimplePrismParameterHandler {
             query.setBeforeTime(date);
         } else {
             throw new IllegalArgumentException(
-                    "Date/time for 'before' parameter value not recognized. Try /pr ? for help");
+                    "无法识别 '早于(before)' 的日期/时长参数值. 请使用 /pr ? 来获取帮助.");
         }
     }
 }

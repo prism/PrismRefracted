@@ -36,7 +36,7 @@ public class PrismWorldEvents implements Listener {
                 if (event.getPlayer() != null) {
                     RecordingQueue.addToQueue(ActionFactory.createGrow(type, block, event.getPlayer()));
                 } else {
-                    RecordingQueue.addToQueue(ActionFactory.createGrow(type, block, "Environment"));
+                    RecordingQueue.addToQueue(ActionFactory.createGrow(type, block, "环境"));
                 }
             }
         }
@@ -77,7 +77,7 @@ public class PrismWorldEvents implements Listener {
                                 .createGrow(type, block, event.getEntity().getName().toLowerCase()));
                     }
                 } else {
-                    RecordingQueue.addToQueue(ActionFactory.createGrow(type, block, "Environment"));
+                    RecordingQueue.addToQueue(ActionFactory.createGrow(type, block, "环境"));
                 }
             }
         }

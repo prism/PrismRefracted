@@ -1,6 +1,7 @@
 package me.botsko.prism.wands;
 
 import me.botsko.prism.Prism;
+import me.botsko.prism.PrismLocalization;
 import me.botsko.prism.actionlibs.ActionsQuery;
 import me.botsko.prism.actionlibs.QueryParameters;
 import me.botsko.prism.actionlibs.QueryResult;
@@ -16,6 +17,8 @@ import org.bukkit.entity.Player;
  * saved in the Wand for every time they use it until it is disabled.
  */
 public abstract class QueryWandBase extends WandBase {
+
+    protected final PrismLocalization prismLocalization;
 
     /**
      * Keep an instance of {@link me.botsko.prism.Prism Prism} to use.
@@ -33,6 +36,7 @@ public abstract class QueryWandBase extends WandBase {
      */
     public QueryWandBase(Prism plugin) {
         parameters = new QueryParameters();
+        prismLocalization = plugin.getPrismLocalization();
         this.plugin = plugin;
     }
 
@@ -76,14 +80,14 @@ public abstract class QueryWandBase extends WandBase {
     }
 
     QueryParameters checkQueryParams(Block block, QueryParameters parameters, Player player) {
-        plugin.eventTimer.recordTimedEvent("rollback wand used");
+        plugin.eventTimer.recordTimedEvent("使用了回滚魔棒");
         QueryParameters params;
         try {
             params = parameters.clone();
         } catch (final CloneNotSupportedException ex) {
             params = new QueryParameters();
             Prism.messenger.sendMessage(player,
-                    Prism.messenger.playerError("Error retrieving parameters. Checking with default parameters."));
+                    Prism.messenger.playerError("错误的检索参数. 正在使用默认参数检查."));
         }
         params.setWorld(player.getWorld().getName());
         params.setSpecificBlockLocation(block.getLocation());

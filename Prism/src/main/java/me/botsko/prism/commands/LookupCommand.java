@@ -144,9 +144,9 @@ public class LookupCommand implements SubHandler {
                         }
                     }
                     if (isSender) {
-                        Prism.messenger.sendMessage(player, Prism.messenger.playerError("Nothing found."
+                        Prism.messenger.sendMessage(player, Prism.messenger.playerError("没有找到任何数据."
                                 + ChatColor.GRAY
-                                + " Either you're missing something, or we are."));
+                                + " 要么是您错漏了一些东西, 要么是我们."));
                     }
                 }
             }

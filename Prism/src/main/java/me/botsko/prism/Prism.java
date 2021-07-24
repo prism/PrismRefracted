@@ -153,6 +153,12 @@ public class Prism extends JavaPlugin implements PrismApi {
     private String pluginVersion;
     // private ScheduledFuture<?> scheduledPurgeExecutor;
     private PurgeManager purgeManager;
+    // Materials & Entities Locale.
+    private PrismLocalization prismLocalization;
+
+    public PrismLocalization getPrismLocalization() {
+        return prismLocalization;
+    }
 
     public Prism() {
         instance = this;
@@ -181,8 +187,8 @@ public class Prism extends JavaPlugin implements PrismApi {
             debugWatcher = Bukkit.getScheduler().runTaskTimerAsynchronously(Prism.getInstance(), () -> {
                 for (Player p : Bukkit.getOnlinePlayers()) {
                     if (p.hasPermission("prism.debug")) {
-                        p.sendMessage("ALERT : Prism has debug mode enabled - "
-                                + " LOGS will rapidly grow!!!");
+                        p.sendMessage("警告 : 已开启 Prism 的调试模式 - "
+                                + " 日志会迅速地生成!!!");
                     }
                 }
             }, 500, 4000);
@@ -335,11 +341,11 @@ public class Prism extends JavaPlugin implements PrismApi {
      */
     public static void logSection(String[] messages) {
         if (messages.length > 0) {
-            log("--------------------- ## Important ## ---------------------");
+            log("--------------------- ## 重要 ## ---------------------");
             for (final String msg : messages) {
                 log(msg);
             }
-            log("--------------------- ## ========= ## ---------------------");
+            log("--------------------- ## ==== ## ---------------------");
         }
     }
 
@@ -350,7 +356,7 @@ public class Prism extends JavaPlugin implements PrismApi {
      */
     public static void debug(String message) {
         if (debug) {
-            log("- Debug - " + message);
+            log("- 调试模式 - " + message);
         }
     }
 
@@ -360,7 +366,7 @@ public class Prism extends JavaPlugin implements PrismApi {
      * @param loc Location.
      */
     public static void debug(Location loc) {
-        debug("Location: " + loc.getX() + " " + loc.getY() + " " + loc.getZ());
+        debug("位置: " + loc.getX() + " " + loc.getY() + " " + loc.getZ());
     }
 
     public static Prism getInstance() {
@@ -386,14 +392,16 @@ public class Prism extends JavaPlugin implements PrismApi {
         pluginVersion = this.getDescription().getVersion();
         audiences = BukkitAudiences.create(this);
         messenger = new Messenger(pluginName, Prism.getAudiences());
-        log("Initializing Prism " + pluginVersion + ". Originally by Viveleroi; maintained by the AddstarMC Network");
+        prismLocalization = new PrismLocalization();
+        prismLocalization.initialize(instance);
+        log("正在初始化 Prism " + pluginVersion + ". 原作者 Viveleroi; 现维护者 the AddstarMC Network; 汉化 Rothes");
         loadConfig();        // Load configuration, or install if new
         isPaper = PaperLib.isPaper();
         if (isPaper) {
-            Prism.log("Optional Paper Events will be enabled.");
+            Prism.log("将启用可选的 Paper 事件.");
         } else {
             if (!getConfig().getBoolean("prism.suppress-paper-message", false)) {
-                Prism.log("Paper not detected - Optional Paper Events will NOT be enabled.");
+                Prism.log("未检测到 Paper - 可选的 Paper 事件将*不会*启用.");
             }
         }
         checkPluginDependencies();
@@ -402,7 +410,7 @@ public class Prism extends JavaPlugin implements PrismApi {
             if (pasteKey != null && (pasteKey.startsWith("API key") || pasteKey.length() < 6)) {
                 pasteKey = null;
             } else {
-                Prism.log("PasteApi is configured and available");
+                Prism.log("PasteApi 已配置且可用");
             }
         } else {
             pasteKey = null;
@@ -416,7 +424,7 @@ public class Prism extends JavaPlugin implements PrismApi {
         // init db async then call back to complete enable.
         final BukkitTask updating = Bukkit.getScheduler().runTaskTimerAsynchronously(instance, () -> {
             if (!isEnabled()) {
-                warn("Prism is loading and updating the database; logging is NOT enabled");
+                warn("Prism 正在加载并更新数据库; 数据记录*暂未*开启.");
 
             }
         }, 100, 200);
@@ -488,9 +496,9 @@ public class Prism extends JavaPlugin implements PrismApi {
 
     private void notifyDisabled() {
         final String[] dbDisabled = new String[3];
-        dbDisabled[0] = "Prism will disable most commands because it couldn't connect to a database.";
-        dbDisabled[1] = "If you're using MySQL, check your config. Be sure MySQL is running.";
-        dbDisabled[2] = "For help - try our Discord Channel or the Wiki on Github.";
+        dbDisabled[0] = "由于无法连接到数据库, Prism 将禁用大多数的指令.";
+        dbDisabled[1] = "如果您正在使用 MySQL, 请检查您的配置文件. 确保 MySQL 处于运行状态.";
+        dbDisabled[2] = "获取帮助 - 请尝试我们的 Discord 频道或者 Github 中的维基.";
         logSection(dbDisabled);
 
     }
@@ -503,7 +511,7 @@ public class Prism extends JavaPlugin implements PrismApi {
                 command.setExecutor(commands);
                 command.setTabCompleter(commands);
             } else {
-                warn("Command Executor Error: Check plugin.yml");
+                warn("指令执行器错误: 请检查 plugin.yml");
                 Bukkit.getPluginManager().disablePlugin(instance);
             }
         }
@@ -545,7 +553,7 @@ public class Prism extends JavaPlugin implements PrismApi {
                 command.setExecutor(commands);
                 command.setTabCompleter(commands);
             } else {
-                warn("Command Executor Error: Check plugin.yml");
+                warn("指令执行器错误: 请检查 plugin.yml");
                 Bukkit.getPluginManager().disablePlugin(instance);
                 return;
             }
@@ -553,7 +561,7 @@ public class Prism extends JavaPlugin implements PrismApi {
             if (commandAlt != null) {
                 commandAlt.setExecutor(new WhatCommand(this));
             } else {
-                log("Command Executor Error: Check plugin.yml - what command not found ");
+                log("指令执行器错误: 请检查 plugin.yml - 找不到 what 指令 ");
             }
             // Register official parameters
             registerParameter(new ActionParameter());
@@ -589,10 +597,10 @@ public class Prism extends JavaPlugin implements PrismApi {
             if (config.getBoolean("prism.preload-materials")) {
                 config.set("prism.preload-materials", false);
                 saveConfig();
-                Prism.log("Preloading materials - This will take a while!");
+                Prism.log("正在预加载材料(materials) - 这需要一段时间!");
 
                 items.initAllMaterials();
-                Prism.log("Preloading complete!");
+                Prism.log("预加载完成!");
             }
 
             items.initMaterials(Material.AIR);
@@ -641,7 +649,7 @@ public class Prism extends JavaPlugin implements PrismApi {
                 String colorString = alertBlocks.getString(key);
 
                 if (m == null || colorString == null) {
-                    Prism.log("Could not match alert block:" + key + " color:" + colorString);
+                    Prism.log("匹配不到警戒方块:" + key + " 色彩:" + colorString);
                     continue;
                 }
                 TextColor color = TypeUtils.from(colorString);
@@ -658,11 +666,11 @@ public class Prism extends JavaPlugin implements PrismApi {
         ApiHandler.hookWorldEdit();
         //bstats
         if (getConfig().getBoolean("prism.allow-metrics")) {
-            Prism.log("Prism bStats metrics are enabled - thank you!");
+            Prism.log("Prism 的 bStats 统计已启用 - 感谢!");
             int pluginId = 4365; // assigned by bstats.org
             Metrics metrics = new Metrics(this, pluginId);
             if (!metrics.isEnabled()) {
-                Prism.warn("bStats failed to initialise! Please check Prism/bStats configs.");
+                Prism.warn("无法初始化 bStats ! 请检查 Prism/bStats 配置.");
             }
             Metrics.MultiLineChart blockBreaksHour =
                     new Metrics.MultiLineChart("//TODO", ActionMeter::getMetricMeter);
@@ -828,7 +836,7 @@ public class Prism extends JavaPlugin implements PrismApi {
             drainer.forceDrainQueue();
         }
         if (!ApiHandler.disable()) {
-            log("Possible errors unhooking dependencies...");
+            log("在取消挂钩依赖项时可能出现问题...");
         }
 
         Bukkit.getScheduler().cancelTasks(this);
@@ -836,7 +844,7 @@ public class Prism extends JavaPlugin implements PrismApi {
         if (prismDataSource != null) {
             prismDataSource.dispose();
         }
-        log("Closing plugin.");
+        log("插件已关闭.");
         for (Handler handler : prismLog.getHandlers()) {
             handler.close();
         }
