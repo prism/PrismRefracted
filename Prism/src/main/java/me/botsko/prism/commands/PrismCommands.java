@@ -25,7 +25,7 @@ public class PrismCommands extends Executor {
         final Prism prism = (Prism) plugin;
         addSub(new String[]{"about", "default", "关于"}, "prism.help").allowConsole().setHandler(new AboutCommand(prism));
         addSub(new String[]{"debug", "调试"}, "prism.debug").allowConsole().setHandler(new DebugCommand());
-        addSub(new String[]{"help", "?"}, "prism.help").allowConsole().setHandler(new HelpCommand(failed));
+        addSub(new String[]{"help", "?", "帮助"}, "prism.help").allowConsole().setHandler(new HelpCommand(failed));
         addSub(new String[]{"flags", "标志"}, "prism.help").allowConsole().setHandler(new FlagsCommand());
         addSub(new String[]{"params", "参数"}, "prism.help").allowConsole().setHandler(new ParamsCommand());
         addSub(new String[]{"actions", "行为"}, "prism.help").allowConsole().setHandler(new ActionsCommand());
