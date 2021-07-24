@@ -8,7 +8,7 @@
 
 想要了解更多使用 Prism 的方法, [请查看维基][wiki].
 
-# 支持
+## 支持
 
 在 2016 年, Prism-Bukkit 因为 [Sponge 重写][sponge] 而被弃坑. 不久之后, [the AddstarMC team][addstarmc]
 分叉了这个项目, 用于他们自己的服务器并且从此之后一直在维护它. 伴随着 @viveleroi 的祝福,
