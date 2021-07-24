@@ -1,43 +1,40 @@
-**Prism-Bukkit** is a Bukkit plugin that tracks changes to a Minecraft world. These changes can be looked
-up, rolled back, restored, etc. There are also various anti-griefing tools.
+# 棱镜 - 中文汉化版本
 
-This is a continuation of @viveleroi's work, with various fixes and feature
-additions by a few GitHub contributors, now maintained by [AddstarMC][addstarmc].
+**Prism-Bukkit ( 棱镜 )** 是一个可以追踪 Minecraft 世界变化的 Bukkit 插件. 这些变化可以被查询, 回滚, 还原, 或被执行其它操作.
+我们也同样提供了大量的反熊工具.
 
-For information on how to use Prism, [see the wiki][wiki].
+这是一个延续 @viveleroi 作品的项目, 并且由一些 GitHub 贡献者
+修复、增加了一些功能, 现在由 [AddstarMC][addstarmc] 维护.
 
-# Support
+想要了解更多使用 Prism 的方法, [请查看维基][wiki].
 
-In 2016, Prism-Bukkit was abandoned in favor of the [Sponge rewrite][sponge]. Shortly after, [the AddstarMC team][addstarmc] forked
-the project for use on their own server and has continued maintaining it ever since. With the blessing of @viveleroi,
-we have now published this to SpigotMC and are providing support on the [M.O.S.S. discord server][moss].
+# 支持
 
-**Prism only supports Spigot/Paper 1.15+ - We will not be adding support for older versions!**
+在 2016 年, Prism-Bukkit 因为 [Sponge 重写][sponge] 而被弃坑. 不久之后, [the AddstarMC team][addstarmc]
+分叉了这个项目, 用于他们自己的服务器并且从此之后一直在维护它. 伴随着 @viveleroi 的祝福,
+我们现在已发布此插件到 SpigotMC 并在 [M.O.S.S. Discord 服务器][moss] 上提供支持.
 
-## Information
+**Prism 仅支持 Spigot/Paper 1.15+ - 我们不会再添加对旧版本的支持!**
 
-*  [**SpigotMC page**][spigot]
+## 信息
 
-*  [**Wiki**][wiki]
+*  [**MCBBS**][mcbbs]
+
+*  [**维基**][wiki]
 
 *  [**bStats**](https://bstats.org/plugin/bukkit/Prism/4365)
 
-*  [**Discord**][moss]
-    
-## Build Server
+*  [**SpigotMC 页面**(英文版)][spigot]
+   
+*  [**Discord**(英文版)][moss]
 
-[**Development Build**](https://jenkins.addstar.com.au/job/Prism-Bukkit/lastSuccessfulBuild/)
+## 许可证
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/90bdaff7ab11483a81b50ad2f0136bef)](https://www.codacy.com/gh/AddstarMC/Prism-Bukkit?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=AddstarMC/Prism-Bukkit&amp;utm_campaign=Badge_Grade)
-[![Build Status](https://jenkins.addstar.com.au/buildStatus/icon?job=Prism-Bukkit)](https://jenkins.addstar.com.au/job/Prism-Bukkit/)
-![Java CI](https://github.com/AddstarMC/Prism-Bukkit/workflows/Java%20CI/badge.svg)
+这是 viveleroi 的 Prism 的一个分支, 并且在根据 Creative Commons Attribution-NonCommercial-ShareAlike
+3.0 Unported 提供知识产权许可. 请浏览 `LICENSE` 或 [此网站][license]
+来了解完整的许可证.
 
-## License
-
-This is a fork of Prism by viveleroi and is licensed the under the Creative Commons
-Attribution-NonCommercial-ShareAlike 3.0 Unported. Please see `LICENSE` or [this website][license]
-for the full license.
-
+[mcbbs]: https://www.mcbbs.net/thread-1230654-1-1.html
 [sponge]: https://github.com/prism/Prism
 [wiki]: https://prism-bukkit.readthedocs.io
 [license]: http://creativecommons.org/licenses/by-nc-sa/3.0/us/
