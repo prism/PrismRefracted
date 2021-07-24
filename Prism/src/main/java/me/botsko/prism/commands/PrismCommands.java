@@ -67,7 +67,7 @@ public class PrismCommands extends Executor {
         addSub(new String[]{"near", "附近"}, "prism.lookup").setHandler(new NearCommand(prism));
         addSub(new String[]{"page", "pg", "页码"}, new String[]{"prism.lookup.paginate", "prism.lookup"}).allowConsole()
                 .setMinArgs(1).setHandler(new PageCommand(prism));
-        addSub(new String[]{"wand", "w", "i", "inspect", "检查"},
+        addSub(new String[]{"wand", "w", "i", "inspect", "魔棒", "检查"},
                 new String[]{"prism.rollback", "prism.restore", "prism.lookup", "prism.wand.inspect",
                       "prism.wand.profile", "prism.wand.rollback", "prism.wand.restore"})
                 .setHandler(new WandCommand(prism));
