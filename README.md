@@ -24,6 +24,8 @@
 
 *  [**bStats**](https://bstats.org/plugin/bukkit/Prism/4365)
 
+*  [**维基**(英文版)][wiki-cn]
+
 *  [**SpigotMC 页面**(英文版)][spigot]
    
 *  [**Discord**(英文版)][moss]
@@ -36,7 +38,8 @@
 
 [mcbbs]: https://www.mcbbs.net/thread-1230654-1-1.html
 [sponge]: https://github.com/prism/Prism
-[wiki]: https://prism-bukkit.readthedocs.io
+[wiki]: https://github.com/Rothes/Prism-Bukkit/wiki/%E4%B8%BB%E9%A1%B5
+[wiki-cn]: https://prism-bukkit.readthedocs.io
 [license]: http://creativecommons.org/licenses/by-nc-sa/3.0/us/
 [addstarmc]: https://github.com/AddstarMC
 [moss]: https://discord.gg/V9hS3q7m
