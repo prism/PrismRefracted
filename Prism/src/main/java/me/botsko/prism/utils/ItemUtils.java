@@ -516,7 +516,7 @@ public class ItemUtils {
     private static void applyEnchantments(Map<Enchantment, Integer> enchants, StringBuilder itemName) {
         int i = 1;
         if (enchants.size() > 0) {
-            itemName.append(" 附魔为");
+            itemName.append(", 附魔为");
             for (Map.Entry<Enchantment, Integer> ench : enchants.entrySet()) {
                 itemName.append(" ").append(
                       EnchantmentUtils.getClientSideEnchantmentName(ench.getKey(), ench.getValue()));
