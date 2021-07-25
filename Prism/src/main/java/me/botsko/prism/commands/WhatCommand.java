@@ -27,7 +27,7 @@ public class WhatCommand extends Executor {
     }
 
     private void setupCommands() {
-        addSub("what", "prism.what").setHandler(new SubHandler() {
+        addSub(new String[]{"what", "手持"}, "prism.what").setHandler(new SubHandler() {
             @Override
             public void handle(CallInfo call) {
                 final ItemStack item = call.getPlayer().getInventory().getItemInMainHand();
