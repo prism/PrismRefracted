@@ -157,7 +157,7 @@ public class DebugCommand implements SubHandler {
                                     Component.text()
                                             .content(pasteUrl)
                                             .clickEvent(ClickEvent.openUrl(pasteUrl)))));
-            Prism.log("Paste Created : " + pasteUrl);
+            Prism.log("粘贴箱已创建 : " + pasteUrl);
             result.getPaste().get().getDeletionKey().ifPresent(
                   s -> {
                           Prism.messenger.sendMessage(sender, Prism.messenger.playerMsg(
@@ -166,7 +166,7 @@ public class DebugCommand implements SubHandler {
                                                   Component.text()
                                                           .content(s)
                                                           .clickEvent(ClickEvent.copyToClipboard(s)))));
-                          Prism.log("删除秘钥:" + s);
+                          Prism.log("删除 key:" + s);
                   }
             );
         } else {
