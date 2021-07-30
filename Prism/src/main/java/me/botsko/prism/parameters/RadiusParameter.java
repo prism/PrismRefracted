@@ -85,7 +85,7 @@ public class RadiusParameter extends SimplePrismParameterHandler {
             if (desiredRadius != radius) {
                 if (sender != null) {
                     Prism.messenger.sendMessage(sender,
-                            Prism.messenger.playerError("Forcing radius to " + radius + " as allowed by config."));
+                            Prism.messenger.playerError("强制半径为 " + radius + " , 即配置中允许的值."));
                 }
             }
 
@@ -116,8 +116,8 @@ public class RadiusParameter extends SimplePrismParameterHandler {
             // If neither sender or a named player found, die here
             if (player == null) {
                 throw new IllegalArgumentException(
-                        "The radius parameter must be used by a player. "
-                                + "Use w:worldname if attempting to limit to a world.");
+                        "半径参数必须配合一个玩家使用. "
+                                + "如果想限制到一个世界内, 使用 w:世界名.");
             }
 
             // User wants an area inside of a worldedit selection
@@ -126,14 +126,14 @@ public class RadiusParameter extends SimplePrismParameterHandler {
 
                     if (ApiHandler.worldEditPlugin == null) {
                         throw new IllegalArgumentException(
-                                "This feature is disabled because Prism couldn't find WorldEdit.");
+                                "因为 Prism 找不到 WorldEdit, 此功能已禁用.");
                     } else {
 
                         // Load a selection from world edit as our area.
                         if (!WorldEditBridge.getSelectedArea(Prism.getInstance(), player, query)) {
                             throw new IllegalArgumentException(
-                                    "Invalid region selected. Make sure you have a region selected,"
-                                            + " and that it doesn't exceed the max radius.");
+                                    "无效的选区. 请确保您选中了选区,"
+                                            + " 并且选区未超过最大半径.");
                         }
                     }
                     break;
@@ -141,6 +141,7 @@ public class RadiusParameter extends SimplePrismParameterHandler {
                 // Confine to the chunk
                 case "c":
                 case "chunk":
+                case "区块":
 
                     final Chunk ch = player.getLocation().getChunk();
                     query.setWorld(ch.getWorld().getName());
@@ -151,15 +152,16 @@ public class RadiusParameter extends SimplePrismParameterHandler {
 
                 // User wants no radius, but contained within the current world
                 case "world":
+                case "世界":
                     // Do they have permission to override the global lookup radius
                     if (query.getProcessType().equals(PrismProcessType.LOOKUP)
                             && !player.hasPermission("prism.override-max-lookup-radius")) {
-                        throw new IllegalArgumentException("You do not have permission to override the max radius.");
+                        throw new IllegalArgumentException("您没有权限覆写最大半径.");
                     }
                     // Do they have permission to override the global applier radius
                     if (!query.getProcessType().equals(PrismProcessType.LOOKUP)
                             && !player.hasPermission("prism.override-max-applier-radius")) {
-                        throw new IllegalArgumentException("You do not have permission to override the max radius.");
+                        throw new IllegalArgumentException("您没有权限覆写最大半径.");
                     }
                     // Use the world defined in the w: param
                     if (query.getWorld() != null) {
@@ -173,15 +175,16 @@ public class RadiusParameter extends SimplePrismParameterHandler {
 
                 // User has asked for a global radius
                 case "global":
+                case "全局":
                     // Do they have permission to override the global lookup radius
                     if (query.getProcessType().equals(PrismProcessType.LOOKUP)
                             && !player.hasPermission("prism.override-max-lookup-radius")) {
-                        throw new IllegalArgumentException("You do not have permission to override the max radius.");
+                        throw new IllegalArgumentException("您没有权限覆写最大半径.");
                     }
                     // Do they have permission to override the global applier radius
                     if (!query.getProcessType().equals(PrismProcessType.LOOKUP)
                             && !player.hasPermission("prism.override-max-applier-radius")) {
-                        throw new IllegalArgumentException("You do not have permission to override the max radius.");
+                        throw new IllegalArgumentException("您没有权限覆写最大半径.");
                     }
                     // Either they have permission or player is null
                     query.setWorld(null);
@@ -190,7 +193,7 @@ public class RadiusParameter extends SimplePrismParameterHandler {
                     break;
                 default:
                     throw new IllegalArgumentException(
-                            "Radius is invalid. There's a bunch of choice, so use /prism actions for assistance.");
+                            "无效的半径. 有很多方式可以定义半径, 请使用 `/prism 行为(actions)` 以获取帮助.");
             }
         }
     }
