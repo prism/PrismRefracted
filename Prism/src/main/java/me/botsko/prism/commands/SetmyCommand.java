@@ -38,13 +38,13 @@ public class SetmyCommand extends AbstractCommand {
 
         if (setType != null && !(setType.equalsIgnoreCase("wand") || setType.equalsIgnoreCase("魔棒"))) {
             Prism.messenger.sendMessage(call.getPlayer(),
-                    Prism.messenger.playerError("无效的参数. Use /prism ? for help."));
+                    Prism.messenger.playerError("无效的参数. 使用 '/pr ?' 获取帮助."));
             return;
         }
 
         if (!plugin.getConfig().getBoolean("prism.wands.allow-user-override")) {
             Prism.messenger.sendMessage(call.getPlayer(),
-                    Prism.messenger.playerError("Sorry, but personalizing the wand is currently not allowed."));
+                    Prism.messenger.playerError("抱歉, 现在暂不允许个性化魔棒."));
         }
 
         // Check for any wand permissions. @todo There should be some central

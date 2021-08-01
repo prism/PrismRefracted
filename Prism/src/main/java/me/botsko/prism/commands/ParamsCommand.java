@@ -48,7 +48,7 @@ public class ParamsCommand implements SubHandler {
                 .append(Prism.messenger.playerMsg(
                         colourParamHelp(Il8nHelper.getMessage("params-radius-help4")))).append(Component.newline())
                 .append(Component.text("---").color(NamedTextColor.GRAY)).append(Component.newline())
-                .append(Prism.messenger.playerMsg(Component.text(" a[行为]: ").color(NamedTextColor.LIGHT_PURPLE)))
+                .append(Prism.messenger.playerMsg(Component.text("a:[行为]: ").color(NamedTextColor.LIGHT_PURPLE)))
                 .append(Il8nHelper.getMessage("params-help-action")).append(Component.newline())
                 .append(Prism.messenger.playerMsg(Component.text("b:[方块] ").color(NamedTextColor.LIGHT_PURPLE)))
                 .append(Il8nHelper.getMessage("params-help-block")).append(Component.newline())
