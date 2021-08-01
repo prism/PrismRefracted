@@ -114,7 +114,7 @@ public class HangingItemAction extends GenericAction {
      */
     private ChangeResult hangItem(Player player, PrismParameters parameters, boolean isPreview) {
         if (actionData == null) {
-            Prism.debug(parameters.getProcessType() + "已跳过 - 悬挂行为数据为 null");
+            Prism.debug(parameters.getProcessType() + "已跳过 - 悬挂上行为数据为 null");
             return new ChangeResultImpl(ChangeResultType.SKIPPED, null);
         }
 
@@ -125,7 +125,7 @@ public class HangingItemAction extends GenericAction {
 
         // Ensure there's a block at this location that accepts an attachment
         if (Utilities.materialMeansBlockDetachment(loc.getBlock().getType())) {
-            Prism.debug(parameters.getProcessType() + "悬挂已跳过 - 方块会脱离: "
+            Prism.debug(parameters.getProcessType() + "悬挂上已跳过 - 方块会脱离: "
                     + loc.getBlock().getType());
             return new ChangeResultImpl(ChangeResultType.SKIPPED, null);
         }

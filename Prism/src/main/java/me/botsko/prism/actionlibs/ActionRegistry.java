@@ -278,7 +278,7 @@ public class ActionRegistry {
         registerAction(new ActionTypeImpl("tnt-prime", false, false, false,
                 UseAction.class, Il8nHelper.getRawMessage("primed")));
         registerAction(new ActionTypeImpl("tree-grow", true, true, true,
-                GrowAction.class, Il8nHelper.getRawMessage("grew")));
+                GrowAction.class, "生长了"));
         registerAction(new ActionTypeImpl("vehicle-break", false, true, false,
                 VehicleAction.class, Il8nHelper.getRawMessage("broke")));
         registerAction(new ActionTypeImpl("vehicle-enter", false, false, false,

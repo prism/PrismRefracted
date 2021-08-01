@@ -74,7 +74,7 @@ public class PrismCommands extends Executor {
         addSub(new String[]{"setmy", "偏好"}, new String[]{"prism.setmy.wand"}).setHandler(new SetmyCommand(prism));
         addSub(new String[]{"resetmy", "重置偏好"}, new String[]{"prism.setmy.wand"}).setHandler(new ResetmyCommand(prism));
         addSub(new String[]{"tp", "传送"}, "prism.tp").setMinArgs(1).setHandler(new TeleportCommand(prism));
-        addSub(new String[]{"ex", "灭火"}, "prism.extinguish").setHandler(new ExtinguishCommand(prism));
+            addSub(new String[]{"ex", "灭火"}, "prism.extinguish").setHandler(new ExtinguishCommand(prism));
         addSub(new String[]{"drain" ,"排水"}, "prism.drain").setHandler(new DrainCommand(prism));
         addSub(new String[]{"preview", "pv", "预览"}, "prism.preview").setMinArgs(1).setHandler(new PreviewCommand(prism));
         addSub(new String[]{"report", "rp", "报告"}, "prism.report").allowConsole().setHandler(new ReportCommand(prism));

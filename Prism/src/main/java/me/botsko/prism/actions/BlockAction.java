@@ -291,14 +291,14 @@ public class BlockAction extends GenericAction {
                 && !getActionType().requiresHandler(PrismRollbackAction.class) && !parameters.hasFlag(Flag.OVERWRITE);
 
         if (cancelIfBadPlace && !Utilities.isAcceptableForBlockPlace(block.getType())) {
-            Prism.debug("Block skipped due to being unacceptable for block place: " + block.getType().name());
+            Prism.debug("跳过了方块, 由于不可接受方块放置: " + block.getType().name());
             return new ChangeResultImpl(ChangeResultType.SKIPPED, null);
         }
 
         // On the blacklist (except an undo)
         if ((Prism.getIllegalBlocks().contains(getMaterial())
                 && !parameters.getProcessType().equals(PrismProcessType.UNDO)) && !parameters.hasFlag(Flag.OVERWRITE)) {
-            Prism.debug("Block skipped because it's not allowed to be placed unless its an UNDO: "
+            Prism.debug("跳过了方块, 由于不允许放置, 除非是撤销操作: "
                     + getMaterial().toString());
             return new ChangeResultImpl(ChangeResultType.SKIPPED, null);
         }
@@ -420,7 +420,7 @@ public class BlockAction extends GenericAction {
                 }
             }
         } else {
-            Prism.debug("BlockAction Data was null with " + parameters.toString());
+            Prism.debug("BlockAction 数据为 null :" + parameters.toString());
         }
         // -----------------------------
         // Sibling logic marker
@@ -433,8 +433,8 @@ public class BlockAction extends GenericAction {
             sibling = block.getRelative(BlockFace.DOWN).getState();
 
             if (cancelIfBadPlace && !MaterialTag.SOIL_CANDIDATES.isTagged(sibling.getType())) {
-                Prism.debug(parameters.getProcessType().name() + " skipped due to lack of soil for "
-                        + getMaterial().name());
+                Prism.debug(parameters.getProcessType().name() + " 已跳过, 由于缺少 "
+                        + getMaterial().name() + " 的土壤");
                 return new ChangeResultImpl(ChangeResultType.SKIPPED, null);
             }
             sibling.setType(FARMLAND);
@@ -448,8 +448,8 @@ public class BlockAction extends GenericAction {
                 sibling = s.getState();
 
                 if (cancelIfBadPlace && !Utilities.isAcceptableForBlockPlace(sibling.getType())) {
-                    Prism.debug(parameters.getProcessType().name() + " skipped due to lack of wrong sibling type for "
-                            + getMaterial().name());
+                    Prism.debug(parameters.getProcessType().name() + " 已跳过, 由于缺少 "
+                            + getMaterial().name() + " 的错误 sibling 类型");
                     return new ChangeResultImpl(ChangeResultType.SKIPPED, null);
                 }
 
