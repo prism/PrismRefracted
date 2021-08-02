@@ -62,7 +62,7 @@ public class PrismCommands extends Executor {
         if (failed) {
             return;
         }
-        addSub(new String[]{"lookup", "l", "查找"}, "prism.lookup").allowConsole().setMinArgs(1)
+        addSub(new String[]{"lookup", "l", "查询"}, "prism.lookup").allowConsole().setMinArgs(1)
                 .setHandler(new LookupCommand(prism));
         addSub(new String[]{"near", "附近"}, "prism.lookup").setHandler(new NearCommand(prism));
         addSub(new String[]{"page", "pg", "页码"}, new String[]{"prism.lookup.paginate", "prism.lookup"}).allowConsole()
