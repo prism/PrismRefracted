@@ -1,6 +1,7 @@
 package me.botsko.prism.actions;
 
 import me.botsko.prism.Prism;
+import me.botsko.prism.PrismLocalization;
 import me.botsko.prism.api.ChangeResult;
 import me.botsko.prism.api.ChangeResultType;
 import me.botsko.prism.api.PrismParameters;
@@ -40,10 +41,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.bukkit.Material.AIR;
 import static org.bukkit.Material.CHEST;
@@ -61,6 +59,12 @@ import static org.bukkit.Material.WATER;
 
 
 public class BlockAction extends GenericAction {
+
+    private PrismLocalization prismLocalization;
+
+    public BlockAction() {
+        prismLocalization = Prism.getInstance().getPrismLocalization();
+    }
 
     private BlockActionData actionData;
 
@@ -90,7 +94,6 @@ public class BlockAction extends GenericAction {
     }
 
     private void createActionData(BlockState state) {
-        //TODO: Rothes - 也许会缺失翻译的地方
         switch (state.getType()) {
             case SPAWNER:
                 final SpawnerActionData spawnerActionData = new SpawnerActionData();
@@ -208,7 +211,8 @@ public class BlockAction extends GenericAction {
                 name += ad.skullType + " ";
             } else if (blockActionData instanceof SpawnerActionData) {
                 final SpawnerActionData ad = (SpawnerActionData) blockActionData;
-                name += ad.entityType + " ";
+                name += prismLocalization.hasEntityLocale(ad.entityType.toUpperCase(Locale.ROOT)) ?
+                        prismLocalization.getEntityLocale(ad.entityType.toUpperCase(Locale.ROOT)) : ad.entityType;
             }
         }
         name += Prism.getItems().getAlias(getMaterial(), getBlockData());
