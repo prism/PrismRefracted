@@ -208,7 +208,7 @@ public class BlockAction extends GenericAction {
         if (blockActionData != null) {
             if (blockActionData instanceof SkullActionData) {
                 final SkullActionData ad = (SkullActionData) blockActionData;
-                name += ad.skullType + " ";
+                name += ad.owner + " ";
             } else if (blockActionData instanceof SpawnerActionData) {
                 final SpawnerActionData ad = (SpawnerActionData) blockActionData;
                 name += prismLocalization.hasEntityLocale(ad.entityType.toUpperCase(Locale.ROOT)) ?
@@ -630,7 +630,6 @@ public class BlockAction extends GenericAction {
     public static class SkullActionData extends RotatableActionData {
 
         String owner;
-        String skullType;
 
     }
 
