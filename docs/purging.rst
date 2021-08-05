@@ -1,8 +1,8 @@
 .. _purging:
 
-#######
-Purging
-#######
+########
+数据清理
+########
 
 Prism will automatically purge old data based on your rules defined in the config. This helps keep the database size down which impacts the speed of your lookups, rollbacks, etc.
 

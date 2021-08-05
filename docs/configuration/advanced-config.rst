@@ -1,30 +1,34 @@
 **********************
-Advanced Configuration
+进阶配置
 **********************
-We get technical here. If you're not sure what these recommendations refer to, please skip.
+这里需要一些技术能力. 如果您不清楚这些建议是干什么的, 请跳过.
 
-Pool Exhaustion
+连接池耗竭
 ---------------
-**Constantly seeing pool exhaustion errors?**
+**不断看到连接池耗竭的错误信息?**
 
-The cause normally isn't prism, but a problem communicating with the database fast enough.
-There's a lot you can do.  If you have a remote mysql server, it's usually a lot slower because the server has to communicate across the internet every query, and shared mysql hosts are usually a bit lax on performance.
+这通常不是 Prism 导致的, 而是与数据库通信的速率不够快导致的. 有很多的办法可以解决这个问题.
+如果您正在使用远程 MySQL 服务器, 通常会有些缓慢, 因为每次查询服务器都需要通过因特网来通信,
+另外如果是共享 MySQL 托管, 通常性能不是很好.
 
-Recommendation:
+一些建议:
 ^^^^^^^^^^^^^^^^
-- Decrease the pool wait times.
-- Increase the pool connection limit if your remote mysql provider as a limit that will fit it.
-- If you can spare a little more memory, increase the actions per batch so a mysql query sends more data during larger changes.
+- 降低连接池等待时间 (pool wait times).
+- 增加连接池连接限制数 (pool connection limit), 如果您的远程 MySQL 提供者调整了合适的限制数的话.
+- 增加批次发送行为数 (actions per batch), 来让 MySQL 查询在大型变化发生时发送更多的数据, 代价是稍微提高内存占用.
 
-Advanced Database Configurations
+进阶数据库配置
 --------------------------------
 
-Prism uses Hikari database pooling - please see Hikari for configuration options - changes can be made in  `Hikari.properties <https://github.com/brettwooldridge/HikariCP/wiki/>`_.
+Prism 使用 Hikari 数据库连接池 - 请参阅 Hikari 来配置设定 -
+可以在 `Hikari.properties <https://github.com/brettwooldridge/HikariCP/wiki/>`_ 内修改配置.
 
-Faster Event Logging
+让事件记录更快
 --------------------
-Our defaults for the speed of event logging are set to sensible defaults with the medium-range servers average owners use. However, if you have more control over your server you can tweak Prism to record events faster.
+我们的事件数据记录速度默认值设置为适合中型服务器使用的设定. 如果您想让服务器运行得更好, 可以调整 Prism 配置来让事件记录更快.
 
-- **actions-per-insert-batch** - refers to how many actions are sent per batch insert. The only things that limit this are memory (ram), and your mysql server's setting for max_allowed_packets. It's very possible to increase this number to 5000 or higher.  Every time the recorder runs, it will empty the queue with batch insert statements, and by changing it to 5000 instead of 1000, increases the speed that the queue is emptied dramatically. A 110k block world edit saves in 19 seconds with the default settings, but saves in 5 seconds with the increased batch size.
+- **actions-per-insert-batch** - 决定每次批次插入发送多少个行为. 此功能的唯一限制就是运行内存 (RAM) 和您 MySQL 服务器的 max_allowed_packets 设置. 一般都可以将此数值增加到 5000, 或者更高. 每一次记录器运行的时候, 它会使用批次插入语句来清空队列, 并通过将其值从 1000 改为 5000, 来显著地提高清空队列的速度. 在默认设置下, 有着 11 万方块变化的世界需要 19 秒来保存, 但增加了这个值后只需要 5 秒.
 
-- **queue-empty-tick-delay** - This determines how many ticks (20 ticks = 1 second) the recorder will wait before checking the queue again. Setting this to a lower number will increase the speed of queue saves. For example, the default is 3 ticks which roughly means 6 queue empty actions per second.  When the recorder checks the queue, it will empty the entire queue in batches, so either way the queue will be emptied, this setting simply makes it check for newer actions more often.
+- **queue-empty-tick-delay** - 决定了记录器每一次检查队列的时间刻(tick)间隔. (20 tick = 1 秒) 降低此数值会提高队列保存的速度. 例如, 在默认设置下的 3 tick, 每秒有约 6 个队列清空操作.
+
+当记录器检查队列时, 它会批次清空整个队列. 不管是通过什么方式, 这些设定只是通过让它更频繁地检查新的事件行为来加快事件记录.

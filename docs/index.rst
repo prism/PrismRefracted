@@ -4,24 +4,24 @@
    contain the root `toctree` directive.
 
 ############################################
-Welcome to Prism for Bukkit's documentation!
+欢迎来到 Prism-Bukkit 维基!
 ############################################
 
 ..  toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: 内容:
 
-   Welcome
-   Getting Started <getting-started>
-   Features <features>
-   Advanced Configuration <configuration>
-   Permissions <permissions>
-   Commands <commands>
-   Purging Excess Data <purging>
-   API Documentation <api/index>
+   欢迎 <Welcome>
+   部署 <getting-started>
+   功能 <features>
+   进阶配置 <configuration>
+   权限 <permissions>
+   指令 <commands>
+   清理多余数据 <purging>
+   API 文档 <api/index>
 
 
-Indices and tables
+索引与表格
 ==================
 
 * :ref:`genindex`

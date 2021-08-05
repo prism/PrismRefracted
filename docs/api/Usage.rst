@@ -1,7 +1,7 @@
-Hooking the API
+挂钩到 API
 ===============
 
-This piece of code can be used to retrieve and store the api for later use.  Typically you place the this call inside a Wrapper and check the plugin is present before loading the wrapper - this ensures you dont need to shade in Prism's api and cause dramas.
+这个代码块可以用于获取并储存 API, 用于之后的使用. 通常您需要将此调用放于包装类中, 并在加载包装类前检查插件是否为 NULL - 这能确保您不需要 shade Prism 的 API.
 
 .. code-block:: java
 
@@ -12,7 +12,7 @@ This piece of code can be used to retrieve and store the api for later use.  Typ
         }
     }
 
-Usage of the API
+API 用法
 ================
 
 .. code-block:: java
@@ -20,26 +20,26 @@ Usage of the API
         CommandSender sender;
         PrismParameters parameters = this.createParameters();
         parameters.addActionType("block-place");
-        parameters.addPlayerName("Narimm");
+        parameters.addPlayerName("Rothes");
         final Future<Result> result = this.performLookup(parameters, sender);
         Bukkit.getScheduler().runTaskAsynchronously(instance, new Runnable() {
             @Override
             public void run() {
                 try {
-                    Result done = result.get(); //Blocks until complete
+                    Result done = result.get(); //在完成前会冻结
                     for (me.botsko.prism.api.actions.Handler handler : done.getActionResults()) {
-                        ///do something with the handler here. Remember you are Async.
+                        ///用 handler 做点啥. 记住这是异步的.
                     }
                 } catch (InterruptedException | ExecutionException e) {
-                        //handle the exceptions
+                        //处理异常
                 }
             }
         });
 
-Importing Prism into your project
+导入 Prism 到项目
 -------------------------------------
 
-First, add the repository:
+首先, 添加存储库:
 
 .. tabs::
 
@@ -73,19 +73,19 @@ First, add the repository:
       .. code:: groovy
 
          repositories {
-            // for development builds
+            // 开发版本
             maven {
                 name = "maven-addstar-snapshot"
                 url = "https://maven.addstar.com.au/artifactory/all-snapshot"
             }
-            // for releases
+            // 稳定版本
             maven {
                 name = "maven-addstar-release"
                 url = "https://maven.addstar.com.au/artifactory/all-releases"
             }
          }
 
-   Declaring the dependency:
+   声明依赖:
 
 .. tabs::
 

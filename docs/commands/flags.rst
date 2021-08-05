@@ -1,12 +1,13 @@
 #####
-Flags
+标志
 #####
 
 .. tip::
 
-  ``/pr flags``
+  | ``/pr flags``
+  | ``/pr 标志``
 
-This commands shows all the available flags.  There are some command flags that control specific details about the process you're running, giving you a whole new level of control over Prism.
+此指令会向执行者展示所有可用的标志. There are some command flags that control specific details about the process you're running, giving you a whole new level of control over Prism.
 
 Drain/Drain Water/Drain Lava
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^

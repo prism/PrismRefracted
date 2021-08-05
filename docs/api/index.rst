@@ -1,10 +1,10 @@
 #################
-API Documentation
+API 文档
 #################
 
 .. toctree::
   :maxdepth: 2
-  :caption: API Documentation:
+  :caption: API 文档:
 
-  Usage<Usage>
-  Events<Events>
+  用法<Usage>
+  事件<Events>
