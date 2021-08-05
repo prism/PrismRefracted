@@ -110,7 +110,7 @@ public class Prism extends JavaPlugin implements PrismApi {
     private static final HashMap<Material, TextColor> alertedOres = new HashMap<>();
     private static final Logger log = Logger.getLogger("Minecraft");
     private static final HashMap<String, PrismParameterHandler> paramHandlers = new HashMap<>();
-    private static String baseUrl = "https://prism-bukkit.readthedocs.io/en/latest/";
+    private static String baseUrl = "https://prism-cn.readthedocs.io/zh_CN/latest/";
     public static Messenger messenger;
     public static FileConfiguration config;
     public static boolean isPaper = true;
