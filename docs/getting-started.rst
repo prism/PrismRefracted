@@ -1,46 +1,47 @@
-Remember: Join our Discord channel if you need more help.
+请记住: 如果您需要帮助, 欢迎向我们寻求支持.
 
-How to Install
+如何安装
 ===============
 
-- Place the Prism.jar file in your bukkit /plugins directory.
-- Start your server and an initial configuration file will be created.
-- At the very least, you must setup a database connection
-- read below if you need help with MySQL, or sqlite (no-install database).
+- 将 Prism.jar 文件放入您的 Bukkit /plugins 目录中.
+- 启动您的服务器, 一个初始配置文件会生成在插件目录 /plugins/Prism 中.
+- 最重要的一点, 您必须配置数据库连接.
+- 如果您需要架设 MySQL 或 sqlite (无需安装的数据库) 的帮助, 请看下面.
 
-Get Mysql
----------
-Make sure you have MySQL installed. Most of you likely do already, but some of you are new to MySQL.
-MySQL is software that you can install on your computer (works on Windows, Mac, and Linux) that
-creates a database service - a very fast, efficient place for Prism (and many other plugins) to store data.
-Instructions for installed mysql.
+获取 MySQL
+----------
+请确保您已经安装 MySQL. 大多数的人应该都已经安装了, 也许有一些人还没有接触过 MySQL.
+MySQL 是一个可以安装于计算机(适用于Windows, Mac 和 Linux)的软件, 可以为 Prism 以及许多其它插件提供数据库服务.
+它存储数据非常迅速和高效.
+下面是安装 MySQL 的一些教程.
 
-1. Mysql - https://dev.mysql.com/doc/mysql-installation-excerpt/5.7/en/ see :ref:`mysql`
+1. Mysql - https://dev.mysql.com/doc/mysql-installation-excerpt/5.7/en/ 参阅 :ref:`mysql`
 
-2. Mariadb - https://mariadb.com/kb/en/getting-installing-and-upgrading-mariadb/ see see :ref:`mariadb`
+2. Mariadb - https://mariadb.com/kb/en/getting-installing-and-upgrading-mariadb/ 参阅 :ref:`mariadb`
 
-3. Percona  - https://www.percona.com/doc/percona-server/5.7/installation.html  see :ref:`mysql`
+3. Percona  - https://www.percona.com/doc/percona-server/5.7/installation.html  参阅 :ref:`mysql`
 
-Step 1
+第一步
 ------
-Make sure the database.mode config says "mysql". Every MySQL connection needs to have an address, a username, a password, and a database.
+确保 database.mode 配置为 "mysql". 您需要主机地址, 用户名, 密码和数据库名称来连接到 MySQL.
 
-Step 2
+第二步
 ------
-Enter your database hostname (the address to the mysql server, usually the default is 127.0.0.1 or
-localhost. Enter the username/password for the server, defaults to root and an empty password.
+输入您的数据库主机名 (MySQL 服务器的地址, 一般为 127.0.0.1 或者 localhost.
+输入数据库服务器的用户名和密码, 默认为 root 和空密码.
 
-*If you setup your MySQL server yourself, you should know what the above information is. If you're
-using a mysql server setup by someone else (like on a shared hosting service), they will provide
-you the information.*
+*如果您是自己架设的 MySQL 服务器, 您应该会知道上面的这些信息如何填写. 如果您使用的是别人架设的 MySQL
+(如共享主机服务), 请让他们提供给您这些信息.*
 
-Please see the relevant configuration section for your database type:
+请根据您的数据库类型来参阅相关的配置部分:
 
-1. Mysql see :ref:`mysql`
-2. MariaDB see see :ref:`mariadb`
-3. Other Databases: see :ref:`hikari`
+1. Mysql 参阅 :ref:`mysql`
+2. MariaDB 参阅 :ref:`mariadb`
+3. 其它的数据库: 参阅 :ref:`hikari`
 
-Recommendations
+一些建议
 ---------------
-If you're concerned about disk space or if you have a busy server, we recommend leaving off water-flow and turning off lava-flow tracking. These events not only occur with extreme frequency,   but Bukkit also fires these events multiple times per block location. They can very quickly   saturate your database. It's relatively easy to use /prism drain instead.  However, Prism tracks lava/water-break events even if flow is disabled, so you can still rollback the items broken by the liquid.
+如果您担心磁盘空间不足, 或者服务器人数极高, 我们建议关闭 water-flow 和 lava-flow 追踪. 这些事件的发生频率十分高,
+而且 Bukkit 会在每一个方块坐标上多次调用这些事件. 它们会很快地灌满您的数据库. 一个相对容易的替代办法是使用 ``/prism 排水(drain)`` 指令.
+但, 即使您关闭了流动事件的追踪, Prism 仍会追踪 lava/water-break 事件, 所以您仍然可以回滚被液体破坏的物品.
 

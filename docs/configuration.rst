@@ -1,4 +1,4 @@
-Prism Configuration
+Prism 配置
 -------------------
 
 ..  toctree::

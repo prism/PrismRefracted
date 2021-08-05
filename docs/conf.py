@@ -17,16 +17,16 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'Prism for Bukkit'
-copyright = '2020, AddstarMC,'
-author = 'Narimm'
+project = 'Prism-Bukkit 中文版'
+copyright = '2020, AddstarMC'
+author = 'Narimm, Rothes'
 
 version = '2.1.8-SNAPSHOT'
 # The full version, including alpha/beta/rc tags
 release = version
 
-if release.endswith('-SNAPSHOT'):
-    tags.add('draft')
+if release.endswith('-SNAP-CN'):
+    tags.add('草案')
 
 # -- General configuration ---------------------------------------------------
 

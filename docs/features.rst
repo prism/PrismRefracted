@@ -1,9 +1,9 @@
-Tracked Actions
+行为追踪
 ===============
 
-The following list of actions can be tacked and or ignored via config.  To ensure they are tracked add the option to your configuration file. Any item NOT in the list will be set as false.
+下面的列表中的行为可以通过配置文件设定追踪或忽略. 要确保一个行为是会被追踪的, 请在您的配置文件中添加特定选项. 任何不存在于列表之中的行为都会被设为 false.
 
-e.g.
+例如
 
 .. code-block:: yaml
 
@@ -11,12 +11,12 @@ e.g.
     tracking:
       item-remove: true
 
-List of Tracked Actions
+可追踪行为列表
 -----------------------
 
-see :ref:`action-list`
+参阅 :ref:`action-list`
 
-Reports
+报告
 -------
 
 Prism offers a limited set of reports on block and action data per player.
@@ -27,7 +27,7 @@ A summary report for blocks will list the total number of block break/place acti
 
 The actions summary will display a count for each action type for the specific player.
 
-Ore Alerts
+挖矿警告
 ----------
 
 This system alerts you when a player discovers a natural (non-placed) vein of ores.
@@ -36,7 +36,7 @@ The ore type messages are colored for easy recognition.
 
 We've found this extremely effective at spotting xray. Players who show very clear patterns are very easy to identify.
 
-Item Use Alerts
+物品使用警告
 ---------------
 
 Item use alerts tell when you a player is using something that's possibly related to griefing.
@@ -44,14 +44,14 @@ Lighting fires, placing tnt, placing pistons, etc.
 
 If you wish, you may also define a list blocks that will alert you when broken.
 
-Vanilla Piston Xray Alert
+原版活塞卡透视警告
 -------------------------
 
 There's a known exploit involving a piston that lets you see through blocks.
 Prism will attempt to alert you when it seems like a player is trying to use this trick.
 
-Ex, Drain
----------
+灭火与排水
+----------
 
 Use `/prism ex [radius]` to extinguish all fires in the radius, or `/prism drain [radius]` to remove all liquid (water and lava) in the radius.
 
@@ -60,12 +60,12 @@ You may also drain specific subtypes of liquid, so `/prism drain water` or `lava
 When performing a rollback of block-burn actions, Prism will automatically extinguish the fires as well.
 
 
-Chunk Boundary View
+区块边界视图
 -------------------
 Use `/pr view chunk` to view a glowstone preview of the chunk edges.
 Repeat the command to disable.
 
-Delete
+删除
 ------
 
 Server operators can use `/prism delete [timeframe]` to manually purge records from the database.

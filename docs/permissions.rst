@@ -1,16 +1,16 @@
-List of Prism permissions:
+Prism 权限列表:
 --------------------------
 
-- ``prism.help`` - Users may see the prism help files.
-- ``prism.wand.*`` - Allow use of all wands.
-- ``prism.wand.inspect`` - Allow inspect wand. Auto if user has .lookup
-- ``prism.wand.profile`` - Allow profile wand. Auto if user has .lookup
-- ``prism.wand.rollback`` - Allow rollback wand. Auto if user has .rollback
-- ``prism.wand.restore`` - Allow restore wand. Auto if user has .restore
-- ``prism.setmy.wand`` - Allow user to set their personal wand prefs (if enabled via config). They must also have permission to a wand.
-- ``prism.lookup`` - Grants lookup, inspector, near permissions. Recommended for: Experienced players.
-- ``prism.lookup.paginate`` - Grants pagination access, without having lookup.
-- ``prism.parameters.*`` - Allow mods to use all lookup parameters. Children nodes are the parameter name, i.e. radius or player
+- ``prism.help`` - 允许用户查看 Prism 帮助.
+- ``prism.wand.*`` - 允许用户使用所有魔棒类型.
+- ``prism.wand.inspect`` - 允许用户使用检查魔棒. 用户拥有 .lookup 时自动允许.
+- ``prism.wand.profile`` - 允许用户使用简介魔棒. 用户拥有 .lookup 时自动允许.
+- ``prism.wand.rollback`` - 允许用户使用回滚魔棒. 用户拥有 .rollback 时自动允许.
+- ``prism.wand.restore`` - 允许用户使用还原魔棒. 用户拥有 .restore 时自动允许.
+- ``prism.setmy.wand`` - 允许用户设置个人魔棒偏好(首选项), 需要在配置文件中开启此功能. 同时用户需要拥有使用魔棒的权限.
+- ``prism.lookup`` - 允许用户使用 查询/检查/附近 指令. 建议给予有经验的玩家.
+- ``prism.lookup.paginate`` - 允许用户翻页查询结果, 不包含 .lookup 权限.
+- ``prism.parameters.*`` - 允许使用所有查询参数. 子节点为参数名称, 例如 radius(半径) 和 player(玩家).
 - ``prism.parameters.action``
 - ``prism.parameters.before``
 - ``prism.parameters.block``
@@ -33,25 +33,25 @@ List of Prism permissions:
 - ``prism.parameters.flag.overwrite``
 - ``prism.parameters.flag.share``
 - ``prism.parameters.flag.paste``
-- ``prism.extinguish`` - For removing fires in a radius. Recommended for: Experienced players.
-- ``prism.drain`` - Removing water/lava in a radius. Recommended for: Experienced players.
-- ``prism.preview`` - Grants permission to preview and then rollback/restore changes. Recommended for: Staff
-- ``prism.rollback`` - Grants permission to rollback changes. Recommended for: Experienced Staff
-- ``prism.restore`` - Grants permission to restore (reapply) changes. Recommended for: Experienced Staff
-- ``prism.tp`` - Teleport to a record ID. Recommended for: Experienced players.
-- ``prism.report`` - View reports. Recommended for: Staff
-- ``prism.reload`` - Grants config reload permission. Recommended for: OPs
-- ``prism.delete`` - Purge records from database via commands. Recommended for: OPs
-- ``prism.alerts`` - Alerts for ore finds, dangerous block placements.
-- ``prism.alerts.ores.ignore`` - Player with this perm will not trigger an ore alert.
-- ``prism.alerts.use.place.ignore`` - Player with this perm will not trigger a block place alert.
-- ``prism.alerts.use.break.ignore`` - Player with this perm will not trigger a block break alert.
-- ``prism.alerts.use.lighter.ignore`` - Player with this perm will not trigger a lighter use alert.
-- ``prism.alerts.use.lavabucket.ignore`` - Player with this perm will not trigger a lava bucket placement alert.
-- ``prism.alerts.ignore`` - Parent node for all alerts
-- ``prism.bypass``-use-alerts - Trusted players will be ignored for use alert feature.
-- ``prism.override``-max-lookup-radius - Allows a user to override the max lookup radius. Defaults to off, so it must explicitly be set.
-- ``prism.override``-max-applier-radius - Allows a user to override the max applier radius. Defaults to off, so it must explicitly be set.
-- ``prism.ignore.tracking.`` (action-type) - Ignore an action type for a specific group.
-- ``prism.view`` - Use the view commands
-- ``prism.*`` - Grants all permissions. Warning: Includes all of the ignore tracking permission nodes.
+- ``prism.extinguish`` - 允许移除半径内的所有火焰. 建议予给有经验的玩家.
+- ``prism.drain`` - 允许移除半径内的水和熔岩. 建议给予有经验的玩家.
+- ``prism.preview`` - 允许用户在 回滚或还原 前预览变化. 建议给予城管.
+- ``prism.rollback`` - 允许用户回滚变化. 建议给予有经验的城管.
+- ``prism.restore`` - 允许用户还原 (重新应用) 变化. 建议给予有经验的城管.
+- ``prism.tp`` - 允许用户传送到一个记录 ID. 建议给予有经验的玩家.
+- ``prism.report`` - 允许用户查看报告. 建议给予城管.
+- ``prism.reload`` - 允许用户重载配置文件. 建议给予服务器管理员.
+- ``prism.delete`` - 允许用户通过指令删除数据库中的数据记录. 建议给予服务器管理员.
+- ``prism.alerts`` - 使用户接收寻找到矿石的警告以及高危方块放置的警告.
+- ``prism.alerts.ores.ignore`` - 拥有此权限的玩家不会触发寻找到矿石的警告.
+- ``prism.alerts.use.place.ignore`` - 拥有此权限的玩家不会触发放置方块的警告.
+- ``prism.alerts.use.break.ignore`` - 拥有此权限的玩家不会触发破坏方块的警告.
+- ``prism.alerts.use.lighter.ignore`` - 拥有此权限的玩家不会触发点火的警告.
+- ``prism.alerts.use.lavabucket.ignore`` - 拥有此权限的玩家不会触发倒出熔岩的警告.
+- ``prism.alerts.ignore`` - 不会触发警告的父权限节点.
+- ``prism.bypass``-use-alerts - 忽略信任的玩家的 use 警告功能.
+- ``prism.override``-max-lookup-radius - 允许用户覆写最大查询半径. 默认不给予这个权限, 所以需要明确地设定给玩家.
+- ``prism.override``-max-applier-radius - 允许用户覆写最大应用半径. 默认不给予这个权限, 所以需要明确地设定给玩家.
+- ``prism.ignore.tracking.`` (行为类型) - 为特定的权限组忽略行为类型.
+- ``prism.view`` - 允许用户使用 视野 指令.
+- ``prism.*`` - 给予用户所有的权限. 警告: 包含所有忽略追踪的权限节点.

@@ -1,8 +1,9 @@
-Delete
+删除
 ======
 
 .. tip::
 
-  | /prism delete <params>
+  | ``/prism delete <参数>``
+  | ``/prism 删除 <参数>``
 
-Server operators can use ``/prism delete [timeframe]`` to manually purge records from the database. This isn't usually necessary, as Prism will automatically purge records (per config) every 12 hours. See :ref:`purging`. All parameters will work with delete.
+服务器管理员可以使用 ``/prism delete [时间范围]`` 来手动清理数据库中的数据记录. 这不是很必要, 因为 Prism 会自动清理数据记录 (每个配置文件) 每 12 小时. 参阅 :ref:`数据清理<purging>`. 所有的参数都可以与 删除 配合使用.
