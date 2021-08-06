@@ -7,6 +7,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
 public class PrismLocalization {
@@ -20,7 +22,7 @@ public class PrismLocalization {
         InputStream translationStream = plugin.getResource("languages/localisation.yml");
         if (translationStream != null) {
             try {
-                translation.load(new InputStreamReader(translationStream));
+                translation.load(new InputStreamReader(translationStream, StandardCharsets.UTF_8));
             } catch (IOException | InvalidConfigurationException exception) {
                 exception.printStackTrace();
                 return;
