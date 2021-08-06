@@ -10,7 +10,7 @@ public class Il8NHelperTest extends TestCase {
 
 
     public void testGetRawMessage() {
-        assertEquals("Prism - originally by Viveleroi; maintained by <author> v<version>",
+        assertEquals("Prism - 原作者 Viveleroi; 现维护者 <author> v<version>; 汉化 Rothes",
                 Il8nHelper.getRawMessage("about-header"));
     }
 
