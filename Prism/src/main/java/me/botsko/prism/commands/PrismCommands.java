@@ -85,7 +85,7 @@ public class PrismCommands extends Executor {
         addSub(new String[]{"delete", "purge", "删除", "清理"}, "prism.delete").allowConsole().setHandler(new DeleteCommand(prism));
         addSub(new String[]{"recorder", "记录器"}, "prism.recorder").allowConsole().setHandler(new RecorderCommand(prism));
         addSub(new String[]{"undo", "撤销"}, "prism.rollback").setHandler(new UndoCommand(prism));
-        addSub(new String[]{"view", "v", "视野"}, "prism.view").setMinArgs(1).setHandler(new ViewCommand(prism));
+        addSub(new String[]{"view", "v", "视图"}, "prism.view").setMinArgs(1).setHandler(new ViewCommand(prism));
         addSub(new String[]{"purge", "清理"}, "prism.purge").allowConsole().setHandler(new PurgeCommand(prism));
     }
 
