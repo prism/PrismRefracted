@@ -12,10 +12,10 @@ Prism 指令
    魔棒<commands/wand>
    排水<commands/drain>
    灭火<commands/extinguish>
-   视野<commands/view>
+   视图<commands/view>
    设置<commands/settings>
    清理<commands/purge>
-   "跳过" 的意思是什么<commands/skipped>
+   什么是"已跳过"<commands/skipped>
 
 参数与标志
 ^^^^^^^^^^^^^^^^^^^^

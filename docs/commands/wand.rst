@@ -1,36 +1,41 @@
-Wands
+魔棒
 =====
 
 .. tip::
 
-  | /prism wand [rollback | restore | inspect}
+  | /prism wand [rollback | restore | inspect]
+  | /prism 魔棒 [回滚 | 还原 | 查询]
   | /pr wand
+  | /pr 魔棒
   | /pr i
+  | /pr 查询
 
-The wand allows rollback, restores and inspections with a click block interface - using block mode allows you to inspect an air block for changes, the hand and item mode inspect the block that is clicked.
+魔棒让您能够通过点击方块来执行查询、回滚、还原操作.
 
 
-Setting / Resetting the Wand
+设定魔棒偏好 / 重置魔棒偏好
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. tip::
 
-  | /prism setmy [item | hand | block}
+  | /prism setmy [hand | item | block]
+  | /prism 偏好 [空手 | 物品 | 方块]
   | /prism resetmy
+  | /prism 重置偏好
 
-There are three wand modes: `hand`, `item`, `block`.
+有三个魔棒模式可供使用: `空手`, `物品`, `方块`.
 
-You can define the default mode for all Prism users in the config.
-You may set the mode, which item is used, whether not to auto-equip the player with it, and more.
+您可以在配置文件中定义 Prism 用户使用的默认模式.
+可以设置魔棒模式、使用的物品、是否自动为用户装备上该物品, 以及更多.
 
-- "hand" is the default and works as Prism does currently.
-- "item" allows you to set a default item-id that will be used as the wand.
-- "block" mode allows you to set a default block id, so you can replicate the way other rollback plugins work, with the placement of a block to mimic the right-click of hand/item actions. Using the block mode is not recommend to a high number of problems introduced by other plugins, inventory update problems, etc.
+- "空手" 是目前 Prism 默认设置的魔棒模式.
+- "物品" 允许用户设置一个默认的 物品ID 来作为魔棒使用.
+- "方块" 允许用户设置一个默认的 方块ID 来作为魔棒使用, 所以您也可以仿造其它回滚插件使用的方式, 通过放置方块来模仿空手和物品的右键单击操作. 然而使用方块模式可能会受到其它插件的影响, 且可能有玩家库存更新问题等, 我们不建议使用该魔棒模式.
 
-Auto-Equip
+自动装备
 ^^^^^^^^^^
 
-You may control whether or not the items are automatically given to players when the wands are activated.
-If you have the item, we move it to your hand and swap out whatever you held before.
+您可以设置在玩家启用魔棒的时候是否自动给予玩家魔棒偏好物品.
+如果玩家拥有物品, 我们会将其自动到目前的快捷栏槽位中, 与当前所持物品交换.
 
-If you do not have the item, we give you one, and we will also remove it when you disable the wand!
+如果玩家没有物品, 插件会给予他们一个, 然后在他们关闭魔棒的时候移除它!

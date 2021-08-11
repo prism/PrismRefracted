@@ -7,15 +7,17 @@ Mysql
 
 在 Windows 上安装 (\ **原作者:**\ 我重申, Windows 并不是适合运行 Minecraft 服务器的操作系统) , 但如果您需要的话, 可参考  `在 Windows 上安装 MySQL <https://www.cnblogs.com/kendoziyu/p/MySQL.html>`_
 
-\ *上面中文的链接都是我瞎找的*\
+\ *上面中文的链接都是我瞎找的, 如果懒得话您也可以使用PHPStudy来一键架设.*\
 
-Once installed configurating Prism is pretty straight forward.  Open a MYSQL command line and type
+安装完毕后, 配置 Prism 非常容易. 只需要打开 MYSQL 命令行然后输入
 
 .. code:: sql
 
   CREATE SCHEMA `prism`;
   CREATE USER `prism`@`localhost` identified by `prism`;
   GRANT ALL PRIVILEGES ON prism.* TO 'prism'@'localhost';
+
+即可.
 
 记住如果您的 MySQL 和 Minecraft 服务器并不运行在同一个机器, 您就需要调整 `localhost` 字符串为 MySQL 服务器主机名. 如果您不确定, 可以将其调为 `%`, 但是这并不安全.
 
