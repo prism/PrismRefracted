@@ -1,26 +1,35 @@
 ****
-Undo
+撤销
 ****
 
-**Undo is currently only available for drain events.**
+**撤销目前只对排水操作有效.**
 
-Prism has an extremely unique undo system, all because it was designed to essentially work as rollback/restore system for Prism events.
-Essentially, we record rollback, restore, drain, and other events just as we record player, entity, and world events.
+Prism 有着一个非常独特的撤销系统, 因为其在本质上就设计成对于 Prism 事件的回滚/还原系统.
+在本质上, 我们记录回滚、还原、排水以及一些其他的事件, 就像我们在记录玩家、实体和世界的事件一样.
 
-The benefit of this process are:
-- You can see a record of rollbacks, restores, drains, etc without command logging.
-- You can easily undo the last action, which is most common.
-- You can undo any supported action with its ID number.
-- This means you don't lose the ability to undo when you crash / log off.
-- Other staff may undo an action done by someone else.
+这种处理的好处是:
+- 可以在不使用指令数据记录的情况下, 查询回滚、还原、排水等行为的记录.
+- 可以轻松地撤销上一次的操作, 这是最常用的.
+- 可以使用 数字ID 来撤销任何支持的操作.
+- 这意味着当服务器崩溃/关闭之后您也不会失去撤销的能力.
+- 其他管理员也可以撤销别人的操作.
 
-Undo
+撤销
 ====
 
-After you use `/prism drain` on liquid, you can undo it.
+在对液体执行 `/prism drain` 指令后, 您可以撤销它.
 
-Use `/prism undo last` to reverse the most recent drain action.
+.. tip::
 
-Use `/prism undo` to list all drain actions that have been recorded. Each record will show an ID and with the id, you can undo any drain event that shows.
+  | ``/prism undo last``
+  | ``/prism 撤销 上次``
 
-`/prism undo [id]`
+恢复上一次执行的排水操作.
+
+
+.. tip::
+
+  | ``/prism undo [ID]``
+  | ``/prism 撤销 [ID]``
+
+如果不填 ID 则会列出所有记录的排水操作. 列表中的每一个操作都会写上其 ID, 然后您可以使用这个 ID 来撤销这个排水操作.

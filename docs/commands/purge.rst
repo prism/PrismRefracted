@@ -1,8 +1,9 @@
-Purge
+清理
 =====
 
 .. tip::
 
-  /prism purge <cancel>
+  | ``/prism purge <cancel>``
+  | ``/prism 清理 <取消>``
 
-Schedules and cancels purges. See :ref:`purging`
+计划或取消数据清理任务. 参阅 :ref:`purging` .

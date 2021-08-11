@@ -7,62 +7,62 @@
   | ``/pr flags``
   | ``/pr 标志``
 
-此指令会向执行者展示所有可用的标志. There are some command flags that control specific details about the process you're running, giving you a whole new level of control over Prism.
+此指令会向执行者展示所有可用的标志. 这里面的一些指令标志可以控制将要运行的进程的特定细节, 让您获得 Prism 的全新控制能力.
 
-Drain/Drain Water/Drain Lava
+排水/仅排水/仅排熔岩
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-``/prism (cmd) (params) -drain``
+``/prism (指令) (参数) -drain``
 
-Adding a drain flag initiates a drain action (exactly as done by `/prism drain`) during the rollback. Use ``-drain-lava`` or ``-drain-water`` to target a specific liquid.
+添加了排水标志会在回滚期间执行一个排水操作 (与 `/prism drain` 的效果完全相同). 使用 ``-drain-lava`` 或者 ``-drain-water`` 可以针对一种特定的液体来执行排水操作.
 
-Extended
+扩展
 ^^^^^^^^
 
-Unless you've enabled extended logs in the config, we don't show you the extra info to reduce clutter.
-But you may want it.
-Use ``-extended`` to see the extended logs.
+除非在配置文件中启用了显示扩展记录, 我们在默认情况下是不会向您显示扩展信息的, 可以减少杂乱的信息.
+但是有的时候您可能会需要它.
+使用 ``-extended`` 可以查询到扩展记录.
 
 .. image:: ../_images/prism_extended_display.png
    :width: 600
-   :alt: Prism Extended Display.
+   :alt: 显示扩展记录的 Prism 查询信息.
 
-No Group
+不分组
 ^^^^^^^^
 
-Don't want to see actions grouped together?
-Use ``-no-group``.
+不想获得自动分组后的查询信息?
+这种情况可以使用 ``-no-group``.
 
-No Extinguish
+不灭火
 ^^^^^^^^^^^^^
 
-``/prism (cmd) (params) -no-ext``
+``/prism (指令) (参数) -no-ext``
 
-If configured, prism will automatically put out a burning fire when doing an `a:burn rollback`. If you need to disable this feature for a specific rollback, use this flag at command time.
+如果在配置文件中配置了, Prism 会在执行 行为为burn 的回滚操作时自动扑灭范围内的火焰. 如果想要为一次特殊的回滚操作关闭此功能, 可以在指令中使用该标志.
 
-Overwrite
+覆写
 ^^^^^^^^^
 
-``/prism (cmd) (params) -overwrite``
+``/prism (指令) (参数) -overwrite``
 
-Overwrite any block that may happen to be in the way and would normally be skipped.
+覆盖所有在操作过程中可能冲突的方块. 如果没有此标志, 默认它们会被跳过.
 
-Per-Page
+每页结果
 ^^^^^^^^
 
-``/prism (cmd) (params) -per-page=#``
+``/prism (指令) (参数) -per-page=#``
 
-The number of results for the current page.
+调整一次查询中每页显示的结果数量.
 
-Share
+分享
 ^^^^^
 
-``/prism (cmd) (params) -share=#``
+``/prism (指令) (参数) -share=#``
 
-A list of online players to share the current lookup results with.
+分享当前查询的结果给列表中的在线玩家.
 
-Paste
+粘贴
 ^^^^^
 
-``/prism (cmd) (params) -paste``
+``/prism (指令) (参数) -paste``
 
-Paste the result to "https://paste.gg" a paste service.
+将结果粘贴在 "https://paste.gg" 中. 这是一个粘贴箱服务网站.

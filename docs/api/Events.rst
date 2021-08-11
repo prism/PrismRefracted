@@ -2,7 +2,7 @@
 挂钩到事件
 ##############
 
-Prism 有 5 个事件可以被挂钩, 来监视 Prism 和其 API.
+Prism 有 5 个事件可以监听, 来监视 Prism 和其 API.
 
 PrismLoadedEvent
 ================
@@ -16,12 +16,12 @@ PrismLoadedEvent
     }
   }
 
-如果您不想让您的插件依赖于 Prism, 在它之后加载, 可以挂钩到这个事件, 也可以让您获得完整加载的 API.
+如果您不想让您的插件依赖于 Prism、在它之后加载, 您可以选择监听这个事件, 也可以让您获得完整加载的 API.
 
 PrismUnloadEvent
 ================
 
-这个事件没有任何方法. 挂钩到这个事件可以让您知道何时 Prism API 不再可用.
+这个事件没有任何方法. 监听这个事件可以让您知道何时 Prism API 不再可用.
 
 
 PrismRollbackEvent

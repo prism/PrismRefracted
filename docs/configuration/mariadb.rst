@@ -3,8 +3,8 @@
 MariaDB
 =======
 
-MariaDB is not fully MYSQL compatible.  Thus it does not support all the functions available to a MYSQL server.  Thus we
-only a subset of functions can be used.  Prism can support this but setting our NonStandardSQL parameter to false.  We still use the MYSQL driver as it is packed with most servers.  Alternatively you could use the advanced Hikari (see :ref:`hikari` configuration
+MariaDB 并不完全兼容 MYSQL, 它不支持 MySQL 服务器的所有可用的功能. 因此我们只能使用函数的一个子集.
+Prism 可以支持此数据库, 设置 NonStandardSQL 参数为 false 即可. 但我们仍然会使用 MySQL 驱动, 因为它打包在大多数服务端之中. 或者您可以使用进阶的 Hikari 来配置. (参阅 :ref:`hikari` 配置)
 
 .. code:: yaml
 

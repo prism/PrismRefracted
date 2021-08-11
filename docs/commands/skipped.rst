@@ -1,8 +1,8 @@
-What does Skipped mean?
+什么是"已跳过"?
 =======================
 
-- Entities that prism will refuse to rollback. Currently: Creepers
-- Blocks that prism will refuse to rollback: fire, tnt, lava
-- For some reason crops aren't rolling back onto soil (if not dirt/grass/air)
-- For some reason lilypads aren't rolling back on water (water or air are ok)
-- If the location that we're trying to place a block into has changed from what we expect. Example - if a player A places stone and breaks it, and player B places a gold block in that same spot, a rollback of `p:playerA a:break` will be skipped because Prism doesn't want to mess up what Player B has done. To force this, use the `-overwrite` flag during rollbacks.
+- Prism 禁止回滚的实体. 默认配置: 苦力怕
+- Prism 禁止回滚的方块. 默认配置: 火焰, 熔岩
+- 由于一些原因, 导致耕地不能回滚到土块. (若不是 泥土/草方块/空气 的话)
+- 由于一些原因, 导致睡莲不能回滚到水或者空气上.
+- 如果 Prism 尝试放置方块的位置和预期的样子有所变化. 例如 - 如果 玩家A 放置了一个石头并破坏了它, 然后 玩家B 在同一个地方放置了一个泥土, 参数为 `p:玩家A a:break` 的回滚就会被跳过, 因为 Prism 不想破坏 玩家B 所做的事. 如果要强制回滚, 在参数中添加 `-overwrite` 标志即可.

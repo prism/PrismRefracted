@@ -53,5 +53,5 @@ Prism 权限列表:
 - ``prism.override``-max-lookup-radius - 允许用户覆写最大查询半径. 默认不给予这个权限, 所以需要明确地设定给玩家.
 - ``prism.override``-max-applier-radius - 允许用户覆写最大应用半径. 默认不给予这个权限, 所以需要明确地设定给玩家.
 - ``prism.ignore.tracking.`` (行为类型) - 为特定的权限组忽略行为类型.
-- ``prism.view`` - 允许用户使用 视野 指令.
+- ``prism.view`` - 允许用户使用 视图 指令.
 - ``prism.*`` - 给予用户所有的权限. 警告: 包含所有忽略追踪的权限节点.
