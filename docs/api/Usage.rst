@@ -26,7 +26,7 @@ API 用法
             @Override
             public void run() {
                 try {
-                    Result done = result.get(); //在完成前会冻结
+                    Result done = result.get(); //在完成前会阻塞
                     for (me.botsko.prism.api.actions.Handler handler : done.getActionResults()) {
                         ///用 handler 做点啥. 记住这是异步的.
                     }

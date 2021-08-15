@@ -19,11 +19,11 @@
 报告
 -------
 
-Prism offers a limited set of reports on block and action data per player.
+Prism 可以针对单个玩家的方块和行为数据提供一组有限的报告 offers a limited set of reports on block and action data per player.
 
 `/prism (rp|report) sum (blocks|actions) (player)`
 
-A summary report for blocks will list the total number of block break/place actions for the player, broken down by block.
+这将列出玩家A summary report for blocks will list the total number of block break/place actions for the player, broken down by block.
 
 The actions summary will display a count for each action type for the specific player.
 
