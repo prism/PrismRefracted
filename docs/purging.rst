@@ -4,30 +4,32 @@
 数据清理
 ########
 
-Prism will automatically purge old data based on your rules defined in the config. This helps keep the database size down which impacts the speed of your lookups, rollbacks, etc.
+Prism 会按照您在配置文件中定义的规则自动清理旧的数据记录.
+这有助于降低数据库大小, 并且提高查询、回滚等操作的速率.
 
-You can configure purge rules by providing a list of parameters in prism.db-records-purge-rules just like you would do in-game.
+您可以通过在配置文件中的 `prism.purge` 里提供一系列参数来配置数据清理规则, 就像在游戏中使用指令一样.
 
-How Purging Works
+数据清理如何工作
 =================
 
-Prism initializes the purge manager on server startup
-Every 12 hours (not tick-based) the purge cycle runs asynchronously
-Purge rules are handled one at a time
-Prism will "chunk" the database queries (see below)
-Once complete prism will list the total number of records removed and move on to the next rule
+Prism 会在服务器启动时初始化数据清理管理器,
+每隔12小时(根据现实世界而不是游戏刻), 周期数据清理都会异步运行一次.
+且每次只会处理一个数据清理规则, Prism 会"分块"数据库查询(如下),
+一旦完成, Prism 就会列出移除的数据记录总数并继续处理下一规则.
 
-What is Chunking
+什么是分块
 ================
 
-Chunking refers to the practice of scanning a limited number of records by their primary key each cycle, and then looking for records that match your parameters. No matter the conditions, queries will be extremely fast and will only lock the exact number of entries scanned. This helps prevent lock exhaustion errors and keeps the locking out of the way of new inserts from your running server.
+分块指每一循环周期都通过主键来搜索有限数量的数据记录, 然后再寻找匹配您参数的数据记录的做法. 不管条件如何, 数据库查询都会十分迅速并且只会锁定搜索到的真实条目数量.
+这有助于防止数据库锁耗竭的问题, 并且确保服务器运行时新插入的数据不会被锁定.
 
-The config entry ``prism.purge.records-per-batch`` refers to how many records will be scanned each cycle - by their primary keys - to find matches for your conditions. There will very likely be cycles in which the purge system doesn't find any records.
+配置文件项 ``prism.purge.records-per-batch``\ (每批次记录数) 指每一周期将按主键搜索多少数据记录, 来寻找匹配条件的数据记录. 此参数很有可能发生数据清理系统无法找到任何数据记录的周期问题.
 
-The config entry ``prism.purge.batch-tick-delay`` refers to the time in ticks between each cycle. After each cycle scanning the records-per-batch, Prism will wait this time before starting the next cycle.
+配置文件项 ``prism.purge.batch-tick-delay``\ (批次游戏刻间隔) 指每次周期的间隔时间, 以游戏刻为单位. 每次在周期搜索完毕 records-per-batch 之后, Prism 都会等待设定的时长, 然后开始下一周期.
 
-You should adjust the range records-per-batch and batch-tick-delay based on what your database server and size can manage. Prism defaults to 100,000 records per batch and a 30 tick (1.5 second) delay between batches. You can adjust them based on your needs.
+您应该根据您的数据库服务器和可管理的大小来调整 records-per-batch 和 batch-tick-delay 的值. Prism 的默认值设为每批次 100,000 条记录, 以及每批次 30 刻 (1.5 秒) 的间隔. 您可以根据需要来调整这些参数.
 
-Prism will report the maximum cycle time (time to scan records-per-batch) of each purge rule in milliseconds to help you adjust the purge parameters. In general, you want the largest number of records without the maximum cycle time becoming excessive. A good starting point might be to set records-per-batch such that the maximum cycle time is approximately equal to the batch-tick-delay.
+Prism 会以毫秒为单位报告每个数据清理规则的最大周期时间 (搜索 records-per-batch 的时间) 来帮助您调整数据清理参数. 通常应该使用越大的数据记录数量, 这能降低最大周期时间.
+设置 records-per-batch 并让最大周期时间略等于 batch-tick-delay 会是个不错的数据清理基础.
 
-Since each cycle is generally low-impact to the database because of chunking, it's very efficient to run while your server keeps writing new data.
+正是有了分块系统, 每次周期才通常都对数据库的影响很小, 因此在数据清理运行时仍然还能保持服务器可以非常迅速地写入新数据.
