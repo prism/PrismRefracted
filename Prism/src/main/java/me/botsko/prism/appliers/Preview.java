@@ -250,20 +250,18 @@ public class Preview implements Previewable {
                             iterator.remove();
                         }
                     } catch (final Exception e) {
-                        String line = "应用器错误:";
-                        String message = e.getMessage();
-
-                        if (message != null) {
-                            line += (' ' + message);
-                        }
-
-                        Prism.log(line);
+                        String msg = e.getMessage() == null ? "未知原因" : e.getMessage();
+                        Prism.log(String.format("应用器错误: %s (ID: %d)", msg, a.getId()));
+                        Prism.log(String.format("方块类型: %s (旧类型: %s)", a.getMaterial(), a.getOldMaterial()));
+                        Prism.log(String.format("方块坐标: %d, %d, %d",
+                                a.getLoc().getBlockX(),
+                                a.getLoc().getBlockY(),
+                                a.getLoc().getBlockZ()));
                         e.printStackTrace();
 
                         // Count as skipped, remove from queue
                         skippedBlockCount++;
                         iterator.remove();
-
                     }
                 }
             }
