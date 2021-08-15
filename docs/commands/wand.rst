@@ -3,12 +3,12 @@
 
 .. tip::
 
-  | /prism wand [rollback | restore | inspect]
-  | /prism 魔棒 [回滚 | 还原 | 查询]
-  | /pr wand
-  | /pr 魔棒
-  | /pr i
-  | /pr 查询
+  | ``/prism wand [rollback | restore | inspect]``
+  | ``/prism 魔棒 [回滚 | 还原 | 查询]``
+  | ``/pr wand``
+  | ``/pr 魔棒``
+  | ``/pr i``
+  | ``/pr 查询``
 
 魔棒让您能够通过点击方块来执行查询、回滚、还原操作.
 
@@ -18,10 +18,10 @@
 
 .. tip::
 
-  | /prism setmy [hand | item | block]
-  | /prism 偏好 [空手 | 物品 | 方块]
-  | /prism resetmy
-  | /prism 重置偏好
+  | ``/prism setmy [hand | item | block]``
+  | ``/prism 偏好 [空手 | 物品 | 方块]``
+  | ``/prism resetmy``
+  | ``/prism 重置偏好``
 
 有三个魔棒模式可供使用: `空手`, `物品`, `方块`.
 
