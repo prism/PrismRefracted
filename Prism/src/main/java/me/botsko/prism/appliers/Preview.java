@@ -149,7 +149,7 @@ public class Preview implements Previewable {
                     // Inform nearby players
                     plugin.notifyNearby(player, parameters.getRadius(), ReplaceableTextComponent.builder("notify-near")
                           .replace("<player>", player.getDisplayName())
-                          .replace("<processType>", processType.name().toLowerCase())
+                          .replace("<processType>", processType.getLocalization())
                           .build());
                     // Inform staff
                     if (plugin.getConfig().getBoolean("prism.alerts.alert-staff-to-applied-process")) {
@@ -157,7 +157,7 @@ public class Preview implements Previewable {
                         if (cmd != null) {
                             plugin.alertPlayers(player, ReplaceableTextComponent.builder("notify-staff")
                                     .replace("<player>", player.getDisplayName())
-                                    .replace("<processType>", processType.name().toLowerCase())
+                                    .replace("<processType>", processType.getLocalization())
                                     .replace("<originalCommand>", parameters.getOriginalCommand(),
                                             Style.style(NamedTextColor.GRAY))
                                     .build().colorIfAbsent(NamedTextColor.WHITE), null);
