@@ -41,12 +41,6 @@ public class EntitySerializer {
         return customDesc;
     }
 
-    protected final PrismLocalization prismLocalization;
-
-    public EntitySerializer() {
-        prismLocalization = Prism.getInstance().getPrismLocalization();
-    }
-
     // Le sigh
     public final void setNewColor(String color) {
         newColor = color;
@@ -57,6 +51,7 @@ public class EntitySerializer {
      * @param entity Entity.
      */
     public final void serialize(Entity entity) {
+        PrismLocalization prismLocalization = Prism.getInstance().getPrismLocalization();
         entityName = prismLocalization.hasEntityLocale(entity.getType().name()) ?
                 prismLocalization.getEntityLocale(entity.getType().name()) : entity.getType().name().toLowerCase();
 
