@@ -3,7 +3,7 @@ Prism 指令
 
 ..  toctree::
 
-   查找<commands/lookups>
+   查询<commands/lookups>
    预览<commands/preview>
    回滚<commands/rollbacks>
    还原<commands/restore>
