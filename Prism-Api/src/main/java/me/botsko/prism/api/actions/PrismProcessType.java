@@ -15,7 +15,7 @@ public enum PrismProcessType {
         this.localization = localization;
     }
 
-    public String getLocalization() {
+    public String getLocale() {
         return localization;
     }
 
