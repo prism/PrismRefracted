@@ -1,5 +1,8 @@
 package me.botsko.prism.actions;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.Expose;
 import me.botsko.prism.Prism;
 import me.botsko.prism.api.actions.PrismProcessType;
 
@@ -21,7 +24,8 @@ public class PrismProcessAction extends GenericAction {
 
         if (processType != null) {
             actionData.params = parameters;
-            actionData.processType = processType.getLocalization();
+            actionData.processType = processType.name().toLowerCase();
+            actionData.localedType = processType.getLocale();
         }
     }
 
@@ -32,13 +36,14 @@ public class PrismProcessAction extends GenericAction {
 
     @Override
     public String serialize() {
-        return gson().toJson(actionData);
+        return PrismProcessActionData.gson.toJson(actionData);
     }
 
     @Override
     public void deserialize(String data) {
         if (data != null && !data.isEmpty()) {
-            actionData = gson().fromJson(data, PrismProcessActionData.class);
+            actionData = PrismProcessActionData.gson.fromJson(data, PrismProcessActionData.class);
+            actionData.localedType = PrismProcessType.valueOf(actionData.processType.toUpperCase()).getLocale();
         }
     }
 
@@ -55,11 +60,16 @@ public class PrismProcessAction extends GenericAction {
      */
     @Override
     public String getNiceName() {
-        return actionData.processType + " (" + actionData.params + ")";
+        return actionData.localedType + " (" + actionData.params + ")";
     }
 
     public static class PrismProcessActionData {
+        public static Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        @Expose
         public String params = "";
+        @Expose
         public String processType;
+        @Expose(serialize = false, deserialize = false)
+        public String localedType;
     }
 }
