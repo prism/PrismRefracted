@@ -42,7 +42,7 @@ public class SqlSelectProcessQuery extends SqlSelectQueryBuilder implements Sele
             return "SELECT id FROM " + prefix + "data JOIN " + prefix + "players p ON p.player_id = " + prefix
                     + "data.player_id ";
         }
-        String sql = "SELECT id, action, epoch, world, player, HEX(player_uuid), x, y, z, data FROM " + prefix
+        String sql = "SELECT id, action, epoch, world, player, HEX(player_uuid), x, y, z, rollbacked, data FROM " + prefix
                 + "data d";
         sql += " INNER JOIN " + prefix + "players p ON p.player_id = d.player_id";
         sql += " INNER JOIN " + prefix + "actions a ON a.action_id = d.action_id";
