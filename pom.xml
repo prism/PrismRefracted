@@ -5,7 +5,7 @@
     <groupId>me.botsko</groupId>
     <artifactId>prism-parent</artifactId>
     <packaging>pom</packaging>
-    <version>2.2.0-SNAPSHOT</version>
+    <version>2.2.0-CN</version>
     <modules>
         <module>Prism-Api</module>
         <module>Prism</module>
@@ -54,7 +54,8 @@
         </developer>
     </developers>
     <properties>
-        <plugin.version>${project.version}-${build.number}</plugin.version>
+        <plugin.cnVersion>10</plugin.cnVersion>
+        <plugin.version>${project.version}-${plugin.cnVersion}</plugin.version>
         <build.number/>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spigot.api.version>1.16</spigot.api.version>
@@ -129,6 +130,7 @@
     </repositories>
 
     <build>
+        <defaultGoal>clean package</defaultGoal>
         <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
