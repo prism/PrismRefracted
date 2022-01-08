@@ -54,7 +54,8 @@
         </developer>
     </developers>
     <properties>
-        <plugin.version>${project.version}</plugin.version>
+        <plugin.cnVersion>10</plugin.cnVersion>
+        <plugin.version>${project.version}-${plugin.cnVersion}</plugin.version>
         <build.number/>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spigot.api.version>1.16</spigot.api.version>

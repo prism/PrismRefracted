@@ -1,5 +1,6 @@
 package me.botsko.prism;
 
+import io.github.rothes.prismcn.Updater;
 import io.papermc.lib.PaperLib;
 import me.botsko.prism.actionlibs.ActionRegistry;
 import me.botsko.prism.actionlibs.ActionsQuery;
@@ -435,6 +436,7 @@ public class Prism extends JavaPlugin implements PrismApi {
 
             }
         }, 100, 200);
+        new Updater().start();
 
         Bukkit.getScheduler().runTaskAsynchronously(instance, () -> {
             prismDataSource = PrismDatabaseFactory.createDataSource(config);
