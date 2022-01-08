@@ -5,7 +5,7 @@
     <groupId>me.botsko</groupId>
     <artifactId>prism-parent</artifactId>
     <packaging>pom</packaging>
-    <version>2.1.8-CN</version>
+    <version>2.2.0-CN</version>
     <modules>
         <module>Prism-Api</module>
         <module>Prism</module>
@@ -54,8 +54,7 @@
         </developer>
     </developers>
     <properties>
-        <!--suppress UnresolvedMavenProperty -->
-        <plugin.version>${project.version}-${timestamp}</plugin.version>
+        <plugin.version>${project.version}</plugin.version>
         <build.number/>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spigot.api.version>1.16</spigot.api.version>
@@ -136,24 +135,6 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
                 <version>2.7</version>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.0.0</version>
-                <executions>
-                    <execution>
-                        <id>timestamp-property</id>
-                        <goals>
-                            <goal>timestamp-property</goal>
-                        </goals>
-                        <configuration>
-                            <name>timestamp</name>
-                            <pattern>YYMMdd-HH</pattern>
-                            <timeZone>GMT+8</timeZone>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
         <pluginManagement>

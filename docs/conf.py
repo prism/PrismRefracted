@@ -21,7 +21,7 @@ project = 'Prism-Bukkit 中文版'
 copyright = '2020, AddstarMC'
 author = 'Narimm, Rothes'
 
-version = '2.1.8-SNAPSHOT'
+version = '2.2.0-SNAPSHOT'
 # The full version, including alpha/beta/rc tags
 release = version
 
