@@ -18,7 +18,7 @@
 # -- Project information -----------------------------------------------------
 
 project = 'Prism-Bukkit 中文版'
-copyright = '2020, AddstarMC'
+copyright = '2022, AddstarMC'
 author = 'Narimm, Rothes'
 
 version = '2.2.0-SNAPSHOT'
