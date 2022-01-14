@@ -21,11 +21,11 @@ project = 'Prism-Bukkit 中文版'
 copyright = '2022, AddstarMC'
 author = 'Narimm, Rothes'
 
-version = '2.1.8-SNAPSHOT'
+version = '2.2.0-SNAPSHOT-CN'
 # The full version, including alpha/beta/rc tags
 release = version
 
-if release.endswith('-SNAP-CN'):
+if release.endswith('-SNAPSHOT-CN'):
     tags.add('草案')
 
 # -- General configuration ---------------------------------------------------

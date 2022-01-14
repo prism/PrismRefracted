@@ -54,7 +54,7 @@
         </developer>
     </developers>
     <properties>
-        <plugin.cnVersion>10</plugin.cnVersion>
+        <plugin.cnVersion>11</plugin.cnVersion>
         <plugin.version>${project.version}-${plugin.cnVersion}</plugin.version>
         <build.number/>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

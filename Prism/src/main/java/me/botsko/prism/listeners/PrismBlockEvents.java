@@ -110,13 +110,13 @@ public class PrismBlockEvents extends BaseListener {
     private void logBlockRelationshipsForBlock(Player player, Block block) {
         relatedBlockCallback(block, b -> RecordingQueue.addToQueue(
                 ActionFactory.createBlock("block-break", b, player)), s -> plugin.preplannedBlockFalls.put(
-                        s, player.getUniqueId().toString()));
+                s, player.getUniqueId().toString()));
     }
 
     void logBlockRelationshipsForBlock(String nonPlayer, Block block) {
         relatedBlockCallback(block, b -> RecordingQueue.addToQueue(
                 ActionFactory.createBlock("block-break", b, nonPlayer)), s -> plugin.preplannedBlockFalls.put(
-                        s, nonPlayer));
+                s, nonPlayer));
     }
 
     private void relatedBlockCallback(Block block, Consumer<Block> breakCallback, Consumer<String> fallCallback) {
@@ -206,7 +206,7 @@ public class PrismBlockEvents extends BaseListener {
         // logItemRemoveFromDestroyedContainer( player, block );
         forEachItem(block, (i, s) -> RecordingQueue.addToQueue(
                 ActionFactory.createItemStack("item-remove", i, i.getAmount(), 0, null,
-                block.getLocation(), player)));
+                        block.getLocation(), player)));
 
         // Change handling a bit if it's a long block
         /*
@@ -260,8 +260,8 @@ public class PrismBlockEvents extends BaseListener {
         final BlockState s = event.getBlockReplacedState();
 
         // TODO: old and new appear flipped compared to other actions... check
-        RecordingQueue.addToQueue(ActionFactory.createBlockChange("block-place", block.getLocation(), s.getType(),
-                s.getBlockData(), block.getType(), block.getBlockData(), player));
+        RecordingQueue.addToQueue(ActionFactory.createBlockChange("block-place", s.getType(),
+                s.getBlockData(), block, player));
 
         // Pass to the placement alerter
         if (!player.hasPermission("prism.alerts.use.place.ignore") && !player.hasPermission("prism.alerts.ignore")) {
@@ -292,8 +292,8 @@ public class PrismBlockEvents extends BaseListener {
         final Block b = event.getBlock();
         final BlockState s = event.getNewState();
 
-        RecordingQueue.addToQueue(ActionFactory.createBlockChange(type, b.getLocation(), b.getType(), b.getBlockData(),
-                s.getType(), s.getBlockData(), "环境"));
+        RecordingQueue.addToQueue(ActionFactory.createBlockChange(type, b.getType(), b.getBlockData(),
+                s, "环境"));
     }
 
     /**
@@ -308,8 +308,8 @@ public class PrismBlockEvents extends BaseListener {
         final Block b = event.getBlock();
         final BlockState s = event.getNewState();
 
-        RecordingQueue.addToQueue(ActionFactory.createBlockChange("block-form", b.getLocation(), b.getType(),
-                b.getBlockData(), s.getType(), s.getBlockData(), "环境"));
+        RecordingQueue.addToQueue(ActionFactory.createBlockChange("block-form", b.getType(),
+                b.getBlockData(), s, "环境"));
     }
 
     /**
@@ -327,8 +327,8 @@ public class PrismBlockEvents extends BaseListener {
         }
         final BlockState s = event.getNewState();
 
-        RecordingQueue.addToQueue(ActionFactory.createBlockChange("block-fade", b.getLocation(), b.getType(),
-                b.getBlockData(), s.getType(), s.getBlockData(), "环境"));
+        RecordingQueue.addToQueue(ActionFactory.createBlockChange("block-fade", b.getType(),
+                b.getBlockData(), s, "环境"));
     }
 
     /**

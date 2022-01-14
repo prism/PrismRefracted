@@ -258,7 +258,7 @@ public class Preview implements Previewable {
                     } catch (final Exception e) {
                         String msg = e.getMessage() == null ? "未知原因" : e.getMessage();
                         Prism.log(String.format("应用器错误: %s (ID: %d)", msg, a.getId()));
-                        Prism.log(String.format("方块类型: %s (原 %s)", a.getMaterial(), a.getOldMaterial()));
+                        Prism.log(String.format("方块类型: %s (旧类型: %s)", a.getMaterial(), a.getOldMaterial()));
                         Prism.log(String.format("方块坐标: %d, %d, %d",
                                 a.getLoc().getBlockX(),
                                 a.getLoc().getBlockY(),
