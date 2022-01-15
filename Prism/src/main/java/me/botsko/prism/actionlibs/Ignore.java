@@ -50,7 +50,7 @@ public class Ignore {
                 || plugin.getConfig().getBoolean("prism.tracking." + actionTypeName)) {
             return true;
         } else {
-            Prism.debug("忽略操作类型: " + actionTypeName);
+            Prism.debug("忽略行为类型: " + actionTypeName);
             return false;
         }
     }
