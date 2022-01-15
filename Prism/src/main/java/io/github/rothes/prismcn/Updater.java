@@ -18,15 +18,15 @@ import java.util.Map;
 public class Updater {
 
     private final String VERSION_CHANNCEL = "Stable";
-    private final int VERSION_NUMBER = 10;
+    private final int VERSION_NUMBER = 11;
     private final HashMap<String, Integer> msgTimesMap = new HashMap<>();
 
     public void start() {
         Bukkit.getScheduler().runTaskTimerAsynchronously(Prism.getInstance(), () -> {
             try {
                 checkJson(getJson());
-            } catch (IllegalStateException | NullPointerException e) {
-                Prism.warn("§c无法正常解析版本信息 Json, 请更新您的插件至最新版本: " + e);
+            } catch (IllegalStateException | NullPointerException ignored) {
+//                Prism.warn("§c无法正常解析版本信息 Json, 请更新您的插件至最新版本: " + e);
             }
         }, 0L, 72000L);
     }

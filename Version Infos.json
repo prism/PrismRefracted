@@ -1,11 +1,11 @@
 {
   "Version_Channels": {
     "Stable": {
-      "Latest_Version_Number": 10,
+      "Latest_Version_Number": 11,
       "Actions": [],
       "Log_Level": "Info",
       "Message": {
-        "zh-CN": "§bPrism 中文版有新版本 (\"2.2.0-CN-10\") 了!\n§b请更新您的插件: https://www.mcbbs.net/thread-1230654-1-1.html !"
+        "zh-CN": "§bPrism 中文版有新版本 (\"2.2.0-CN-11\") 了!\n§b请更新您的插件: https://www.mcbbs.net/thread-1230654-1-1.html !"
       }
     }
   },
