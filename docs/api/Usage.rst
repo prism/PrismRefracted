@@ -94,7 +94,7 @@ First, add the repository:
       .. code:: xml
 
         <dependency>
-            <groupId>me.botsko</groupId>
+            <groupId>network.darkhelmet</groupId>
             <artifactId>Prism-Api</artifactId>
             <version>2.2.0-SNAPSHOT</version>
             <scope>provided</scope>
@@ -105,5 +105,5 @@ First, add the repository:
       .. code:: groovy
 
          dependencies {
-            provided "me.botsko:Prism-Api:2.2.0-SNAPSHOT"
+            provided "network.darkhelmet:Prism-Api:2.2.0-SNAPSHOT"
          }

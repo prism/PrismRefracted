@@ -1,10 +1,10 @@
 name: Prism
-main: me.botsko.prism.Prism
-version: 1.0.0
+main: network.darkhelmet.prism.Prism
+version: @version@
 softdepend: [WorldEdit]
 author: viveleroi
 website: https://github.com/darkhelmet-gaming/PrismRefracted
-api-version: 1.17
+api-version: @apiversion@
 commands:
    prism:
       description: Base command for everything Prism
