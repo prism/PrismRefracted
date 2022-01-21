@@ -29,7 +29,7 @@ public class AboutCommand implements SubHandler {
                         Il8nHelper.getMessage("about-header")
                                 .replaceText(Pattern.compile("<author>"),
                                     builder -> Component.text()
-                                             .content("The AddstarMC Network")
+                                             .content("viveleroi")
                                              .color(NamedTextColor.GOLD))
                                 .replaceText(Pattern.compile("<version>"),
                                     builder -> Component.text().content(plugin.getPrismVersion()))));

@@ -385,7 +385,7 @@ public class Prism extends JavaPlugin implements PrismApi {
         pluginVersion = this.getDescription().getVersion();
         audiences = BukkitAudiences.create(this);
         messenger = new Messenger(pluginName, Prism.getAudiences());
-        log("Initializing Prism " + pluginVersion + ". Originally by Viveleroi; maintained by the AddstarMC Network");
+        log("Initializing Prism " + pluginVersion + ". by viveleroi");
         loadConfig();        // Load configuration, or install if new
         isPaper = PaperLib.isPaper();
         if (isPaper) {
