@@ -27,10 +27,6 @@ public class AboutCommand implements SubHandler {
         Prism.messenger.sendMessage(call.getSender(),
                 Prism.messenger.playerHeaderMsg(
                         Il8nHelper.getMessage("about-header")
-                                .replaceText(Pattern.compile("<author>"),
-                                    builder -> Component.text()
-                                             .content("viveleroi")
-                                             .color(NamedTextColor.GOLD))
                                 .replaceText(Pattern.compile("<version>"),
                                     builder -> Component.text().content(plugin.getPrismVersion()))));
         Prism.messenger.sendMessage(call.getSender(), Prism.messenger.playerSubduedHeaderMsg(
@@ -40,16 +36,9 @@ public class AboutCommand implements SubHandler {
         Prism.messenger.sendMessage(call.getSender(),
                 Prism.messenger.playerSubduedHeaderMsg(
                         Component.text().content("Discord: ")
-                                .append(Component.text(Il8nHelper.getRawMessage("discord-url"))
+                                .append(Component.text("https://discord.gg/7FxZScH4EJ")
                                         .color(NamedTextColor.WHITE))
-                                .clickEvent(ClickEvent.openUrl(Il8nHelper.getRawMessage("discord-url")))
-                                .build()));
-        Prism.messenger.sendMessage(call.getSender(),
-                Prism.messenger.playerSubduedHeaderMsg(
-                        Component.text().content("Wiki: ")
-                                .append(Component.text(Il8nHelper.getRawMessage("wiki-url"))
-                                        .color(NamedTextColor.WHITE))
-                                .clickEvent(ClickEvent.openUrl(Il8nHelper.getRawMessage("wiki-url")))
+                                .clickEvent(ClickEvent.openUrl("https://discord.gg/7FxZScH4EJ"))
                                 .build()));
     }
 
