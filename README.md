@@ -17,6 +17,18 @@ Please be patient as I work to get this project where I want, establish document
 
 - [**Discord**][discord] - Please visit discord for help before opening issues.
 
+# Rough Roadmap
+
+A lot of this code is nearing a decade old. Some things really can be better:
+
+- Convert command handling to ACF
+- Replace all database crud with a Storage approach like we did in Prism for Sponge. Allow mongoDB.
+- Fix non-standard SQL issues, re-evaluate efficiency stuff.
+- Improve how hikari configs are used.
+- Properly checkstyle and fix formatting to my tastes
+- Bring back Prism WebUI
+- Consider moving ore alerts, etc to a separate plugin
+
 ## License
 
 Prism is licensed the under the Creative Commons
