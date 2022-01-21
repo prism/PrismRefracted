@@ -57,7 +57,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -653,15 +652,6 @@ public class Prism extends JavaPlugin implements PrismApi {
     private void checkPluginDependencies() {
         // WorldEdit
         ApiHandler.hookWorldEdit();
-        //bstats
-        if (getConfig().getBoolean("prism.allow-metrics")) {
-            Prism.log("Prism bStats metrics are enabled - thank you!");
-            int pluginId = 4365; // assigned by bstats.org
-            Metrics metrics = new Metrics(this, pluginId);
-            if (!metrics.isEnabled()) {
-                Prism.warn("bStats failed to initialise! Please check Prism/bStats configs.");
-            }
-        }
     }
 
     /**

@@ -87,7 +87,8 @@ public class MySqlPrismDataSource extends SqlPrismDataSource {
         if (dbConfig.getJdbcUrl() == null) {
             final String dns = "jdbc:mysql://" + this.section.getString("hostname") + ":"
                     + this.section.getString("port") + "/" + this.section.getString("databaseName")
-                    + "?useUnicode=true&characterEncoding=UTF-8&useSSL=false";
+//                    + "?useUnicode=true&characterEncoding=UTF-8&useSSL=false";
+                + "?useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true";
             dbConfig.setJdbcUrl(dns);
             dbConfig.setUsername(this.section.getString("username"));
             dbConfig.setPassword(this.section.getString("password"));
