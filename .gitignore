@@ -1,53 +1,18 @@
-.gradle
-
-# Numerous always-ignore extensions
-*.diff
-*.err
-*.orig
-*.log
-*.rej
-*.swo
-*.swp
-*.vi
-*~
-# OS or Editor folders
-.DS_Store
-.cache
-.project
-.settings
-.tmproj
-nbproject
-Thumbs.db
-
-# Dreamweaver added files
-_notes
-dwsync.xml
-
-# Komodo
-*.komodoproject
-.komodotools
-
-# Folders to ignore
-.hg
-.svn
-.CVS
-intermediate
-publish
-.idea
-
-
-# Eclipse stuff
-.classpath
-build.xml
-target
-
-# various other potential build files
+# gradle
 build
-bin
-dist
-manifest.mf
+/.gradle/
 
-# Mac filesystem dust
+# idea
+/.idea/
+/*.iml
+/*.ipr
+/*.iws
 
+# eclipse
+/bin/
+/.settings/
+/.classpath
+/.project
 
-*.iml
+# custom
+/run/

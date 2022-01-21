@@ -1,0 +1,7 @@
+name: Prism
+version: @version@
+description: A change tracking plugin with rollback/restore features.
+authors: [viveleroi]
+website:
+api-version: @apiversion@
+main: darkhelmet.network.prism.Prism

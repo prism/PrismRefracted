@@ -1,0 +1,68 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+plugins {
+    id "com.github.johnrengelman.shadow" version "7.0.0"
+    id "xyz.jpenilla.run-paper" version "1.0.6"
+}
+
+apply plugin: 'java'
+apply plugin: 'checkstyle'
+
+processResources {
+    filter ReplaceTokens, tokens: [
+        "apiversion": project.property("apiversion"),
+        "version"   : project.property("version")
+    ]
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+
+    // Spigot
+    maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+
+    // WorldEdit
+    maven { url = "https://maven.enginehub.org/repo/" }
+}
+
+group = project.property("group")
+version = project.property("version")
+targetCompatibility = sourceCompatibility = JavaVersion.VERSION_17
+
+dependencies {
+    compileOnly 'org.spigotmc:spigot-api:1.17-R0.1-SNAPSHOT'
+    compileOnly 'com.sk89q.worldedit:worldedit-core:7.2.0-SNAPSHOT'
+    compileOnly 'com.sk89q.worldedit:worldedit-bukkit:7.2.0-SNAPSHOT'
+    implementation 'com.zaxxer:HikariCP:4.0.3'
+    implementation 'net.kyori:adventure-api:4.8.1'
+    implementation 'net.kyori:adventure-platform-bukkit:4.0.0-SNAPSHOT'
+    implementation 'net.kyori:adventure-text-serializer-plain:4.8.1'
+    implementation 'org.spongepowered:configurate-hocon:4.1.2'
+    implementation project(':prism-api')
+}
+
+compileJava {
+    options.compilerArgs += ["-parameters"]
+    options.fork = true
+    options.forkOptions.executable = 'javac'
+}
+
+jar {
+    actions = []
+    dependsOn = []
+    dependsOn('shadowJar')
+}
+
+shadowJar {
+    relocate 'com.zaxxer', 'network.darkhelmet.prism.zaxxer'
+    relocate 'net.kyori', 'network.darkhelmet.prism.kyori'
+    relocate 'org.spongepowered', 'network.darkhelmet.spongepowered'
+}
+
+runServer {
+    // Configure the Minecraft version for our task.
+    // This is the only required configuration besides applying the plugin.
+    // Your plugin's jar (or shadowJar if present) will be used automatically.
+    minecraftVersion("1.18.1")
+}

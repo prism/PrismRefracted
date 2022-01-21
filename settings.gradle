@@ -1,2 +1,10 @@
-rootProject.name = 'PrismRefracted'
-include 'Prism-Api', 'Prism'
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+
+        maven { url = "https://repo.jpenilla.xyz/snapshots/" }
+    }
+}
+
+rootProject.name = 'prism'
+include 'prism-api', 'prism'

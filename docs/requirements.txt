@@ -1,4 +1,0 @@
-sphinx-rtd-theme
-sphinx-tabs
-sphinxemoji
-rstcheck # format checks
