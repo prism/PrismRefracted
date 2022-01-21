@@ -62,5 +62,4 @@ shadowJar {
     relocate 'com.zaxxer', 'network.darkhelmet.prism.zaxxer'
     relocate 'net.kyori', 'network.darkhelmet.prism.kyori'
     relocate 'org.kitteh', 'network.darkhelmet.prism.kitteh'
-    relocate 'org.bstats', 'network.darkhelmet.prism.bstats'
 }
