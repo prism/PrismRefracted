@@ -27,7 +27,7 @@ Usage of the API
             public void run() {
                 try {
                     Result done = result.get(); //Blocks until complete
-                    for (me.botsko.prism.api.actions.Handler handler : done.getActionResults()) {
+                    for (Handler handler : done.getActionResults()) {
                         ///do something with the handler here. Remember you are Async.
                     }
                 } catch (InterruptedException | ExecutionException e) {
