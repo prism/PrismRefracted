@@ -7,10 +7,13 @@ import me.mattstudios.mf.base.CommandManager;
 
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 
+import network.darkhelmet.prism.api.storage.IStorageAdapter;
 import network.darkhelmet.prism.commands.AboutCommand;
 import network.darkhelmet.prism.config.Config;
 import network.darkhelmet.prism.config.PrismConfiguration;
+import network.darkhelmet.prism.config.StorageConfiguration;
 import network.darkhelmet.prism.formatters.OutputFormatter;
+import network.darkhelmet.prism.storage.mysql.MysqlStorageAdapter;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -31,14 +34,14 @@ public class Prism extends JavaPlugin {
     private PrismConfiguration prismConfig;
 
     /**
+     * The storage configuration.
+     */
+    private StorageConfiguration storageConfig;
+
+    /**
      * Cache the plugin name.
      */
     private String pluginName;
-
-    /**
-     * Cache the plugin version.
-     */
-    private String pluginVersion;
 
     /**
      * The bukkit audience.
@@ -49,6 +52,11 @@ public class Prism extends JavaPlugin {
      * The output formatter.
      */
     private OutputFormatter outputFormatter;
+
+    /**
+     * The storage adapter.
+     */
+    IStorageAdapter storageAdapter;
 
     /**
      * Get this instance.
@@ -72,11 +80,11 @@ public class Prism extends JavaPlugin {
     @Override
     public void onEnable() {
         pluginName = this.getDescription().getName();
-        pluginVersion = this.getDescription().getVersion();
+        String pluginVersion = this.getDescription().getVersion();
         log(String.format("Initializing %s %s by viveleroi", pluginName, pluginVersion));
 
         // Load the plugin configuration
-        loadConfigurations();
+        loadConfiguration();
 
         if (isEnabled()) {
             audiences = BukkitAudiences.create(this);
@@ -90,10 +98,17 @@ public class Prism extends JavaPlugin {
     /**
      * Reloads all configuration files.
      */
-    public void loadConfigurations() {
+    public void loadConfiguration() {
         // Load the main config
         File prismConfigFile = new File(getDataFolder(), "prism.conf");
         prismConfig = Config.getOrWriteConfiguration(PrismConfiguration.class, prismConfigFile);
+
+        File storageConfigFile = new File(getDataFolder(), "storage.conf");
+        storageConfig = Config.getOrWriteConfiguration(StorageConfiguration.class, storageConfigFile);
+
+        if (storageConfig.datasource().equalsIgnoreCase("mysql")) {
+            storageAdapter = new MysqlStorageAdapter(storageConfig);
+        }
     }
 
     /**

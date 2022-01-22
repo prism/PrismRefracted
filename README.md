@@ -1,6 +1,10 @@
 **Prism (Refracted)** is a change-tracking plugin for Bukkit-based servers. Supports rollbacks, restores, previews, 
 wands, and so much more. Tracking so good, the NSA stole our name.
 
+## DEV NOTICE
+
+v3 is currently in development and not suitable for production use. Stuff WILL change.
+
 ## Support
 
 Please be patient as I work to get this project where I want, establish documentation, build servers, etc. 
