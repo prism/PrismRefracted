@@ -12,11 +12,14 @@ public class StorageConfiguration {
     @Comment("Configure the jdbc url, if applicable to the selected datasource.")
     private String jdbcUrl = "jdbc:mysql://localhost:3306/prism?useUnicode=true&characterEncoding=UTF-8";
 
-    @Comment("Enter the username, if the selected datasource uses authentication")
-    private String username = "root";
-
     @Comment("Enter the password, if the selected datasource uses authentication")
     private String password = "";
+
+    @Comment("Enter the prefix prism should use for database table names. i.e. prism_data")
+    private String prefix = "prism_";
+
+    @Comment("Enter the username, if the selected datasource uses authentication")
+    private String username = "root";
 
     /**
      * Get the datasource setting.
@@ -43,6 +46,15 @@ public class StorageConfiguration {
      */
     public String password() {
         return password;
+    }
+
+    /**
+     * Get the prefix.
+     *
+     * @return The prefix
+     */
+    public String prefix() {
+        return prefix;
     }
 
     /**

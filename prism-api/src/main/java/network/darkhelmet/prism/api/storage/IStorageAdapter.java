@@ -1,5 +1,9 @@
 package network.darkhelmet.prism.api.storage;
 
-public interface IStorageAdapter {
+import network.darkhelmet.prism.api.storage.models.WorldModel;
 
+import org.bukkit.World;
+
+public interface IStorageAdapter {
+//    WorldModel getOrCreateWorld(World world);
 }
