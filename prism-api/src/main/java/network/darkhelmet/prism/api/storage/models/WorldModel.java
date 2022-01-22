@@ -23,7 +23,7 @@ public class WorldModel {
      *
      * @return The world UUID.
      */
-    public UUID worldUUID() {
+    public UUID worldUuid() {
         return worldUuid;
     }
 

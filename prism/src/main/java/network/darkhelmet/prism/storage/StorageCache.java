@@ -15,6 +15,6 @@ public class StorageCache implements IStorageCache {
 
     @Override
     public void cacheWorldModel(WorldModel worldModel) {
-        worldModels.put(worldModel.worldUUID(), worldModel);
+        worldModels.put(worldModel.worldUuid(), worldModel);
     }
 }

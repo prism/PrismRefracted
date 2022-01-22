@@ -183,7 +183,8 @@ public class MysqlStorageAdapter implements IStorageAdapter {
 
     @Override
     public Optional<WorldModel> getWorld(World world) {
-        @Language("SQL") String sql = "SELECT world_id, HEX(world_uuid) AS uuid FROM " + storageConfig.prefix() + "worlds "
+        @Language("SQL") String sql = "SELECT world_id, HEX(world_uuid) AS uuid FROM "
+            + storageConfig.prefix() + "worlds "
             + "WHERE world_uuid = UNHEX(?)";
 
         String worldUid = TypeUtils.uuidToDbString(world.getUID());

@@ -6,7 +6,7 @@ public interface IStorageCache {
     /**
      * Cache world models in memory.
      *
-     * Useful for lookups when the server is running.
+     * <p>Useful for lookups when the server is running.</p>
      *
      * @param worldModel The world model
      */

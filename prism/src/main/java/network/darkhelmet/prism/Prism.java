@@ -109,7 +109,7 @@ public class Prism extends JavaPlugin {
                 if (optionalWorldModel.isPresent()) {
                     storageCache.cacheWorldModel(optionalWorldModel.get());
                 } else {
-                    String msg = "Failed to create identify a world from the database. World: %s UUID: %s";
+                    String msg = "Failed to create or identify a world from the database. World: %s UUID: %s";
                     error(String.format(msg, world.getName(), world.getUID()));
                 }
             }
