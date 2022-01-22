@@ -10,8 +10,8 @@ import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import network.darkhelmet.prism.commands.AboutCommand;
 import network.darkhelmet.prism.config.Config;
 import network.darkhelmet.prism.config.PrismConfiguration;
-
 import network.darkhelmet.prism.formatters.OutputFormatter;
+
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Prism extends JavaPlugin {
