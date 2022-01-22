@@ -1,6 +1,7 @@
 package network.darkhelmet.prism;
 
 import java.io.File;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 import me.mattstudios.mf.base.CommandManager;
@@ -8,13 +9,18 @@ import me.mattstudios.mf.base.CommandManager;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
+import network.darkhelmet.prism.api.storage.cache.IStorageCache;
+import network.darkhelmet.prism.api.storage.models.WorldModel;
 import network.darkhelmet.prism.commands.AboutCommand;
 import network.darkhelmet.prism.config.Config;
 import network.darkhelmet.prism.config.PrismConfiguration;
 import network.darkhelmet.prism.config.StorageConfiguration;
 import network.darkhelmet.prism.formatters.OutputFormatter;
+import network.darkhelmet.prism.storage.StorageCache;
 import network.darkhelmet.prism.storage.mysql.MysqlStorageAdapter;
 
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Prism extends JavaPlugin {
@@ -59,6 +65,11 @@ public class Prism extends JavaPlugin {
     IStorageAdapter storageAdapter;
 
     /**
+     * The storage cache.
+     */
+    IStorageCache storageCache;
+
+    /**
      * Get this instance.
      *
      * @return The plugin instance
@@ -87,12 +98,34 @@ public class Prism extends JavaPlugin {
         loadConfiguration();
 
         if (isEnabled()) {
+            // Initialize some classes
             audiences = BukkitAudiences.create(this);
             outputFormatter = new OutputFormatter(config().outputs());
+            storageCache = new StorageCache();
+
+            // Load or prepare the database
+            for (World world : Bukkit.getServer().getWorlds()) {
+                Optional<WorldModel> optionalWorldModel = storageAdapter.getOrRegisterWorld(world);
+                if (optionalWorldModel.isPresent()) {
+                    storageCache.cacheWorldModel(optionalWorldModel.get());
+                } else {
+                    String msg = "Failed to create identify a world from the database. World: %s UUID: %s";
+                    error(String.format(msg, world.getName(), world.getUID()));
+                }
+            }
 
             CommandManager commandManager = new CommandManager(this);
             commandManager.register(new AboutCommand());
         }
+    }
+
+    /**
+     * Disable the plugin.
+     */
+    protected void disable() {
+        Bukkit.getPluginManager().disablePlugin(Prism.getInstance());
+
+        error("Prism has to disable due to a fatal error.");
     }
 
     @Override
@@ -113,6 +146,10 @@ public class Prism extends JavaPlugin {
 
         if (storageConfig.datasource().equalsIgnoreCase("mysql")) {
             storageAdapter = new MysqlStorageAdapter(storageConfig);
+
+            if (!storageAdapter.ready()) {
+                disable();
+            }
         }
     }
 

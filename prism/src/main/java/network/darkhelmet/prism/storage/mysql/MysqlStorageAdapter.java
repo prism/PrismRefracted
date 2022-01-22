@@ -9,11 +9,17 @@ import co.aikar.idb.PooledDatabaseOptions;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
+import network.darkhelmet.prism.api.storage.models.WorldModel;
 import network.darkhelmet.prism.config.StorageConfiguration;
+import network.darkhelmet.prism.storage.mysql.models.SqlWorldModel;
+import network.darkhelmet.prism.utils.TypeUtils;
 
+import org.bukkit.World;
 import org.intellij.lang.annotations.Language;
 
 public class MysqlStorageAdapter implements IStorageAdapter {
@@ -21,6 +27,11 @@ public class MysqlStorageAdapter implements IStorageAdapter {
      * The storage configuration.
      */
     protected StorageConfiguration storageConfig;
+
+    /**
+     * Toggle whether this storage system is enabled and ready.
+     */
+    protected boolean ready = false;
 
     /**
      * Construct a new instance.
@@ -42,6 +53,8 @@ public class MysqlStorageAdapter implements IStorageAdapter {
             describeDatabase();
             createTables();
             updateSchemas();
+
+            ready = true;
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -169,7 +182,58 @@ public class MysqlStorageAdapter implements IStorageAdapter {
     }
 
     @Override
+    public Optional<WorldModel> getWorld(World world) {
+        @Language("SQL") String sql = "SELECT world_id, HEX(world_uuid) AS uuid FROM " + storageConfig.prefix() + "worlds "
+            + "WHERE world_uuid = UNHEX(?)";
+
+        String worldUid = TypeUtils.uuidToDbString(world.getUID());
+
+        try {
+            DbRow row = DB.getFirstRow(sql, worldUid);
+
+            if (row != null) {
+                UUID uuid = TypeUtils.uuidFromDbString(row.getString("uuid"));
+                return Optional.of(new SqlWorldModel(row.getLong("world_id"), uuid));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<WorldModel> getOrRegisterWorld(World world) {
+        Optional<WorldModel> optionalWorld = getWorld(world);
+        if (optionalWorld.isPresent()) {
+            return optionalWorld;
+        } else {
+            try {
+                return Optional.of(registerWorld(world));
+            } catch (Exception e) {
+                return Optional.empty();
+            }
+        }
+    }
+
+    @Override
+    public WorldModel registerWorld(World world) throws Exception {
+        @Language("SQL") String sql = "INSERT INTO " + storageConfig.prefix() + "worlds "
+                + "(world, world_uuid) VALUES (?, UNHEX(?))";
+
+        String worldUid = TypeUtils.uuidToDbString(world.getUID());
+        Long id = DB.executeInsert(sql, world.getName(), worldUid);
+
+        return new SqlWorldModel(id, world.getUID());
+    }
+
+    @Override
     public void close() {
         DB.close();
+    }
+
+    @Override
+    public boolean ready() {
+        return ready;
     }
 }
