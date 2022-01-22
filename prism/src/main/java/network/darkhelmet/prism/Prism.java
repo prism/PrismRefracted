@@ -3,6 +3,11 @@ package network.darkhelmet.prism;
 import java.io.File;
 import java.util.logging.Logger;
 
+import me.mattstudios.mf.base.CommandManager;
+
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
+
+import network.darkhelmet.prism.commands.AboutCommand;
 import network.darkhelmet.prism.config.Config;
 import network.darkhelmet.prism.config.PrismConfiguration;
 
@@ -35,6 +40,11 @@ public class Prism extends JavaPlugin {
     private String pluginVersion;
 
     /**
+     * The bukkit audience.
+     */
+    private BukkitAudiences audiences;
+
+    /**
      * Get this instance.
      *
      * @return The plugin instance
@@ -63,7 +73,10 @@ public class Prism extends JavaPlugin {
         loadConfigurations();
 
         if (isEnabled()) {
-            
+            audiences = BukkitAudiences.create(this);
+
+            CommandManager commandManager = new CommandManager(this);
+            commandManager.register(new AboutCommand());
         }
     }
 
@@ -74,6 +87,15 @@ public class Prism extends JavaPlugin {
         // Load the main config
         File prismConfigFile = new File(getDataFolder(), "prism.conf");
         prismConfig = Config.getOrWriteConfiguration(PrismConfiguration.class, prismConfigFile);
+    }
+
+    /**
+     * Get the audiences.
+     *
+     * @return The audiences
+     */
+    public BukkitAudiences audiences() {
+        return audiences;
     }
    
     /**
