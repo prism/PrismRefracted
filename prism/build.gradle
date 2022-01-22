@@ -19,6 +19,9 @@ repositories {
     mavenLocal()
     mavenCentral()
 
+    // Aikar
+    maven { url = 'https://repo.aikar.co/content/groups/aikar/' }
+
     // Spigot
     maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
 
@@ -40,7 +43,8 @@ dependencies {
     implementation 'net.kyori:adventure-text-serializer-plain:4.9.3'
     implementation 'net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT'
     implementation 'org.spongepowered:configurate-hocon:4.1.2'
-    implementation "me.mattstudios.utils:matt-framework:1.4.6"
+    implementation 'me.mattstudios.utils:matt-framework:1.4.6'
+    implementation 'co.aikar:idb-core:1.0.0-SNAPSHOT'
     implementation project(':prism-api')
 }
 
@@ -57,6 +61,7 @@ jar {
 }
 
 shadowJar {
+    relocate 'co.aikar.idb', 'network.darkhelmet.prism.idb'
     relocate 'com.zaxxer', 'network.darkhelmet.prism.zaxxer'
     relocate 'net.kyori', 'network.darkhelmet.prism.kyori'
     relocate 'org.spongepowered', 'network.darkhelmet.prism.spongepowered'

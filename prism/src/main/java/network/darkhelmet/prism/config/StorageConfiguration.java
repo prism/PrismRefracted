@@ -5,15 +5,21 @@ import org.spongepowered.configurate.objectmapping.meta.Comment;
 
 @ConfigSerializable
 public class StorageConfiguration {
-    @Comment("Set the datasource. This determines which storage system is used\n" +
-            "Available options: mysql")
+    @Comment("Set the datasource. This determines which storage system is used\n"
+            + "Available options: mysql")
     private String datasource = "mysql";
 
-    @Comment("Configure the jdbc url, if applicable to the selected datasource.")
-    private String jdbcUrl = "jdbc:mysql://localhost:3306/prism?useUnicode=true&characterEncoding=UTF-8";
+    @Comment("Configure the database name.")
+    private String database = "prism";
+
+    @Comment("Configure the hostname.")
+    private String host = "localhost";
 
     @Comment("Enter the password, if the selected datasource uses authentication")
     private String password = "";
+
+    @Comment("Configure the port.")
+    private String port = "3306";
 
     @Comment("Enter the prefix prism should use for database table names. i.e. prism_data")
     private String prefix = "prism_";
@@ -31,12 +37,21 @@ public class StorageConfiguration {
     }
 
     /**
-     * Get the jdbc url.
+     * Get the database name.
      *
-     * @return The jdbc url
+     * @return The database name
      */
-    public String jdbcUrl() {
-        return jdbcUrl;
+    public String database() {
+        return database;
+    }
+
+    /**
+     * Get the host.
+     *
+     * @return The host
+     */
+    public String host() {
+        return host;
     }
 
     /**
@@ -46,6 +61,15 @@ public class StorageConfiguration {
      */
     public String password() {
         return password;
+    }
+
+    /**
+     * Get the port.
+     *
+     * @return The port
+     */
+    public String port() {
+        return port;
     }
 
     /**

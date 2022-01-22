@@ -95,6 +95,11 @@ public class Prism extends JavaPlugin {
         }
     }
 
+    @Override
+    public void onDisable() {
+        storageAdapter.close();
+    }
+
     /**
      * Reloads all configuration files.
      */
