@@ -21,6 +21,17 @@ public class MysqlSchemaUpdater {
      */
     public static void update_8_to_v4(
         StorageConfiguration storageConfig) throws SQLException {
+        // Drop block subid column from id mapping. What a relic.
+        @Language("SQL") String updateIdMap = "ALTER TABLE `" + storageConfig.prefix() + "id_map`"
+            + "DROP COLUMN `block_subid`;";
+        DB.executeUpdate(updateIdMap);
+
+        // Drop block subid column from data. What a relic.
+        @Language("SQL") String updateData = "ALTER TABLE `" + storageConfig.prefix() + "data`"
+            + "DROP COLUMN `block_subid`,"
+            + "DROP COLUMN `old_block_subid`;";
+        DB.executeUpdate(updateData);
+
         // Add world_uuid column (but allow nulls, as no values exist
         @Language("SQL") String updateWorlds = "ALTER TABLE `" + storageConfig.prefix() + "worlds`"
             + "ADD COLUMN `world_uuid` BINARY(16) NULL AFTER `world`,"
@@ -44,11 +55,9 @@ public class MysqlSchemaUpdater {
         String worldMsg = String.format("Deleted %d worlds from the database that are no longer present.", deletions);
         Prism.getInstance().log(worldMsg);
 
-        // Drop world name and make uuid non-null
+        // Make uuid non-null
         @Language("SQL") String removeWorldNames = "ALTER TABLE `" + storageConfig.prefix() + "worlds`"
-            + "DROP COLUMN `world`,"
-            + "CHANGE COLUMN `world_uuid` `world_uuid` BINARY(16) NOT NULL,"
-            + "DROP INDEX `world`;";
+            + "CHANGE COLUMN `world_uuid` `world_uuid` BINARY(16) NOT NULL;";
         DB.executeUpdate(removeWorldNames);
 
         // Update the schema version

@@ -3,13 +3,21 @@ wands, and so much more. Tracking so good, the NSA stole our name.
 
 ## DEV NOTICE
 
-v3 is currently in development and not suitable for production use. Stuff WILL change.
+v4 is currently in development and not suitable for production use. Stuff WILL change.
 
 ## Support
 
 Please be patient as I work to get this project where I want, establish documentation, build servers, etc. 
 
 - [**Discord**][discord] - Please visit discord for help before opening issues.
+
+# Updating from v2/v3
+
+Prism will automatically convert your database schema to the new format. However, for large
+databases this may take time. This should ideally be done when no players are online.
+
+Prism 4 uses a different configuration format/structure. Options may not be 1:1 with new
+configurations so please ask in discord if you need help.
 
 # Rough Roadmap
 

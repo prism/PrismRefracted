@@ -95,8 +95,8 @@ public class MysqlStorageAdapter implements IStorageAdapter {
             + "`old_block_subid` mediumint(5) DEFAULT NULL,"
             + "PRIMARY KEY (`id`),"
             + "KEY `epoch` (`epoch`),"
-            + "KEY  `location` (`world_id`, `x`, `z`, `y`, `action_id`),"
-            + "KEY  `player` (`player_id`)"
+            + "KEY `location` (`world_id`, `x`, `z`, `y`, `action_id`),"
+            + "KEY `player` (`player_id`)"
             + ") ENGINE=InnoDB DEFAULT CHARSET=utf8;";
         DB.executeUpdate(dataQuery);
 
@@ -105,7 +105,8 @@ public class MysqlStorageAdapter implements IStorageAdapter {
             + storageConfig.prefix() + "data_extra` ("
             + "`extra_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,"
             + "`data_id` bigint(20) unsigned NOT NULL,"
-                + "`data` text NULL," + "`te_data` text NULL,"
+            + "`data` text NULL,"
+            + "`te_data` text NULL,"
             + "PRIMARY KEY (`extra_id`), KEY `data_id` (`data_id`)"
             + ") ENGINE=InnoDB DEFAULT CHARSET=utf8;";
         DB.executeUpdate(extraQuery);
@@ -115,7 +116,7 @@ public class MysqlStorageAdapter implements IStorageAdapter {
             + "`material` varchar(63) NOT NULL,"
             + "`state` varchar(255) NOT NULL,"
             + "`block_id` mediumint(5) NOT NULL AUTO_INCREMENT,"
-            + "`block_subid` mediumint(5) NOT NULL DEFAULT 0," + "PRIMARY KEY (`material`, `state`),"
+            + "PRIMARY KEY (`material`, `state`),"
             + "UNIQUE KEY (`block_id`, `block_subid`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
         DB.executeUpdate(idQuery);
 
@@ -141,8 +142,11 @@ public class MysqlStorageAdapter implements IStorageAdapter {
         // Create worlds table
         @Language("SQL") String worldsQuery = "CREATE TABLE IF NOT EXISTS `" + storageConfig.prefix() + "worlds` ("
             + "`world_id` int(10) unsigned NOT NULL AUTO_INCREMENT,"
+            + "`world` varchar(255) NOT NULL,"
             + "`world_uuid` binary(16) NOT NULL,"
-            + "PRIMARY KEY (`world_id`), UNIQUE KEY `world_uuid_UNIQUE` (`world_uuid`)"
+            + "PRIMARY KEY (`world_id`),"
+            + "UNIQUE KEY `world` (`world`),"
+            + "UNIQUE KEY `world_uuid_UNIQUE` (`world_uuid`)"
             + ") ENGINE=InnoDB DEFAULT CHARSET=utf8;";
         DB.executeUpdate(worldsQuery);
     }
