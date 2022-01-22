@@ -16,6 +16,7 @@ import network.darkhelmet.prism.config.Config;
 import network.darkhelmet.prism.config.PrismConfiguration;
 import network.darkhelmet.prism.config.StorageConfiguration;
 import network.darkhelmet.prism.formatters.OutputFormatter;
+import network.darkhelmet.prism.listeners.WorldLoadListener;
 import network.darkhelmet.prism.storage.StorageCache;
 import network.darkhelmet.prism.storage.mysql.MysqlStorageAdapter;
 
@@ -103,7 +104,8 @@ public class Prism extends JavaPlugin {
             outputFormatter = new OutputFormatter(config().outputs());
             storageCache = new StorageCache();
 
-            // Load or prepare the database
+            // Load or register worlds in storage
+            // Note: WorldLoadEvent doesn't appear to fire on server boot.
             for (World world : Bukkit.getServer().getWorlds()) {
                 Optional<WorldModel> optionalWorldModel = storageAdapter.getOrRegisterWorld(world);
                 if (optionalWorldModel.isPresent()) {
@@ -114,6 +116,10 @@ public class Prism extends JavaPlugin {
                 }
             }
 
+            // Register listeners
+            getServer().getPluginManager().registerEvents(new WorldLoadListener(), this);
+
+            // Register command
             CommandManager commandManager = new CommandManager(this);
             commandManager.register(new AboutCommand());
         }
@@ -178,6 +184,24 @@ public class Prism extends JavaPlugin {
      */
     public OutputFormatter outputFormatter() {
         return outputFormatter;
+    }
+
+    /**
+     * Get the storage adapter.
+     *
+     * @return The storage adapter
+     */
+    public IStorageAdapter storageAdapter() {
+        return storageAdapter;
+    }
+
+    /**
+     * Get the storage cache.
+     *
+     * @return The storage cache
+     */
+    public IStorageCache storageCache() {
+        return storageCache;
     }
 
     /**
