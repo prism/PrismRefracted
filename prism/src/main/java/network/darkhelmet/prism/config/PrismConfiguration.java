@@ -8,6 +8,9 @@ public class PrismConfiguration {
     @Comment("Enable plugin debug mode. Produces extra logging to help diagnose issues.")
     private boolean debug = false;
 
+    @Comment("Configure in-game command outputs.")
+    private OutputConfiguration outputs = new OutputConfiguration();
+
     /**
      * Get the debug setting.
      *
@@ -15,5 +18,14 @@ public class PrismConfiguration {
      */
     public boolean debug() {
         return debug;
+    }
+
+    /**
+     * Get the outout configuration.
+     *
+     * @return The outputs
+     */
+    public OutputConfiguration outputs() {
+        return outputs;
     }
 }

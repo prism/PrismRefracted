@@ -11,6 +11,7 @@ import network.darkhelmet.prism.commands.AboutCommand;
 import network.darkhelmet.prism.config.Config;
 import network.darkhelmet.prism.config.PrismConfiguration;
 
+import network.darkhelmet.prism.formatters.OutputFormatter;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Prism extends JavaPlugin {
@@ -45,6 +46,11 @@ public class Prism extends JavaPlugin {
     private BukkitAudiences audiences;
 
     /**
+     * The output formatter.
+     */
+    private OutputFormatter outputFormatter;
+
+    /**
      * Get this instance.
      *
      * @return The plugin instance
@@ -74,6 +80,7 @@ public class Prism extends JavaPlugin {
 
         if (isEnabled()) {
             audiences = BukkitAudiences.create(this);
+            outputFormatter = new OutputFormatter(config().outputs());
 
             CommandManager commandManager = new CommandManager(this);
             commandManager.register(new AboutCommand());
@@ -105,6 +112,15 @@ public class Prism extends JavaPlugin {
      */
     public PrismConfiguration config() {
         return prismConfig;
+    }
+
+    /**
+     * Get the output formatter.
+     *
+     * @return The output formatter
+     */
+    public OutputFormatter outputFormatter() {
+        return outputFormatter;
     }
 
     /**
