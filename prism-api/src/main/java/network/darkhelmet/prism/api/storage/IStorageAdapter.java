@@ -2,6 +2,7 @@ package network.darkhelmet.prism.api.storage;
 
 import java.util.Optional;
 
+import network.darkhelmet.prism.api.activity.Activity;
 import network.darkhelmet.prism.api.storage.models.ActionModel;
 import network.darkhelmet.prism.api.storage.models.WorldModel;
 
@@ -12,6 +13,13 @@ public interface IStorageAdapter {
      * Close any connections. May not be applicable to the chosen storage.
      */
     void close();
+
+    /**
+     * Creates a new batch manager.
+     *
+     * @return The batch
+     */
+    IActivityBatch createActivityBatch();
 
     /**
      * Get or register an action.
@@ -69,4 +77,14 @@ public interface IStorageAdapter {
      * @return True if successfully initialized.
      */
     boolean ready();
+
+    /**
+     * Save an activity.
+     *
+     * <p>Note: this only saves a single activity and will not batch</p>
+     *
+     * @param activity The activity
+     * @throws Exception Storage layer exception
+     */
+    void saveActivity(Activity activity) throws Exception;
 }

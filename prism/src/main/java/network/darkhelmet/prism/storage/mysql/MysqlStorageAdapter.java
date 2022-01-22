@@ -13,7 +13,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 import network.darkhelmet.prism.Prism;
+import network.darkhelmet.prism.api.activity.Activity;
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
+import network.darkhelmet.prism.api.storage.IActivityBatch;
 import network.darkhelmet.prism.api.storage.models.ActionModel;
 import network.darkhelmet.prism.api.storage.models.WorldModel;
 import network.darkhelmet.prism.config.StorageConfiguration;
@@ -184,6 +186,11 @@ public class MysqlStorageAdapter implements IStorageAdapter {
     }
 
     @Override
+    public IActivityBatch createActivityBatch() {
+        return new MysqlBatch(storageConfig);
+    }
+
+    @Override
     public Optional<ActionModel> getAction(String actionKey) {
         @Language("SQL") String sql = "SELECT action_id FROM " + storageConfig.prefix() + "actions "
             + "WHERE action = ?";
@@ -262,14 +269,31 @@ public class MysqlStorageAdapter implements IStorageAdapter {
     }
 
     @Override
-    public WorldModel registerWorld(World world) throws Exception {
+    public WorldModel registerWorld(World world) throws SQLException {
         @Language("SQL") String sql = "INSERT INTO " + storageConfig.prefix() + "worlds "
-                + "(world, world_uuid) VALUES (?, UNHEX(?))";
+            + "(world, world_uuid) VALUES (?, UNHEX(?))";
 
         String worldUid = TypeUtils.uuidToDbString(world.getUID());
         Long id = DB.executeInsert(sql, world.getName(), worldUid);
 
         return new SqlWorldModel(id, world.getUID());
+    }
+
+    @Override
+    public void saveActivity(Activity activity) throws SQLException {
+        // check cache for actions
+        // check cache for cause
+        // check cache for world
+        // check cache object/old object
+
+
+//        @Language("SQL") String sql = "INSERT INTO " + storageConfig.prefix() + "data "
+//            + "(epoch, action_id, player_id, world_id, x, y, z, block_id, old_block_id)"
+//            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+//
+//        long epoch = System.currentTimeMillis();
+//
+//        DB.executeInsert(sql, epoch);
     }
 
     @Override

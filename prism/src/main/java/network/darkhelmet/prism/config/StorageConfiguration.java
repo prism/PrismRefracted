@@ -5,6 +5,9 @@ import org.spongepowered.configurate.objectmapping.meta.Comment;
 
 @ConfigSerializable
 public class StorageConfiguration {
+    @Comment("Set the max number of records saved to storage per batch.")
+    private int batchMax = 500;
+
     @Comment("Set the datasource. This determines which storage system is used\n"
             + "Available options: mysql")
     private String datasource = "mysql";
@@ -26,6 +29,15 @@ public class StorageConfiguration {
 
     @Comment("Enter the username, if the selected datasource uses authentication")
     private String username = "root";
+
+    /**
+     * Get the batch max.
+     *
+     * @return The batch max
+     */
+    public int batchMax() {
+        return batchMax;
+    }
 
     /**
      * Get the datasource setting.

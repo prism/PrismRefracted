@@ -1,6 +1,7 @@
 package network.darkhelmet.prism;
 
 import java.io.File;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -18,11 +19,14 @@ import network.darkhelmet.prism.config.Config;
 import network.darkhelmet.prism.config.PrismConfiguration;
 import network.darkhelmet.prism.config.StorageConfiguration;
 import network.darkhelmet.prism.formatters.OutputFormatter;
+import network.darkhelmet.prism.listeners.BlockBreakListener;
 import network.darkhelmet.prism.listeners.WorldLoadListener;
+import network.darkhelmet.prism.recording.RecordingManager;
 import network.darkhelmet.prism.storage.cache.StorageCache;
 import network.darkhelmet.prism.storage.mysql.MysqlStorageAdapter;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -73,6 +77,11 @@ public class Prism extends JavaPlugin {
     IStorageCache storageCache;
 
     /**
+     * The recording manager.
+     */
+    RecordingManager recordingManager;
+
+    /**
      * Get this instance.
      *
      * @return The plugin instance
@@ -105,6 +114,7 @@ public class Prism extends JavaPlugin {
             audiences = BukkitAudiences.create(this);
             outputFormatter = new OutputFormatter(config().outputs());
             storageCache = new StorageCache();
+            recordingManager = new RecordingManager();
 
             // Load or register actions in storage
             for (Map.Entry<String, Boolean> entry : prismConfig.actions().entrySet()) {
@@ -132,6 +142,7 @@ public class Prism extends JavaPlugin {
             }
 
             // Register listeners
+            getServer().getPluginManager().registerEvents(new BlockBreakListener(), this);
             getServer().getPluginManager().registerEvents(new WorldLoadListener(), this);
 
             // Register command
@@ -193,6 +204,15 @@ public class Prism extends JavaPlugin {
     }
 
     /**
+     * Get the storage configuration.
+     *
+     * @return The storage configuration
+     */
+    public StorageConfiguration storageConfig() {
+        return storageConfig;
+    }
+
+    /**
      * Get the output formatter.
      *
      * @return The output formatter
@@ -217,6 +237,15 @@ public class Prism extends JavaPlugin {
      */
     public IStorageCache storageCache() {
         return storageCache;
+    }
+
+    /**
+     * Get the recording manager.
+     *
+     * @return The recording manager
+     */
+    public RecordingManager recordingManager() {
+        return recordingManager;
     }
 
     /**
