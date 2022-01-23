@@ -1,8 +1,8 @@
 package network.darkhelmet.prism.listeners;
 
+import network.darkhelmet.prism.api.actions.Action;
 import network.darkhelmet.prism.api.activity.Activity;
 import network.darkhelmet.prism.recording.RecordingQueue;
-import network.darkhelmet.prism.api.actions.Action;
 import network.darkhelmet.prism.utils.BlockUtils;
 
 import org.bukkit.block.Block;

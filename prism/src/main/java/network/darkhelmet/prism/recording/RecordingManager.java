@@ -1,6 +1,7 @@
 package network.darkhelmet.prism.recording;
 
 import network.darkhelmet.prism.Prism;
+
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 

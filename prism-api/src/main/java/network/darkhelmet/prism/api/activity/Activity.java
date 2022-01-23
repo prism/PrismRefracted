@@ -1,6 +1,7 @@
 package network.darkhelmet.prism.api.activity;
 
 import network.darkhelmet.prism.api.actions.Action;
+
 import org.bukkit.Location;
 
 public record Activity(Action action, Location location, Object cause, Long timestamp) {
@@ -15,22 +16,22 @@ public record Activity(Action action, Location location, Object cause, Long time
 
     public static class Builder {
         /**
-         * The action
+         * The action.
          */
         private Action action;
 
         /**
-         * The cause, if any
+         * The cause, if any.
          */
         private Object cause;
 
         /**
-         * The location, if any
+         * The location, if any.
          */
         private Location location;
 
         /**
-         * The timestamp
+         * The timestamp.
          */
         private Long timestamp = System.currentTimeMillis();
 

@@ -6,18 +6,28 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Optional;
 
+import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.api.activity.Activity;
 import network.darkhelmet.prism.api.storage.IActivityBatch;
+import network.darkhelmet.prism.api.storage.cache.IStorageCache;
+import network.darkhelmet.prism.api.storage.models.WorldModel;
 import network.darkhelmet.prism.config.StorageConfiguration;
+import network.darkhelmet.prism.storage.mysql.models.SqlWorldModel;
 
 import org.intellij.lang.annotations.Language;
 
-public class MysqlBatch implements IActivityBatch {
+public class MysqlActivityBatch implements IActivityBatch {
     /**
      * The storage configuration.
      */
     private StorageConfiguration storageConfig;
+
+    /**
+     * Cache the cache.
+     */
+    private IStorageCache storageCache;
 
     /**
      * The connection.
@@ -34,8 +44,10 @@ public class MysqlBatch implements IActivityBatch {
      *
      * @param storageConfiguration The storage configuration
      */
-    public MysqlBatch(StorageConfiguration storageConfiguration) {
+    public MysqlActivityBatch(StorageConfiguration storageConfiguration) {
         this.storageConfig = storageConfiguration;
+
+        storageCache = Prism.getInstance().storageCache();
     }
 
     @Override
@@ -44,19 +56,29 @@ public class MysqlBatch implements IActivityBatch {
         connection.setAutoCommit(false);
 
         @Language("SQL") String sql = "INSERT INTO " + storageConfig.prefix() + "activity "
-            + "(epoch, x, y, z) VALUES (?, ?, ?, ?)";
+            + "(epoch, world_id, x, y, z) VALUES (?, ?, ?, ?, ?)";
 
         statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     }
 
     @Override
     public void add(Activity activity) throws SQLException {
-        statement.setLong(1, activity.timestamp() / 1000);
-        statement.setInt(2, activity.location().getBlockX());
-        statement.setInt(3, activity.location().getBlockY());
-        statement.setInt(4, activity.location().getBlockZ());
+        Optional<WorldModel> optionWorldModel = storageCache.getWorldModel(activity.location().getWorld());
 
-        statement.addBatch();
+        if (optionWorldModel.isPresent()) {
+            long worldId = ((SqlWorldModel) optionWorldModel.get()).id();
+
+            statement.setLong(1, activity.timestamp() / 1000);
+            statement.setLong(2, worldId);
+            statement.setInt(3, activity.location().getBlockX());
+            statement.setInt(4, activity.location().getBlockY());
+            statement.setInt(5, activity.location().getBlockZ());
+
+            statement.addBatch();
+        } else {
+            String msg = "Failed to record data because cache data was missing. World: %s";
+            Prism.getInstance().debug(String.format(msg, optionWorldModel.isPresent()));
+        }
     }
 
     @Override

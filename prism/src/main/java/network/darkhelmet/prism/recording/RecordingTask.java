@@ -2,8 +2,8 @@ package network.darkhelmet.prism.recording;
 
 import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.api.activity.Activity;
-import network.darkhelmet.prism.api.storage.IStorageAdapter;
 import network.darkhelmet.prism.api.storage.IActivityBatch;
+import network.darkhelmet.prism.api.storage.IStorageAdapter;
 
 public class RecordingTask implements Runnable {
     @Override

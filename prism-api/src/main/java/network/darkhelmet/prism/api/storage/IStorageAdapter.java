@@ -77,14 +77,4 @@ public interface IStorageAdapter {
      * @return True if successfully initialized.
      */
     boolean ready();
-
-    /**
-     * Save an activity.
-     *
-     * <p>Note: this only saves a single activity and will not batch</p>
-     *
-     * @param activity The activity
-     * @throws Exception Storage layer exception
-     */
-    void saveActivity(Activity activity) throws Exception;
 }

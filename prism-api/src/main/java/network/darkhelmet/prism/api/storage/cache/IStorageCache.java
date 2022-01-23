@@ -1,7 +1,11 @@
 package network.darkhelmet.prism.api.storage.cache;
 
+import java.util.Optional;
+
 import network.darkhelmet.prism.api.storage.models.ActionModel;
 import network.darkhelmet.prism.api.storage.models.WorldModel;
+
+import org.bukkit.World;
 
 public interface IStorageCache {
     /**
@@ -21,4 +25,12 @@ public interface IStorageCache {
      * @param worldModel The world model
      */
     void cacheWorldModel(WorldModel worldModel);
+
+    /**
+     * Get a world model.
+     *
+     * @param world The world
+     * @return World model, if world not null and model present
+     */
+    Optional<WorldModel> getWorldModel(World world);
 }

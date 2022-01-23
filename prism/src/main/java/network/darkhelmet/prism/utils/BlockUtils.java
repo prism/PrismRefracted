@@ -10,7 +10,7 @@ import org.bukkit.block.data.type.TrapDoor;
 
 public class BlockUtils {
     /**
-     * Prevent instantiation
+     * Prevent instantiation.
      */
     private BlockUtils() {}
 

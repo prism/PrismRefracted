@@ -12,7 +12,7 @@ public abstract class Action {
     /**
      * Construct a new action.
      *
-     * @param key
+     * @param key The action key
      */
     public Action(String key) {
         this.key = key;

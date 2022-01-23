@@ -12,7 +12,7 @@ public class BlockStateAction extends Action {
      * Construct a block state action.
      *
      * @param key The action key
-     * @param blockState
+     * @param blockState The block state
      */
     public BlockStateAction(String key, BlockState blockState) {
         super(key);

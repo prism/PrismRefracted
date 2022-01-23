@@ -6,7 +6,7 @@ import network.darkhelmet.prism.api.activity.Activity;
 
 public class RecordingQueue {
     /**
-     * Queue of activities
+     * Queue of activities.
      */
     private static final LinkedBlockingQueue<Activity> queue = new LinkedBlockingQueue<>();
 
