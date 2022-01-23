@@ -2,6 +2,7 @@ package network.darkhelmet.prism.api.storage;
 
 import java.util.Optional;
 
+import network.darkhelmet.prism.api.storage.models.ActionModel;
 import network.darkhelmet.prism.api.storage.models.WorldModel;
 
 import org.bukkit.World;
@@ -13,7 +14,32 @@ public interface IStorageAdapter {
     void close();
 
     /**
-     * Get or create a world model.
+     * Get or register an action.
+     *
+     * @param actionKey The action key
+     * @return The action model
+     */
+    Optional<ActionModel> getOrRegisterAction(String actionKey);
+
+    /**
+     * Get an action.
+     *
+     * @param actionKey The action key
+     * @return The action model
+     */
+    Optional<ActionModel> getAction(String actionKey);
+
+    /**
+     * Register an action.
+     *
+     * @param actionKey The action key
+     * @return The action model
+     * @throws Exception The database exception
+     */
+    ActionModel registerAction(String actionKey) throws Exception;
+
+    /**
+     * Get or register a world.
      *
      * @param world The world
      * @return The world model

@@ -1,24 +1,23 @@
 package network.darkhelmet.prism.storage.mysql.models;
 
 import java.util.Objects;
-import java.util.UUID;
 
-import network.darkhelmet.prism.api.storage.models.WorldModel;
+import network.darkhelmet.prism.api.storage.models.ActionModel;
 
-public class SqlWorldModel extends WorldModel {
+public class SqlActionModel extends ActionModel {
     /**
      * The primary key.
      */
     private Long id;
 
     /**
-     * Construct a sql world model.
+     * Construct a sql action model.
      *
      * @param id The id
-     * @param worldUuid The world UUID
+     * @param actionKey The action key
      */
-    public SqlWorldModel(Long id, UUID worldUuid) {
-        super(worldUuid);
+    public SqlActionModel(Long id, String actionKey) {
+        super(actionKey);
 
         this.id = id;
     }
@@ -35,7 +34,7 @@ public class SqlWorldModel extends WorldModel {
             return false;
         }
 
-        var that = (SqlWorldModel) obj;
+        var that = (SqlActionModel) obj;
         return Objects.equals(this.id, that.id);
     }
 
@@ -50,13 +49,13 @@ public class SqlWorldModel extends WorldModel {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, worldUuid);
+        return Objects.hash(id, key);
     }
 
     @Override
     public String toString() {
-        return "SqlWorldModel["
+        return "SqlActionModel["
             + "id=" + id + ","
-            + "worldUUID=" + worldUuid + ']';
+            + "key=" + key + ']';
     }
 }

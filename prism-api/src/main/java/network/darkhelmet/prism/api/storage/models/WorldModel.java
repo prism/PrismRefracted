@@ -12,7 +12,7 @@ public class WorldModel {
     /**
      * Construct a new world model.
      *
-     * @param worldUuid The world UUID.
+     * @param worldUuid The world UUID
      */
     public WorldModel(UUID worldUuid) {
         this.worldUuid = worldUuid;
@@ -21,7 +21,7 @@ public class WorldModel {
     /**
      * Get the world UUID.
      *
-     * @return The world UUID.
+     * @return The world UUID
      */
     public UUID worldUuid() {
         return worldUuid;

@@ -1,6 +1,7 @@
 package network.darkhelmet.prism;
 
 import java.io.File;
+import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -10,6 +11,7 @@ import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
 import network.darkhelmet.prism.api.storage.cache.IStorageCache;
+import network.darkhelmet.prism.api.storage.models.ActionModel;
 import network.darkhelmet.prism.api.storage.models.WorldModel;
 import network.darkhelmet.prism.commands.AboutCommand;
 import network.darkhelmet.prism.config.Config;
@@ -17,7 +19,7 @@ import network.darkhelmet.prism.config.PrismConfiguration;
 import network.darkhelmet.prism.config.StorageConfiguration;
 import network.darkhelmet.prism.formatters.OutputFormatter;
 import network.darkhelmet.prism.listeners.WorldLoadListener;
-import network.darkhelmet.prism.storage.StorageCache;
+import network.darkhelmet.prism.storage.cache.StorageCache;
 import network.darkhelmet.prism.storage.mysql.MysqlStorageAdapter;
 
 import org.bukkit.Bukkit;
@@ -103,6 +105,19 @@ public class Prism extends JavaPlugin {
             audiences = BukkitAudiences.create(this);
             outputFormatter = new OutputFormatter(config().outputs());
             storageCache = new StorageCache();
+
+            // Load or register actions in storage
+            for (Map.Entry<String, Boolean> entry : prismConfig.actions().entrySet()) {
+                if (entry.getValue()) {
+                    Optional<ActionModel> optionalActionModel = storageAdapter.getOrRegisterAction(entry.getKey());
+                    if (optionalActionModel.isPresent()) {
+                        storageCache.cacheActionModel(optionalActionModel.get());
+                    } else {
+                        String msg = "Failed to create or identify an action from the database. Action Key: %s";
+                        error(String.format(msg, entry.getKey()));
+                    }
+                }
+            }
 
             // Load or register worlds in storage
             // Note: WorldLoadEvent doesn't appear to fire on server boot.

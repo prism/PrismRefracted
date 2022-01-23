@@ -14,8 +14,10 @@ import java.util.UUID;
 
 import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
+import network.darkhelmet.prism.api.storage.models.ActionModel;
 import network.darkhelmet.prism.api.storage.models.WorldModel;
 import network.darkhelmet.prism.config.StorageConfiguration;
+import network.darkhelmet.prism.storage.mysql.models.SqlActionModel;
 import network.darkhelmet.prism.storage.mysql.models.SqlWorldModel;
 import network.darkhelmet.prism.utils.TypeUtils;
 
@@ -179,6 +181,48 @@ public class MysqlStorageAdapter implements IStorageAdapter {
         if (schemaVersion.equalsIgnoreCase("8")) {
             MysqlSchemaUpdater.update_8_to_v4(storageConfig);
         }
+    }
+
+    @Override
+    public Optional<ActionModel> getAction(String actionKey) {
+        @Language("SQL") String sql = "SELECT action_id FROM " + storageConfig.prefix() + "actions "
+            + "WHERE action = ?";
+
+        try {
+            DbRow row = DB.getFirstRow(sql, actionKey);
+
+            if (row != null) {
+                return Optional.of(new SqlActionModel(row.getLong("action_id"), actionKey));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<ActionModel> getOrRegisterAction(String actionKey) {
+        Optional<ActionModel> optionalAction = getAction(actionKey);
+        if (optionalAction.isPresent()) {
+            return optionalAction;
+        } else {
+            try {
+                return Optional.of(registerAction(actionKey));
+            } catch (Exception e) {
+                return Optional.empty();
+            }
+        }
+    }
+
+    @Override
+    public ActionModel registerAction(String actionKey) throws Exception {
+        @Language("SQL") String sql = "INSERT INTO " + storageConfig.prefix() + "actions "
+                + "(action) VALUES (?)";
+
+        Long id = DB.executeInsert(sql, actionKey);
+
+        return new SqlActionModel(id, actionKey);
     }
 
     @Override
