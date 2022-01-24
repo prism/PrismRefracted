@@ -17,6 +17,7 @@ import network.darkhelmet.prism.commands.NearCommand;
 import network.darkhelmet.prism.config.Config;
 import network.darkhelmet.prism.config.PrismConfiguration;
 import network.darkhelmet.prism.config.StorageConfiguration;
+import network.darkhelmet.prism.displays.DisplayManager;
 import network.darkhelmet.prism.formatters.OutputFormatter;
 import network.darkhelmet.prism.listeners.BlockBreakListener;
 import network.darkhelmet.prism.recording.RecordingManager;
@@ -77,6 +78,11 @@ public class Prism extends JavaPlugin {
     RecordingManager recordingManager;
 
     /**
+     * The display manager.
+     */
+    DisplayManager displayManager;
+
+    /**
      * Get this instance.
      *
      * @return The plugin instance
@@ -109,6 +115,7 @@ public class Prism extends JavaPlugin {
             audiences = BukkitAudiences.create(this);
             outputFormatter = new OutputFormatter(config().outputs());
             recordingManager = new RecordingManager();
+            displayManager = new DisplayManager();
             taskChainFactory = BukkitTaskChainFactory.create(this);
 
             // Register listeners
@@ -207,6 +214,15 @@ public class Prism extends JavaPlugin {
      */
     public RecordingManager recordingManager() {
         return recordingManager;
+    }
+
+    /**
+     * Get the display manager.
+     *
+     * @return The display manager
+     */
+    public DisplayManager displayManager() {
+        return displayManager;
     }
 
     /**
