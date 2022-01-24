@@ -1,7 +1,7 @@
 package network.darkhelmet.prism.recording;
 
 import network.darkhelmet.prism.Prism;
-import network.darkhelmet.prism.api.activity.Activity;
+import network.darkhelmet.prism.api.activities.Activity;
 import network.darkhelmet.prism.api.storage.IActivityBatch;
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
 

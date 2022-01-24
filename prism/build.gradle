@@ -45,6 +45,7 @@ dependencies {
     implementation 'org.spongepowered:configurate-hocon:4.1.2'
     implementation 'me.mattstudios.utils:matt-framework:1.4.6'
     implementation 'co.aikar:idb-core:1.0.0-SNAPSHOT'
+    implementation 'co.aikar:taskchain-bukkit:3.7.2'
     implementation project(':prism-api')
 }
 
@@ -62,6 +63,7 @@ jar {
 
 shadowJar {
     relocate 'co.aikar.idb', 'network.darkhelmet.prism.idb'
+    relocate 'co.aikar.taskchain', 'network.darkhelmet.prism.taskchain'
     relocate 'com.zaxxer', 'network.darkhelmet.prism.zaxxer'
     relocate 'net.kyori', 'network.darkhelmet.prism.kyori'
     relocate 'org.spongepowered', 'network.darkhelmet.prism.spongepowered'

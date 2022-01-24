@@ -2,7 +2,7 @@ package network.darkhelmet.prism.recording;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
-import network.darkhelmet.prism.api.activity.Activity;
+import network.darkhelmet.prism.api.activities.Activity;
 
 public class RecordingQueue {
     /**

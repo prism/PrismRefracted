@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import network.darkhelmet.prism.Prism;
+import network.darkhelmet.prism.api.activities.ActivityQuery;
 import network.darkhelmet.prism.api.storage.IActivityBatch;
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
 import network.darkhelmet.prism.config.StorageConfiguration;
@@ -116,6 +117,13 @@ public class MysqlStorageAdapter implements IStorageAdapter {
         // Update: 8 -> v4
         if (schemaVersion.equalsIgnoreCase("8")) {
             MysqlSchemaUpdater.update_8_to_v4(storageConfig);
+        }
+    }
+
+    @Override
+    public void queryActivities(ActivityQuery query) throws SQLException {
+        for (DbRow row : MysqlQueryBuilder.queryActivities(query, storageConfig.prefix())) {
+            System.out.println(row);
         }
     }
 

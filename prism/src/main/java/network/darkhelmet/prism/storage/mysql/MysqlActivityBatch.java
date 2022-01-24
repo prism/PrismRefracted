@@ -9,7 +9,7 @@ import java.sql.Statement;
 import java.util.UUID;
 
 import network.darkhelmet.prism.api.actions.BlockStateAction;
-import network.darkhelmet.prism.api.activity.Activity;
+import network.darkhelmet.prism.api.activities.Activity;
 import network.darkhelmet.prism.api.storage.IActivityBatch;
 import network.darkhelmet.prism.config.StorageConfiguration;
 import network.darkhelmet.prism.utils.TypeUtils;

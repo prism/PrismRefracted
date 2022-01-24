@@ -1,5 +1,9 @@
 package network.darkhelmet.prism;
 
+import co.aikar.taskchain.BukkitTaskChainFactory;
+import co.aikar.taskchain.TaskChain;
+import co.aikar.taskchain.TaskChainFactory;
+
 import java.io.File;
 import java.util.logging.Logger;
 
@@ -9,6 +13,7 @@ import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
 import network.darkhelmet.prism.commands.AboutCommand;
+import network.darkhelmet.prism.commands.NearCommand;
 import network.darkhelmet.prism.config.Config;
 import network.darkhelmet.prism.config.PrismConfiguration;
 import network.darkhelmet.prism.config.StorageConfiguration;
@@ -30,6 +35,11 @@ public class Prism extends JavaPlugin {
      * The logger.
      */
     private static final Logger log = Logger.getLogger("Minecraft");
+
+    /**
+     * The task chain factory.
+     */
+    private static TaskChainFactory taskChainFactory;
 
     /**
      * The config.
@@ -99,6 +109,7 @@ public class Prism extends JavaPlugin {
             audiences = BukkitAudiences.create(this);
             outputFormatter = new OutputFormatter(config().outputs());
             recordingManager = new RecordingManager();
+            taskChainFactory = BukkitTaskChainFactory.create(this);
 
             // Register listeners
             getServer().getPluginManager().registerEvents(new BlockBreakListener(), this);
@@ -106,6 +117,7 @@ public class Prism extends JavaPlugin {
             // Register command
             CommandManager commandManager = new CommandManager(this);
             commandManager.register(new AboutCommand());
+            commandManager.register(new NearCommand());
         }
     }
 
@@ -195,6 +207,16 @@ public class Prism extends JavaPlugin {
      */
     public RecordingManager recordingManager() {
         return recordingManager;
+    }
+
+    /**
+     * Create a new task chain.
+     *
+     * @param <T> The type
+     * @return The chain
+     */
+    public static <T> TaskChain<T> newChain() {
+        return taskChainFactory.newChain();
     }
 
     /**

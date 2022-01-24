@@ -1,4 +1,4 @@
-package network.darkhelmet.prism.api.activity;
+package network.darkhelmet.prism.api.activities;
 
 import network.darkhelmet.prism.api.actions.Action;
 

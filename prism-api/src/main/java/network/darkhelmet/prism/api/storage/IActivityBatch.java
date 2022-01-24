@@ -1,6 +1,6 @@
 package network.darkhelmet.prism.api.storage;
 
-import network.darkhelmet.prism.api.activity.Activity;
+import network.darkhelmet.prism.api.activities.Activity;
 
 public interface IActivityBatch {
     /**
