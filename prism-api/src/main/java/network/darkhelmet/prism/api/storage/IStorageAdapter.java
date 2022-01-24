@@ -1,6 +1,8 @@
 package network.darkhelmet.prism.api.storage;
 
+import network.darkhelmet.prism.api.PaginatedResults;
 import network.darkhelmet.prism.api.activities.ActivityQuery;
+import network.darkhelmet.prism.api.storage.models.ActivityRow;
 
 public interface IStorageAdapter {
     /**
@@ -21,7 +23,7 @@ public interface IStorageAdapter {
      * @param query The activity query
      * @throws Exception Storage layer exception
      */
-    void queryActivities(ActivityQuery query) throws Exception;
+    PaginatedResults<ActivityRow> queryActivities(ActivityQuery query) throws Exception;
 
     /**
      * Check whether this storage system is enabled and ready.

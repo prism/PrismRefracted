@@ -6,7 +6,9 @@ import me.mattstudios.mf.annotations.SubCommand;
 import me.mattstudios.mf.base.CommandBase;
 
 import network.darkhelmet.prism.Prism;
+import network.darkhelmet.prism.api.PaginatedResults;
 import network.darkhelmet.prism.api.activities.ActivityQuery;
+import network.darkhelmet.prism.api.storage.models.ActivityRow;
 import network.darkhelmet.prism.utils.LocationUtils;
 
 import org.bukkit.Location;
@@ -30,9 +32,19 @@ public class NearCommand extends CommandBase {
         Vector maxVector = LocationUtils.getMaxVector(loc, radius);
 
         final ActivityQuery query = ActivityQuery.builder().minVector(minVector).maxVector(maxVector).build();
+        // @todo move this somewhere re-usable
         Prism.newChain().async(() -> {
             try {
-                Prism.getInstance().storageAdapter().queryActivities(query);
+                PaginatedResults<ActivityRow> paginatedResults = Prism.getInstance()
+                    .storageAdapter().queryActivities(query);
+
+                if (paginatedResults.isEmpty()) {
+                    player.sendMessage("no results");
+                } else {
+                    for (ActivityRow row : paginatedResults.results()) {
+                        player.sendMessage(row.action());
+                    }
+                }
             } catch (Exception e) {
                 Prism.getInstance().handleException(e);
             }

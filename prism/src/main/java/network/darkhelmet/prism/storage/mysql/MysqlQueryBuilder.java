@@ -7,13 +7,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.api.activities.ActivityQuery;
 
 import org.intellij.lang.annotations.Language;
 
 public class MysqlQueryBuilder {
     /**
-     * Query the activies table given an activity query object.
+     * Query the activities table given an activity query object.
      *
      * @param query The activity query
      * @param prefix The table prefix
@@ -21,7 +22,8 @@ public class MysqlQueryBuilder {
      * @throws SQLException Database exception
      */
     public static List<DbRow> queryActivities(ActivityQuery query, String prefix) throws SQLException {
-        @Language("SQL") String sql = "SELECT * FROM " + prefix + "activities ";
+        @Language("SQL") String sql = "SELECT * FROM " + prefix + "activities AS activities "
+            + "JOIN " + prefix + "actions AS actions ON actions.action_id = activities.action_id ";
 
         List<String> conditions = new ArrayList<>();
         List<Object> parameters = new ArrayList<>();
@@ -42,6 +44,8 @@ public class MysqlQueryBuilder {
         if (conditions.size() > 0) {
             sql += "WHERE " + String.join(" AND ", conditions);
         }
+
+        Prism.getInstance().debug(String.format("Querying activities: %s", sql));
 
         return DB.getResults(sql, parameters.toArray());
     }

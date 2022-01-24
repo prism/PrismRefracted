@@ -7,14 +7,17 @@ import co.aikar.idb.DbRow;
 import co.aikar.idb.PooledDatabaseOptions;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import network.darkhelmet.prism.Prism;
+import network.darkhelmet.prism.api.PaginatedResults;
 import network.darkhelmet.prism.api.activities.ActivityQuery;
 import network.darkhelmet.prism.api.storage.IActivityBatch;
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
+import network.darkhelmet.prism.api.storage.models.ActivityRow;
 import network.darkhelmet.prism.config.StorageConfiguration;
 
 import org.intellij.lang.annotations.Language;
@@ -121,10 +124,16 @@ public class MysqlStorageAdapter implements IStorageAdapter {
     }
 
     @Override
-    public void queryActivities(ActivityQuery query) throws SQLException {
+    public PaginatedResults<ActivityRow> queryActivities(ActivityQuery query) throws SQLException {
+        List<ActivityRow> results = new ArrayList<>();
+
         for (DbRow row : MysqlQueryBuilder.queryActivities(query, storageConfig.prefix())) {
-            System.out.println(row);
+            String action = row.getString("action");
+            ActivityRow activity =  new ActivityRow(action);
+            results.add(activity);
         }
+
+        return new PaginatedResults<>(results);
     }
 
     @Override
