@@ -85,7 +85,7 @@ public class MysqlStorageAdapter implements IStorageAdapter {
         @Language("SQL") String createCauses = "CREATE TABLE IF NOT EXISTS `" + storageConfig.prefix() + "causes` ("
             + "`cause_id` int unsigned NOT NULL AUTO_INCREMENT,"
             + "`cause` varchar(16) NOT NULL,"
-            + "`player_id` int NOT NULL,"
+            + "`player_id` int NULL,"
             + "PRIMARY KEY (`cause_id`),"
             + "UNIQUE KEY `cause` (`cause`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
         DB.executeUpdate(createCauses);

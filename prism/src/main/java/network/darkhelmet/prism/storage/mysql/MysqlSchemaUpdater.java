@@ -14,6 +14,11 @@ import org.intellij.lang.annotations.Language;
 
 public class MysqlSchemaUpdater {
     /**
+     * Prevent instantiation.
+     */
+    private MysqlSchemaUpdater() {}
+
+    /**
      * Updates schema from 8 (Prism 2.x & 3.x) to v4 (4.x).
      *
      * @param storageConfig The storage config

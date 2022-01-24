@@ -15,7 +15,9 @@ import network.darkhelmet.prism.config.StorageConfiguration;
 import network.darkhelmet.prism.utils.TypeUtils;
 
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.intellij.lang.annotations.Language;
+import org.jetbrains.annotations.Nullable;
 
 public class MysqlActivityBatch implements IActivityBatch {
     /**
@@ -48,9 +50,9 @@ public class MysqlActivityBatch implements IActivityBatch {
         connection.setAutoCommit(false);
 
         // Build the INSERT query
-        @Language("SQL") String sql = "INSERT INTO " + storageConfig.prefix() + "activity "
-            + "(`timestamp`, `x`, `y`, `z`, `action_id`, `material_id`, `world_id`) "
-            + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        @Language("SQL") String sql = "INSERT INTO " + storageConfig.prefix() + "activities "
+            + "(`timestamp`, `x`, `y`, `z`, `action_id`, `material_id`, `world_id`, `cause_id`) "
+            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     }
@@ -81,6 +83,17 @@ public class MysqlActivityBatch implements IActivityBatch {
         byte worldId = getOrCreateWorldId(world.getUID(), world.getName());
         statement.setByte(7, worldId);
 
+        // Set the player relationship
+        Long playerId = null;
+        String cause = "unknown";
+        if (activity.cause() instanceof Player player) {
+            playerId = getOrCreatePlayerId(player.getUniqueId(), player.getName());
+        }
+
+        // Set the cause relationship
+        long causeId = getOrCreateCauseId(cause, playerId);
+        statement.setLong(8, causeId);
+
         statement.addBatch();
     }
 
@@ -109,6 +122,42 @@ public class MysqlActivityBatch implements IActivityBatch {
 
             Integer intPk = DB.getFirstColumn(select, actionKey);
             primaryKey = intPk.byteValue();
+        }
+
+        return primaryKey;
+    }
+
+    /**
+     * Get or create the cause record and return the primary key.
+     *
+     * @param cause The cause name
+     * @param playerId The player id, if a player
+     * @return The primary key
+     * @throws SQLException The database exception
+     */
+    private long getOrCreateCauseId(String cause, @Nullable Long playerId) throws SQLException {
+        long primaryKey;
+
+        // Attempt to create the record
+        @Language("SQL") String insert = "INSERT INTO " + storageConfig.prefix() + "causes "
+            + "(`cause`, `player_id`) VALUES (?, ?) ON DUPLICATE KEY UPDATE `cause` = `cause`";
+
+        Long longPk = DB.executeInsert(insert, cause, playerId);
+
+        if (longPk != null) {
+            primaryKey = longPk;
+        } else if (playerId != null) {
+            // Select the existing record on player
+            @Language("SQL") String select = "SELECT cause_id FROM " + storageConfig.prefix() + "causes "
+                + "WHERE player_id = ? ";
+
+            primaryKey = DB.getFirstColumn(select, playerId);
+        } else {
+            // Select the existing record on cause
+            @Language("SQL") String select = "SELECT cause_id FROM " + storageConfig.prefix() + "causes "
+                + "WHERE cause = ? ";
+
+            primaryKey = DB.getFirstColumn(select, cause);
         }
 
         return primaryKey;
@@ -146,6 +195,39 @@ public class MysqlActivityBatch implements IActivityBatch {
                 select += "AND data IS NULL";
                 primaryKey = DB.getFirstColumn(select, material);
             }
+        }
+
+        return primaryKey;
+    }
+
+    /**
+     * Get or create the player record and return the primary key.
+     *
+     * <p>Note: This will update the player name.</p>
+     *
+     * @param playerUuid The player uuid
+     * @param playerName The player name
+     * @return The primary key
+     * @throws SQLException The database exception
+     */
+    private long getOrCreatePlayerId(UUID playerUuid, String playerName) throws SQLException {
+        long primaryKey;
+        String uuidStr = TypeUtils.uuidToDbString(playerUuid);
+
+        // Attempt to create the record, or update the world name
+        @Language("SQL") String insert = "INSERT INTO " + storageConfig.prefix() + "players "
+            + "(`player`, `player_uuid`) VALUES (?, UNHEX(?)) ON DUPLICATE KEY UPDATE `player` = ?";
+
+        Long longPk = DB.executeInsert(insert, playerName, uuidStr, playerName);
+
+        if (longPk != null) {
+            primaryKey = longPk;
+        } else {
+            // Select the existing record
+            @Language("SQL") String select = "SELECT player_id FROM " + storageConfig.prefix() + "players "
+                + "WHERE player_uuid = UNHEX(?)";
+
+            primaryKey = DB.getFirstColumn(select, uuidStr);
         }
 
         return primaryKey;
