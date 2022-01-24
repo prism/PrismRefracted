@@ -114,19 +114,6 @@ public class Prism extends JavaPlugin {
             storageCache = new StorageCache();
             recordingManager = new RecordingManager();
 
-            // Load or register actions in storage
-            for (Map.Entry<String, Boolean> entry : prismConfig.actions().entrySet()) {
-                if (entry.getValue()) {
-                    Optional<ActionModel> optionalActionModel = storageAdapter.getOrRegisterAction(entry.getKey());
-                    if (optionalActionModel.isPresent()) {
-                        storageCache.cacheActionModel(optionalActionModel.get());
-                    } else {
-                        String msg = "Failed to create or identify an action from the database. Action Key: %s";
-                        error(String.format(msg, entry.getKey()));
-                    }
-                }
-            }
-
             // Load or register worlds in storage
             // Note: WorldLoadEvent doesn't appear to fire on server boot.
             for (World world : Bukkit.getServer().getWorlds()) {

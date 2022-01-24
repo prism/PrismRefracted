@@ -59,8 +59,8 @@ public class MysqlActivityBatch implements IActivityBatch {
 
         // Build the INSERT query
         @Language("SQL") String sql = "INSERT INTO " + storageConfig.prefix() + "activity "
-            + "(epoch, world_id, x, y, z, material_id) "
-            + "VALUES (?, ?, ?, ?, ?, ?)";
+            + "(epoch, world_id, x, y, z, action_id, material_id) "
+            + "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     }
@@ -78,6 +78,9 @@ public class MysqlActivityBatch implements IActivityBatch {
             statement.setInt(4, activity.location().getBlockY());
             statement.setInt(5, activity.location().getBlockZ());
 
+            int actionId = getOrCreateActionId(activity.action().key());
+            statement.setInt(6, actionId);
+
             int materialId = 0;
             if (activity.action() instanceof BlockStateAction blockStateAction) {
                 String material = TypeUtils.materialToString(blockStateAction.blockState().getType());
@@ -86,13 +89,42 @@ public class MysqlActivityBatch implements IActivityBatch {
                 materialId = getOrCreateMaterialId(material, data);
             }
 
-            statement.setInt(6, materialId);
+            statement.setInt(7, materialId);
 
             statement.addBatch();
         } else {
             String msg = "Failed to record data because cache data was missing. World: %s";
             Prism.getInstance().debug(String.format(msg, optionWorldModel.isPresent()));
         }
+    }
+
+    /**
+     * Get or create the action record and return the primary key.
+     *
+     * @param actionKey The action key
+     * @return The primary key
+     * @throws SQLException The database exception
+     */
+    private int getOrCreateActionId(String actionKey) throws SQLException {
+        int primaryKey;
+
+        // Attempt to create the record
+        @Language("SQL") String insert = "INSERT INTO " + storageConfig.prefix() + "actions "
+            + "(`action`) VALUES (?) ON DUPLICATE KEY UPDATE `action` = `action`";
+
+        Long longPk = DB.executeInsert(insert, actionKey);
+
+        if (longPk != null) {
+            primaryKey = longPk.intValue();
+        } else {
+            // Select the existing record
+            @Language("SQL") String select = "SELECT action_id FROM " + storageConfig.prefix() + "actions "
+                + "WHERE action = ? ";
+
+            primaryKey = DB.getFirstColumn(select, actionKey);
+        }
+
+        return primaryKey;
     }
 
     /**
@@ -104,32 +136,32 @@ public class MysqlActivityBatch implements IActivityBatch {
      * @throws SQLException The database exception
      */
     private int getOrCreateMaterialId(String material, String data) throws SQLException {
-        int materialId;
+        int primaryKey;
 
-        // Attempt to create the material data record
-        @Language("SQL") String materialInsert = "INSERT INTO " + storageConfig.prefix() + "material_data "
+        // Attempt to create the record
+        @Language("SQL") String insert = "INSERT INTO " + storageConfig.prefix() + "material_data "
             + "(`material`, `data`) VALUES (?, ?) ON DUPLICATE KEY UPDATE `material` = `material`";
 
-        Long matPk = DB.executeInsert(materialInsert, material, data);
+        Long longPk = DB.executeInsert(insert, material, data);
 
-        if (matPk != null) {
-            materialId = matPk.intValue();
+        if (longPk != null) {
+            primaryKey = longPk.intValue();
         } else {
             // Select the existing material or material+data
-            @Language("SQL") String materialSelect = "SELECT material_id FROM "
+            @Language("SQL") String select = "SELECT material_id FROM "
                 + storageConfig.prefix() + "material_data "
                 + "WHERE material = ? ";
 
             if (data != null) {
-                materialSelect += "AND data = ?";
-                materialId = DB.getFirstColumn(materialSelect, material, data);
+                select += "AND data = ?";
+                primaryKey = DB.getFirstColumn(select, material, data);
             } else {
-                materialSelect += "AND data IS NULL";
-                materialId = DB.getFirstColumn(materialSelect, material);
+                select += "AND data IS NULL";
+                primaryKey = DB.getFirstColumn(select, material);
             }
         }
 
-        return materialId;
+        return primaryKey;
     }
 
     @Override

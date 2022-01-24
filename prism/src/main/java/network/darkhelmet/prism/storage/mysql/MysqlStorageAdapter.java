@@ -191,49 +191,6 @@ public class MysqlStorageAdapter implements IStorageAdapter {
     }
 
     @Override
-    public Optional<ActionModel> getAction(String actionKey) {
-        @Language("SQL") String sql = "SELECT action_id FROM " + storageConfig.prefix() + "actions "
-            + "WHERE action = ?";
-
-        try {
-            DbRow row = DB.getFirstRow(sql, actionKey);
-
-            if (row != null) {
-                return Optional.of(new SqlActionModel(row.getLong("action_id"), actionKey));
-            }
-        } catch (SQLException e) {
-            Prism.getInstance().handleException(e);
-        }
-
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<ActionModel> getOrRegisterAction(String actionKey) {
-        Optional<ActionModel> optionalAction = getAction(actionKey);
-        if (optionalAction.isPresent()) {
-            return optionalAction;
-        } else {
-            try {
-                return Optional.of(registerAction(actionKey));
-            } catch (Exception e) {
-                Prism.getInstance().handleException(e);
-                return Optional.empty();
-            }
-        }
-    }
-
-    @Override
-    public ActionModel registerAction(String actionKey) throws Exception {
-        @Language("SQL") String sql = "INSERT INTO " + storageConfig.prefix() + "actions "
-            + "(action) VALUES (?)";
-
-        Long id = DB.executeInsert(sql, actionKey);
-
-        return new SqlActionModel(id, actionKey);
-    }
-
-    @Override
     public Optional<WorldModel> getWorld(World world) {
         @Language("SQL") String sql = "SELECT world_id, HEX(world_uuid) AS uuid FROM "
             + storageConfig.prefix() + "worlds "

@@ -54,7 +54,7 @@ public class TypeUtils {
         completeUuid += "-" + uuid.substring(8, 12);
         completeUuid += "-" + uuid.substring(12, 16);
         completeUuid += "-" + uuid.substring(16, 20);
-        completeUuid += "-" + uuid.substring(20, uuid.length());
+        completeUuid += "-" + uuid.substring(20);
         completeUuid = completeUuid.toLowerCase();
         return UUID.fromString(completeUuid);
     }

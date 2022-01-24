@@ -23,31 +23,6 @@ public interface IStorageAdapter {
     IActivityBatch createActivityBatch();
 
     /**
-     * Get or register an action.
-     *
-     * @param actionKey The action key
-     * @return The action model
-     */
-    Optional<ActionModel> getOrRegisterAction(String actionKey);
-
-    /**
-     * Get an action.
-     *
-     * @param actionKey The action key
-     * @return The action model
-     */
-    Optional<ActionModel> getAction(String actionKey);
-
-    /**
-     * Register an action.
-     *
-     * @param actionKey The action key
-     * @return The action model
-     * @throws Exception The database exception
-     */
-    ActionModel registerAction(String actionKey) throws Exception;
-
-    /**
      * Get or register a world.
      *
      * @param world The world
