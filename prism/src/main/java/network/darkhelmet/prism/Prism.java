@@ -1,8 +1,6 @@
 package network.darkhelmet.prism;
 
 import java.io.File;
-import java.util.Map;
-import java.util.Optional;
 import java.util.logging.Logger;
 
 import me.mattstudios.mf.base.CommandManager;
@@ -10,22 +8,16 @@ import me.mattstudios.mf.base.CommandManager;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
-import network.darkhelmet.prism.api.storage.cache.IStorageCache;
-import network.darkhelmet.prism.api.storage.models.ActionModel;
-import network.darkhelmet.prism.api.storage.models.WorldModel;
 import network.darkhelmet.prism.commands.AboutCommand;
 import network.darkhelmet.prism.config.Config;
 import network.darkhelmet.prism.config.PrismConfiguration;
 import network.darkhelmet.prism.config.StorageConfiguration;
 import network.darkhelmet.prism.formatters.OutputFormatter;
 import network.darkhelmet.prism.listeners.BlockBreakListener;
-import network.darkhelmet.prism.listeners.WorldLoadListener;
 import network.darkhelmet.prism.recording.RecordingManager;
-import network.darkhelmet.prism.storage.cache.StorageCache;
 import network.darkhelmet.prism.storage.mysql.MysqlStorageAdapter;
 
 import org.bukkit.Bukkit;
-import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Prism extends JavaPlugin {
@@ -70,11 +62,6 @@ public class Prism extends JavaPlugin {
     IStorageAdapter storageAdapter;
 
     /**
-     * The storage cache.
-     */
-    IStorageCache storageCache;
-
-    /**
      * The recording manager.
      */
     RecordingManager recordingManager;
@@ -111,24 +98,10 @@ public class Prism extends JavaPlugin {
             // Initialize some classes
             audiences = BukkitAudiences.create(this);
             outputFormatter = new OutputFormatter(config().outputs());
-            storageCache = new StorageCache();
             recordingManager = new RecordingManager();
-
-            // Load or register worlds in storage
-            // Note: WorldLoadEvent doesn't appear to fire on server boot.
-            for (World world : Bukkit.getServer().getWorlds()) {
-                Optional<WorldModel> optionalWorldModel = storageAdapter.getOrRegisterWorld(world);
-                if (optionalWorldModel.isPresent()) {
-                    storageCache.cacheWorldModel(optionalWorldModel.get());
-                } else {
-                    String msg = "Failed to create or identify a world from the database. World: %s UUID: %s";
-                    error(String.format(msg, world.getName(), world.getUID()));
-                }
-            }
 
             // Register listeners
             getServer().getPluginManager().registerEvents(new BlockBreakListener(), this);
-            getServer().getPluginManager().registerEvents(new WorldLoadListener(), this);
 
             // Register command
             CommandManager commandManager = new CommandManager(this);
@@ -213,15 +186,6 @@ public class Prism extends JavaPlugin {
      */
     public IStorageAdapter storageAdapter() {
         return storageAdapter;
-    }
-
-    /**
-     * Get the storage cache.
-     *
-     * @return The storage cache
-     */
-    public IStorageCache storageCache() {
-        return storageCache;
     }
 
     /**

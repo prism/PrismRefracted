@@ -6,18 +6,15 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Optional;
+import java.util.UUID;
 
-import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.api.actions.BlockStateAction;
 import network.darkhelmet.prism.api.activity.Activity;
 import network.darkhelmet.prism.api.storage.IActivityBatch;
-import network.darkhelmet.prism.api.storage.cache.IStorageCache;
-import network.darkhelmet.prism.api.storage.models.WorldModel;
 import network.darkhelmet.prism.config.StorageConfiguration;
-import network.darkhelmet.prism.storage.mysql.models.SqlWorldModel;
 import network.darkhelmet.prism.utils.TypeUtils;
 
+import org.bukkit.World;
 import org.intellij.lang.annotations.Language;
 
 public class MysqlActivityBatch implements IActivityBatch {
@@ -25,11 +22,6 @@ public class MysqlActivityBatch implements IActivityBatch {
      * The storage configuration.
      */
     private StorageConfiguration storageConfig;
-
-    /**
-     * Cache the cache.
-     */
-    private IStorageCache storageCache;
 
     /**
      * The connection.
@@ -48,8 +40,6 @@ public class MysqlActivityBatch implements IActivityBatch {
      */
     public MysqlActivityBatch(StorageConfiguration storageConfiguration) {
         this.storageConfig = storageConfiguration;
-
-        storageCache = Prism.getInstance().storageCache();
     }
 
     @Override
@@ -59,7 +49,7 @@ public class MysqlActivityBatch implements IActivityBatch {
 
         // Build the INSERT query
         @Language("SQL") String sql = "INSERT INTO " + storageConfig.prefix() + "activity "
-            + "(epoch, world_id, x, y, z, action_id, material_id) "
+            + "(epoch, x, y, z, action_id, material_id, world_id) "
             + "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -67,35 +57,31 @@ public class MysqlActivityBatch implements IActivityBatch {
 
     @Override
     public void add(Activity activity) throws SQLException {
-        Optional<WorldModel> optionWorldModel = storageCache.getWorldModel(activity.location().getWorld());
+        statement.setLong(1, activity.timestamp() / 1000);
+        statement.setInt(2, activity.location().getBlockX());
+        statement.setInt(3, activity.location().getBlockY());
+        statement.setInt(4, activity.location().getBlockZ());
 
-        if (optionWorldModel.isPresent()) {
-            long worldId = ((SqlWorldModel) optionWorldModel.get()).id();
+        // Set the action relationship
+        int actionId = getOrCreateActionId(activity.action().key());
+        statement.setInt(5, actionId);
 
-            statement.setLong(1, activity.timestamp() / 1000);
-            statement.setLong(2, worldId);
-            statement.setInt(3, activity.location().getBlockX());
-            statement.setInt(4, activity.location().getBlockY());
-            statement.setInt(5, activity.location().getBlockZ());
+        // Set the material relationship
+        int materialId = 0;
+        if (activity.action() instanceof BlockStateAction blockStateAction) {
+            String material = TypeUtils.materialToString(blockStateAction.blockState().getType());
+            String data = TypeUtils.blockDataToString(blockStateAction.blockState().getBlockData());
 
-            int actionId = getOrCreateActionId(activity.action().key());
-            statement.setInt(6, actionId);
-
-            int materialId = 0;
-            if (activity.action() instanceof BlockStateAction blockStateAction) {
-                String material = TypeUtils.materialToString(blockStateAction.blockState().getType());
-                String data = TypeUtils.blockDataToString(blockStateAction.blockState().getBlockData());
-
-                materialId = getOrCreateMaterialId(material, data);
-            }
-
-            statement.setInt(7, materialId);
-
-            statement.addBatch();
-        } else {
-            String msg = "Failed to record data because cache data was missing. World: %s";
-            Prism.getInstance().debug(String.format(msg, optionWorldModel.isPresent()));
+            materialId = getOrCreateMaterialId(material, data);
         }
+        statement.setInt(6, materialId);
+
+        // Set the world relationship
+        World world = activity.location().getWorld();
+        long worldId = getOrCreateWorldId(world.getUID(), world.getName());
+        statement.setLong(7, worldId);
+
+        statement.addBatch();
     }
 
     /**
@@ -159,6 +145,39 @@ public class MysqlActivityBatch implements IActivityBatch {
                 select += "AND data IS NULL";
                 primaryKey = DB.getFirstColumn(select, material);
             }
+        }
+
+        return primaryKey;
+    }
+
+    /**
+     * Get or create the world record and return the primary key.
+     *
+     * <p>Note: This will update the world name.</p>
+     *
+     * @param worldUuid The world uuid
+     * @param worldName The world name
+     * @return The primary key
+     * @throws SQLException The database exception
+     */
+    private int getOrCreateWorldId(UUID worldUuid, String worldName) throws SQLException {
+        int primaryKey;
+        String uuidStr = TypeUtils.uuidToDbString(worldUuid);
+
+        // Attempt to create the record, or update the world name
+        @Language("SQL") String insert = "INSERT INTO " + storageConfig.prefix() + "worlds "
+            + "(`world`, `world_uuid`) VALUES (?, UNHEX(?)) ON DUPLICATE KEY UPDATE `world` = ?";
+
+        Long longPk = DB.executeInsert(insert, worldName, uuidStr, worldName);
+
+        if (longPk != null) {
+            primaryKey = longPk.intValue();
+        } else {
+            // Select the existing record
+            @Language("SQL") String select = "SELECT world_id FROM " + storageConfig.prefix() + "worlds "
+                + "WHERE world_uuid = UNHEX(?)";
+
+            primaryKey = DB.getFirstColumn(select, uuidStr);
         }
 
         return primaryKey;

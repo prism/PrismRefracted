@@ -191,54 +191,6 @@ public class MysqlStorageAdapter implements IStorageAdapter {
     }
 
     @Override
-    public Optional<WorldModel> getWorld(World world) {
-        @Language("SQL") String sql = "SELECT world_id, HEX(world_uuid) AS uuid FROM "
-            + storageConfig.prefix() + "worlds "
-            + "WHERE world_uuid = UNHEX(?)";
-
-        String worldUid = TypeUtils.uuidToDbString(world.getUID());
-
-        try {
-            DbRow row = DB.getFirstRow(sql, worldUid);
-
-            if (row != null) {
-                UUID uuid = TypeUtils.uuidFromDbString(row.getString("uuid"));
-                return Optional.of(new SqlWorldModel(row.getLong("world_id"), uuid));
-            }
-        } catch (SQLException e) {
-            Prism.getInstance().handleException(e);
-        }
-
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<WorldModel> getOrRegisterWorld(World world) {
-        Optional<WorldModel> optionalWorld = getWorld(world);
-        if (optionalWorld.isPresent()) {
-            return optionalWorld;
-        } else {
-            try {
-                return Optional.of(registerWorld(world));
-            } catch (Exception e) {
-                Prism.getInstance().handleException(e);
-                return Optional.empty();
-            }
-        }
-    }
-
-    @Override
-    public WorldModel registerWorld(World world) throws SQLException {
-        @Language("SQL") String sql = "INSERT INTO " + storageConfig.prefix() + "worlds "
-            + "(world, world_uuid) VALUES (?, UNHEX(?))";
-
-        String worldUid = TypeUtils.uuidToDbString(world.getUID());
-        Long id = DB.executeInsert(sql, world.getName(), worldUid);
-
-        return new SqlWorldModel(id, world.getUID());
-    }
-
-    @Override
     public void close() {
         DB.close();
     }
