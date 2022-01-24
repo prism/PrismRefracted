@@ -26,6 +26,8 @@ public class MysqlSchemaUpdater {
      */
     public static void update_8_to_v4(
         StorageConfiguration storageConfig) throws SQLException {
+        Prism.getInstance().log("Beginning database schema update to v4. This make take some time...");
+
         // -------------
         // ACTIONS TABLE
         // -------------
