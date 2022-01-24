@@ -12,12 +12,12 @@ public class OutputFormatter {
     /**
      * Output configuration.
      */
-    private OutputConfiguration outputConfiguration;
+    protected OutputConfiguration outputConfiguration;
 
     /**
      * Prefix.
      */
-    private Component prefix;
+    protected Component prefix;
 
     /**
      * Construct a new instance.
@@ -77,13 +77,23 @@ public class OutputFormatter {
     }
 
     /**
+     * Format a subdued message.
+     *
+     * @param message The message
+     * @return The formatted component
+     */
+    public Component subdued(String message) {
+        return format(outputConfiguration.subdued(), message);
+    }
+
+    /**
      * Format a base message.
      *
      * @param template The base template
      * @param message The message segment
      * @return The formatted component
      */
-    private Component format(String template, String message) {
+    protected Component format(String template, String message) {
         return format(template, "", message);
     }
 
@@ -95,7 +105,7 @@ public class OutputFormatter {
      * @param message The message segment
      * @return The formatted component
      */
-    private Component format(String template, String heading, String message) {
+    protected Component format(String template, String heading, String message) {
         Template prefixTemplate = Template.of("prefix", prefix);
         Template headingTemplate = Template.of("heading", heading);
         Template messageTemplate = Template.of("message", message);

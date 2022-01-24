@@ -12,6 +12,13 @@ public interface DisplayFormatter<T> {
     Component format(T object);
 
     /**
+     * Format a heading.
+     *
+     * @return The component
+     */
+    Component heading();
+
+    /**
      * Format a no-results message for this type.
      *
      * @return The component
