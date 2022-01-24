@@ -15,6 +15,9 @@ public class PrismConfiguration {
     @Comment("Enable plugin debug mode. Produces extra logging to help diagnose issues.")
     private boolean debug = false;
 
+    @Comment("Sets the default radius to use when searching for nearby activity.")
+    private int nearRadius = 5;
+
     @Comment("Configure in-game command outputs.")
     private OutputConfiguration outputs = new OutputConfiguration();
 
@@ -41,6 +44,15 @@ public class PrismConfiguration {
      */
     public boolean debug() {
         return debug;
+    }
+
+    /**
+     * Get the near radius.
+     *
+     * @return The near radius
+     */
+    public int nearRadius() {
+        return nearRadius;
     }
 
     /**

@@ -7,6 +7,7 @@ import me.mattstudios.mf.base.CommandBase;
 
 import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.api.activities.ActivityQuery;
+import network.darkhelmet.prism.utils.LocationUtils;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -23,13 +24,10 @@ public class NearCommand extends CommandBase {
     @SubCommand("near")
     public void onNear(final Player player) {
         Location loc = player.getLocation();
+        int radius = Prism.getInstance().config().nearRadius();
 
-        // @todo move to configs
-        int radius = 5;
-
-        // @todo move to helper
-        Vector minVector = new Vector(loc.getX() - radius, loc.getY() - radius, loc.getZ() - radius);
-        Vector maxVector = new Vector(loc.getX() + radius, loc.getY() + radius, loc.getZ() + radius);
+        Vector minVector = LocationUtils.getMinVector(loc, radius);
+        Vector maxVector = LocationUtils.getMaxVector(loc, radius);
 
         final ActivityQuery query = ActivityQuery.builder().minVector(minVector).maxVector(maxVector).build();
         Prism.newChain().async(() -> {
