@@ -87,13 +87,13 @@ public class MysqlSchemaUpdater {
 
         // Change material data schema
         @Language("SQL") String metaSchema = "ALTER TABLE `" + storageConfig.prefix() + "meta` "
-                + "CHANGE COLUMN `id` `id` TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,"
-                + "ADD UNIQUE INDEX `k_UNIQUE` (`k` ASC);";
+            + "CHANGE COLUMN `id` `id` TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,"
+            + "ADD UNIQUE INDEX `k_UNIQUE` (`k` ASC);";
         DB.executeUpdate(metaSchema);
 
-        // ----------
+        // ------------
         // WORLDS TABLE
-        // ----------
+        // ------------
 
         // Add world_uuid column (but allow nulls, as no values exist
         @Language("SQL") String updateWorlds = "ALTER TABLE `" + storageConfig.prefix() + "worlds`"
