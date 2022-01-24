@@ -9,6 +9,7 @@ import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.api.PaginatedResults;
 import network.darkhelmet.prism.api.activities.ActivityQuery;
 import network.darkhelmet.prism.api.storage.models.ActivityRow;
+import network.darkhelmet.prism.formatters.ActivityFormatter;
 import network.darkhelmet.prism.utils.LocationUtils;
 
 import org.bukkit.Location;
@@ -33,11 +34,13 @@ public class NearCommand extends CommandBase {
 
         final ActivityQuery query = ActivityQuery.builder().minVector(minVector).maxVector(maxVector).build();
         Prism.newChain().async(() -> {
+            ActivityFormatter formatter = new ActivityFormatter();
+
             try {
                 PaginatedResults<ActivityRow> paginatedResults = Prism.getInstance()
                     .storageAdapter().queryActivities(query);
 
-                Prism.getInstance().displayManager().show(player, paginatedResults);
+                Prism.getInstance().displayManager().show(formatter, player, paginatedResults);
             } catch (Exception e) {
                 Prism.getInstance().handleException(e);
             }

@@ -1,27 +1,28 @@
 package network.darkhelmet.prism.displays;
 
-import net.kyori.adventure.text.Component;
+import net.kyori.adventure.audience.Audience;
 
 import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.api.PaginatedResults;
-import network.darkhelmet.prism.api.storage.models.ActivityRow;
+import network.darkhelmet.prism.api.displays.DisplayFormatter;
 
 import org.bukkit.command.CommandSender;
 
 public class DisplayManager {
     /**
      * Display paginated results to a command sender.
+     *
      * @param sender The command sender
-     * @param activities The paginated results
+     * @param results The paginated results
      */
-    // @todo make this generic
-    public void show(CommandSender sender, PaginatedResults<ActivityRow> activities) {
-        if (activities.isEmpty()) {
-            Component error = Prism.getInstance().outputFormatter().error("no results");
-            Prism.getInstance().audiences().sender(sender).sendMessage(error);
+    public <T> void show(DisplayFormatter<T> formatter, CommandSender sender, PaginatedResults<T> results) {
+        Audience audience = Prism.getInstance().audiences().sender(sender);
+
+        if (results.isEmpty()) {
+            audience.sendMessage(formatter.noResults());
         } else {
-            for (ActivityRow row : activities.results()) {
-                sender.sendMessage(row.action());
+            for (T row : results.results()) {
+                audience.sendMessage(formatter.format(row));
             }
         }
     }
