@@ -79,6 +79,17 @@ public class MysqlStorageAdapter implements IStorageAdapter {
      * @throws SQLException The database exception
      */
     protected void prepareSchema() throws SQLException {
+        // Create causes table. This is done here because:
+        // 1. We need it for new installs anyway
+        // 2. Updater logic needs it for 8->v4
+        @Language("SQL") String createCauses = "CREATE TABLE IF NOT EXISTS `" + storageConfig.prefix() + "causes` ("
+            + "`cause_id` int unsigned NOT NULL AUTO_INCREMENT,"
+            + "`cause` varchar(16) NOT NULL,"
+            + "`player_id` int NOT NULL,"
+            + "PRIMARY KEY (`cause_id`),"
+            + "UNIQUE KEY `cause` (`cause`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
+        DB.executeUpdate(createCauses);
+
         // Look for existing tables first.
         List<String> tables = DB.getFirstColumnResults("SHOW TABLES LIKE ?",
             storageConfig.prefix() + "%");
@@ -93,76 +104,6 @@ public class MysqlStorageAdapter implements IStorageAdapter {
             Prism.getInstance().log(String.format("Prism database version: %s", schemaVersion));
 
             updateSchemas(schemaVersion);
-        } else {
-            // Create the prism data table. This one's the fatso.
-            @Language("SQL") String dataQuery = "CREATE TABLE IF NOT EXISTS `" + storageConfig.prefix() + "data` ("
-                + "`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,"
-                + "`epoch` int(10) unsigned NOT NULL,"
-                + "`action_id` int(10) unsigned NOT NULL,"
-                + "`player_id` int(10) unsigned NOT NULL,"
-                + "`world_id` int(10) unsigned NOT NULL,"
-                + "`x` int(11) NOT NULL,"
-                + "`y` int(11) NOT NULL,"
-                + "`z` int(11) NOT NULL,"
-                + "`block_id` mediumint(5) DEFAULT NULL,"
-                + "`old_block_id` mediumint(5) DEFAULT NULL,"
-                + "PRIMARY KEY (`id`),"
-                + "KEY `epoch` (`epoch`),"
-                + "KEY `location` (`world_id`, `x`, `z`, `y`, `action_id`),"
-                + "KEY `player` (`player_id`)"
-                + ") ENGINE=InnoDB DEFAULT CHARSET=utf8;";
-            DB.executeUpdate(dataQuery);
-
-            // Create the extra data table
-            @Language("SQL") String extraQuery = "CREATE TABLE IF NOT EXISTS `"
-                + storageConfig.prefix() + "data_extra` ("
-                + "`extra_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,"
-                + "`data_id` bigint(20) unsigned NOT NULL,"
-                + "`data` text NULL,"
-                + "`te_data` text NULL,"
-                + "PRIMARY KEY (`extra_id`), KEY `data_id` (`data_id`)"
-                + ") ENGINE=InnoDB DEFAULT CHARSET=utf8;";
-            DB.executeUpdate(extraQuery);
-
-            // Create the id map table
-            @Language("SQL") String idQuery = "CREATE TABLE IF NOT EXISTS `" + storageConfig.prefix() + "id_map` ("
-                + "`material` varchar(63) NOT NULL,"
-                + "`state` varchar(255) NOT NULL,"
-                + "`block_id` mediumint(5) NOT NULL AUTO_INCREMENT,"
-                + "PRIMARY KEY (`material`, `state`),"
-                + "UNIQUE KEY (`block_id`, `block_subid`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
-            DB.executeUpdate(idQuery);
-
-            // Create actions table
-            @Language("SQL") String actionsQuery = "CREATE TABLE IF NOT EXISTS `"
-                + storageConfig.prefix() + "actions` ("
-                + "`action_id` int(10) unsigned NOT NULL AUTO_INCREMENT,"
-                + "`action` varchar(25) NOT NULL,"
-                + "PRIMARY KEY (`action_id`), UNIQUE KEY `action` (`action`)"
-                + ") ENGINE=InnoDB DEFAULT CHARSET=utf8;";
-            DB.executeUpdate(actionsQuery);
-
-            // Create the players table
-            @Language("SQL") String playersQuery = "CREATE TABLE IF NOT EXISTS `"
-                + storageConfig.prefix() + "players` ("
-                + "`player_id` int(10) unsigned NOT NULL AUTO_INCREMENT,"
-                + "`player` varchar(255) NOT NULL,"
-                + "`player_uuid` binary(16) NOT NULL,"
-                + "PRIMARY KEY (`player_id`),"
-                + "UNIQUE KEY `player` (`player`), UNIQUE KEY `player_uuid` (`player_uuid`)"
-                + ") ENGINE=InnoDB DEFAULT CHARSET=utf8;";
-            DB.executeUpdate(playersQuery);
-
-            // Create worlds table
-            @Language("SQL") String worldsQuery = "CREATE TABLE IF NOT EXISTS `" + storageConfig.prefix() + "worlds` ("
-                + "`world_id` int(10) unsigned NOT NULL AUTO_INCREMENT,"
-                + "`world` varchar(255) NOT NULL,"
-                + "`world_uuid` binary(16) NOT NULL,"
-                + "PRIMARY KEY (`world_id`),"
-                + "UNIQUE KEY `world` (`world`),"
-                + "UNIQUE KEY `world_uuid_UNIQUE` (`world_uuid`)"
-                + ") ENGINE=InnoDB DEFAULT CHARSET=utf8;";
-            DB.executeUpdate(worldsQuery);
         }
     }
 

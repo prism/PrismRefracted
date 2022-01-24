@@ -36,7 +36,7 @@ public class MysqlSchemaUpdater {
 
         // Rename data table
         @Language("SQL") String renameData = "ALTER TABLE `" + storageConfig.prefix() + "data` "
-            + "RENAME TO `" + storageConfig.prefix() + "activity`";
+            + "RENAME TO `" + storageConfig.prefix() + "activities`";
         DB.executeUpdate(renameData);
 
         // Drop foreign key in extra table
@@ -44,8 +44,8 @@ public class MysqlSchemaUpdater {
             + "DROP FOREIGN KEY `" + storageConfig.prefix() + "data_extra_ibfk_1`;";
         DB.executeUpdate(dropExtraFk);
 
-        // Update data table
-        @Language("SQL") String updateData = "ALTER TABLE `" + storageConfig.prefix() + "activity`"
+        // Update data table (don't drop player_id yet)
+        @Language("SQL") String updateData = "ALTER TABLE `" + storageConfig.prefix() + "activities`"
             + "DROP COLUMN `block_subid`,"
             + "DROP COLUMN `old_block_subid`,"
             + "CHANGE COLUMN `action_id` `action_id` TINYINT UNSIGNED NOT NULL AFTER `z`,"
@@ -54,7 +54,8 @@ public class MysqlSchemaUpdater {
             + "CHANGE COLUMN `world_id` `world_id` TINYINT UNSIGNED NOT NULL ,"
             + "CHANGE COLUMN `block_id` `material_id` MEDIUMINT NULL,"
             + "CHANGE COLUMN `old_block_id` `old_material_id` MEDIUMINT NULL DEFAULT NULL,"
-            + "CHANGE COLUMN `player_id` `player_id` INT UNSIGNED NOT NULL AFTER `old_material_id`;";
+            + "CHANGE COLUMN `player_id` `player_id` INT UNSIGNED NOT NULL AFTER `old_material_id`,"
+            + "ADD COLUMN `cause_id` INT NOT NULL AFTER `player_id`;";
         DB.executeUpdate(updateData);
 
         // ------------
@@ -90,6 +91,29 @@ public class MysqlSchemaUpdater {
             + "CHANGE COLUMN `id` `id` TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,"
             + "ADD UNIQUE INDEX `k_UNIQUE` (`k` ASC);";
         DB.executeUpdate(metaSchema);
+
+        // -------------
+        // PLAYERS TABLE
+        // -------------
+
+        // Populate the causes table. Prism <= v3 treated non-players as fake players and there's
+        // sadly no way to separate them here. Clean databases on v4 will have them separated.
+        // there's some janky fake-player stuff that exceeds the 16 char player names, we have to ignore it.
+        @Language("SQL") String causesPopulator = "INSERT INTO `" + storageConfig.prefix() + "causes` "
+            + "(cause, player_id) SELECT player, player_id FROM `" + storageConfig.prefix() + "players` "
+            + "WHERE LENGTH(player) <= 16";
+        DB.executeUpdate(causesPopulator);
+
+        // Convert activities table player_ids into cause_ids
+        @Language("SQL") String causeIdPopulator = "UPDATE `" + storageConfig.prefix() + "activities` "
+            + "SET cause_id = (SELECT cause_id FROM prism_causes "
+            + "WHERE prism_causes.player_id = prism_activities.player_id);";
+        DB.executeUpdate(causeIdPopulator);
+
+        // Drop player_id col from activities
+        @Language("SQL") String dropPlayerId = "ALTER TABLE `" + storageConfig.prefix() + "activities`"
+            + "DROP COLUMN `player_id`;";
+        DB.executeUpdate(dropPlayerId);
 
         // ------------
         // WORLDS TABLE
