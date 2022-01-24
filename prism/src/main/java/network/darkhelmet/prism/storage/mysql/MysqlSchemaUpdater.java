@@ -22,6 +22,11 @@ public class MysqlSchemaUpdater {
     public static void update_8_to_v4(
         StorageConfiguration storageConfig) throws SQLException {
         // Drop block subid column from id mapping. What a relic.
+        @Language("SQL") String actionPk = "ALTER TABLE `" + storageConfig.prefix() + "actions`"
+            + "CHANGE COLUMN `action_id` `action_id` TINYINT UNSIGNED NOT NULL AUTO_INCREMENT ";
+        DB.executeUpdate(actionPk);
+
+        // Drop block subid column from id mapping. What a relic.
         @Language("SQL") String updateIdMap = "ALTER TABLE `" + storageConfig.prefix() + "id_map`"
             + "DROP COLUMN `block_subid`;";
         DB.executeUpdate(updateIdMap);
@@ -39,7 +44,7 @@ public class MysqlSchemaUpdater {
 
         // Change material data schema
         @Language("SQL") String materialSchema = "ALTER TABLE `" + storageConfig.prefix() + "material_data` "
-            + "CHANGE COLUMN `block_id` `material_id` MEDIUMINT(5) NOT NULL AUTO_INCREMENT FIRST,"
+            + "CHANGE COLUMN `block_id` `material_id` SMALLINT NOT NULL AUTO_INCREMENT FIRST,"
             + "CHANGE COLUMN `state` `data` VARCHAR(255) NULL,"
             + "DROP PRIMARY KEY,"
             + "ADD PRIMARY KEY (`material_id`),"
@@ -48,6 +53,7 @@ public class MysqlSchemaUpdater {
 
         // Add world_uuid column (but allow nulls, as no values exist
         @Language("SQL") String updateWorlds = "ALTER TABLE `" + storageConfig.prefix() + "worlds`"
+            + "CHANGE COLUMN `world_id` `world_id` TINYINT UNSIGNED NOT NULL AUTO_INCREMENT "
             + "ADD COLUMN `world_uuid` BINARY(16) NULL AFTER `world`,"
             + "ADD UNIQUE INDEX `world_uuid_UNIQUE` (`world_uuid` ASC);";
         DB.executeUpdate(updateWorlds);

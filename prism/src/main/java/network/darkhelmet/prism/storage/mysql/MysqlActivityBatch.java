@@ -63,8 +63,8 @@ public class MysqlActivityBatch implements IActivityBatch {
         statement.setInt(4, activity.location().getBlockZ());
 
         // Set the action relationship
-        int actionId = getOrCreateActionId(activity.action().key());
-        statement.setInt(5, actionId);
+        byte actionId = getOrCreateActionId(activity.action().key());
+        statement.setByte(5, actionId);
 
         // Set the material relationship
         int materialId = 0;
@@ -78,8 +78,8 @@ public class MysqlActivityBatch implements IActivityBatch {
 
         // Set the world relationship
         World world = activity.location().getWorld();
-        long worldId = getOrCreateWorldId(world.getUID(), world.getName());
-        statement.setLong(7, worldId);
+        byte worldId = getOrCreateWorldId(world.getUID(), world.getName());
+        statement.setByte(7, worldId);
 
         statement.addBatch();
     }
@@ -91,8 +91,8 @@ public class MysqlActivityBatch implements IActivityBatch {
      * @return The primary key
      * @throws SQLException The database exception
      */
-    private int getOrCreateActionId(String actionKey) throws SQLException {
-        int primaryKey;
+    private byte getOrCreateActionId(String actionKey) throws SQLException {
+        byte primaryKey;
 
         // Attempt to create the record
         @Language("SQL") String insert = "INSERT INTO " + storageConfig.prefix() + "actions "
@@ -101,7 +101,7 @@ public class MysqlActivityBatch implements IActivityBatch {
         Long longPk = DB.executeInsert(insert, actionKey);
 
         if (longPk != null) {
-            primaryKey = longPk.intValue();
+            primaryKey = longPk.byteValue();
         } else {
             // Select the existing record
             @Language("SQL") String select = "SELECT action_id FROM " + storageConfig.prefix() + "actions "
@@ -160,8 +160,8 @@ public class MysqlActivityBatch implements IActivityBatch {
      * @return The primary key
      * @throws SQLException The database exception
      */
-    private int getOrCreateWorldId(UUID worldUuid, String worldName) throws SQLException {
-        int primaryKey;
+    private byte getOrCreateWorldId(UUID worldUuid, String worldName) throws SQLException {
+        byte primaryKey;
         String uuidStr = TypeUtils.uuidToDbString(worldUuid);
 
         // Attempt to create the record, or update the world name
@@ -171,7 +171,7 @@ public class MysqlActivityBatch implements IActivityBatch {
         Long longPk = DB.executeInsert(insert, worldName, uuidStr, worldName);
 
         if (longPk != null) {
-            primaryKey = longPk.intValue();
+            primaryKey = longPk.byteValue();
         } else {
             // Select the existing record
             @Language("SQL") String select = "SELECT world_id FROM " + storageConfig.prefix() + "worlds "
