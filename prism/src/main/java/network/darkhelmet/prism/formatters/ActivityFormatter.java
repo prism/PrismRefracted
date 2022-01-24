@@ -20,9 +20,17 @@ public class ActivityFormatter extends OutputFormatter implements DisplayFormatt
 
     @Override
     public Component format(ActivityRow row) {
-        Template actionTemplate = Template.of("action", row.action());
+        Template actionFamilyTemplate = Template.of("actionFamily", row.actionFamily());
+        Template actionPastTenseTemplate = Template.of("actionPastTense", row.actionFamily());
+        Template causeTemplate = Template.of("cause", row.cause());
+        Template signTemplate = Template.of("sign", "+");
+        Template materialTemplate = Template.of("material", row.material());
+        Template countTemplate = Template.of("count", "1");
+        Template sinceTemplate = Template.of("since", row.since());
 
-        List<Template> templates = List.of(actionTemplate);
+        List<Template> templates = List.of(
+            actionFamilyTemplate, actionPastTenseTemplate, signTemplate, causeTemplate, materialTemplate,
+            countTemplate, sinceTemplate);
         return MiniMessage.get().parse(outputConfiguration.activity(), templates);
     }
 

@@ -129,7 +129,11 @@ public class MysqlStorageAdapter implements IStorageAdapter {
 
         for (DbRow row : MysqlQueryBuilder.queryActivities(query, storageConfig.prefix())) {
             String action = row.getString("action");
-            ActivityRow activity =  new ActivityRow(action);
+            String cause = row.getString("cause");
+            String material = row.getString("material");
+            int timestamp = row.getInt("timestamp");
+
+            ActivityRow activity =  new ActivityRow(action, cause, timestamp, material);
             results.add(activity);
         }
 

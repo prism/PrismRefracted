@@ -22,8 +22,12 @@ public class MysqlQueryBuilder {
      * @throws SQLException Database exception
      */
     public static List<DbRow> queryActivities(ActivityQuery query, String prefix) throws SQLException {
-        @Language("SQL") String sql = "SELECT * FROM " + prefix + "activities AS activities "
-            + "JOIN " + prefix + "actions AS actions ON actions.action_id = activities.action_id ";
+        @Language("SQL") String sql = "SELECT `action`, `timestamp`, `material`, `cause` "
+            + "FROM " + prefix + "activities AS activities "
+            + "JOIN " + prefix + "actions AS actions ON actions.action_id = activities.action_id "
+            + "JOIN " + prefix + "causes AS causes ON causes.cause_id = activities.cause_id "
+            + "LEFT JOIN " + prefix + "players AS players ON players.player_id = causes.player_id "
+            + "LEFT JOIN " + prefix + "material_data AS materials ON materials.material_id = activities.material_id ";
 
         List<String> conditions = new ArrayList<>();
         List<Object> parameters = new ArrayList<>();
