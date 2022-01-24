@@ -27,7 +27,7 @@ public class BlockBreakListener implements Listener {
         Action action = Action.builder().key("block-break").block(block).build();
 
         // Build the block break by player activity
-        Activity activity = Activity.builder().action(action).location(block.getLocation()).cause(player).build();
+        final Activity activity = Activity.builder().action(action).location(block.getLocation()).cause(player).build();
 
         RecordingQueue.addToQueue(activity);
     }
