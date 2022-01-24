@@ -14,6 +14,8 @@ import java.util.Map;
 
 import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.api.PaginatedResults;
+import network.darkhelmet.prism.api.actions.Action;
+import network.darkhelmet.prism.api.actions.BlockStateAction;
 import network.darkhelmet.prism.api.activities.ActivityQuery;
 import network.darkhelmet.prism.api.storage.IActivityBatch;
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
@@ -138,6 +140,23 @@ public class MysqlStorageAdapter implements IStorageAdapter {
         }
 
         return new PaginatedResults<>(results);
+    }
+
+    @Override
+    public List<Action> queryActivitiesAsActions(ActivityQuery query) throws SQLException {
+        List<Action> results = new ArrayList<>();
+
+        for (DbRow row : MysqlQueryBuilder.queryActivities(query, storageConfig.prefix())) {
+            String actionKey = row.getString("action");
+            String material = row.getString("material");
+
+            if (material != null) {
+                BlockStateAction action = new BlockStateAction(actionKey, material, null);
+                results.add(action);
+            }
+        }
+
+        return results;
     }
 
     @Override

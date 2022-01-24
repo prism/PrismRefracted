@@ -71,8 +71,8 @@ public class MysqlActivityBatch implements IActivityBatch {
         // Set the material relationship
         int materialId = 0;
         if (activity.action() instanceof BlockStateAction blockStateAction) {
-            String material = TypeUtils.materialToString(blockStateAction.blockState().getType());
-            String data = TypeUtils.blockDataToString(blockStateAction.blockState().getBlockData());
+            String material = blockStateAction.material();
+            String data = blockStateAction.blockData();
 
             materialId = getOrCreateMaterialId(material, data);
         }

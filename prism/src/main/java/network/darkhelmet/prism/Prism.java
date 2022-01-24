@@ -14,6 +14,7 @@ import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
 import network.darkhelmet.prism.commands.AboutCommand;
 import network.darkhelmet.prism.commands.NearCommand;
+import network.darkhelmet.prism.commands.RollbackCommand;
 import network.darkhelmet.prism.config.Config;
 import network.darkhelmet.prism.config.PrismConfiguration;
 import network.darkhelmet.prism.config.StorageConfiguration;
@@ -125,6 +126,7 @@ public class Prism extends JavaPlugin {
             CommandManager commandManager = new CommandManager(this);
             commandManager.register(new AboutCommand());
             commandManager.register(new NearCommand());
+            commandManager.register(new RollbackCommand());
         }
     }
 

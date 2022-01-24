@@ -1,6 +1,9 @@
 package network.darkhelmet.prism.api.storage;
 
+import java.util.List;
+
 import network.darkhelmet.prism.api.PaginatedResults;
+import network.darkhelmet.prism.api.actions.Action;
 import network.darkhelmet.prism.api.activities.ActivityQuery;
 import network.darkhelmet.prism.api.storage.models.ActivityRow;
 
@@ -24,6 +27,15 @@ public interface IStorageAdapter {
      * @throws Exception Storage layer exception
      */
     PaginatedResults<ActivityRow> queryActivities(ActivityQuery query) throws Exception;
+
+    /**
+     * Query activities as actions we can provide to an applier.
+     *
+     * @param query The activity query
+     * @return List of action
+     * @throws Exception Storage layer exception
+     */
+    List<Action> queryActivitiesAsActions(ActivityQuery query) throws Exception;
 
     /**
      * Check whether this storage system is enabled and ready.
