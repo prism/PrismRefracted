@@ -107,7 +107,8 @@ public class MysqlActivityBatch implements IActivityBatch {
             @Language("SQL") String select = "SELECT action_id FROM " + storageConfig.prefix() + "actions "
                 + "WHERE action = ? ";
 
-            primaryKey = DB.getFirstColumn(select, actionKey);
+            Integer intPk = DB.getFirstColumn(select, actionKey);
+            primaryKey = intPk.byteValue();
         }
 
         return primaryKey;
@@ -177,7 +178,8 @@ public class MysqlActivityBatch implements IActivityBatch {
             @Language("SQL") String select = "SELECT world_id FROM " + storageConfig.prefix() + "worlds "
                 + "WHERE world_uuid = UNHEX(?)";
 
-            primaryKey = DB.getFirstColumn(select, uuidStr);
+            Integer intPk = DB.getFirstColumn(select, uuidStr);
+            primaryKey = intPk.byteValue();
         }
 
         return primaryKey;
