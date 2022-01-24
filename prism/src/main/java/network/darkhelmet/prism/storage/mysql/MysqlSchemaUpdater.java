@@ -83,6 +83,7 @@ public class MysqlSchemaUpdater {
             + "CHANGE COLUMN `material` `material` VARCHAR(45) NULL,"
             + "CHANGE COLUMN `state` `data` VARCHAR(155) NULL,"
             + "DROP PRIMARY KEY,"
+            + "DROP INDEX `block_id`,"
             + "ADD PRIMARY KEY (`material_id`),"
             + "ADD UNIQUE INDEX `materialdata` (`material` ASC, `data` ASC);";
         DB.executeUpdate(materialSchema);
@@ -119,6 +120,12 @@ public class MysqlSchemaUpdater {
         @Language("SQL") String dropPlayerId = "ALTER TABLE `" + storageConfig.prefix() + "activities`"
             + "DROP COLUMN `player_id`;";
         DB.executeUpdate(dropPlayerId);
+
+        // Update players table
+        @Language("SQL") String updatePlayers = "ALTER TABLE `" + storageConfig.prefix() + "players`"
+            + "DROP INDEX `player`,"
+            + "ADD INDEX `player` (`player` ASC)";
+        DB.executeUpdate(updatePlayers);
 
         // ------------
         // WORLDS TABLE
