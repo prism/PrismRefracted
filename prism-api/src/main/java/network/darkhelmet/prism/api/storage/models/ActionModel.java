@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public class ActionModel {
     /**
-     * The world UUID.
+     * The action key.
      */
     protected final String key;
 

@@ -8,7 +8,7 @@ public class SqlActionModel extends ActionModel {
     /**
      * The primary key.
      */
-    private Long id;
+    private long id;
 
     /**
      * Construct a sql action model.
@@ -16,7 +16,7 @@ public class SqlActionModel extends ActionModel {
      * @param id The id
      * @param actionKey The action key
      */
-    public SqlActionModel(Long id, String actionKey) {
+    public SqlActionModel(long id, String actionKey) {
         super(actionKey);
 
         this.id = id;
@@ -43,7 +43,7 @@ public class SqlActionModel extends ActionModel {
      *
      * @return The primary key
      */
-    public Long id() {
+    public long id() {
         return id;
     }
 

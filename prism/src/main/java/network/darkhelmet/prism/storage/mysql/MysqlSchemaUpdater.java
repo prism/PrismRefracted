@@ -32,6 +32,20 @@ public class MysqlSchemaUpdater {
             + "DROP COLUMN `old_block_subid`;";
         DB.executeUpdate(updateData);
 
+        // Rename id map table
+        @Language("SQL") String renameId = "ALTER TABLE `" + storageConfig.prefix() + "id_map` "
+            + "RENAME TO `" + storageConfig.prefix() + "material_data`";
+        DB.executeUpdate(renameId);
+
+        // Change material data schema
+        @Language("SQL") String materialSchema = "ALTER TABLE `" + storageConfig.prefix() + "material_data` "
+            + "CHANGE COLUMN `block_id` `material_id` MEDIUMINT(5) NOT NULL AUTO_INCREMENT FIRST,"
+            + "CHANGE COLUMN `state` `data` VARCHAR(255) NULL,"
+            + "DROP PRIMARY KEY,"
+            + "ADD PRIMARY KEY (`material_id`),"
+            + "ADD UNIQUE INDEX `materialdata` (`material` ASC, `data` ASC);";
+        DB.executeUpdate(materialSchema);
+
         // Add world_uuid column (but allow nulls, as no values exist
         @Language("SQL") String updateWorlds = "ALTER TABLE `" + storageConfig.prefix() + "worlds`"
             + "ADD COLUMN `world_uuid` BINARY(16) NULL AFTER `world`,"

@@ -19,4 +19,13 @@ public class BlockStateAction extends Action {
 
         this.blockState = blockState;
     }
+
+    /**
+     * Get the block state.
+     *
+     * @return The block state
+     */
+    public BlockState blockState() {
+        return blockState;
+    }
 }

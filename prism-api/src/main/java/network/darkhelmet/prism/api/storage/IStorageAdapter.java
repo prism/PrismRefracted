@@ -2,11 +2,12 @@ package network.darkhelmet.prism.api.storage;
 
 import java.util.Optional;
 
-import network.darkhelmet.prism.api.activity.Activity;
 import network.darkhelmet.prism.api.storage.models.ActionModel;
+import network.darkhelmet.prism.api.storage.models.MaterialDataModel;
 import network.darkhelmet.prism.api.storage.models.WorldModel;
 
 import org.bukkit.World;
+import org.jetbrains.annotations.Nullable;
 
 public interface IStorageAdapter {
     /**

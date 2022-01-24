@@ -1,12 +1,36 @@
 package network.darkhelmet.prism.utils;
 
+import java.util.Locale;
 import java.util.UUID;
+
+import org.bukkit.Material;
+import org.bukkit.block.data.BlockData;
 
 public class TypeUtils {
     /**
      * Prevent instantiation.
      */
     private TypeUtils() {}
+
+    /**
+     * "Serializes" material name to string. Material is not namespaced.
+     *
+     * @param material The material
+     * @return The string
+     */
+    public static String materialToString(Material material) {
+        return material.toString().toLowerCase(Locale.ENGLISH);
+    }
+
+    /**
+     * "Serializes" block data to a string. Returns block data only, not namespaced material.
+     *
+     * @param data The block data
+     * @return The string
+     */
+    public static String blockDataToString(BlockData data) {
+        return data.getAsString().replaceAll("^[^\\[]+", "");
+    }
 
     /**
      * Converts UUID to a string ready for use against database.

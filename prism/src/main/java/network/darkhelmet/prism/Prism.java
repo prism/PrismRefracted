@@ -1,7 +1,6 @@
 package network.darkhelmet.prism;
 
 import java.io.File;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -26,7 +25,6 @@ import network.darkhelmet.prism.storage.cache.StorageCache;
 import network.darkhelmet.prism.storage.mysql.MysqlStorageAdapter;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 

@@ -9,7 +9,7 @@ public class SqlWorldModel extends WorldModel {
     /**
      * The primary key.
      */
-    private Long id;
+    private long id;
 
     /**
      * Construct a sql world model.
@@ -17,7 +17,7 @@ public class SqlWorldModel extends WorldModel {
      * @param id The id
      * @param worldUuid The world UUID
      */
-    public SqlWorldModel(Long id, UUID worldUuid) {
+    public SqlWorldModel(long id, UUID worldUuid) {
         super(worldUuid);
 
         this.id = id;
@@ -44,7 +44,7 @@ public class SqlWorldModel extends WorldModel {
      *
      * @return The primary key
      */
-    public Long id() {
+    public long id() {
         return id;
     }
 

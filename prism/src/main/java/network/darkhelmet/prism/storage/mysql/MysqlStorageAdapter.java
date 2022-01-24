@@ -16,14 +16,17 @@ import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.api.storage.IActivityBatch;
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
 import network.darkhelmet.prism.api.storage.models.ActionModel;
+import network.darkhelmet.prism.api.storage.models.MaterialDataModel;
 import network.darkhelmet.prism.api.storage.models.WorldModel;
 import network.darkhelmet.prism.config.StorageConfiguration;
 import network.darkhelmet.prism.storage.mysql.models.SqlActionModel;
+import network.darkhelmet.prism.storage.mysql.models.SqlMaterialDataModel;
 import network.darkhelmet.prism.storage.mysql.models.SqlWorldModel;
 import network.darkhelmet.prism.utils.TypeUtils;
 
 import org.bukkit.World;
 import org.intellij.lang.annotations.Language;
+import org.jetbrains.annotations.Nullable;
 
 public class MysqlStorageAdapter implements IStorageAdapter {
     /**
@@ -106,9 +109,7 @@ public class MysqlStorageAdapter implements IStorageAdapter {
             + "`y` int(11) NOT NULL,"
             + "`z` int(11) NOT NULL,"
             + "`block_id` mediumint(5) DEFAULT NULL,"
-            + "`block_subid` mediumint(5) DEFAULT NULL,"
             + "`old_block_id` mediumint(5) DEFAULT NULL,"
-            + "`old_block_subid` mediumint(5) DEFAULT NULL,"
             + "PRIMARY KEY (`id`),"
             + "KEY `epoch` (`epoch`),"
             + "KEY `location` (`world_id`, `x`, `z`, `y`, `action_id`),"
@@ -201,7 +202,7 @@ public class MysqlStorageAdapter implements IStorageAdapter {
                 return Optional.of(new SqlActionModel(row.getLong("action_id"), actionKey));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            Prism.getInstance().handleException(e);
         }
 
         return Optional.empty();
@@ -216,6 +217,7 @@ public class MysqlStorageAdapter implements IStorageAdapter {
             try {
                 return Optional.of(registerAction(actionKey));
             } catch (Exception e) {
+                Prism.getInstance().handleException(e);
                 return Optional.empty();
             }
         }
@@ -224,7 +226,7 @@ public class MysqlStorageAdapter implements IStorageAdapter {
     @Override
     public ActionModel registerAction(String actionKey) throws Exception {
         @Language("SQL") String sql = "INSERT INTO " + storageConfig.prefix() + "actions "
-                + "(action) VALUES (?)";
+            + "(action) VALUES (?)";
 
         Long id = DB.executeInsert(sql, actionKey);
 
@@ -247,7 +249,7 @@ public class MysqlStorageAdapter implements IStorageAdapter {
                 return Optional.of(new SqlWorldModel(row.getLong("world_id"), uuid));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            Prism.getInstance().handleException(e);
         }
 
         return Optional.empty();
@@ -262,6 +264,7 @@ public class MysqlStorageAdapter implements IStorageAdapter {
             try {
                 return Optional.of(registerWorld(world));
             } catch (Exception e) {
+                Prism.getInstance().handleException(e);
                 return Optional.empty();
             }
         }
