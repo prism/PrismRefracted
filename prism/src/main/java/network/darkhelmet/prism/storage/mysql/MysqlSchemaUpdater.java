@@ -21,21 +21,50 @@ public class MysqlSchemaUpdater {
      */
     public static void update_8_to_v4(
         StorageConfiguration storageConfig) throws SQLException {
-        // Drop block subid column from id mapping. What a relic.
+        // -------------
+        // ACTIONS TABLE
+        // -------------
+
+        // Decrease the size of the action_id col
         @Language("SQL") String actionPk = "ALTER TABLE `" + storageConfig.prefix() + "actions`"
             + "CHANGE COLUMN `action_id` `action_id` TINYINT UNSIGNED NOT NULL AUTO_INCREMENT ";
         DB.executeUpdate(actionPk);
+
+        // ----------------
+        // DATA/EXTRA TABLE
+        // ----------------
+
+        // Rename data table
+        @Language("SQL") String renameData = "ALTER TABLE `" + storageConfig.prefix() + "data` "
+            + "RENAME TO `" + storageConfig.prefix() + "activity`";
+        DB.executeUpdate(renameData);
+
+        // Drop foreign key in extra table
+        @Language("SQL") String dropExtraFk = "ALTER TABLE `" + storageConfig.prefix() + "data_extra` "
+            + "DROP FOREIGN KEY `" + storageConfig.prefix() + "data_extra_ibfk_1`;";
+        DB.executeUpdate(dropExtraFk);
+
+        // Update data table
+        @Language("SQL") String updateData = "ALTER TABLE `" + storageConfig.prefix() + "activity`"
+            + "DROP COLUMN `block_subid`,"
+            + "DROP COLUMN `old_block_subid`,"
+            + "CHANGE COLUMN `action_id` `action_id` TINYINT UNSIGNED NOT NULL AFTER `z`,"
+            + "CHANGE COLUMN `id` `activty_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,"
+            + "CHANGE COLUMN `epoch` `timestamp` INT UNSIGNED NOT NULL,"
+            + "CHANGE COLUMN `world_id` `world_id` TINYINT UNSIGNED NOT NULL ,"
+            + "CHANGE COLUMN `block_id` `material_id` MEDIUMINT NULL,"
+            + "CHANGE COLUMN `old_block_id` `old_material_id` MEDIUMINT NULL DEFAULT NULL,"
+            + "CHANGE COLUMN `player_id` `player_id` INT UNSIGNED NOT NULL AFTER `old_material_id`;";
+        DB.executeUpdate(updateData);
+
+        // ------------
+        // ID MAP TABLE
+        // ------------
 
         // Drop block subid column from id mapping. What a relic.
         @Language("SQL") String updateIdMap = "ALTER TABLE `" + storageConfig.prefix() + "id_map`"
             + "DROP COLUMN `block_subid`;";
         DB.executeUpdate(updateIdMap);
-
-        // Drop block subid column from data. What a relic.
-        @Language("SQL") String updateData = "ALTER TABLE `" + storageConfig.prefix() + "data`"
-            + "DROP COLUMN `block_subid`,"
-            + "DROP COLUMN `old_block_subid`;";
-        DB.executeUpdate(updateData);
 
         // Rename id map table
         @Language("SQL") String renameId = "ALTER TABLE `" + storageConfig.prefix() + "id_map` "
@@ -45,15 +74,30 @@ public class MysqlSchemaUpdater {
         // Change material data schema
         @Language("SQL") String materialSchema = "ALTER TABLE `" + storageConfig.prefix() + "material_data` "
             + "CHANGE COLUMN `block_id` `material_id` SMALLINT NOT NULL AUTO_INCREMENT FIRST,"
-            + "CHANGE COLUMN `state` `data` VARCHAR(255) NULL,"
+            + "CHANGE COLUMN `material` `material` VARCHAR(45) NULL,"
+            + "CHANGE COLUMN `state` `data` VARCHAR(155) NULL,"
             + "DROP PRIMARY KEY,"
             + "ADD PRIMARY KEY (`material_id`),"
             + "ADD UNIQUE INDEX `materialdata` (`material` ASC, `data` ASC);";
         DB.executeUpdate(materialSchema);
 
+        // ----------
+        // META TABLE
+        // ----------
+
+        // Change material data schema
+        @Language("SQL") String metaSchema = "ALTER TABLE `" + storageConfig.prefix() + "meta` "
+                + "CHANGE COLUMN `id` `id` TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,"
+                + "ADD UNIQUE INDEX `k_UNIQUE` (`k` ASC);";
+        DB.executeUpdate(metaSchema);
+
+        // ----------
+        // WORLDS TABLE
+        // ----------
+
         // Add world_uuid column (but allow nulls, as no values exist
         @Language("SQL") String updateWorlds = "ALTER TABLE `" + storageConfig.prefix() + "worlds`"
-            + "CHANGE COLUMN `world_id` `world_id` TINYINT UNSIGNED NOT NULL AUTO_INCREMENT "
+            + "CHANGE COLUMN `world_id` `world_id` TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,"
             + "ADD COLUMN `world_uuid` BINARY(16) NULL AFTER `world`,"
             + "ADD UNIQUE INDEX `world_uuid_UNIQUE` (`world_uuid` ASC);";
         DB.executeUpdate(updateWorlds);
@@ -79,6 +123,10 @@ public class MysqlSchemaUpdater {
         @Language("SQL") String removeWorldNames = "ALTER TABLE `" + storageConfig.prefix() + "worlds`"
             + "CHANGE COLUMN `world_uuid` `world_uuid` BINARY(16) NOT NULL;";
         DB.executeUpdate(removeWorldNames);
+
+        // --------------
+        // SCHEMA VERSION
+        // --------------
 
         // Update the schema version
         @Language("SQL") String updateSchema = "UPDATE " + storageConfig.prefix() + "meta "

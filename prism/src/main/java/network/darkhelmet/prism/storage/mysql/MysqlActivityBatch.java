@@ -49,7 +49,7 @@ public class MysqlActivityBatch implements IActivityBatch {
 
         // Build the INSERT query
         @Language("SQL") String sql = "INSERT INTO " + storageConfig.prefix() + "activity "
-            + "(epoch, x, y, z, action_id, material_id, world_id) "
+            + "(`timestamp`, `x`, `y`, `z`, `action_id`, `material_id`, `world_id`) "
             + "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
