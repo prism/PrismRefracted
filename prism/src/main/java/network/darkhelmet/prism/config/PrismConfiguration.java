@@ -22,22 +22,6 @@ public class PrismConfiguration {
     private OutputConfiguration outputs = new OutputConfiguration();
 
     /**
-     * Construct a new instance.
-     */
-    public PrismConfiguration() {
-        actions.put("block-break", true);
-    }
-
-    /**
-     * Get the actions/enabled map.
-     *
-     * @return Map of actions and their enabled state
-     */
-    public Map<String, Boolean> actions() {
-        return actions;
-    }
-
-    /**
      * Get the debug setting.
      *
      * @return True if debug enabled.
