@@ -1,14 +1,9 @@
 package network.darkhelmet.prism.config;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
 
 import network.darkhelmet.prism.Prism;
 
-import org.bukkit.plugin.Plugin;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
