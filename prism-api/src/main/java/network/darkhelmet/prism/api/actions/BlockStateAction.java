@@ -107,7 +107,7 @@ public class BlockStateAction extends Action implements Reversible {
     protected void setBlock() {
         final Block block = location.getWorld().getBlockAt(location);
         block.setType(material);
-        block.getState().setBlockData(blockData);
+        block.setBlockData(blockData, true);
     }
 
     @Override
