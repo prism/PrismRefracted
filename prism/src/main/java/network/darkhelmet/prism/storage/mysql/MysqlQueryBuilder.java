@@ -22,10 +22,20 @@ public class MysqlQueryBuilder {
      * @throws SQLException Database exception
      */
     public static List<DbRow> queryActivities(ActivityQuery query, String prefix) throws SQLException {
-        @Language("SQL") String sql = "SELECT `action`, `timestamp`, `material`, `cause` "
+        @Language("SQL") String sql = "SELECT "
+            + "HEX(`world_uuid`) AS worldUuid,"
+            + "`x`,"
+            + "`y`,"
+            + "`z`,"
+            + "`action`,"
+            + "`timestamp`,"
+            + "`material`,"
+            + "`data`,"
+            + "`cause` "
             + "FROM " + prefix + "activities AS activities "
             + "JOIN " + prefix + "actions AS actions ON actions.action_id = activities.action_id "
             + "JOIN " + prefix + "causes AS causes ON causes.cause_id = activities.cause_id "
+            + "JOIN " + prefix + "worlds AS worlds ON worlds.world_id = activities.world_id "
             + "LEFT JOIN " + prefix + "players AS players ON players.player_id = causes.player_id "
             + "LEFT JOIN " + prefix + "material_data AS materials ON materials.material_id = activities.material_id ";
 

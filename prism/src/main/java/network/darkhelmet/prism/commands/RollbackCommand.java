@@ -1,21 +1,21 @@
 package network.darkhelmet.prism.commands;
 
+import java.util.List;
+
 import me.mattstudios.mf.annotations.Alias;
 import me.mattstudios.mf.annotations.Command;
 import me.mattstudios.mf.annotations.SubCommand;
 import me.mattstudios.mf.base.CommandBase;
+
 import network.darkhelmet.prism.Prism;
-import network.darkhelmet.prism.api.PaginatedResults;
 import network.darkhelmet.prism.api.actions.Action;
+import network.darkhelmet.prism.api.actions.Reversible;
 import network.darkhelmet.prism.api.activities.ActivityQuery;
-import network.darkhelmet.prism.api.storage.models.ActivityRow;
-import network.darkhelmet.prism.formatters.ActivityFormatter;
 import network.darkhelmet.prism.utils.LocationUtils;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
-
-import java.util.List;
 
 @Command("prism")
 @Alias("pr")
@@ -34,15 +34,22 @@ public class RollbackCommand extends CommandBase {
         Vector maxVector = LocationUtils.getMaxVector(loc, radius);
 
         final ActivityQuery query = ActivityQuery.builder().minVector(minVector).maxVector(maxVector).build();
-        Prism.newChain().async(() -> {
+        Prism.newChain().asyncFirst(() -> {
             try {
-                List<Action> results = Prism.getInstance().storageAdapter().queryActivitiesAsActions(query);
-                for (Action action : results) {
-                    System.out.println(action);
-                }
+                return Prism.getInstance().storageAdapter().queryActivitiesAsActions(query);
             } catch (Exception e) {
                 Prism.getInstance().handleException(e);
             }
+
+            return null;
+        }).abortIfNull().<List<Action>>sync(results -> {
+            for (Action action : results) {
+                if (action instanceof Reversible reversible) {
+                    reversible.applyRollback();
+                }
+            }
+
+            return null;
         }).execute();
     }
 }

@@ -10,7 +10,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 
 import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.api.PaginatedResults;
@@ -21,7 +23,13 @@ import network.darkhelmet.prism.api.storage.IActivityBatch;
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
 import network.darkhelmet.prism.api.storage.models.ActivityRow;
 import network.darkhelmet.prism.config.StorageConfiguration;
+import network.darkhelmet.prism.utils.TypeUtils;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.data.BlockData;
 import org.intellij.lang.annotations.Language;
 
 public class MysqlStorageAdapter implements IStorageAdapter {
@@ -148,10 +156,33 @@ public class MysqlStorageAdapter implements IStorageAdapter {
 
         for (DbRow row : MysqlQueryBuilder.queryActivities(query, storageConfig.prefix())) {
             String actionKey = row.getString("action");
-            String material = row.getString("material");
 
-            if (material != null) {
-                BlockStateAction action = new BlockStateAction(actionKey, material, null);
+            // World
+            UUID worldUuid = TypeUtils.uuidFromDbString(row.getString("worldUuid"));
+            World world = Bukkit.getServer().getWorld(worldUuid);
+            if (world == null) {
+                String msg = "Failed to find game world for activity query. World UUID: %s";
+                Prism.getInstance().error(String.format(msg, worldUuid));
+                continue;
+            }
+
+            // Location
+            int x = row.getInt("x");
+            int y = row.getInt("y");
+            int z = row.getInt("z");
+            Location location = new Location(world, x, y, z);
+
+            String materialName = row.getString("material");
+            if (materialName != null) {
+                Material material = Material.valueOf(materialName.toUpperCase(Locale.ENGLISH));
+
+                BlockData blockData = null;
+                String data = row.getString("data");
+                if (data != null) {
+                    blockData = Bukkit.createBlockData(materialName + data);
+                }
+
+                BlockStateAction action = new BlockStateAction(actionKey, location, material, blockData);
                 results.add(action);
             }
         }
