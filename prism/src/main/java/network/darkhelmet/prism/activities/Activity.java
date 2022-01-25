@@ -1,10 +1,11 @@
-package network.darkhelmet.prism.api.activities;
+package network.darkhelmet.prism.activities;
 
-import network.darkhelmet.prism.api.actions.Action;
+import network.darkhelmet.prism.actions.Action;
+import network.darkhelmet.prism.api.activities.IActivity;
 
 import org.bukkit.Location;
 
-public record Activity(Action action, Location location, Object cause, Long timestamp) {
+public record Activity(Action action, Location location, Object cause, long timestamp) implements IActivity {
     /**
      * Get a new builder.
      *
@@ -33,7 +34,7 @@ public record Activity(Action action, Location location, Object cause, Long time
         /**
          * The timestamp.
          */
-        private Long timestamp = System.currentTimeMillis();
+        private long timestamp = System.currentTimeMillis();
 
         /**
          * Set an action.
@@ -73,7 +74,7 @@ public record Activity(Action action, Location location, Object cause, Long time
          *
          * @return The activity
          */
-        public Activity build() {
+        public IActivity build() {
             return new Activity(action, location, cause, timestamp);
         }
     }

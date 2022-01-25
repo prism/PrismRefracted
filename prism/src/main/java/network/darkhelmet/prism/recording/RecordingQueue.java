@@ -2,20 +2,20 @@ package network.darkhelmet.prism.recording;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
-import network.darkhelmet.prism.api.activities.Activity;
+import network.darkhelmet.prism.api.activities.IActivity;
 
 public class RecordingQueue {
     /**
      * Queue of activities.
      */
-    private static final LinkedBlockingQueue<Activity> queue = new LinkedBlockingQueue<>();
+    private static final LinkedBlockingQueue<IActivity> queue = new LinkedBlockingQueue<>();
 
     /**
      * Add an activity to the recording queue.
      *
      * @param activity Activity
      */
-    public static void addToQueue(final Activity activity) {
+    public static void addToQueue(final IActivity activity) {
         if (activity == null) {
             return;
         }
@@ -28,7 +28,7 @@ public class RecordingQueue {
      *
      * @return the queue
      */
-    public static LinkedBlockingQueue<Activity> getQueue() {
+    public static LinkedBlockingQueue<IActivity> getQueue() {
         return queue;
     }
 }

@@ -1,6 +1,6 @@
 package network.darkhelmet.prism.api.storage;
 
-import network.darkhelmet.prism.api.activities.Activity;
+import network.darkhelmet.prism.api.activities.IActivity;
 
 public interface IActivityBatch {
     /**
@@ -16,7 +16,7 @@ public interface IActivityBatch {
      * @param activity The activity
      * @throws Exception Storage layer exception
      */
-    void add(Activity activity) throws Exception;
+    void add(IActivity activity) throws Exception;
 
     /**
      * Commit the batch.

@@ -1,9 +1,12 @@
-package network.darkhelmet.prism.api.actions;
+package network.darkhelmet.prism.actions;
+
+import network.darkhelmet.prism.api.actions.ActionType;
+import network.darkhelmet.prism.api.actions.IAction;
 
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 
-public abstract class Action {
+public abstract class Action implements IAction {
     /**
      * The type.
      */

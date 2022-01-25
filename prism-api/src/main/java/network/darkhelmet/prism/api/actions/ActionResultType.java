@@ -16,7 +16,7 @@ public enum ActionResultType {
     NONE,
 
     /**
-     * Actions which result in a removal
+     * Actions which result in a removal.
      *
      * <p>Example: block broken, item removed, etc.</p>
      */

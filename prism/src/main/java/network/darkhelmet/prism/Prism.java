@@ -107,7 +107,7 @@ public class Prism extends JavaPlugin {
     }
 
     /**
-     * On Enable.
+     * On enable.
      */
     @Override
     public void onEnable() {

@@ -8,7 +8,7 @@ import me.mattstudios.mf.annotations.SubCommand;
 import me.mattstudios.mf.base.CommandBase;
 
 import network.darkhelmet.prism.Prism;
-import network.darkhelmet.prism.api.actions.Action;
+import network.darkhelmet.prism.api.actions.IAction;
 import network.darkhelmet.prism.api.actions.Reversible;
 import network.darkhelmet.prism.api.activities.ActivityQuery;
 import network.darkhelmet.prism.utils.LocationUtils;
@@ -43,8 +43,8 @@ public class RollbackCommand extends CommandBase {
             }
 
             return null;
-        }).abortIfNull().<List<Action>>sync(results -> {
-            for (Action action : results) {
+        }).abortIfNull().<List<IAction>>sync(results -> {
+            for (IAction action : results) {
                 if (action instanceof Reversible reversible) {
                     reversible.applyRollback();
                 }

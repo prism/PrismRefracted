@@ -30,14 +30,18 @@ public class MysqlQueryBuilder {
             + "`action`,"
             + "`timestamp`,"
             + "`material`,"
-            + "`data`,"
+            + "`materials`.`data` AS material_data,"
+            + "`custom_data`.`data` AS custom_data,"
             + "`cause` "
             + "FROM " + prefix + "activities AS activities "
-            + "JOIN " + prefix + "actions AS actions ON actions.action_id = activities.action_id "
-            + "JOIN " + prefix + "causes AS causes ON causes.cause_id = activities.cause_id "
-            + "JOIN " + prefix + "worlds AS worlds ON worlds.world_id = activities.world_id "
-            + "LEFT JOIN " + prefix + "players AS players ON players.player_id = causes.player_id "
-            + "LEFT JOIN " + prefix + "material_data AS materials ON materials.material_id = activities.material_id ";
+            + "JOIN " + prefix + "actions AS actions ON `actions`.`action_id` = `activities`.`action_id` "
+            + "JOIN " + prefix + "causes AS causes ON `causes`.`cause_id` = `activities`.`cause_id` "
+            + "JOIN " + prefix + "worlds AS worlds ON `worlds`.`world_id` = `activities`.`world_id` "
+            + "LEFT JOIN " + prefix + "activities_custom_data AS custom_data "
+                + "ON `custom_data`.`activity_id` = `activities`.`activity_id`"
+            + "LEFT JOIN " + prefix + "players AS players ON `players`.`player_id` = `causes`.`player_id` "
+            + "LEFT JOIN " + prefix + "material_data AS materials "
+                + "ON `materials`.`material_id` = `activities`.`material_id` ";
 
         List<String> conditions = new ArrayList<>();
         List<Object> parameters = new ArrayList<>();

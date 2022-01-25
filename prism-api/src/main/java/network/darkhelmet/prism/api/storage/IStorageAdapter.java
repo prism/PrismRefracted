@@ -2,8 +2,9 @@ package network.darkhelmet.prism.api.storage;
 
 import java.util.List;
 
+
 import network.darkhelmet.prism.api.PaginatedResults;
-import network.darkhelmet.prism.api.actions.Action;
+import network.darkhelmet.prism.api.actions.IAction;
 import network.darkhelmet.prism.api.activities.ActivityQuery;
 import network.darkhelmet.prism.api.storage.models.ActivityRow;
 
@@ -35,7 +36,7 @@ public interface IStorageAdapter {
      * @return List of action
      * @throws Exception Storage layer exception
      */
-    List<Action> queryActivitiesAsActions(ActivityQuery query) throws Exception;
+    List<IAction> queryActivitiesAsActions(ActivityQuery query) throws Exception;
 
     /**
      * Check whether this storage system is enabled and ready.

@@ -56,7 +56,7 @@ public class MysqlSchemaUpdater {
             + "DROP COLUMN `block_subid`,"
             + "DROP COLUMN `old_block_subid`,"
             + "CHANGE COLUMN `action_id` `action_id` TINYINT UNSIGNED NOT NULL AFTER `z`,"
-            + "CHANGE COLUMN `id` `activty_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,"
+            + "CHANGE COLUMN `id` `activity_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,"
             + "CHANGE COLUMN `epoch` `timestamp` INT UNSIGNED NOT NULL,"
             + "CHANGE COLUMN `world_id` `world_id` TINYINT UNSIGNED NOT NULL ,"
             + "CHANGE COLUMN `block_id` `material_id` MEDIUMINT NULL,"
@@ -64,6 +64,19 @@ public class MysqlSchemaUpdater {
             + "CHANGE COLUMN `player_id` `player_id` INT UNSIGNED NOT NULL AFTER `old_material_id`,"
             + "ADD COLUMN `cause_id` INT NOT NULL AFTER `player_id`;";
         DB.executeUpdate(updateData);
+
+        // Rename data extra table
+        @Language("SQL") String renameDataExtra = "ALTER TABLE `" + storageConfig.prefix() + "data_extra` "
+            + "RENAME TO `" + storageConfig.prefix() + "activities_custom_data`";
+        DB.executeUpdate(renameDataExtra);
+
+        // Update activities data table
+        @Language("SQL") String updateDataExtra = "ALTER TABLE `" + storageConfig.prefix() + "activities_custom_data`"
+            + "DROP INDEX `data_id`,"
+            + "CHANGE COLUMN `extra_id` `extra_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,"
+            + "CHANGE COLUMN `data_id` `activity_id` INT UNSIGNED NOT NULL,"
+            + "ADD UNIQUE INDEX `activity_id_UNIQUE` (`activity_id` ASC);";
+        DB.executeUpdate(updateDataExtra);
 
         // ------------
         // ID MAP TABLE
@@ -84,6 +97,7 @@ public class MysqlSchemaUpdater {
             + "CHANGE COLUMN `block_id` `material_id` SMALLINT NOT NULL AUTO_INCREMENT FIRST,"
             + "CHANGE COLUMN `material` `material` VARCHAR(45) NULL,"
             + "CHANGE COLUMN `state` `data` VARCHAR(155) NULL,"
+            + "ADD COLUMN `te_data` VARCHAR(255) NULL DEFAULT NULL AFTER `data`,"
             + "DROP PRIMARY KEY,"
             + "DROP INDEX `block_id`,"
             + "ADD PRIMARY KEY (`material_id`),"

@@ -16,10 +16,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 import network.darkhelmet.prism.Prism;
+import network.darkhelmet.prism.actions.BlockStateAction;
 import network.darkhelmet.prism.api.PaginatedResults;
-import network.darkhelmet.prism.api.actions.Action;
 import network.darkhelmet.prism.api.actions.ActionType;
-import network.darkhelmet.prism.api.actions.BlockStateAction;
+import network.darkhelmet.prism.api.actions.IAction;
 import network.darkhelmet.prism.api.activities.ActivityQuery;
 import network.darkhelmet.prism.api.storage.IActivityBatch;
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
@@ -153,8 +153,8 @@ public class MysqlStorageAdapter implements IStorageAdapter {
     }
 
     @Override
-    public List<Action> queryActivitiesAsActions(ActivityQuery query) throws SQLException {
-        List<Action> results = new ArrayList<>();
+    public List<IAction> queryActivitiesAsActions(ActivityQuery query) throws SQLException {
+        List<IAction> results = new ArrayList<>();
 
         for (DbRow row : MysqlQueryBuilder.queryActivities(query, storageConfig.prefix())) {
             String actionKey = row.getString("action");
@@ -183,14 +183,16 @@ public class MysqlStorageAdapter implements IStorageAdapter {
             String materialName = row.getString("material");
             if (materialName != null) {
                 Material material = Material.valueOf(materialName.toUpperCase(Locale.ENGLISH));
+                String customData = row.getString("custom_data");
 
                 BlockData blockData = null;
-                String data = row.getString("data");
-                if (data != null) {
-                    blockData = Bukkit.createBlockData(materialName + data);
+                String materialData = row.getString("material_data");
+                if (materialData != null) {
+                    blockData = Bukkit.createBlockData(materialName + materialData);
                 }
 
-                BlockStateAction action = new BlockStateAction(optionalActionType.get(), location, material, blockData);
+                BlockStateAction action = new BlockStateAction(
+                    optionalActionType.get(), location, material, blockData, customData);
                 results.add(action);
             }
         }

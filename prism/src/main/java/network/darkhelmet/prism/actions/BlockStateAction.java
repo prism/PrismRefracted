@@ -1,12 +1,21 @@
-package network.darkhelmet.prism.api.actions;
+package network.darkhelmet.prism.actions;
+
+import de.tr7zw.nbtapi.NBTContainer;
+import de.tr7zw.nbtapi.NBTTileEntity;
 
 import java.util.Locale;
+
+import network.darkhelmet.prism.api.actions.ActionResultType;
+import network.darkhelmet.prism.api.actions.ActionType;
+import network.darkhelmet.prism.api.actions.Reversible;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.TileState;
 import org.bukkit.block.data.BlockData;
+import org.jetbrains.annotations.Nullable;
 
 public class BlockStateAction extends Action implements Reversible {
     /**
@@ -25,6 +34,11 @@ public class BlockStateAction extends Action implements Reversible {
     private BlockData blockData;
 
     /**
+     * The nbt container.
+     */
+    private NBTContainer nbtContainer;
+
+    /**
      * Construct a block state action.
      *
      * @param type The action type
@@ -36,21 +50,31 @@ public class BlockStateAction extends Action implements Reversible {
         this.location = blockState.getLocation();
         this.material = blockState.getType();
         this.blockData = blockState.getBlockData();
+
+        if (blockState instanceof TileState) {
+            NBTTileEntity nbtTe = new NBTTileEntity(blockState);
+            this.nbtContainer = new NBTContainer(nbtTe.getCompound());
+        }
     }
 
     /**
      * Construct a block state action.
      *
      * @param type The action type
-     * @param material The material string
-     * @param blockData The block data string
+     * @param material The material
+     * @param blockData The block data
+     * @param teData The tile entity data
      */
-    public BlockStateAction(ActionType type, Location location, Material material, BlockData blockData) {
+    public BlockStateAction(ActionType type, Location location, Material material, BlockData blockData, String teData) {
         super(type);
 
         this.location = location;
         this.material = material;
         this.blockData = blockData;
+
+        if (teData != null) {
+            this.nbtContainer = new NBTContainer(teData);
+        }
     }
 
     /**
@@ -67,8 +91,22 @@ public class BlockStateAction extends Action implements Reversible {
      *
      * @return The block data string
      */
-    public String serializeBlockData() {
-        return blockData.getAsString().replaceAll("^[^\\[]+", "");
+    public @Nullable String serializeBlockData() {
+        return this.blockData.getAsString().replaceAll("^[^\\[]+", "");
+    }
+
+    @Override
+    public boolean hasCustomData() {
+        return this.nbtContainer != null;
+    }
+
+    @Override
+    public @Nullable String serializeCustomData() {
+        if (this.nbtContainer != null) {
+            return this.nbtContainer.toString();
+        }
+
+        return null;
     }
 
     @Override
@@ -107,7 +145,14 @@ public class BlockStateAction extends Action implements Reversible {
     protected void setBlock() {
         final Block block = location.getWorld().getBlockAt(location);
         block.setType(material);
-        block.setBlockData(blockData, true);
+
+        if (blockData != null) {
+            block.setBlockData(blockData, true);
+        }
+
+        if (this.nbtContainer != null) {
+            new NBTTileEntity(block.getState()).mergeCompound(this.nbtContainer);
+        }
     }
 
     @Override
@@ -115,6 +160,6 @@ public class BlockStateAction extends Action implements Reversible {
         return "BlockStateAction["
             + "location=" + location + ","
             + "material=" + material + ","
-            + "blockData=" + blockData + ']';
+            + "nbtContainer=" + nbtContainer + ']';
     }
 }

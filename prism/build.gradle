@@ -26,7 +26,10 @@ repositories {
     maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
 
     // WorldEdit
-    maven { url = "https://maven.enginehub.org/repo/" }
+    maven { url = 'https://maven.enginehub.org/repo/' }
+
+    // CodeMC
+    maven { url = 'https://repo.codemc.org/repository/maven-public/' }
 }
 
 group = project.property("group")
@@ -46,6 +49,7 @@ dependencies {
     implementation 'me.mattstudios.utils:matt-framework:1.4.6'
     implementation 'co.aikar:idb-core:1.0.0-SNAPSHOT'
     implementation 'co.aikar:taskchain-bukkit:3.7.2'
+    implementation 'de.tr7zw:item-nbt-api-plugin:2.9.0'
     implementation project(':prism-api')
 }
 
@@ -67,6 +71,7 @@ shadowJar {
     relocate 'com.zaxxer', 'network.darkhelmet.prism.zaxxer'
     relocate 'net.kyori', 'network.darkhelmet.prism.kyori'
     relocate 'org.spongepowered', 'network.darkhelmet.prism.spongepowered'
+    relocate 'de.tr7zw', 'network.darkhelmet.prism.tr7zw'
 }
 
 runServer {

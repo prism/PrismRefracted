@@ -1,7 +1,7 @@
 package network.darkhelmet.prism.recording;
 
 import network.darkhelmet.prism.Prism;
-import network.darkhelmet.prism.api.activities.Activity;
+import network.darkhelmet.prism.api.activities.IActivity;
 import network.darkhelmet.prism.api.storage.IActivityBatch;
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
 
@@ -29,7 +29,7 @@ public class RecordingTask implements Runnable {
 
                 while (!RecordingQueue.getQueue().isEmpty()) {
                     batchCount++;
-                    final Activity activity = RecordingQueue.getQueue().poll();
+                    final IActivity activity = RecordingQueue.getQueue().poll();
                     batch.add(activity);
 
                     // Batch max exceeded, break

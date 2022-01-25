@@ -4,12 +4,15 @@ import co.aikar.idb.DB;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
-import network.darkhelmet.prism.api.actions.BlockStateAction;
-import network.darkhelmet.prism.api.activities.Activity;
+import network.darkhelmet.prism.actions.BlockStateAction;
+import network.darkhelmet.prism.api.activities.IActivity;
 import network.darkhelmet.prism.api.storage.IActivityBatch;
 import network.darkhelmet.prism.config.StorageConfiguration;
 import network.darkhelmet.prism.utils.TypeUtils;
@@ -36,6 +39,19 @@ public class MysqlActivityBatch implements IActivityBatch {
     private PreparedStatement statement;
 
     /**
+     * Cache a map of the activities with extra data.
+     *
+     * <p>The integer is "index" of the activity in this batch. Used to map
+     * generated keys to the activity when we need to write custom data.</p>
+     */
+    private Map<Integer, IActivity> activitiesWithCustomData = new HashMap<>();
+
+    /**
+     * Count the "index" of the activities in this batch.
+     */
+    private int activityBatchIndex = 0;
+
+    /**
      * Construct a new batch handler.
      *
      * @param storageConfiguration The storage configuration
@@ -58,7 +74,7 @@ public class MysqlActivityBatch implements IActivityBatch {
     }
 
     @Override
-    public void add(Activity activity) throws SQLException {
+    public void add(IActivity activity) throws SQLException {
         statement.setLong(1, activity.timestamp() / 1000);
         statement.setInt(2, activity.location().getBlockX());
         statement.setInt(3, activity.location().getBlockY());
@@ -93,6 +109,12 @@ public class MysqlActivityBatch implements IActivityBatch {
         // Set the cause relationship
         long causeId = getOrCreateCauseId(cause, playerId);
         statement.setLong(8, causeId);
+
+        if (activity.action().hasCustomData()) {
+            activitiesWithCustomData.put(activityBatchIndex, activity);
+        }
+
+        activityBatchIndex++;
 
         statement.addBatch();
     }
@@ -167,18 +189,18 @@ public class MysqlActivityBatch implements IActivityBatch {
      * Get or create the material data record and return the primary key.
      *
      * @param material The material
-     * @param data The data, if any
+     * @param blockData The data, if any
      * @return The primary key
      * @throws SQLException The database exception
      */
-    private int getOrCreateMaterialId(String material, String data) throws SQLException {
+    private int getOrCreateMaterialId(String material, String blockData) throws SQLException {
         int primaryKey;
 
         // Attempt to create the record
         @Language("SQL") String insert = "INSERT INTO " + storageConfig.prefix() + "material_data "
             + "(`material`, `data`) VALUES (?, ?) ON DUPLICATE KEY UPDATE `material` = `material`";
 
-        Long longPk = DB.executeInsert(insert, material, data);
+        Long longPk = DB.executeInsert(insert, material, blockData);
 
         if (longPk != null) {
             primaryKey = longPk.intValue();
@@ -188,9 +210,9 @@ public class MysqlActivityBatch implements IActivityBatch {
                 + storageConfig.prefix() + "material_data "
                 + "WHERE material = ? ";
 
-            if (data != null) {
+            if (blockData != null) {
                 select += "AND data = ?";
-                primaryKey = DB.getFirstColumn(select, material, data);
+                primaryKey = DB.getFirstColumn(select, material, blockData);
             } else {
                 select += "AND data IS NULL";
                 primaryKey = DB.getFirstColumn(select, material);
@@ -272,7 +294,49 @@ public class MysqlActivityBatch implements IActivityBatch {
         statement.executeBatch();
         connection.commit();
 
+        insertCustomData(statement.getGeneratedKeys());
+
+        // Clear queue data, reset just in case the batch is restarted.
+        activitiesWithCustomData.clear();
+        activityBatchIndex = 0;
+
+        // Probably not needed but why not be safe.
+        connection.setAutoCommit(true);
+
+        // Close stuff
         statement.close();
         connection.close();
+    }
+
+    /**
+     * Inserts additional activity data when necessary (tile entities, items, etc).
+     *
+     * @param keys The generate keys resultset from the parent activity batch insert
+     * @throws SQLException Database exception
+     */
+    private void insertCustomData(ResultSet keys) throws SQLException {
+        @Language("SQL") String insert = "INSERT INTO " + storageConfig.prefix() + "activities_custom_data "
+            + "(`activity_id`, `data`) VALUES (?, ?)";
+
+        PreparedStatement dataStatement = connection.prepareStatement(insert);
+
+        int i = 0;
+        while (keys.next()) {
+            if (activitiesWithCustomData.containsKey(i)) {
+                IActivity activity = activitiesWithCustomData.get(i);
+
+                int activityId = keys.getInt(1);
+                String customData = activity.action().serializeCustomData();
+
+                dataStatement.setInt(1, activityId);
+                dataStatement.setString(2, customData);
+                dataStatement.addBatch();
+            }
+
+            i++;
+        }
+
+        dataStatement.executeBatch();
+        connection.commit();
     }
 }

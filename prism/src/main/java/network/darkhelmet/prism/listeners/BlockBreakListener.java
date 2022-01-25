@@ -1,8 +1,9 @@
 package network.darkhelmet.prism.listeners;
 
+import network.darkhelmet.prism.actions.Action;
 import network.darkhelmet.prism.actions.ActionRegistry;
-import network.darkhelmet.prism.api.actions.Action;
-import network.darkhelmet.prism.api.activities.Activity;
+import network.darkhelmet.prism.activities.Activity;
+import network.darkhelmet.prism.api.activities.IActivity;
 import network.darkhelmet.prism.recording.RecordingQueue;
 import network.darkhelmet.prism.utils.BlockUtils;
 
@@ -28,7 +29,8 @@ public class BlockBreakListener implements Listener {
         Action action = Action.builder().type(ActionRegistry.BLOCK_BREAK).block(block).build();
 
         // Build the block break by player activity
-        final Activity activity = Activity.builder().action(action).location(block.getLocation()).cause(player).build();
+        final IActivity activity = Activity.builder()
+            .action(action).location(block.getLocation()).cause(player).build();
 
         RecordingQueue.addToQueue(activity);
     }
