@@ -27,11 +27,11 @@ public class BlockStateAction extends Action implements Reversible {
     /**
      * Construct a block state action.
      *
-     * @param key The action key
+     * @param type The action type
      * @param blockState The block state
      */
-    public BlockStateAction(String key, BlockState blockState) {
-        super(key);
+    public BlockStateAction(ActionType type, BlockState blockState) {
+        super(type);
 
         this.location = blockState.getLocation();
         this.material = blockState.getType();
@@ -41,12 +41,12 @@ public class BlockStateAction extends Action implements Reversible {
     /**
      * Construct a block state action.
      *
-     * @param key The action key
+     * @param type The action type
      * @param material The material string
      * @param blockData The block data string
      */
-    public BlockStateAction(String key, Location location, Material material, BlockData blockData) {
-        super(key);
+    public BlockStateAction(ActionType type, Location location, Material material, BlockData blockData) {
+        super(type);
 
         this.location = location;
         this.material = material;
@@ -73,19 +73,47 @@ public class BlockStateAction extends Action implements Reversible {
 
     @Override
     public void applyRollback() {
+        if (type().resultType().equals(ActionResultType.REMOVES)) {
+            // If the action type removes a block, rollback means we re-set it
+            setBlock();
+        } else if (type().resultType().equals(ActionResultType.CREATES)) {
+            // If the action type creates a block, rollback means we remove it
+            removeBlock();
+        }
+    }
+
+    @Override
+    public void applyRestore() {
+        if (type().resultType().equals(ActionResultType.CREATES)) {
+            // If the action type creates a block, restore means we re-set it
+            setBlock();
+        } else if (type().resultType().equals(ActionResultType.REMOVES)) {
+            // If the action type removes a block, restore means we remove it again
+            removeBlock();
+        }
+    }
+
+    /**
+     * Sets an in-world block to air.
+     */
+    protected void removeBlock() {
+        final Block block = location.getWorld().getBlockAt(location);
+        block.setType(Material.AIR);
+    }
+
+    /**
+     * Sets an in-world block to this block data.
+     */
+    protected void setBlock() {
         final Block block = location.getWorld().getBlockAt(location);
         block.setType(material);
         block.getState().setBlockData(blockData);
     }
 
     @Override
-    public void applyRestore() {
-
-    }
-
-    @Override
     public String toString() {
         return "BlockStateAction["
+            + "location=" + location + ","
             + "material=" + material + ","
             + "blockData=" + blockData + ']';
     }

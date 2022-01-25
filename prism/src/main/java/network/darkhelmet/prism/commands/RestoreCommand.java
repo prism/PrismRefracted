@@ -19,15 +19,15 @@ import org.bukkit.util.Vector;
 
 @Command("prism")
 @Alias("pr")
-public class RollbackCommand extends CommandBase {
+public class RestoreCommand extends CommandBase {
     /**
-     * Run the rollback command.
+     * Run the restore command.
      *
      * @param player The player
      */
-    @SubCommand("rollback")
-    @Alias("rb")
-    public void onRollback(final Player player) {
+    @SubCommand("restore")
+    @Alias("rs")
+    public void onRestore(final Player player) {
         Location loc = player.getLocation();
         int radius = Prism.getInstance().config().nearRadius();
 
@@ -46,7 +46,7 @@ public class RollbackCommand extends CommandBase {
         }).abortIfNull().<List<Action>>sync(results -> {
             for (Action action : results) {
                 if (action instanceof Reversible reversible) {
-                    reversible.applyRollback();
+                    reversible.applyRestore();
                 }
             }
 

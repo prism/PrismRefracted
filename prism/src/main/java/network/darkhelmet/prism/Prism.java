@@ -11,9 +11,11 @@ import me.mattstudios.mf.base.CommandManager;
 
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 
+import network.darkhelmet.prism.actions.ActionRegistry;
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
 import network.darkhelmet.prism.commands.AboutCommand;
 import network.darkhelmet.prism.commands.NearCommand;
+import network.darkhelmet.prism.commands.RestoreCommand;
 import network.darkhelmet.prism.commands.RollbackCommand;
 import network.darkhelmet.prism.config.Config;
 import network.darkhelmet.prism.config.PrismConfiguration;
@@ -74,6 +76,11 @@ public class Prism extends JavaPlugin {
     IStorageAdapter storageAdapter;
 
     /**
+     * The action registry.
+     */
+    ActionRegistry actionRegistry = new ActionRegistry();
+
+    /**
      * The recording manager.
      */
     RecordingManager recordingManager;
@@ -126,6 +133,7 @@ public class Prism extends JavaPlugin {
             CommandManager commandManager = new CommandManager(this);
             commandManager.register(new AboutCommand());
             commandManager.register(new NearCommand());
+            commandManager.register(new RestoreCommand());
             commandManager.register(new RollbackCommand());
         }
     }
@@ -207,6 +215,15 @@ public class Prism extends JavaPlugin {
      */
     public IStorageAdapter storageAdapter() {
         return storageAdapter;
+    }
+
+    /**
+     * Get the action registry.
+     *
+     * @return The action registry.
+     */
+    public ActionRegistry actionRegistry() {
+        return actionRegistry;
     }
 
     /**

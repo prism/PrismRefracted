@@ -65,7 +65,7 @@ public class MysqlActivityBatch implements IActivityBatch {
         statement.setInt(4, activity.location().getBlockZ());
 
         // Set the action relationship
-        byte actionId = getOrCreateActionId(activity.action().key());
+        byte actionId = getOrCreateActionId(activity.action().type().key());
         statement.setByte(5, actionId);
 
         // Set the material relationship

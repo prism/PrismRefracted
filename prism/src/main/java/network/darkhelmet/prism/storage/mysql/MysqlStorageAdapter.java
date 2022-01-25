@@ -12,11 +12,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.api.PaginatedResults;
 import network.darkhelmet.prism.api.actions.Action;
+import network.darkhelmet.prism.api.actions.ActionType;
 import network.darkhelmet.prism.api.actions.BlockStateAction;
 import network.darkhelmet.prism.api.activities.ActivityQuery;
 import network.darkhelmet.prism.api.storage.IActivityBatch;
@@ -156,6 +158,12 @@ public class MysqlStorageAdapter implements IStorageAdapter {
 
         for (DbRow row : MysqlQueryBuilder.queryActivities(query, storageConfig.prefix())) {
             String actionKey = row.getString("action");
+            Optional<ActionType> optionalActionType = Prism.getInstance().actionRegistry().getActionType(actionKey);
+            if (optionalActionType.isEmpty()) {
+                String msg = "Failed to find action type. Type: %s";
+                Prism.getInstance().error(String.format(msg, actionKey));
+                continue;
+            }
 
             // World
             UUID worldUuid = TypeUtils.uuidFromDbString(row.getString("worldUuid"));
@@ -182,7 +190,7 @@ public class MysqlStorageAdapter implements IStorageAdapter {
                     blockData = Bukkit.createBlockData(materialName + data);
                 }
 
-                BlockStateAction action = new BlockStateAction(actionKey, location, material, blockData);
+                BlockStateAction action = new BlockStateAction(optionalActionType.get(), location, material, blockData);
                 results.add(action);
             }
         }

@@ -5,26 +5,26 @@ import org.bukkit.block.BlockState;
 
 public abstract class Action {
     /**
-     * The key.
+     * The type.
      */
-    private String key;
+    private ActionType type;
 
     /**
      * Construct a new action.
      *
-     * @param key The action key
+     * @param type The action type
      */
-    public Action(String key) {
-        this.key = key;
+    public Action(ActionType type) {
+        this.type = type;
     }
 
     /**
-     * Get the key.
+     * Get the action type.
      *
-     * @return The key
+     * @return The action type
      */
-    public String key() {
-        return key;
+    public ActionType type() {
+        return type;
     }
 
     /**
@@ -45,7 +45,7 @@ public abstract class Action {
         /**
          * The type.
          */
-        private String key;
+        private ActionType type;
 
         /**
          * Set the block state from a block.
@@ -69,13 +69,13 @@ public abstract class Action {
         }
 
         /**
-         * Set the key.
+         * Set the action type.
          *
-         * @param key The key
+         * @param type The type
          * @return The builder
          */
-        public Builder key(String key) {
-            this.key = key;
+        public Builder type(ActionType type) {
+            this.type = type;
             return this;
         }
 
@@ -86,7 +86,7 @@ public abstract class Action {
          */
         public Action build() {
             if (this.blockState != null) {
-                return new BlockStateAction(key, blockState);
+                return new BlockStateAction(type, blockState);
             }
 
             return null;
