@@ -6,6 +6,8 @@ import co.aikar.idb.DatabaseOptions;
 import co.aikar.idb.DbRow;
 import co.aikar.idb.PooledDatabaseOptions;
 
+import de.tr7zw.nbtapi.NBTContainer;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -183,7 +185,6 @@ public class MysqlStorageAdapter implements IStorageAdapter {
             String materialName = row.getString("material");
             if (materialName != null) {
                 Material material = Material.valueOf(materialName.toUpperCase(Locale.ENGLISH));
-                String customData = row.getString("custom_data");
 
                 BlockData blockData = null;
                 String materialData = row.getString("material_data");
@@ -191,8 +192,14 @@ public class MysqlStorageAdapter implements IStorageAdapter {
                     blockData = Bukkit.createBlockData(materialName + materialData);
                 }
 
+                NBTContainer nbtContainer = null;
+                String customData = row.getString("custom_data");
+                if (customData != null) {
+                    nbtContainer = new NBTContainer(customData);
+                }
+
                 BlockStateAction action = new BlockStateAction(
-                    optionalActionType.get(), location, material, blockData, customData);
+                    optionalActionType.get(), location, material, blockData, nbtContainer);
                 results.add(action);
             }
         }

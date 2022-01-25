@@ -65,16 +65,14 @@ public class BlockStateAction extends Action implements Reversible {
      * @param blockData The block data
      * @param teData The tile entity data
      */
-    public BlockStateAction(ActionType type, Location location, Material material, BlockData blockData, String teData) {
+    public BlockStateAction(
+        ActionType type, Location location, Material material, BlockData blockData, NBTContainer teData) {
         super(type);
 
         this.location = location;
         this.material = material;
         this.blockData = blockData;
-
-        if (teData != null) {
-            this.nbtContainer = new NBTContainer(teData);
-        }
+        this.nbtContainer = teData;
     }
 
     /**
