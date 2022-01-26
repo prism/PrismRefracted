@@ -6,8 +6,16 @@ import java.util.Optional;
 
 import network.darkhelmet.prism.api.actions.ActionResultType;
 import network.darkhelmet.prism.api.actions.ActionType;
+import network.darkhelmet.prism.api.actions.BlockActionType;
+import network.darkhelmet.prism.api.actions.IActionRegistry;
+import network.darkhelmet.prism.api.actions.IBlockAction;
+import network.darkhelmet.prism.api.actions.IItemAction;
+import network.darkhelmet.prism.api.actions.ItemActionType;
 
-public class ActionRegistry {
+import org.bukkit.block.Block;
+import org.bukkit.inventory.ItemStack;
+
+public class ActionRegistry implements IActionRegistry {
     /**
      * Cache of action types by key.
      */
@@ -16,7 +24,8 @@ public class ActionRegistry {
     /**
      * Static cache of Prism action types.
      */
-    public static final ActionType BLOCK_BREAK = new ActionType("block-break", ActionResultType.REMOVES);
+    public static final ActionType BLOCK_BREAK = new BlockActionType("block-break", ActionResultType.REMOVES);
+    public static final ActionType ITEM_DROP = new ItemActionType("item-drop", ActionResultType.REMOVES);
 
     /**
      * Construct the action registry.
@@ -24,13 +33,28 @@ public class ActionRegistry {
     public ActionRegistry() {
         // Register Prism actions
         registerAction(BLOCK_BREAK);
+        registerAction(ITEM_DROP);
     }
 
-    /**
-     * Register a new action type.
-     *
-     * @param actionType The action type
-     */
+    @Override
+    public IBlockAction createBlockAction(ActionType type, Block block) {
+        if (!(type instanceof BlockActionType)) {
+            throw new IllegalArgumentException("Block actions cannot be made from non-block action types.");
+        }
+
+        return new BlockStateAction(type, block.getState());
+    }
+
+    @Override
+    public IItemAction createItemStackAction(ActionType type, ItemStack itemStack) {
+        if (!(type instanceof BlockActionType)) {
+            throw new IllegalArgumentException("Block actions cannot be made from non-block action types.");
+        }
+
+        return new ItemStackAction(type, itemStack);
+    }
+
+    @Override
     public void registerAction(ActionType actionType) {
         if (actionsTypes.containsKey(actionType.key())) {
             throw new IllegalArgumentException("Registry already has an action type with that key.");
@@ -39,12 +63,7 @@ public class ActionRegistry {
         actionsTypes.put(actionType.key(), actionType);
     }
 
-    /**
-     * Get an action type by key.
-     *
-     * @param key The key
-     * @return The action type, if any
-     */
+    @Override
     public Optional<ActionType> getActionType(String key) {
         if (actionsTypes.containsKey(key)) {
             return Optional.of(actionsTypes.get(key));

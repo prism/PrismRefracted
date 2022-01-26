@@ -1,6 +1,6 @@
 package network.darkhelmet.prism.api.actions;
 
-public final class ActionType {
+public abstract class ActionType {
     /**
      * The key.
      */

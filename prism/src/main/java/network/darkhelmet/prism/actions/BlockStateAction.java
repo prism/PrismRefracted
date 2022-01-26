@@ -7,7 +7,7 @@ import java.util.Locale;
 
 import network.darkhelmet.prism.api.actions.ActionResultType;
 import network.darkhelmet.prism.api.actions.ActionType;
-import network.darkhelmet.prism.api.actions.Reversible;
+import network.darkhelmet.prism.api.actions.IBlockAction;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -17,7 +17,7 @@ import org.bukkit.block.TileState;
 import org.bukkit.block.data.BlockData;
 import org.jetbrains.annotations.Nullable;
 
-public class BlockStateAction extends Action implements Reversible {
+public class BlockStateAction extends Action implements IBlockAction {
     /**
      * The location of this block action.
      */

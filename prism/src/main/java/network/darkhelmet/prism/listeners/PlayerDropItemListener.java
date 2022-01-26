@@ -6,33 +6,26 @@ import network.darkhelmet.prism.api.actions.IAction;
 import network.darkhelmet.prism.api.activities.Activity;
 import network.darkhelmet.prism.api.activities.IActivity;
 import network.darkhelmet.prism.recording.RecordingQueue;
-import network.darkhelmet.prism.utils.BlockUtils;
 
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 
-public class BlockBreakListener implements Listener {
+public class PlayerDropItemListener implements Listener {
     /**
-     * Listens for block break events.
+     * Listens to (player) item drop events.
      *
      * @param event The event
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onBlockBreak(final BlockBreakEvent event) {
-        final Player player = event.getPlayer();
-        final Block block = BlockUtils.getRootBlock(event.getBlock());
-
+    public void onPlayerDropItem(final PlayerDropItemEvent event) {
         // Build the action
         final IAction action = Prism.getInstance().actionRegistry()
-            .createBlockAction(ActionRegistry.BLOCK_BREAK, block);
+            .createItemStackAction(ActionRegistry.ITEM_DROP, event.getItemDrop().getItemStack());
 
-        // Build the block break by player activity
         final IActivity activity = Activity.builder()
-            .action(action).location(block.getLocation()).cause(player).build();
+            .action(action).cause(event.getPlayer()).location(event.getPlayer().getLocation()).build();
 
         RecordingQueue.addToQueue(activity);
     }

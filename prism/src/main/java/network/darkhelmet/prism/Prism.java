@@ -23,6 +23,7 @@ import network.darkhelmet.prism.config.StorageConfiguration;
 import network.darkhelmet.prism.displays.DisplayManager;
 import network.darkhelmet.prism.formatters.OutputFormatter;
 import network.darkhelmet.prism.listeners.BlockBreakListener;
+import network.darkhelmet.prism.listeners.PlayerDropItemListener;
 import network.darkhelmet.prism.recording.RecordingManager;
 import network.darkhelmet.prism.storage.mysql.MysqlStorageAdapter;
 
@@ -128,6 +129,7 @@ public class Prism extends JavaPlugin {
 
             // Register listeners
             getServer().getPluginManager().registerEvents(new BlockBreakListener(), this);
+            getServer().getPluginManager().registerEvents(new PlayerDropItemListener(), this);
 
             // Register command
             CommandManager commandManager = new CommandManager(this);
