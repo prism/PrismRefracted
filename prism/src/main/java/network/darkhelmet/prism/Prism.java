@@ -151,7 +151,9 @@ public class Prism extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        storageAdapter.close();
+        if (storageAdapter != null) {
+            storageAdapter.close();
+        }
     }
 
     /**

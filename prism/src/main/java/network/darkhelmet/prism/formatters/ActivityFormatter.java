@@ -14,7 +14,14 @@ import network.darkhelmet.prism.api.displays.DisplayFormatter;
 import org.bukkit.OfflinePlayer;
 
 public class ActivityFormatter extends OutputFormatter implements DisplayFormatter<IActivity> {
+    /**
+     * Cache the minus sign parsed component.
+     */
     private final Component signMinus;
+
+    /**
+     * Cache the plus sign parsed component.
+     */
     private final Component signPlus;
 
     /**
