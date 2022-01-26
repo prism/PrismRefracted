@@ -29,8 +29,9 @@ import network.darkhelmet.prism.api.actions.IAction;
 import network.darkhelmet.prism.api.actions.IActionRegistry;
 import network.darkhelmet.prism.api.activities.Activity;
 import network.darkhelmet.prism.api.activities.IActivity;
-import network.darkhelmet.prism.config.PrismConfiguration;
+import network.darkhelmet.prism.services.configuration.PrismConfiguration;
 import network.darkhelmet.prism.services.expectations.ExpectationService;
+import network.darkhelmet.prism.services.filters.FilterService;
 import network.darkhelmet.prism.services.recording.RecordingQueue;
 import network.darkhelmet.prism.utils.BlockUtils;
 import network.darkhelmet.prism.utils.EntityUtils;
@@ -60,6 +61,11 @@ public class BlockBreakListener implements Listener {
     private final ExpectationService expectationService;
 
     /**
+     * The filter service.
+     */
+    private final FilterService filterService;
+
+    /**
      * Construct the listener.
      *
      * @param prismConfig The prism config
@@ -68,10 +74,12 @@ public class BlockBreakListener implements Listener {
     public BlockBreakListener(
             PrismConfiguration prismConfig,
             IActionRegistry actionRegistry,
-            ExpectationService expectationService) {
+            ExpectationService expectationService,
+            FilterService filterService) {
         this.prismConfig = prismConfig;
         this.actionRegistry = actionRegistry;
         this.expectationService = expectationService;
+        this.filterService = filterService;
     }
 
     /**
@@ -124,6 +132,8 @@ public class BlockBreakListener implements Listener {
         final IActivity activity = Activity.builder()
             .action(action).location(block.getLocation()).cause(player).build();
 
-        RecordingQueue.addToQueue(activity);
+        if (filterService.allows(activity)) {
+            RecordingQueue.addToQueue(activity);
+        }
     }
 }

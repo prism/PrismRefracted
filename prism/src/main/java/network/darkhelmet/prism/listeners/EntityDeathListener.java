@@ -27,7 +27,7 @@ import network.darkhelmet.prism.api.actions.IAction;
 import network.darkhelmet.prism.api.actions.IActionRegistry;
 import network.darkhelmet.prism.api.activities.Activity;
 import network.darkhelmet.prism.api.activities.IActivity;
-import network.darkhelmet.prism.config.PrismConfiguration;
+import network.darkhelmet.prism.services.configuration.PrismConfiguration;
 import network.darkhelmet.prism.services.recording.RecordingQueue;
 
 import org.bukkit.entity.LivingEntity;

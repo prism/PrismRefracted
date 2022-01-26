@@ -38,7 +38,7 @@ import network.darkhelmet.prism.api.actions.IEntityAction;
 import network.darkhelmet.prism.api.actions.IMaterialAction;
 import network.darkhelmet.prism.api.activities.IActivity;
 import network.darkhelmet.prism.api.storage.IActivityBatch;
-import network.darkhelmet.prism.config.StorageConfiguration;
+import network.darkhelmet.prism.services.configuration.StorageConfiguration;
 import network.darkhelmet.prism.utils.TypeUtils;
 
 import org.bukkit.World;

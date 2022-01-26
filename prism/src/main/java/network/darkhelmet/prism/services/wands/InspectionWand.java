@@ -29,7 +29,7 @@ import network.darkhelmet.prism.api.activities.IActivity;
 import network.darkhelmet.prism.api.services.wands.IWand;
 import network.darkhelmet.prism.api.services.wands.WandMode;
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
-import network.darkhelmet.prism.config.PrismConfiguration;
+import network.darkhelmet.prism.services.configuration.PrismConfiguration;
 import network.darkhelmet.prism.services.displays.DisplayService;
 
 import org.bukkit.Location;

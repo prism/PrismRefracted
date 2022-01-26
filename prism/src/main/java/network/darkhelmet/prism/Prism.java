@@ -27,7 +27,6 @@ import co.aikar.taskchain.TaskChainFactory;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -45,9 +44,6 @@ import network.darkhelmet.prism.commands.ReloadCommand;
 import network.darkhelmet.prism.commands.RestoreCommand;
 import network.darkhelmet.prism.commands.RollbackCommand;
 import network.darkhelmet.prism.commands.WandCommand;
-import network.darkhelmet.prism.config.Config;
-import network.darkhelmet.prism.config.PrismConfiguration;
-import network.darkhelmet.prism.config.StorageConfiguration;
 import network.darkhelmet.prism.injection.PrismModule;
 import network.darkhelmet.prism.listeners.BlockBreakListener;
 import network.darkhelmet.prism.listeners.BlockPlaceListener;
@@ -55,6 +51,7 @@ import network.darkhelmet.prism.listeners.EntityDeathListener;
 import network.darkhelmet.prism.listeners.HangingBreakListener;
 import network.darkhelmet.prism.listeners.PlayerDropItemListener;
 import network.darkhelmet.prism.listeners.PlayerInteractListener;
+import network.darkhelmet.prism.services.configuration.ConfigurationService;
 import network.darkhelmet.prism.services.recording.RecordingService;
 
 import org.apache.logging.log4j.LogManager;
@@ -89,14 +86,9 @@ public class Prism extends JavaPlugin {
     private static TaskChainFactory taskChainFactory;
 
     /**
-     * The config.
+     * The configuration service.
      */
-    private PrismConfiguration prismConfig;
-
-    /**
-     * The storage configuration.
-     */
-    private StorageConfiguration storageConfig;
+    private ConfigurationService configurationService;
 
     /**
      * The storage adapter.
@@ -121,12 +113,13 @@ public class Prism extends JavaPlugin {
 
     @Override
     public void onLoad() {
-        // Load the plugin configuration
-        loadConfiguration();
-
         this.injector = Guice.createInjector(
-            new PrismModule(this, logger, prismConfig, storageConfig));
+            new PrismModule(this, logger));
 
+        // Load the configuration service (and files)
+        configurationService = injector.getInstance(ConfigurationService.class);
+
+        // Choose and initialize the datasource
         storageAdapter = injector.getInstance(IStorageAdapter.class);
         if (!storageAdapter.ready()) {
             disable();
@@ -213,18 +206,6 @@ public class Prism extends JavaPlugin {
     }
 
     /**
-     * Reloads all configuration files.
-     */
-    public void loadConfiguration() {
-        // Load the main config
-        File prismConfigFile = new File(getDataFolder(), "prism.conf");
-        prismConfig = Config.getOrWriteConfiguration(PrismConfiguration.class, prismConfigFile);
-
-        File storageConfigFile = new File(getDataFolder(), "storage.conf");
-        storageConfig = Config.getOrWriteConfiguration(StorageConfiguration.class, storageConfigFile);
-    }
-
-    /**
      * Parses the mc version as a short. Fed to nbt serializers.
      *
      * @return The mc version as a number
@@ -264,7 +245,7 @@ public class Prism extends JavaPlugin {
      * @param message String
      */
     public void debug(String message) {
-        if (prismConfig.debug()) {
+        if (configurationService.prismConfig().debug()) {
             logger.info(message);
         }
     }

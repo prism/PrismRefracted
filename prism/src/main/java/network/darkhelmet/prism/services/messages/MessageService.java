@@ -47,6 +47,9 @@ public interface MessageService {
     @Message("no-results")
     void noResults(CommandSender receiver);
 
+    @Message("reloaded-config")
+    void reloadedConfig(CommandSender receiver);
+
     @Message("reloaded-locales")
     void reloadedLocales(CommandSender receiver);
 

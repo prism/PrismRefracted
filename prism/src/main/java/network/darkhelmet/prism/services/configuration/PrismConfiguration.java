@@ -18,8 +18,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package network.darkhelmet.prism.config;
+package network.darkhelmet.prism.services.configuration;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
@@ -32,7 +34,7 @@ public class PrismConfiguration {
         Some are purely informational, some can be reversed/restored.
         Disabling any here will completely prevent prism from recording them.
         """)
-    private ActionsConfig actions = new ActionsConfig();
+    private ActionsConfiguration actions = new ActionsConfiguration();
 
     @Comment("Enable plugin debug mode. Produces extra logging to help diagnose issues.")
     private boolean debug = false;
@@ -42,6 +44,12 @@ public class PrismConfiguration {
         will use their client locale settings.
         """)
     private Locale defaultLocale = Locale.US;
+
+    @Comment("""
+            Filters allow fine-grained control over what prism records.
+            See the wiki for documentation.
+            """)
+    private List<FilterConfiguartion> filters = new ArrayList<>();
 
     @Comment("Sets the default radius to use when searching for nearby activity.")
     private int nearRadius = 5;
@@ -54,8 +62,17 @@ public class PrismConfiguration {
      *
      * @return The actions config
      */
-    public ActionsConfig actions() {
+    public ActionsConfiguration actions() {
         return actions;
+    }
+
+    /**
+     * Get the filters config.
+     *
+     * @return The filters config
+     */
+    public List<FilterConfiguartion> filters() {
+        return filters;
     }
 
     /**

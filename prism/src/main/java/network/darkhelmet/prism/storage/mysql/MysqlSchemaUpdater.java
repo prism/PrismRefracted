@@ -26,7 +26,7 @@ import com.google.inject.Inject;
 
 import java.sql.SQLException;
 
-import network.darkhelmet.prism.config.StorageConfiguration;
+import network.darkhelmet.prism.services.configuration.StorageConfiguration;
 import network.darkhelmet.prism.utils.TypeUtils;
 
 import org.apache.logging.log4j.Logger;

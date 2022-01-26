@@ -48,7 +48,7 @@ import network.darkhelmet.prism.api.activities.GroupedActivity;
 import network.darkhelmet.prism.api.activities.IActivity;
 import network.darkhelmet.prism.api.storage.IActivityBatch;
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
-import network.darkhelmet.prism.config.StorageConfiguration;
+import network.darkhelmet.prism.services.configuration.ConfigurationService;
 import network.darkhelmet.prism.utils.TypeUtils;
 
 import org.apache.logging.log4j.Logger;
@@ -66,9 +66,9 @@ public class MysqlStorageAdapter implements IStorageAdapter {
     private final Logger logger;
 
     /**
-     * The storage configuration.
+     * The configuration service.
      */
-    protected final StorageConfiguration storageConfig;
+    private final ConfigurationService configurationService;
 
     /**
      * The action registry.
@@ -93,27 +93,28 @@ public class MysqlStorageAdapter implements IStorageAdapter {
     /**
      * Construct a new instance.
      *
-     * @param storageConfiguration The storage configuration
+     * @param configurationService The configuration service
      */
     @Inject
     public MysqlStorageAdapter(
             Logger logger,
-            StorageConfiguration storageConfiguration,
+            ConfigurationService configurationService,
             IActionRegistry actionRegistry,
             MysqlSchemaUpdater schemaUpdater,
             MysqlQueryBuilder queryBuilder) {
         this.logger = logger;
-        this.storageConfig = storageConfiguration;
+        this.configurationService = configurationService;
         this.actionRegistry = actionRegistry;
         this.schemaUpdater = schemaUpdater;
         this.queryBuilder = queryBuilder;
 
         try {
             DatabaseOptions options = DatabaseOptions.builder().mysql(
-                storageConfig.username(),
-                storageConfig.password(),
-                storageConfig.database(),
-                storageConfig.host() + ":" + storageConfig.port()).build();
+                configurationService.storageConfig().username(),
+                configurationService.storageConfig().password(),
+                configurationService.storageConfig().database(),
+                configurationService.storageConfig().host() + ":"
+                        + configurationService.storageConfig().port()).build();
             Database db = PooledDatabaseOptions.builder().options(options).createHikariDatabase();
             DB.setGlobalDatabase(db);
 
@@ -157,7 +158,8 @@ public class MysqlStorageAdapter implements IStorageAdapter {
         // Create causes table. This is done here because:
         // 1. We need it for new installs anyway
         // 2. Updater logic needs it for 8->v4
-        @Language("SQL") String createCauses = "CREATE TABLE IF NOT EXISTS `" + storageConfig.prefix() + "causes` ("
+        @Language("SQL") String createCauses = "CREATE TABLE IF NOT EXISTS `"
+            + configurationService.storageConfig().prefix() + "causes` ("
             + "`cause_id` int unsigned NOT NULL AUTO_INCREMENT,"
             + "`cause` varchar(25) NOT NULL,"
             + "`player_id` int NULL,"
@@ -166,13 +168,14 @@ public class MysqlStorageAdapter implements IStorageAdapter {
 
         // Look for existing tables first.
         List<String> tables = DB.getFirstColumnResults("SHOW TABLES LIKE ?",
-            storageConfig.prefix() + "%");
-        if (tables.contains(storageConfig.prefix() + "meta")) {
+            configurationService.storageConfig().prefix() + "%");
+        if (tables.contains(configurationService.storageConfig().prefix() + "meta")) {
             // Check existing schema version before we do anything.
             // We can't create tables if existing ones are
             // going to be renamed during an update phase.
             // We'd run into collisions
-            @Language("SQL") String sql = "SELECT v FROM " + storageConfig.prefix() + "meta WHERE k = 'schema_ver'";
+            @Language("SQL") String sql = "SELECT v FROM " + configurationService.storageConfig().prefix()
+                + "meta WHERE k = 'schema_ver'";
 
             String schemaVersion = DB.getFirstColumn(sql);
             logger.info(String.format("Prism database version: %s", schemaVersion));
@@ -182,7 +185,7 @@ public class MysqlStorageAdapter implements IStorageAdapter {
 
         // Create actions table
         @Language("SQL") String actionsQuery = "CREATE TABLE IF NOT EXISTS `"
-            + storageConfig.prefix() + "actions` ("
+            + configurationService.storageConfig().prefix() + "actions` ("
             + "`action_id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,"
             + "`action` varchar(25) NOT NULL,"
             + "PRIMARY KEY (`action_id`), UNIQUE KEY `action` (`action`)"
@@ -191,7 +194,7 @@ public class MysqlStorageAdapter implements IStorageAdapter {
 
         // Create the activities table. This one's the fatso.
         @Language("SQL") String activitiesQuery = "CREATE TABLE IF NOT EXISTS `"
-            + storageConfig.prefix() + "activities` ("
+            + configurationService.storageConfig().prefix() + "activities` ("
             + "`activity_id` int(10) unsigned NOT NULL AUTO_INCREMENT,"
             + "`timestamp` int(10) unsigned NOT NULL,"
             + "`world_id` tinyint(3) unsigned NOT NULL,"
@@ -209,7 +212,7 @@ public class MysqlStorageAdapter implements IStorageAdapter {
 
         // Create the custom data table
         @Language("SQL") String extraQuery = "CREATE TABLE IF NOT EXISTS `"
-            + storageConfig.prefix() + "activities_custom_data` ("
+            + configurationService.storageConfig().prefix() + "activities_custom_data` ("
             + "`extra_id` int(10) unsigned NOT NULL AUTO_INCREMENT,"
             + "`activity_id` int(10) unsigned NOT NULL,"
             + "`version` SMALLINT NULL,"
@@ -220,7 +223,7 @@ public class MysqlStorageAdapter implements IStorageAdapter {
 
         // Create the entity types table
         @Language("SQL") String entityTypeQuery = "CREATE TABLE IF NOT EXISTS `"
-            + storageConfig.prefix() + "entity_types` ("
+            + configurationService.storageConfig().prefix() + "entity_types` ("
             + "`entity_type_id` smallint(6) NOT NULL AUTO_INCREMENT,"
             + "`entity_type` varchar(45) DEFAULT NULL,"
             + "PRIMARY KEY (`entity_type_id`),"
@@ -229,7 +232,7 @@ public class MysqlStorageAdapter implements IStorageAdapter {
 
         // Create the material data table
         @Language("SQL") String matDataQuery = "CREATE TABLE IF NOT EXISTS `"
-            + storageConfig.prefix() + "material_data` ("
+            + configurationService.storageConfig().prefix() + "material_data` ("
             + "`material_id` smallint(6) NOT NULL AUTO_INCREMENT,"
             + "`material` varchar(45) DEFAULT NULL,"
             + "`data` varchar(155) DEFAULT NULL,"
@@ -238,7 +241,8 @@ public class MysqlStorageAdapter implements IStorageAdapter {
         DB.executeUpdate(matDataQuery);
 
         // Create the meta data table
-        @Language("SQL") String metaQuery = "CREATE TABLE IF NOT EXISTS `" + storageConfig.prefix() + "meta` ("
+        @Language("SQL") String metaQuery = "CREATE TABLE IF NOT EXISTS `"
+            + configurationService.storageConfig().prefix() + "meta` ("
             + "`meta_id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,"
             + "`k` varchar(25) NOT NULL,"
             + "`v` varchar(155) NOT NULL,"
@@ -248,7 +252,7 @@ public class MysqlStorageAdapter implements IStorageAdapter {
 
         // Create the players table
         @Language("SQL") String playersQuery = "CREATE TABLE IF NOT EXISTS `"
-            + storageConfig.prefix() + "players` ("
+            + configurationService.storageConfig().prefix() + "players` ("
             + "`player_id` int(10) unsigned NOT NULL AUTO_INCREMENT,"
             + "`player` varchar(16) NOT NULL,"
             + "`player_uuid` binary(16) NOT NULL,"
@@ -258,7 +262,8 @@ public class MysqlStorageAdapter implements IStorageAdapter {
         DB.executeUpdate(playersQuery);
 
         // Create worlds table
-        @Language("SQL") String worldsQuery = "CREATE TABLE IF NOT EXISTS `" + storageConfig.prefix() + "worlds` ("
+        @Language("SQL") String worldsQuery = "CREATE TABLE IF NOT EXISTS `"
+            + configurationService.storageConfig().prefix() + "worlds` ("
             + "`world_id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,"
             + "`world` varchar(255) NOT NULL,"
             + "`world_uuid` binary(16) NOT NULL,"
@@ -268,7 +273,8 @@ public class MysqlStorageAdapter implements IStorageAdapter {
         DB.executeUpdate(worldsQuery);
 
         // Insert the schema version
-        @Language("SQL") String setSchemaVer = "INSERT INTO `" + storageConfig.prefix() + "meta` "
+        @Language("SQL") String setSchemaVer = "INSERT INTO `"
+            + configurationService.storageConfig().prefix() + "meta` "
             + " (`k`, `v`) VALUES (?, ?) ON DUPLICATE KEY UPDATE `v` = `v`";
         DB.executeInsert(setSchemaVer, "schema_ver", "v4");
     }
@@ -281,13 +287,13 @@ public class MysqlStorageAdapter implements IStorageAdapter {
     protected void updateSchemas(String schemaVersion) throws SQLException {
         // Update: 8 -> v4
         if (schemaVersion.equalsIgnoreCase("8")) {
-            DB.createTransaction(stm -> schemaUpdater.update_8_to_v4(storageConfig));
+            DB.createTransaction(stm -> schemaUpdater.update_8_to_v4(configurationService.storageConfig()));
         }
     }
 
     @Override
     public PaginatedResults<IActivity> queryActivitiesAsInformation(ActivityQuery query) throws SQLException {
-        List<DbRow> rows = queryBuilder.queryActivities(query, storageConfig.prefix());
+        List<DbRow> rows = queryBuilder.queryActivities(query, configurationService.storageConfig().prefix());
 
         int totalResults = 0;
         if (!rows.isEmpty()) {
@@ -301,7 +307,7 @@ public class MysqlStorageAdapter implements IStorageAdapter {
 
     @Override
     public List<IActivity> queryActivitiesAsModification(ActivityQuery query) throws SQLException {
-        List<DbRow> results = queryBuilder.queryActivities(query, storageConfig.prefix());
+        List<DbRow> results = queryBuilder.queryActivities(query, configurationService.storageConfig().prefix());
         return activityMapper(results, query);
     }
 
@@ -412,7 +418,7 @@ public class MysqlStorageAdapter implements IStorageAdapter {
 
     @Override
     public IActivityBatch createActivityBatch() {
-        return new MysqlActivityBatch(storageConfig);
+        return new MysqlActivityBatch(configurationService.storageConfig());
     }
 
     @Override

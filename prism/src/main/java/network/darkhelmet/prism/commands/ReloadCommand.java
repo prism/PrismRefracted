@@ -29,6 +29,8 @@ import me.mattstudios.mf.annotations.Command;
 import me.mattstudios.mf.annotations.SubCommand;
 import me.mattstudios.mf.base.CommandBase;
 
+import network.darkhelmet.prism.services.configuration.ConfigurationService;
+import network.darkhelmet.prism.services.filters.FilterService;
 import network.darkhelmet.prism.services.messages.MessageService;
 import network.darkhelmet.prism.services.translation.TranslationKey;
 import network.darkhelmet.prism.services.translation.TranslationService;
@@ -49,14 +51,44 @@ public class ReloadCommand extends CommandBase {
     private final TranslationService translationService;
 
     /**
+     * The configuration service.
+     */
+    private final ConfigurationService configurationService;
+
+    /**
+     * The filter service.
+     */
+    private final FilterService filterService;
+
+    /**
      * Construct the reload command.
      *
      * @param messageService The message service
      */
     @Inject
-    public ReloadCommand(MessageService messageService, TranslationService translationService) {
+    public ReloadCommand(
+            MessageService messageService,
+            TranslationService translationService,
+            ConfigurationService configurationService,
+            FilterService filterService) {
         this.messageService = messageService;
         this.translationService = translationService;
+        this.configurationService = configurationService;
+        this.filterService = filterService;
+    }
+
+    /**
+     * Reload the config.
+     *
+     * @param sender The command sender
+     */
+    @SubCommand("reloadconfig")
+    public void onReloadConfig(final CommandSender sender) {
+        configurationService.loadConfigurations();
+
+        filterService.loadFilters();
+
+        messageService.reloadedConfig(sender);
     }
 
     /**
@@ -65,7 +97,7 @@ public class ReloadCommand extends CommandBase {
      * @param sender The command sender
      */
     @SubCommand("reloadlocales")
-    public void onReload(final CommandSender sender) {
+    public void onReloadLocales(final CommandSender sender) {
         try {
             translationService.reloadTranslations();
 

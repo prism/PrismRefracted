@@ -32,7 +32,7 @@ import network.darkhelmet.prism.api.PaginatedResults;
 import network.darkhelmet.prism.api.activities.ActivityQuery;
 import network.darkhelmet.prism.api.activities.IActivity;
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
-import network.darkhelmet.prism.config.PrismConfiguration;
+import network.darkhelmet.prism.services.configuration.ConfigurationService;
 import network.darkhelmet.prism.services.displays.DisplayService;
 import network.darkhelmet.prism.utils.LocationUtils;
 
@@ -44,9 +44,9 @@ import org.bukkit.util.Vector;
 @Alias("pr")
 public class NearCommand extends CommandBase {
     /**
-     * The prism configuration.
+     * The configuration service.
      */
-    private final PrismConfiguration prismConfig;
+    private final ConfigurationService configurationService;
 
     /**
      * The storage adapter.
@@ -61,12 +61,16 @@ public class NearCommand extends CommandBase {
     /**
      * Construct the near command.
      *
-     * @param prismConfig The prism configuration
+     * @param configurationService The configuration service
      * @param storageAdapter The storage adapter
+     * @param displayService The display service
      */
     @Inject
-    public NearCommand(PrismConfiguration prismConfig, IStorageAdapter storageAdapter, DisplayService displayService) {
-        this.prismConfig = prismConfig;
+    public NearCommand(
+            ConfigurationService configurationService,
+            IStorageAdapter storageAdapter,
+            DisplayService displayService) {
+        this.configurationService = configurationService;
         this.storageAdapter = storageAdapter;
         this.displayService = displayService;
     }
@@ -79,11 +83,11 @@ public class NearCommand extends CommandBase {
     @SubCommand("near")
     public void onNear(final Player player) {
         Location loc = player.getLocation();
-        Vector minVector = LocationUtils.getMinVector(loc, prismConfig.nearRadius());
-        Vector maxVector = LocationUtils.getMaxVector(loc, prismConfig.nearRadius());
+        Vector minVector = LocationUtils.getMinVector(loc, configurationService.prismConfig().nearRadius());
+        Vector maxVector = LocationUtils.getMaxVector(loc, configurationService.prismConfig().nearRadius());
 
         final ActivityQuery query = ActivityQuery.builder().world(loc.getWorld().getUID())
-            .minVector(minVector).maxVector(maxVector).limit(prismConfig.perPage()).build();
+            .minVector(minVector).maxVector(maxVector).limit(configurationService.prismConfig().perPage()).build();
         Prism.newChain().async(() -> {
             try {
                 PaginatedResults<IActivity> paginatedResults = storageAdapter.queryActivitiesAsInformation(query);

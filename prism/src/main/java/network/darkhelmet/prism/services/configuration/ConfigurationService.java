@@ -18,7 +18,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package network.darkhelmet.prism.config;
+package network.darkhelmet.prism.services.configuration;
+
+import com.google.inject.Inject;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -26,15 +28,68 @@ import java.util.Locale;
 
 import net.kyori.adventure.serializer.configurate4.ConfigurateComponentSerializer;
 
-import network.darkhelmet.prism.config.serializers.LocaleSerializerConfigurate;
-
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 import org.spongepowered.configurate.loader.ConfigurationLoader;
 
-public class Config {
-    private Config() {}
+public class ConfigurationService {
+    /**
+     * The plugin data path.
+     */
+    private final Path dataPath;
+
+    /**
+     * The primary plugin configuration.
+     */
+    private PrismConfiguration prismConfiguration;
+
+    /**
+     * The storage configuration.
+     */
+    private StorageConfiguration storageConfiguration;
+
+    /**
+     * Construct the configuration service.
+     *
+     * @param dataPath The plugin datapath
+     */
+    @Inject
+    public ConfigurationService(Path dataPath) {
+        this.dataPath = dataPath;
+
+        loadConfigurations();
+    }
+
+    /**
+     * Get the prism configuration.
+     *
+     * @return The prism configuration
+     */
+    public PrismConfiguration prismConfig() {
+        return prismConfiguration;
+    }
+
+    /**
+     * Get the storage configuration.
+     *
+     * @return The storage configuration
+     */
+    public StorageConfiguration storageConfig() {
+        return storageConfiguration;
+    }
+
+    /**
+     * Load the configurations.
+     */
+    public void loadConfigurations() {
+        // Load the main config
+        File prismConfigFile = new File(dataPath.toFile(), "prism.conf");
+        prismConfiguration = getOrWriteConfiguration(PrismConfiguration.class, prismConfigFile);
+
+        File storageConfigFile = new File(dataPath.toFile(), "storage.conf");
+        storageConfiguration = getOrWriteConfiguration(StorageConfiguration.class, storageConfigFile);
+    }
 
     /**
      * Build a hocon configuration loader with locale support.
@@ -42,7 +97,7 @@ public class Config {
      * @param file The config file
      * @return The config loader
      */
-    public static ConfigurationLoader<?> configurationLoader(final Path file) {
+    public ConfigurationLoader<?> configurationLoader(final Path file) {
         return HoconConfigurationLoader.builder()
             .prettyPrinting(true)
             .defaultOptions(opts -> {
@@ -66,7 +121,7 @@ public class Config {
      * @param <T> The configuration class type.
      * @return The configuration class instance
      */
-    public static <T> T getOrWriteConfiguration(Class<T> clz, File file) {
+    public <T> T getOrWriteConfiguration(Class<T> clz, File file) {
         return getOrWriteConfiguration(clz, file, null);
     }
 
@@ -79,7 +134,7 @@ public class Config {
      * @param <T> The configuration class type
      * @return The configuration class instance
      */
-    public static <T> T getOrWriteConfiguration(Class<T> clz, File file, T config) {
+    public <T> T getOrWriteConfiguration(Class<T> clz, File file, T config) {
         if (!file.exists()) {
             file.getParentFile().mkdirs();
         }

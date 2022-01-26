@@ -22,6 +22,7 @@ package network.darkhelmet.prism.injection;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.multibindings.MapBinder;
@@ -30,6 +31,8 @@ import com.google.inject.name.Named;
 import io.leangen.geantyref.TypeToken;
 
 import java.nio.file.Path;
+import java.util.Locale;
+import java.util.Map;
 
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.moonshine.Moonshine;
@@ -46,9 +49,9 @@ import network.darkhelmet.prism.api.services.recording.IRecordingService;
 import network.darkhelmet.prism.api.services.wands.IWand;
 import network.darkhelmet.prism.api.services.wands.WandMode;
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
-import network.darkhelmet.prism.config.PrismConfiguration;
-import network.darkhelmet.prism.config.StorageConfiguration;
+import network.darkhelmet.prism.services.configuration.ConfigurationService;
 import network.darkhelmet.prism.services.expectations.ExpectationService;
+import network.darkhelmet.prism.services.filters.FilterService;
 import network.darkhelmet.prism.services.messages.MessageRenderer;
 import network.darkhelmet.prism.services.messages.MessageSender;
 import network.darkhelmet.prism.services.messages.MessageService;
@@ -80,16 +83,6 @@ public class PrismModule extends AbstractModule {
     private final Logger logger;
 
     /**
-     * The prism configuration.
-     */
-    private final PrismConfiguration prismConfig;
-
-    /**
-     * The storage configuration.
-     */
-    private final StorageConfiguration storageConfig;
-
-    /**
      * The data path.
      */
     private final Path dataPath;
@@ -102,17 +95,11 @@ public class PrismModule extends AbstractModule {
     /**
      * Construct the module.
      *
+     * @param prism Prism
      * @param logger The logger
-     * @param prismConfig The prism configuration
      */
-    public PrismModule(
-            Prism prism,
-            Logger logger,
-            PrismConfiguration prismConfig,
-            StorageConfiguration storageConfig) {
+    public PrismModule(Prism prism, Logger logger) {
         this.logger = logger;
-        this.prismConfig = prismConfig;
-        this.storageConfig = storageConfig;
         this.dataPath = prism.getDataFolder().toPath();
         this.version = prism.getDescription().getVersion();
     }
@@ -132,6 +119,21 @@ public class PrismModule extends AbstractModule {
     @Singleton
     public BukkitAudiences getAudience() {
         return BukkitAudiences.create(Prism.getInstance());
+    }
+
+    /**
+     * Get the configured storage adapter.
+     *
+     * @param configurationService The configuration service
+     * @param storageMap The storage binding map
+     * @return The storage adapter
+     */
+    @Provides
+    public IStorageAdapter getStorageAdapter(
+            ConfigurationService configurationService,
+            Map<String, Provider<IStorageAdapter>> storageMap) {
+        String datasource = configurationService.storageConfig().datasource().toLowerCase(Locale.ENGLISH);
+        return storageMap.get(datasource).get();
     }
 
     /**
@@ -179,30 +181,50 @@ public class PrismModule extends AbstractModule {
 
     @Override
     public void configure() {
+        // Base
         bind(Logger.class).toInstance(this.logger);
-        bind(PrismConfiguration.class).toInstance(prismConfig);
-        bind(StorageConfiguration.class).toInstance(storageConfig);
         bind(Path.class).toInstance(dataPath);
+
+        // Actions
         bind(IActionRegistry.class).to(ActionRegistry.class).in(Singleton.class);
-        bind(IRecordingService.class).to(RecordingService.class).in(Singleton.class);
+
+        // Service - Configuration
+        bind(ConfigurationService.class).in(Singleton.class);
+
+        // Service - Expectations
+        bind(ExpectationService.class).in(Singleton.class);
+
+        // Service - Filters
+        bind(FilterService.class).in(Singleton.class);
+
+        // Service - Modifications
         bind(IModificationQueueService.class).to(ModificationQueueService.class).in(Singleton.class);
+
+        // Service - Recording
+        bind(IRecordingService.class).to(RecordingService.class).in(Singleton.class);
+
+        // Service - Messages
         bind(MessageRenderer.class).in(Singleton.class);
         bind(MessageSender.class).in(Singleton.class);
-        bind(TranslationService.class).in(Singleton.class);
         bind(ActivityPlaceholderResolver.class).in(Singleton.class);
         bind(TranslatableStringPlaceholderResolver.class).in(Singleton.class);
-        bind(ExpectationService.class).in(Singleton.class);
+
+        // Service - Translation
+        bind(TranslationService.class).in(Singleton.class);
+
+        // Service - Wands
         bind(WandService.class).in(Singleton.class);
+        MapBinder<WandMode, IWand> wandBinder = MapBinder.newMapBinder(binder(), WandMode.class, IWand.class);
+        wandBinder.addBinding(WandMode.INSPECT).to(InspectionWand.class);
+        wandBinder.addBinding(WandMode.ROLLBACK).to(RollbackWand.class);
+        wandBinder.addBinding(WandMode.RESTORE).to(RestoreWand.class);
+
+        // Storage
         bind(MysqlQueryBuilder.class);
+        bind(MysqlSchemaUpdater.class).in(Singleton.class);
 
-        MapBinder<WandMode, IWand> mapBinder = MapBinder.newMapBinder(binder(), WandMode.class, IWand.class);
-        mapBinder.addBinding(WandMode.INSPECT).to(InspectionWand.class);
-        mapBinder.addBinding(WandMode.ROLLBACK).to(RollbackWand.class);
-        mapBinder.addBinding(WandMode.RESTORE).to(RestoreWand.class);
-
-        if (storageConfig.datasource().equalsIgnoreCase("mysql")) {
-            bind(MysqlSchemaUpdater.class).in(Singleton.class);
-            bind(IStorageAdapter.class).to(MysqlStorageAdapter.class).in(Singleton.class);
-        }
+        MapBinder<String, IStorageAdapter> storageBinder = MapBinder.newMapBinder(
+            binder(), String.class, IStorageAdapter.class);
+        storageBinder.addBinding("mysql").to(MysqlStorageAdapter.class).in(Singleton.class);
     }
 }

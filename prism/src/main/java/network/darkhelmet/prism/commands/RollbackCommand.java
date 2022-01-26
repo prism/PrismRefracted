@@ -35,7 +35,7 @@ import network.darkhelmet.prism.api.activities.ActivityQuery;
 import network.darkhelmet.prism.api.services.modifications.IModificationQueue;
 import network.darkhelmet.prism.api.services.modifications.IModificationQueueService;
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
-import network.darkhelmet.prism.config.PrismConfiguration;
+import network.darkhelmet.prism.services.configuration.ConfigurationService;
 import network.darkhelmet.prism.services.messages.MessageService;
 import network.darkhelmet.prism.services.translation.TranslationKey;
 import network.darkhelmet.prism.utils.LocationUtils;
@@ -48,9 +48,9 @@ import org.bukkit.util.Vector;
 @Alias("pr")
 public class RollbackCommand extends CommandBase {
     /**
-     * The prism configuration.
+     * The configuration service.
      */
-    private final PrismConfiguration prismConfig;
+    private final ConfigurationService configurationService;
 
     /**
      * The storage adapter.
@@ -70,18 +70,18 @@ public class RollbackCommand extends CommandBase {
     /**
      * Construct the near command.
      *
-     * @param prismConfig The prism configuration
+     * @param configurationService The configuration service
      * @param storageAdapter The storage adapter
      * @param messageService The message service
      * @param modificationQueueService The modification queue service
      */
     @Inject
     public RollbackCommand(
-            PrismConfiguration prismConfig,
+            ConfigurationService configurationService,
             IStorageAdapter storageAdapter,
             MessageService messageService,
             IModificationQueueService modificationQueueService) {
-        this.prismConfig = prismConfig;
+        this.configurationService = configurationService;
         this.storageAdapter = storageAdapter;
         this.messageService = messageService;
         this.modificationQueueService = modificationQueueService;
@@ -103,7 +103,7 @@ public class RollbackCommand extends CommandBase {
         }
 
         Location loc = player.getLocation();
-        int radius = prismConfig.nearRadius();
+        int radius = configurationService.prismConfig().nearRadius();
 
         Vector minVector = LocationUtils.getMinVector(loc, radius);
         Vector maxVector = LocationUtils.getMaxVector(loc, radius);

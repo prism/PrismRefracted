@@ -46,7 +46,7 @@ import java.util.stream.Stream;
 import net.kyori.adventure.translation.Translator;
 import net.kyori.moonshine.message.IMessageSource;
 
-import network.darkhelmet.prism.config.PrismConfiguration;
+import network.darkhelmet.prism.services.configuration.PrismConfiguration;
 
 import org.apache.logging.log4j.Logger;
 import org.bukkit.command.CommandSender;
