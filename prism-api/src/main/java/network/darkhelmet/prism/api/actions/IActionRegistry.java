@@ -3,6 +3,7 @@ package network.darkhelmet.prism.api.actions;
 import java.util.Optional;
 
 import network.darkhelmet.prism.api.actions.types.ActionType;
+
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 

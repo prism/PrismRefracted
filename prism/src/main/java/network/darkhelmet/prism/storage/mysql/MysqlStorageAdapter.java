@@ -6,8 +6,6 @@ import co.aikar.idb.DatabaseOptions;
 import co.aikar.idb.DbRow;
 import co.aikar.idb.PooledDatabaseOptions;
 
-import de.tr7zw.nbtapi.NBTContainer;
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,8 +16,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 import network.darkhelmet.prism.Prism;
-import network.darkhelmet.prism.actions.BlockStateAction;
 import network.darkhelmet.prism.api.PaginatedResults;
+import network.darkhelmet.prism.api.actions.ActionData;
 import network.darkhelmet.prism.api.actions.IAction;
 import network.darkhelmet.prism.api.actions.types.ActionType;
 import network.darkhelmet.prism.api.activities.ActivityQuery;
@@ -33,7 +31,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.data.BlockData;
 import org.intellij.lang.annotations.Language;
 
 public class MysqlStorageAdapter implements IStorageAdapter {
@@ -167,6 +164,12 @@ public class MysqlStorageAdapter implements IStorageAdapter {
                 continue;
             }
 
+            ActionType actionType = optionalActionType.get();
+            if (!actionType.reversible()) {
+                // Skip because this action type is not reversible
+                continue;
+            }
+
             // World
             UUID worldUuid = TypeUtils.uuidFromDbString(row.getString("worldUuid"));
             World world = Bukkit.getServer().getWorld(worldUuid);
@@ -182,26 +185,20 @@ public class MysqlStorageAdapter implements IStorageAdapter {
             int z = row.getInt("z");
             Location location = new Location(world, x, y, z);
 
+            Material material = null;
             String materialName = row.getString("material");
             if (materialName != null) {
-                Material material = Material.valueOf(materialName.toUpperCase(Locale.ENGLISH));
-
-                BlockData blockData = null;
-                String materialData = row.getString("material_data");
-                if (materialData != null) {
-                    blockData = Bukkit.createBlockData(materialName + materialData);
-                }
-
-                NBTContainer nbtContainer = null;
-                String customData = row.getString("custom_data");
-                if (customData != null) {
-                    nbtContainer = new NBTContainer(customData);
-                }
-
-                BlockStateAction action = new BlockStateAction(
-                    optionalActionType.get(), location, material, blockData, nbtContainer);
-                results.add(action);
+                material = Material.valueOf(materialName.toUpperCase(Locale.ENGLISH));
             }
+
+            String materialData = row.getString("material_data");
+            String customData = row.getString("custom_data");
+
+            // Build the action data
+            ActionData actionData = new ActionData(location, material, materialData, materialData, customData);
+
+            // Add to result list
+            results.add(actionType.createAction(actionData));
         }
 
         return results;

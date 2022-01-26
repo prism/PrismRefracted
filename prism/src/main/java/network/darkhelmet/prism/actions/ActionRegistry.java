@@ -4,13 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import network.darkhelmet.prism.actions.types.BlockActionType;
+import network.darkhelmet.prism.actions.types.ItemActionType;
 import network.darkhelmet.prism.api.actions.IActionRegistry;
 import network.darkhelmet.prism.api.actions.IBlockAction;
 import network.darkhelmet.prism.api.actions.IItemAction;
 import network.darkhelmet.prism.api.actions.types.ActionResultType;
 import network.darkhelmet.prism.api.actions.types.ActionType;
-import network.darkhelmet.prism.api.actions.types.BlockActionType;
-import network.darkhelmet.prism.api.actions.types.ItemActionType;
 
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;

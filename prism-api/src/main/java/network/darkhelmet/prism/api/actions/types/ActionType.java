@@ -1,6 +1,6 @@
 package network.darkhelmet.prism.api.actions.types;
 
-public abstract class ActionType {
+public abstract class ActionType implements IActionType {
     /**
      * The key.
      */
@@ -14,7 +14,7 @@ public abstract class ActionType {
     /**
      * Indicates whether this action type is usually reversible.
      */
-    protected boolean reversible = false;
+    protected boolean reversible;
 
     /**
      * Construct a new action type.
