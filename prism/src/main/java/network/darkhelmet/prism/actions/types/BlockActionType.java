@@ -35,6 +35,6 @@ public class BlockActionType extends ActionType {
             nbtContainer = new NBTContainer(actionData.customData());
         }
 
-        return new BlockStateAction(this, actionData.location(), actionData.material(), blockData, nbtContainer);
+        return new BlockStateAction(this, actionData.material(), blockData, nbtContainer);
     }
 }

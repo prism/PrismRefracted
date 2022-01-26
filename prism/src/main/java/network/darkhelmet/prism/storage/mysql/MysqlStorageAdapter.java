@@ -145,7 +145,7 @@ public class MysqlStorageAdapter implements IStorageAdapter {
             String material = row.getString("material");
             int timestamp = row.getInt("timestamp");
 
-            ActivityRow activity =  new ActivityRow(action, cause, timestamp, material);
+            ActivityRow activity = new ActivityRow(action, cause, timestamp, material);
             results.add(activity);
         }
 
@@ -204,10 +204,11 @@ public class MysqlStorageAdapter implements IStorageAdapter {
             }
 
             // Build the action data
-            ActionData actionData = new ActionData(location, material, materialData, materialData, customData);
+            ActionData actionData = new ActionData(material, materialName, materialData, customData);
 
             // Build the activity
-            IActivity activity = Activity.builder().action(actionType.createAction(actionData)).cause(cause).build();
+            IActivity activity = Activity.builder()
+                .action(actionType.createAction(actionData)).cause(cause).location(location).build();
 
             // Add to result list
             results.add(activity);

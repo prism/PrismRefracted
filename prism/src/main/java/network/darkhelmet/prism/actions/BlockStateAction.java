@@ -18,11 +18,6 @@ import org.jetbrains.annotations.Nullable;
 
 public class BlockStateAction extends MaterialAction implements IBlockAction {
     /**
-     * The location of this block action.
-     */
-    private Location location;
-
-    /**
      * The block data.
      */
     private BlockData blockData;
@@ -41,7 +36,6 @@ public class BlockStateAction extends MaterialAction implements IBlockAction {
     public BlockStateAction(ActionType type, BlockState blockState) {
         super(type, blockState.getType());
 
-        this.location = blockState.getLocation();
         this.blockData = blockState.getBlockData();
 
         if (blockState instanceof TileState) {
@@ -58,11 +52,9 @@ public class BlockStateAction extends MaterialAction implements IBlockAction {
      * @param blockData The block data
      * @param teData The tile entity data
      */
-    public BlockStateAction(
-        ActionType type, Location location, Material material, BlockData blockData, NBTContainer teData) {
+    public BlockStateAction(ActionType type, Material material, BlockData blockData, NBTContainer teData) {
         super(type, material);
 
-        this.location = location;
         this.blockData = blockData;
         this.nbtContainer = teData;
     }
@@ -94,10 +86,10 @@ public class BlockStateAction extends MaterialAction implements IBlockAction {
 
         if (type().resultType().equals(ActionResultType.REMOVES)) {
             // If the action type removes a block, rollback means we re-set it
-            setBlock();
+            setBlock(activityContext.location());
         } else if (type().resultType().equals(ActionResultType.CREATES)) {
             // If the action type creates a block, rollback means we remove it
-            removeBlock();
+            removeBlock(activityContext.location());
         }
     }
 
@@ -109,17 +101,17 @@ public class BlockStateAction extends MaterialAction implements IBlockAction {
 
         if (type().resultType().equals(ActionResultType.CREATES)) {
             // If the action type creates a block, restore means we re-set it
-            setBlock();
+            setBlock(activityContext.location());
         } else if (type().resultType().equals(ActionResultType.REMOVES)) {
             // If the action type removes a block, restore means we remove it again
-            removeBlock();
+            removeBlock(activityContext.location());
         }
     }
 
     /**
      * Sets an in-world block to air.
      */
-    protected void removeBlock() {
+    protected void removeBlock(Location location) {
         final Block block = location.getWorld().getBlockAt(location);
         block.setType(Material.AIR);
     }
@@ -127,7 +119,7 @@ public class BlockStateAction extends MaterialAction implements IBlockAction {
     /**
      * Sets an in-world block to this block data.
      */
-    protected void setBlock() {
+    protected void setBlock(Location location) {
         final Block block = location.getWorld().getBlockAt(location);
         block.setType(material);
 
@@ -143,7 +135,6 @@ public class BlockStateAction extends MaterialAction implements IBlockAction {
     @Override
     public String toString() {
         return "BlockStateAction["
-            + "location=" + location + ","
             + "material=" + material + ","
             + "nbtContainer=" + nbtContainer + ']';
     }
