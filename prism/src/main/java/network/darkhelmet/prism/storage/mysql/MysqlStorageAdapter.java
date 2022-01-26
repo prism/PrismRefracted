@@ -203,12 +203,14 @@ public class MysqlStorageAdapter implements IStorageAdapter {
                 cause = Bukkit.getOfflinePlayer(playerUuid);
             }
 
+            long timestamp = row.getLong("timestamp");
+
             // Build the action data
             ActionData actionData = new ActionData(material, materialName, materialData, customData);
 
             // Build the activity
             IActivity activity = Activity.builder()
-                .action(actionType.createAction(actionData)).cause(cause).location(location).build();
+                .action(actionType.createAction(actionData)).timestamp(timestamp).cause(cause).location(location).build();
 
             // Add to result list
             activities.add(activity);

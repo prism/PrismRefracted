@@ -69,6 +69,17 @@ public record Activity(IAction action, Location location, Object cause, long tim
         }
 
         /**
+         * Set a timestamp.
+         *
+         * @param timestamp The timestamp
+         * @return The builder
+         */
+        public Builder timestamp(long timestamp) {
+            this.timestamp = timestamp;
+            return this;
+        }
+
+        /**
          * Build the final activity.
          *
          * @return The activity
