@@ -30,6 +30,9 @@ repositories {
 
     // CodeMC (nbt-api)
     maven { url = 'https://repo.codemc.org/repository/maven-public/' }
+
+    // Sonatype (kyori)
+    maven { url = 'https://oss.sonatype.org/content/repositories/snapshots/' }
 }
 
 group = project.property("group")
