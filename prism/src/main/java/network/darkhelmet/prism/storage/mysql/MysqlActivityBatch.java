@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import network.darkhelmet.prism.api.actions.IBlockAction;
+import network.darkhelmet.prism.api.actions.ICustomData;
 import network.darkhelmet.prism.api.actions.IItemAction;
 import network.darkhelmet.prism.api.actions.IMaterialAction;
 import network.darkhelmet.prism.api.activities.IActivity;
@@ -118,8 +119,10 @@ public class MysqlActivityBatch implements IActivityBatch {
         long causeId = getOrCreateCauseId(cause, playerId);
         statement.setLong(8, causeId);
 
-        if (activity.action().hasCustomData()) {
-            activitiesWithCustomData.put(activityBatchIndex, activity);
+        if (activity.action() instanceof ICustomData customData) {
+            if (customData.hasCustomData()) {
+                activitiesWithCustomData.put(activityBatchIndex, activity);
+            }
         }
 
         activityBatchIndex++;
@@ -332,9 +335,10 @@ public class MysqlActivityBatch implements IActivityBatch {
         while (keys.next()) {
             if (activitiesWithCustomData.containsKey(i)) {
                 IActivity activity = activitiesWithCustomData.get(i);
+                ICustomData customDataAction = (ICustomData) activity.action();
 
                 int activityId = keys.getInt(1);
-                String customData = activity.action().serializeCustomData();
+                String customData = customDataAction.serializeCustomData();
 
                 dataStatement.setInt(1, activityId);
                 dataStatement.setString(2, customData);

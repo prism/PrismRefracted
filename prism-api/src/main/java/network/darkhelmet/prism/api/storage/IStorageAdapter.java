@@ -2,7 +2,6 @@ package network.darkhelmet.prism.api.storage;
 
 import java.util.List;
 
-
 import network.darkhelmet.prism.api.PaginatedResults;
 import network.darkhelmet.prism.api.actions.IAction;
 import network.darkhelmet.prism.api.activities.ActivityQuery;

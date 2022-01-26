@@ -33,16 +33,6 @@ public class ItemStackAction extends MaterialAction implements IItemAction {
     }
 
     @Override
-    public boolean hasCustomData() {
-        return false;
-    }
-
-    @Override
-    public String serializeCustomData() {
-        return null;
-    }
-
-    @Override
     public String serializeItem() {
         return nbtContainer.toString();
     }
