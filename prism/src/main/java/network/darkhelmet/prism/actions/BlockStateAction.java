@@ -6,6 +6,7 @@ import de.tr7zw.nbtapi.NBTTileEntity;
 import network.darkhelmet.prism.api.actions.IBlockAction;
 import network.darkhelmet.prism.api.actions.types.ActionResultType;
 import network.darkhelmet.prism.api.actions.types.ActionType;
+import network.darkhelmet.prism.api.activities.IActivity;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -86,7 +87,7 @@ public class BlockStateAction extends MaterialAction implements IBlockAction {
     }
 
     @Override
-    public void applyRollback() {
+    public void applyRollback(IActivity activityContext) {
         if (!type().reversible()) {
             return;
         }
@@ -101,7 +102,7 @@ public class BlockStateAction extends MaterialAction implements IBlockAction {
     }
 
     @Override
-    public void applyRestore() {
+    public void applyRestore(IActivity activityContext) {
         if (!type().reversible()) {
             return;
         }

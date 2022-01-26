@@ -10,6 +10,7 @@ import me.mattstudios.mf.base.CommandBase;
 import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.api.actions.IAction;
 import network.darkhelmet.prism.api.activities.ActivityQuery;
+import network.darkhelmet.prism.api.activities.IActivity;
 import network.darkhelmet.prism.utils.LocationUtils;
 
 import org.bukkit.Location;
@@ -43,8 +44,8 @@ public class RestoreCommand extends CommandBase {
 
             return null;
         }).abortIfNull().<List<IAction>>sync(results -> {
-            for (IAction action : results) {
-                action.applyRestore();
+            for (IActivity activity : results) {
+                activity.action().applyRestore(activity);
             }
 
             return null;

@@ -18,9 +18,10 @@ import java.util.UUID;
 import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.api.PaginatedResults;
 import network.darkhelmet.prism.api.actions.ActionData;
-import network.darkhelmet.prism.api.actions.IAction;
 import network.darkhelmet.prism.api.actions.types.ActionType;
+import network.darkhelmet.prism.api.activities.Activity;
 import network.darkhelmet.prism.api.activities.ActivityQuery;
+import network.darkhelmet.prism.api.activities.IActivity;
 import network.darkhelmet.prism.api.storage.IActivityBatch;
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
 import network.darkhelmet.prism.api.storage.models.ActivityRow;
@@ -152,8 +153,8 @@ public class MysqlStorageAdapter implements IStorageAdapter {
     }
 
     @Override
-    public List<IAction> queryActivitiesAsActions(ActivityQuery query) throws SQLException {
-        List<IAction> results = new ArrayList<>();
+    public List<IActivity> queryActivitiesAsActions(ActivityQuery query) throws SQLException {
+        List<IActivity> results = new ArrayList<>();
 
         for (DbRow row : MysqlQueryBuilder.queryActivities(query, storageConfig.prefix())) {
             String actionKey = row.getString("action");
@@ -185,6 +186,7 @@ public class MysqlStorageAdapter implements IStorageAdapter {
             int z = row.getInt("z");
             Location location = new Location(world, x, y, z);
 
+            // Material/serialization data
             Material material = null;
             String materialName = row.getString("material");
             if (materialName != null) {
@@ -194,11 +196,21 @@ public class MysqlStorageAdapter implements IStorageAdapter {
             String materialData = row.getString("material_data");
             String customData = row.getString("custom_data");
 
+            // Cause/player
+            Object cause = row.getString("cause");
+            if (row.getString("playerUuid") != null) {
+                UUID playerUuid = TypeUtils.uuidFromDbString(row.getString("playerUuid"));
+                cause = Bukkit.getOfflinePlayer(playerUuid);
+            }
+
             // Build the action data
             ActionData actionData = new ActionData(location, material, materialData, materialData, customData);
 
+            // Build the activity
+            IActivity activity = Activity.builder().action(actionType.createAction(actionData)).cause(cause).build();
+
             // Add to result list
-            results.add(actionType.createAction(actionData));
+            results.add(activity);
         }
 
         return results;

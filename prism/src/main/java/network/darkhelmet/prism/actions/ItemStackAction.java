@@ -5,6 +5,7 @@ import de.tr7zw.nbtapi.NBTItem;
 
 import network.darkhelmet.prism.api.actions.IItemAction;
 import network.darkhelmet.prism.api.actions.types.ActionType;
+import network.darkhelmet.prism.api.activities.IActivity;
 
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -44,8 +45,10 @@ public class ItemStackAction extends MaterialAction implements IItemAction {
     }
 
     @Override
-    public void applyRollback() {}
+    public void applyRollback(IActivity activityContext) {
+        System.out.println("rolling back item! " + activityContext.cause());
+    }
 
     @Override
-    public void applyRestore() {}
+    public void applyRestore(IActivity activityContext) {}
 }
