@@ -23,6 +23,11 @@ public class BlockBreakListener implements Listener {
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockBreak(final BlockBreakEvent event) {
+        // Ignore if this event is disabled
+        if (!Prism.getInstance().config().actions().blockBreak()) {
+            return;
+        }
+
         final Player player = event.getPlayer();
         final Block block = BlockUtils.getRootBlock(event.getBlock());
 

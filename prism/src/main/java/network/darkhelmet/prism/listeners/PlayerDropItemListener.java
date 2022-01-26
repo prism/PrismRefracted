@@ -20,6 +20,11 @@ public class PlayerDropItemListener implements Listener {
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerDropItem(final PlayerDropItemEvent event) {
+        // Ignore if this event is disabled
+        if (!Prism.getInstance().config().actions().itemDrop()) {
+            return;
+        }
+
         // Build the action
         final IAction action = Prism.getInstance().actionRegistry()
             .createItemStackAction(ActionRegistry.ITEM_DROP, event.getItemDrop().getItemStack());

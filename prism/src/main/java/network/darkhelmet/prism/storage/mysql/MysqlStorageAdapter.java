@@ -210,7 +210,8 @@ public class MysqlStorageAdapter implements IStorageAdapter {
 
             // Build the activity
             IActivity activity = Activity.builder()
-                .action(actionType.createAction(actionData)).timestamp(timestamp).cause(cause).location(location).build();
+                .action(actionType.createAction(actionData))
+                .timestamp(timestamp).cause(cause).location(location).build();
 
             // Add to result list
             activities.add(activity);

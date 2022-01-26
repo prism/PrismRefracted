@@ -24,7 +24,7 @@ public class StorageConfiguration {
     @Comment("Configure the port.")
     private String port = "3306";
 
-    @Comment("Enter the prefix prism should use for database table names. i.e. prism_data")
+    @Comment("Enter the prefix prism should use for database table names. i.e. prism_activities")
     private String prefix = "prism_";
 
     @Comment("Enter the username, if the selected datasource uses authentication")

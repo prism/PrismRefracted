@@ -1,16 +1,14 @@
 package network.darkhelmet.prism.config;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;
 
 @ConfigSerializable
 public class PrismConfiguration {
     @Comment("Actions are in-game events/changes that Prism can record data for.\n"
-            + "Some are purely informational, some can be reversed/restored.")
-    private Map<String, Boolean> actions = new HashMap<>();
+            + "Some are purely informational, some can be reversed/restored.\n"
+            + "Disabling any here will completely prevent prism from recording them.")
+    private ActionsConfig actions = new ActionsConfig();
 
     @Comment("Enable plugin debug mode. Produces extra logging to help diagnose issues.")
     private boolean debug = false;
@@ -20,6 +18,15 @@ public class PrismConfiguration {
 
     @Comment("Configure in-game command outputs.")
     private OutputConfiguration outputs = new OutputConfiguration();
+
+    /**
+     * Get the actions config.
+     *
+     * @return The actions config
+     */
+    public ActionsConfig actions() {
+        return actions;
+    }
 
     /**
      * Get the debug setting.
