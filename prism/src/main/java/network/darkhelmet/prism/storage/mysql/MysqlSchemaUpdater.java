@@ -73,6 +73,7 @@ public class MysqlSchemaUpdater {
         // Update activities data table
         @Language("SQL") String updateDataExtra = "ALTER TABLE `" + storageConfig.prefix() + "activities_custom_data`"
             + "DROP INDEX `data_id`,"
+            + "DROP COLUMN `te_data`,"
             + "CHANGE COLUMN `extra_id` `extra_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,"
             + "CHANGE COLUMN `data_id` `activity_id` INT UNSIGNED NOT NULL,"
             + "ADD UNIQUE INDEX `activity_id_UNIQUE` (`activity_id` ASC);";
