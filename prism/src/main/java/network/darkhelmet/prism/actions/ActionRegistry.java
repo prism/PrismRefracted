@@ -47,8 +47,8 @@ public class ActionRegistry implements IActionRegistry {
 
     @Override
     public IItemAction createItemStackAction(ActionType type, ItemStack itemStack) {
-        if (!(type instanceof BlockActionType)) {
-            throw new IllegalArgumentException("Block actions cannot be made from non-block action types.");
+        if (!(type instanceof ItemActionType)) {
+            throw new IllegalArgumentException("Item actions cannot be made from non-item action types.");
         }
 
         return new ItemStackAction(type, itemStack);

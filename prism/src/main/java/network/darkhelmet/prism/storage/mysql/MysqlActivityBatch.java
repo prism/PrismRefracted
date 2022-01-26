@@ -11,7 +11,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import network.darkhelmet.prism.actions.BlockStateAction;
+import network.darkhelmet.prism.api.actions.IBlockAction;
+import network.darkhelmet.prism.api.actions.IItemAction;
+import network.darkhelmet.prism.api.actions.IMaterialAction;
 import network.darkhelmet.prism.api.activities.IActivity;
 import network.darkhelmet.prism.api.storage.IActivityBatch;
 import network.darkhelmet.prism.config.StorageConfiguration;
@@ -86,9 +88,15 @@ public class MysqlActivityBatch implements IActivityBatch {
 
         // Set the material relationship
         int materialId = 0;
-        if (activity.action() instanceof BlockStateAction blockStateAction) {
-            String material = blockStateAction.serializeMaterial();
-            String data = blockStateAction.serializeBlockData();
+        if (activity.action() instanceof IMaterialAction materialAction) {
+            String material = materialAction.serializeMaterial();
+            String data = null;
+
+            if (activity.action() instanceof IBlockAction blockAction) {
+                data = blockAction.serializeBlockData();
+            } else if (activity.action() instanceof IItemAction itemAction) {
+                data = itemAction.serializeItem();
+            }
 
             materialId = getOrCreateMaterialId(material, data);
         }

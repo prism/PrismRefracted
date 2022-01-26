@@ -1,4 +1,10 @@
 package network.darkhelmet.prism.api.actions;
 
-public interface IBlockAction extends IAction, Reversible {
+public interface IBlockAction extends IMaterialAction, Reversible {
+    /**
+     * Serialize block data.
+     *
+     * @return The block data string
+     */
+    String serializeBlockData();
 }

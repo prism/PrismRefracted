@@ -28,7 +28,7 @@ repositories {
     // WorldEdit
     maven { url = 'https://maven.enginehub.org/repo/' }
 
-    // CodeMC
+    // CodeMC (nbt-api)
     maven { url = 'https://repo.codemc.org/repository/maven-public/' }
 }
 

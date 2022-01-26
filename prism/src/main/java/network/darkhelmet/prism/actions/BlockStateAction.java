@@ -3,8 +3,6 @@ package network.darkhelmet.prism.actions;
 import de.tr7zw.nbtapi.NBTContainer;
 import de.tr7zw.nbtapi.NBTTileEntity;
 
-import java.util.Locale;
-
 import network.darkhelmet.prism.api.actions.ActionResultType;
 import network.darkhelmet.prism.api.actions.ActionType;
 import network.darkhelmet.prism.api.actions.IBlockAction;
@@ -17,16 +15,11 @@ import org.bukkit.block.TileState;
 import org.bukkit.block.data.BlockData;
 import org.jetbrains.annotations.Nullable;
 
-public class BlockStateAction extends Action implements IBlockAction {
+public class BlockStateAction extends MaterialAction implements IBlockAction {
     /**
      * The location of this block action.
      */
     private Location location;
-
-    /**
-     * The material.
-     */
-    private Material material;
 
     /**
      * The block data.
@@ -45,10 +38,9 @@ public class BlockStateAction extends Action implements IBlockAction {
      * @param blockState The block state
      */
     public BlockStateAction(ActionType type, BlockState blockState) {
-        super(type);
+        super(type, blockState.getType());
 
         this.location = blockState.getLocation();
-        this.material = blockState.getType();
         this.blockData = blockState.getBlockData();
 
         if (blockState instanceof TileState) {
@@ -67,28 +59,14 @@ public class BlockStateAction extends Action implements IBlockAction {
      */
     public BlockStateAction(
         ActionType type, Location location, Material material, BlockData blockData, NBTContainer teData) {
-        super(type);
+        super(type, material);
 
         this.location = location;
-        this.material = material;
         this.blockData = blockData;
         this.nbtContainer = teData;
     }
 
-    /**
-     * Serialize the material.
-     *
-     * @return The material string
-     */
-    public String serializeMaterial() {
-        return material.toString().toLowerCase(Locale.ENGLISH);
-    }
-
-    /**
-     * Serialize block data.
-     *
-     * @return The block data string
-     */
+    @Override
     public @Nullable String serializeBlockData() {
         return this.blockData.getAsString().replaceAll("^[^\\[]+", "");
     }
