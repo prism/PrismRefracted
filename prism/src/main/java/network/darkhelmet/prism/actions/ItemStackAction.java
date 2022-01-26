@@ -7,6 +7,7 @@ import network.darkhelmet.prism.api.actions.ActionType;
 import network.darkhelmet.prism.api.actions.IItemAction;
 
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 public class ItemStackAction extends MaterialAction implements IItemAction {
     /**
@@ -33,7 +34,12 @@ public class ItemStackAction extends MaterialAction implements IItemAction {
     }
 
     @Override
-    public String serializeItem() {
+    public boolean hasCustomData() {
+        return this.nbtContainer != null;
+    }
+
+    @Override
+    public @Nullable String serializeCustomData() {
         return nbtContainer.toString();
     }
 }

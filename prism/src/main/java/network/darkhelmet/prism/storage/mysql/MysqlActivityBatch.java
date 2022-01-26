@@ -95,8 +95,6 @@ public class MysqlActivityBatch implements IActivityBatch {
 
             if (activity.action() instanceof IBlockAction blockAction) {
                 data = blockAction.serializeBlockData();
-            } else if (activity.action() instanceof IItemAction itemAction) {
-                data = itemAction.serializeItem();
             }
 
             materialId = getOrCreateMaterialId(material, data);
