@@ -45,9 +45,7 @@ public class ItemStackAction extends MaterialAction implements IItemAction {
     }
 
     @Override
-    public void applyRollback(IActivity activityContext) {
-        System.out.println("rolling back item! " + activityContext.cause());
-    }
+    public void applyRollback(IActivity activityContext) {}
 
     @Override
     public void applyRestore(IActivity activityContext) {}

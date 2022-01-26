@@ -37,7 +37,7 @@ public class RestoreCommand extends CommandBase {
         final ActivityQuery query = ActivityQuery.builder().minVector(minVector).maxVector(maxVector).build();
         Prism.newChain().asyncFirst(() -> {
             try {
-                return Prism.getInstance().storageAdapter().queryActivitiesAsActions(query);
+                return Prism.getInstance().storageAdapter().queryActivities(query);
             } catch (Exception e) {
                 Prism.getInstance().handleException(e);
             }

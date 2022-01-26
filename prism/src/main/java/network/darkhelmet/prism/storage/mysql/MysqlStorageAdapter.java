@@ -24,7 +24,6 @@ import network.darkhelmet.prism.api.activities.ActivityQuery;
 import network.darkhelmet.prism.api.activities.IActivity;
 import network.darkhelmet.prism.api.storage.IActivityBatch;
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
-import network.darkhelmet.prism.api.storage.models.ActivityRow;
 import network.darkhelmet.prism.config.StorageConfiguration;
 import network.darkhelmet.prism.utils.TypeUtils;
 
@@ -136,27 +135,28 @@ public class MysqlStorageAdapter implements IStorageAdapter {
     }
 
     @Override
-    public PaginatedResults<ActivityRow> queryActivities(ActivityQuery query) throws SQLException {
-        List<ActivityRow> results = new ArrayList<>();
-
-        for (DbRow row : MysqlQueryBuilder.queryActivities(query, storageConfig.prefix())) {
-            String action = row.getString("action");
-            String cause = row.getString("cause");
-            String material = row.getString("material");
-            int timestamp = row.getInt("timestamp");
-
-            ActivityRow activity = new ActivityRow(action, cause, timestamp, material);
-            results.add(activity);
-        }
+    public PaginatedResults<IActivity> queryActivitiesPaginated(ActivityQuery query) throws SQLException {
+        List<IActivity> results = activityMapper(MysqlQueryBuilder.queryActivities(query, storageConfig.prefix()));
 
         return new PaginatedResults<>(results);
     }
 
     @Override
-    public List<IActivity> queryActivitiesAsActions(ActivityQuery query) throws SQLException {
-        List<IActivity> results = new ArrayList<>();
+    public List<IActivity> queryActivities(ActivityQuery query) throws SQLException {
+        return activityMapper(MysqlQueryBuilder.queryActivities(query, storageConfig.prefix()));
+    }
 
-        for (DbRow row : MysqlQueryBuilder.queryActivities(query, storageConfig.prefix())) {
+    /**
+     * Maps activity data to an action and IActivity.
+     *
+     * @param results The results
+     * @return The activity list
+     * @throws SQLException Database exception
+     */
+    protected List<IActivity> activityMapper(List<DbRow> results) throws SQLException {
+        List<IActivity> activities = new ArrayList<>();
+
+        for (DbRow row : results) {
             String actionKey = row.getString("action");
             Optional<ActionType> optionalActionType = Prism.getInstance().actionRegistry().getActionType(actionKey);
             if (optionalActionType.isEmpty()) {
@@ -211,10 +211,10 @@ public class MysqlStorageAdapter implements IStorageAdapter {
                 .action(actionType.createAction(actionData)).cause(cause).location(location).build();
 
             // Add to result list
-            results.add(activity);
+            activities.add(activity);
         }
 
-        return results;
+        return activities;
     }
 
     @Override

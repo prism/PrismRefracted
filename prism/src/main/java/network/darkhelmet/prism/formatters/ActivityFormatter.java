@@ -7,31 +7,118 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.Template;
 
 import network.darkhelmet.prism.Prism;
+import network.darkhelmet.prism.api.actions.types.ActionResultType;
+import network.darkhelmet.prism.api.activities.IActivity;
 import network.darkhelmet.prism.api.displays.DisplayFormatter;
-import network.darkhelmet.prism.api.storage.models.ActivityRow;
 
-public class ActivityFormatter extends OutputFormatter implements DisplayFormatter<ActivityRow> {
+import org.bukkit.OfflinePlayer;
+
+public class ActivityFormatter extends OutputFormatter implements DisplayFormatter<IActivity> {
+    private final Component signMinus;
+    private final Component signPlus;
+
     /**
      * Construct a new activity formatter.
      */
     public ActivityFormatter() {
         super(Prism.getInstance().config().outputs());
+
+        // Compile and cache some templates that won't change per-row
+        signMinus = MiniMessage.get().parse(outputConfiguration.signMinus());
+        signPlus = MiniMessage.get().parse(outputConfiguration.signPlus());
     }
 
     @Override
-    public Component format(ActivityRow row) {
-        Template actionFamilyTemplate = Template.of("actionFamily", row.actionFamily());
-        Template actionPastTenseTemplate = Template.of("actionPastTense", row.actionFamily());
-        Template causeTemplate = Template.of("cause", row.cause());
-        Template signTemplate = Template.of("sign", "+");
-        Template materialTemplate = Template.of("material", row.material());
+    public Component format(IActivity activity) {
+        Component sign = signPlus;
+        if (activity.action().type().resultType().equals(ActionResultType.REMOVES)) {
+            sign = signMinus;
+        }
+
+        Template actionFamilyTemplate = Template.of("actionFamily", actionFamily(activity.action().type().key()));
+        Template actionPastTenseTemplate = Template.of("actionPastTense", actionFamily(activity.action().type().key()));
+        Template causeTemplate = Template.of("cause", cause(activity.cause()));
+        Template signTemplate = Template.of("sign", sign);
+        Template materialTemplate = Template.of("content", activity.action().formatContent());
         Template countTemplate = Template.of("count", "1");
-        Template sinceTemplate = Template.of("since", row.since());
+        Template sinceTemplate = Template.of("since", since(activity.timestamp()));
 
         List<Template> templates = List.of(
             actionFamilyTemplate, actionPastTenseTemplate, signTemplate, causeTemplate, materialTemplate,
             countTemplate, sinceTemplate);
         return MiniMessage.get().parse(outputConfiguration.activity(), templates);
+    }
+
+    /**
+     * Convert the cause into a text string.
+     *
+     * @param cause The cause
+     * @return The cause name/string
+     */
+    protected String cause(Object cause) {
+        String causeName = null;
+        if (cause instanceof String) {
+            causeName = (String) cause;
+        } else if (cause instanceof OfflinePlayer offlinePlayer) {
+            causeName = offlinePlayer.getName();
+        }
+
+        // @todo languagize me
+        return causeName == null ? "unknown" : causeName;
+    }
+
+    /**
+     * Get the action family. "break" for "block-break"
+     *
+     * @param typeKey The action type key
+     * @return The action family
+     */
+    protected String actionFamily(String typeKey) {
+        String[] segments = typeKey.split("-");
+
+        return segments[segments.length - 1];
+    }
+
+    /**
+     * Get the shorthand syntax for time since.
+     *
+     * @param timestamp The timestamp
+     * @return The time since
+     */
+    protected String since(long timestamp) {
+        long diffInSeconds = System.currentTimeMillis() / 1000 - timestamp;
+
+        if (diffInSeconds < 60) {
+            // @todo languagize me
+            return "just now";
+        }
+
+        long period = 24 * 60 * 60;
+
+        final long[] diff = {
+            diffInSeconds / period,
+            (diffInSeconds / (period /= 24)) % 24,
+            (diffInSeconds / (period / 60)) % 60
+        };
+
+        StringBuilder timeAgo = new StringBuilder();
+
+        if (diff[0] > 0) {
+            timeAgo.append(diff[0]).append('d');
+        }
+
+        if (diff[1] > 0) {
+            timeAgo.append(diff[1]).append('h');
+        }
+
+        if (diff[2] > 0) {
+            timeAgo.append(diff[2]).append('m');
+        }
+
+        // 'time_ago' will have something at this point, because if all 'diff's
+        // were 0, the first if check would have caught and returned "just now"
+        // @todo languagize me
+        return timeAgo.append(" ago").toString();
     }
 
     @Override

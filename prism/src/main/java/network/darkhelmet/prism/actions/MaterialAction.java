@@ -26,6 +26,11 @@ public abstract class MaterialAction extends Action implements IMaterialAction {
     }
 
     @Override
+    public String formatContent() {
+        return material.toString().toLowerCase(Locale.ENGLISH);
+    }
+
+    @Override
     public String serializeMaterial() {
         return material.toString().toLowerCase(Locale.ENGLISH);
     }

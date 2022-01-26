@@ -19,6 +19,13 @@ public interface IAction {
     void applyRestore(IActivity activityContext);
 
     /**
+     * Format the content of this action for text tdisplay.
+     *
+     * @return The content string
+     */
+    String formatContent();
+
+    /**
      * Get the action type.
      *
      * @return The action type

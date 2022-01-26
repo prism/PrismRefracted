@@ -8,7 +8,7 @@ import me.mattstudios.mf.base.CommandBase;
 import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.api.PaginatedResults;
 import network.darkhelmet.prism.api.activities.ActivityQuery;
-import network.darkhelmet.prism.api.storage.models.ActivityRow;
+import network.darkhelmet.prism.api.activities.IActivity;
 import network.darkhelmet.prism.formatters.ActivityFormatter;
 import network.darkhelmet.prism.utils.LocationUtils;
 
@@ -37,8 +37,8 @@ public class NearCommand extends CommandBase {
             ActivityFormatter formatter = new ActivityFormatter();
 
             try {
-                PaginatedResults<ActivityRow> paginatedResults = Prism.getInstance()
-                    .storageAdapter().queryActivities(query);
+                PaginatedResults<IActivity> paginatedResults = Prism.getInstance()
+                    .storageAdapter().queryActivitiesPaginated(query);
 
                 Prism.getInstance().displayManager().show(formatter, player, paginatedResults);
             } catch (Exception e) {

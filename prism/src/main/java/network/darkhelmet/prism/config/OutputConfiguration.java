@@ -22,10 +22,16 @@ public class OutputConfiguration {
 
     @Comment("Configure the primary line of activity messages. (for multiple actions grouped together)")
     private String activity = "<sign> <#03a5fc><cause> <white><actionPastTense>"
-        + " <#03a5fc><material> <gray>x<count> <white><since> <gray>(a:<actionFamily>)";
+        + " <#03a5fc><content> <gray>x<count> <white><since> <gray>(a:<actionFamily>)";
 
     @Comment("Used for all \"subdued\" messages.")
     private String subdued = "<prefix><gray><message>";
+
+    @Comment("Configure the minus sign.")
+    private String signMinus = "<red>-";
+
+    @Comment("Configure the plus sign.")
+    private String signPlus = "<green>+";
 
     public String prefix() {
         return prefix;
@@ -53,5 +59,13 @@ public class OutputConfiguration {
 
     public String subdued() {
         return subdued;
+    }
+
+    public String signMinus() {
+        return signMinus;
+    }
+
+    public String signPlus() {
+        return signPlus;
     }
 }
