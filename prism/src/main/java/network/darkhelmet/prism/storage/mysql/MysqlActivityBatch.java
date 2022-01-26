@@ -13,7 +13,6 @@ import java.util.UUID;
 
 import network.darkhelmet.prism.api.actions.IBlockAction;
 import network.darkhelmet.prism.api.actions.ICustomData;
-import network.darkhelmet.prism.api.actions.IItemAction;
 import network.darkhelmet.prism.api.actions.IMaterialAction;
 import network.darkhelmet.prism.api.activities.IActivity;
 import network.darkhelmet.prism.api.storage.IActivityBatch;

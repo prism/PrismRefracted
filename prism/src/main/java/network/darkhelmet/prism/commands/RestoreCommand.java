@@ -9,7 +9,6 @@ import me.mattstudios.mf.base.CommandBase;
 
 import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.api.actions.IAction;
-import network.darkhelmet.prism.api.actions.Reversible;
 import network.darkhelmet.prism.api.activities.ActivityQuery;
 import network.darkhelmet.prism.utils.LocationUtils;
 
@@ -45,9 +44,7 @@ public class RestoreCommand extends CommandBase {
             return null;
         }).abortIfNull().<List<IAction>>sync(results -> {
             for (IAction action : results) {
-                if (action instanceof Reversible reversible) {
-                    reversible.applyRestore();
-                }
+                action.applyRestore();
             }
 
             return null;

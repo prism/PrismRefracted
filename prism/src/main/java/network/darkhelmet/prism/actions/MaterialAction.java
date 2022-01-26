@@ -2,8 +2,8 @@ package network.darkhelmet.prism.actions;
 
 import java.util.Locale;
 
-import network.darkhelmet.prism.api.actions.ActionType;
 import network.darkhelmet.prism.api.actions.IMaterialAction;
+import network.darkhelmet.prism.api.actions.types.ActionType;
 
 import org.bukkit.Material;
 

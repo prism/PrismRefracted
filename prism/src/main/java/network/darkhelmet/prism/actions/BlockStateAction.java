@@ -3,9 +3,9 @@ package network.darkhelmet.prism.actions;
 import de.tr7zw.nbtapi.NBTContainer;
 import de.tr7zw.nbtapi.NBTTileEntity;
 
-import network.darkhelmet.prism.api.actions.ActionResultType;
-import network.darkhelmet.prism.api.actions.ActionType;
 import network.darkhelmet.prism.api.actions.IBlockAction;
+import network.darkhelmet.prism.api.actions.types.ActionResultType;
+import network.darkhelmet.prism.api.actions.types.ActionType;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -87,6 +87,10 @@ public class BlockStateAction extends MaterialAction implements IBlockAction {
 
     @Override
     public void applyRollback() {
+        if (!type().reversible()) {
+            return;
+        }
+
         if (type().resultType().equals(ActionResultType.REMOVES)) {
             // If the action type removes a block, rollback means we re-set it
             setBlock();
@@ -98,6 +102,10 @@ public class BlockStateAction extends MaterialAction implements IBlockAction {
 
     @Override
     public void applyRestore() {
+        if (!type().reversible()) {
+            return;
+        }
+
         if (type().resultType().equals(ActionResultType.CREATES)) {
             // If the action type creates a block, restore means we re-set it
             setBlock();

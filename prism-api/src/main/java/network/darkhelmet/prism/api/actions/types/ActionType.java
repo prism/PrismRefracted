@@ -1,25 +1,32 @@
-package network.darkhelmet.prism.api.actions;
+package network.darkhelmet.prism.api.actions.types;
 
 public abstract class ActionType {
     /**
      * The key.
      */
-    private String key;
+    protected String key;
 
     /**
      * The action result type.
      */
-    private ActionResultType resultType;
+    protected ActionResultType resultType;
+
+    /**
+     * Indicates whether this action type is usually reversible.
+     */
+    protected boolean reversible = false;
 
     /**
      * Construct a new action type.
      *
      * @param key The key
      * @param resultType The result type
+     * @param reversible If action is reversible
      */
-    public ActionType(String key, ActionResultType resultType) {
+    public ActionType(String key, ActionResultType resultType, boolean reversible) {
         this.key = key;
         this.resultType = resultType;
+        this.reversible = reversible;
     }
 
     /**
@@ -38,5 +45,14 @@ public abstract class ActionType {
      */
     public ActionResultType resultType() {
         return resultType;
+    }
+
+    /**
+     * Get if this action type if usually reversible.
+     *
+     * @return True if reversible
+     */
+    public boolean reversible() {
+        return reversible;
     }
 }

@@ -3,8 +3,8 @@ package network.darkhelmet.prism.actions;
 import de.tr7zw.nbtapi.NBTContainer;
 import de.tr7zw.nbtapi.NBTItem;
 
-import network.darkhelmet.prism.api.actions.ActionType;
 import network.darkhelmet.prism.api.actions.IItemAction;
+import network.darkhelmet.prism.api.actions.types.ActionType;
 
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -42,4 +42,10 @@ public class ItemStackAction extends MaterialAction implements IItemAction {
     public @Nullable String serializeCustomData() {
         return nbtContainer.toString();
     }
+
+    @Override
+    public void applyRollback() {}
+
+    @Override
+    public void applyRestore() {}
 }

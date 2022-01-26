@@ -4,13 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import network.darkhelmet.prism.api.actions.ActionResultType;
-import network.darkhelmet.prism.api.actions.ActionType;
-import network.darkhelmet.prism.api.actions.BlockActionType;
 import network.darkhelmet.prism.api.actions.IActionRegistry;
 import network.darkhelmet.prism.api.actions.IBlockAction;
 import network.darkhelmet.prism.api.actions.IItemAction;
-import network.darkhelmet.prism.api.actions.ItemActionType;
+import network.darkhelmet.prism.api.actions.types.ActionResultType;
+import network.darkhelmet.prism.api.actions.types.ActionType;
+import network.darkhelmet.prism.api.actions.types.BlockActionType;
+import network.darkhelmet.prism.api.actions.types.ItemActionType;
 
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
@@ -24,8 +24,8 @@ public class ActionRegistry implements IActionRegistry {
     /**
      * Static cache of Prism action types.
      */
-    public static final ActionType BLOCK_BREAK = new BlockActionType("block-break", ActionResultType.REMOVES);
-    public static final ActionType ITEM_DROP = new ItemActionType("item-drop", ActionResultType.REMOVES);
+    public static final ActionType BLOCK_BREAK = new BlockActionType("block-break", ActionResultType.REMOVES, true);
+    public static final ActionType ITEM_DROP = new ItemActionType("item-drop", ActionResultType.REMOVES, true);
 
     /**
      * Construct the action registry.

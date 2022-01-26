@@ -1,7 +1,7 @@
 package network.darkhelmet.prism.actions;
 
-import network.darkhelmet.prism.api.actions.ActionType;
 import network.darkhelmet.prism.api.actions.IAction;
+import network.darkhelmet.prism.api.actions.types.ActionType;
 
 public abstract class Action implements IAction {
     /**

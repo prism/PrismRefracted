@@ -1,4 +1,4 @@
-package network.darkhelmet.prism.api.actions;
+package network.darkhelmet.prism.api.actions.types;
 
 public enum ActionResultType {
     /**
