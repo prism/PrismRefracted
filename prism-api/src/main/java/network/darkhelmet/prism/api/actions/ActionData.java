@@ -6,5 +6,6 @@ public record ActionData(
     Material material,
     String materialName,
     String materialData,
-    String customData) {
+    String customData,
+    Short customDataVersion) {
 }

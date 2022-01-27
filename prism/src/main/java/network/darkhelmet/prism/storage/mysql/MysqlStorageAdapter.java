@@ -155,13 +155,15 @@ public class MysqlStorageAdapter implements IStorageAdapter {
             + storageConfig.prefix() + "activities_custom_data` ("
             + "`extra_id` int(10) unsigned NOT NULL AUTO_INCREMENT,"
             + "`activity_id` int(10) unsigned NOT NULL,"
+            + "`version` SMALLINT NULL,"
             + "`data` text,"
             + "PRIMARY KEY (`extra_id`)"
             + ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
         DB.executeUpdate(extraQuery);
 
         // Create the material data table
-        @Language("SQL") String matDataQuery = "CREATE TABLE IF NOT EXISTS `" + storageConfig.prefix() + "material_data` ("
+        @Language("SQL") String matDataQuery = "CREATE TABLE IF NOT EXISTS `"
+            + storageConfig.prefix() + "material_data` ("
             + "`material_id` smallint(6) NOT NULL AUTO_INCREMENT,"
             + "`material` varchar(45) DEFAULT NULL,"
             + "`data` varchar(155) DEFAULT NULL,"
@@ -277,6 +279,8 @@ public class MysqlStorageAdapter implements IStorageAdapter {
 
             String materialData = row.getString("material_data");
             String customData = row.getString("custom_data");
+            Integer customDataVersion = row.getInt("version");
+            Short version = customDataVersion == null ? null : customDataVersion.shortValue();
 
             // Cause/player
             Object cause = row.getString("cause");
@@ -288,7 +292,7 @@ public class MysqlStorageAdapter implements IStorageAdapter {
             long timestamp = row.getLong("timestamp");
 
             // Build the action data
-            ActionData actionData = new ActionData(material, materialName, materialData, customData);
+            ActionData actionData = new ActionData(material, materialName, materialData, customData, version);
 
             // Build the activity
             IActivity activity = Activity.builder()

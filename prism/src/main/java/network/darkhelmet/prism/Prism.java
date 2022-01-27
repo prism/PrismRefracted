@@ -6,6 +6,8 @@ import co.aikar.taskchain.TaskChainFactory;
 
 import java.io.File;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import me.mattstudios.mf.base.CommandManager;
 
@@ -40,6 +42,11 @@ public class Prism extends JavaPlugin {
      * The logger.
      */
     private static final Logger log = Logger.getLogger("Minecraft");
+
+    /**
+     * Sets a numeric version we can use to handle differences between serialization formats.
+     */
+    protected short serializerVersion;
 
     /**
      * The task chain factory.
@@ -116,6 +123,9 @@ public class Prism extends JavaPlugin {
         String pluginVersion = this.getDescription().getVersion();
         log(String.format("Initializing %s %s by viveleroi", pluginName, pluginVersion));
 
+        serializerVersion = mcVersion();
+        log(String.format("Serializer version: %d", serializerVersion));
+
         // Load the plugin configuration
         loadConfiguration();
 
@@ -174,6 +184,21 @@ public class Prism extends JavaPlugin {
                 disable();
             }
         }
+    }
+
+    /**
+     * Parses the mc version as a short. Fed to nbt serializers.
+     *
+     * @return The mc version as a number
+     */
+    protected Short mcVersion() {
+        Pattern pattern = Pattern.compile("([0-9]+\\.[0-9]+)");
+        Matcher matcher = pattern.matcher(Bukkit.getVersion());
+        if (matcher.find()) {
+            return Short.parseShort(matcher.group(1).replace(".", ""));
+        }
+
+        return null;
     }
 
     /**
@@ -246,6 +271,15 @@ public class Prism extends JavaPlugin {
      */
     public DisplayManager displayManager() {
         return displayManager;
+    }
+
+    /**
+     * Get the serializer version.
+     *
+     * @return The version
+     */
+    public short serializerVersion() {
+        return serializerVersion;
     }
 
     /**

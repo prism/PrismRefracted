@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.api.actions.IBlockAction;
 import network.darkhelmet.prism.api.actions.ICustomData;
 import network.darkhelmet.prism.api.actions.IMaterialAction;
@@ -324,9 +325,10 @@ public class MysqlActivityBatch implements IActivityBatch {
      */
     private void insertCustomData(ResultSet keys) throws SQLException {
         @Language("SQL") String insert = "INSERT INTO " + storageConfig.prefix() + "activities_custom_data "
-            + "(`activity_id`, `data`) VALUES (?, ?)";
+            + "(`activity_id`, `version`, `data`) VALUES (?, ?, ?)";
 
         PreparedStatement dataStatement = connection.prepareStatement(insert);
+        short version = Prism.getInstance().serializerVersion();
 
         int i = 0;
         while (keys.next()) {
@@ -338,7 +340,8 @@ public class MysqlActivityBatch implements IActivityBatch {
                 String customData = customDataAction.serializeCustomData();
 
                 dataStatement.setInt(1, activityId);
-                dataStatement.setString(2, customData);
+                dataStatement.setShort(2, version);
+                dataStatement.setString(3, customData);
                 dataStatement.addBatch();
             }
 

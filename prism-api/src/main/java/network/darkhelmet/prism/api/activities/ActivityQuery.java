@@ -3,7 +3,9 @@ package network.darkhelmet.prism.api.activities;
 import org.bukkit.util.Vector;
 
 public class ActivityQuery {
-    public enum Sort { ASCENDING, DESCENDING }
+    public enum Sort {
+        ASCENDING, DESCENDING
+    }
 
     /**
      * The minimum vector. Sets a corner of a bounding box.

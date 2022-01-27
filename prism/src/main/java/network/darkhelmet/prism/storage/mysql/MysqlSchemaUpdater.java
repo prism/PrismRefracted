@@ -76,6 +76,7 @@ public class MysqlSchemaUpdater {
             + "DROP COLUMN `te_data`,"
             + "CHANGE COLUMN `extra_id` `extra_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,"
             + "CHANGE COLUMN `data_id` `activity_id` INT UNSIGNED NOT NULL,"
+            + "ADD COLUMN `version` SMALLINT NULL AFTER `activity_id`,"
             + "ADD UNIQUE INDEX `activity_id_UNIQUE` (`activity_id` ASC);";
         DB.executeUpdate(updateDataExtra);
 

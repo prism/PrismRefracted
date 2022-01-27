@@ -32,6 +32,7 @@ public class MysqlQueryBuilder {
             + "`material`,"
             + "`materials`.`data` AS material_data,"
             + "`custom_data`.`data` AS custom_data,"
+            + "`custom_data`.`version`,"
             + "`cause`,"
             + "HEX(`player_uuid`) AS playerUuid "
             + "FROM " + prefix + "activities AS activities "
