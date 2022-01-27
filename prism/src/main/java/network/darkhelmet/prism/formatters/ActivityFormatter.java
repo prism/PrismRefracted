@@ -6,7 +6,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.Template;
 
-import network.darkhelmet.prism.I18n;
 import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.api.actions.types.ActionResultType;
 import network.darkhelmet.prism.api.activities.IActivity;
@@ -71,8 +70,7 @@ public class ActivityFormatter extends OutputFormatter implements DisplayFormatt
             causeName = offlinePlayer.getName();
         }
 
-        return causeName == null || causeName.equalsIgnoreCase("unknown")
-            ? I18n.translateStr("cause-unknown") : causeName;
+        return causeName;
     }
 
     /**
@@ -97,7 +95,7 @@ public class ActivityFormatter extends OutputFormatter implements DisplayFormatt
         long diffInSeconds = System.currentTimeMillis() / 1000 - timestamp;
 
         if (diffInSeconds < 60) {
-            return I18n.translateStr("just-now");
+            return "jsut now";
         }
 
         long period = 24 * 60 * 60;
@@ -123,17 +121,16 @@ public class ActivityFormatter extends OutputFormatter implements DisplayFormatt
         }
 
         // 'time_ago' will have something at this point
-        return timeAgo.append(" ").append(I18n.translateStr("ago")).toString();
+        return timeAgo.append(" ").append("ago").toString();
     }
 
     @Override
     public Component heading() {
-        Component header = MiniMessage.get().parse(I18n.translateStr("pagination-header"));
-        return header.append(subdued(I18n.translateStr("using-defaults")));
+        return Component.empty();
     }
 
     @Override
     public Component noResults() {
-        return error(I18n.translateStr("no-results"));
+        return Component.empty();
     }
 }

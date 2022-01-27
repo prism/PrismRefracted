@@ -5,7 +5,7 @@ import co.aikar.taskchain.TaskChain;
 import co.aikar.taskchain.TaskChainFactory;
 
 import java.io.File;
-import java.util.logging.Logger;
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,6 +29,8 @@ import network.darkhelmet.prism.listeners.PlayerDropItemListener;
 import network.darkhelmet.prism.recording.RecordingManager;
 import network.darkhelmet.prism.storage.mysql.MysqlStorageAdapter;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -41,7 +43,7 @@ public class Prism extends JavaPlugin {
     /**
      * The logger.
      */
-    private static final Logger log = Logger.getLogger("Minecraft");
+    private static final Logger log = LogManager.getLogger("Minecraft");
 
     /**
      * Sets a numeric version we can use to handle differences between serialization formats.
@@ -81,22 +83,27 @@ public class Prism extends JavaPlugin {
     /**
      * The storage adapter.
      */
-    IStorageAdapter storageAdapter;
+    private IStorageAdapter storageAdapter;
 
     /**
      * The action registry.
      */
-    ActionRegistry actionRegistry = new ActionRegistry();
+    private ActionRegistry actionRegistry = new ActionRegistry();
 
     /**
      * The recording manager.
      */
-    RecordingManager recordingManager;
+    private RecordingManager recordingManager;
 
     /**
      * The display manager.
      */
-    DisplayManager displayManager;
+    private DisplayManager displayManager;
+
+    /**
+     * The translation system.
+     */
+    private I18n i18n;
 
     /**
      * Get this instance.
@@ -130,6 +137,13 @@ public class Prism extends JavaPlugin {
         loadConfiguration();
 
         if (isEnabled()) {
+            // Initialize the translation system
+            try {
+                i18n = new I18n(log, getDataFolder().toPath(), prismConfig.defaultLocale());
+            } catch (IOException e) {
+                handleException(e);
+            }
+
             // Initialize some classes
             audiences = BukkitAudiences.create(this);
             outputFormatter = new OutputFormatter(config().outputs());
@@ -283,6 +297,15 @@ public class Prism extends JavaPlugin {
     }
 
     /**
+     * Get the translation system.
+     *
+     * @return The translation system
+     */
+    public I18n i18n() {
+        return i18n;
+    }
+
+    /**
      * Create a new task chain.
      *
      * @param <T> The type
@@ -298,7 +321,7 @@ public class Prism extends JavaPlugin {
      * @param message String
      */
     public void log(String message) {
-        log.info(String.format("[%s]: %s", pluginName, message));
+        log.info("[{}]: {}", pluginName, message);
     }
 
     /**
@@ -307,7 +330,7 @@ public class Prism extends JavaPlugin {
      * @param message String
      */
     public void error(String message) {
-        log.warning(String.format("[%s]: %s", pluginName, message));
+        log.warn("[{}]: {}", pluginName, message);
     }
 
     /**
@@ -317,7 +340,7 @@ public class Prism extends JavaPlugin {
      */
     public void debug(String message) {
         if (prismConfig.debug()) {
-            log.info(String.format("[%s]: %s", pluginName, message));
+            log.info("[{}]: {}", pluginName, message);
         }
     }
 
