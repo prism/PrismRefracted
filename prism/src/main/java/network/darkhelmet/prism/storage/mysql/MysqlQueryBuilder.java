@@ -65,7 +65,13 @@ public class MysqlQueryBuilder {
         }
 
         // Order by
-        sql += " ORDER BY `timestamp` ASC, `x` ASC, `z` ASC, `y` ASC, `activities`.`activity_id` ASC";
+        String sortDir = "DESC";
+        if (query.sort().equals(ActivityQuery.Sort.ASCENDING)) {
+            sortDir = "ASC";
+        }
+
+        String orderBy = " ORDER BY `timestamp` %s, `x` ASC, `z` ASC, `y` ASC, `activities`.`activity_id` %1$s";
+        sql += String.format(orderBy, sortDir);
 
         Prism.getInstance().debug(String.format("Querying activities: %s", sql));
         for (int i = 0; i < parameters.size(); i++) {

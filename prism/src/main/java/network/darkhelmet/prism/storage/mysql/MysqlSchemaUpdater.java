@@ -181,8 +181,8 @@ public class MysqlSchemaUpdater {
 
         // Update the schema version
         @Language("SQL") String updateSchema = "UPDATE " + storageConfig.prefix() + "meta "
-            + "SET v = 'v4' WHERE k = 'schema_ver'";
-        DB.executeUpdate(updateSchema);
+            + "SET v = ? WHERE k = ?";
+        DB.executeUpdate(updateSchema, "v4", "schema_ver");
 
         Prism.getInstance().log("Updated database schema to version: v4");
 

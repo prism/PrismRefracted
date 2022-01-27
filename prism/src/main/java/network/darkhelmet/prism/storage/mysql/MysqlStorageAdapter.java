@@ -198,6 +198,11 @@ public class MysqlStorageAdapter implements IStorageAdapter {
             + "UNIQUE KEY `world_uuid_UNIQUE` (`world_uuid`)"
             + ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
         DB.executeUpdate(worldsQuery);
+
+        // Insert the schema version
+        @Language("SQL") String setSchemaVer = "INSERT INTO `" + storageConfig.prefix() + "meta` "
+            + " (`k`, `v`) VALUES (?, ?) ON DUPLICATE KEY UPDATE `v` = `v`";
+        DB.executeInsert(setSchemaVer, "schema_ver", "v4");
     }
 
     /**
