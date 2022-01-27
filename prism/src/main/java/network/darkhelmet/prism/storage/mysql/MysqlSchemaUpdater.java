@@ -111,7 +111,7 @@ public class MysqlSchemaUpdater {
 
         // Change material data schema
         @Language("SQL") String metaSchema = "ALTER TABLE `" + storageConfig.prefix() + "meta` "
-            + "CHANGE COLUMN `id` `id` TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,"
+            + "CHANGE COLUMN `id` `meta_id` TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,"
             + "ADD UNIQUE INDEX `k_UNIQUE` (`k` ASC);";
         DB.executeUpdate(metaSchema);
 

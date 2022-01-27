@@ -123,6 +123,81 @@ public class MysqlStorageAdapter implements IStorageAdapter {
 
             updateSchemas(schemaVersion);
         }
+
+        // Create actions table
+        @Language("SQL") String actionsQuery = "CREATE TABLE IF NOT EXISTS `"
+            + storageConfig.prefix() + "actions` ("
+            + "`action_id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,"
+            + "`action` varchar(25) NOT NULL,"
+            + "PRIMARY KEY (`action_id`), UNIQUE KEY `action` (`action`)"
+            + ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
+        DB.executeUpdate(actionsQuery);
+
+        // Create the activities table. This one's the fatso.
+        @Language("SQL") String activitiesQuery = "CREATE TABLE IF NOT EXISTS `"
+            + storageConfig.prefix() + "activities` ("
+            + "`activity_id` int(10) unsigned NOT NULL AUTO_INCREMENT,"
+            + "`timestamp` int(10) unsigned NOT NULL,"
+            + "`world_id` tinyint(3) unsigned NOT NULL,"
+            + "`x` int(11) NOT NULL,"
+            + "`y` int(11) NOT NULL,"
+            + "`z` int(11) NOT NULL,"
+            + "`action_id` tinyint(3) unsigned NOT NULL,"
+            + "`material_id` mediumint(9) DEFAULT NULL,"
+            + "`old_material_id` mediumint(9) DEFAULT NULL,"
+            + "`cause_id` int(11) NOT NULL,"
+            + "PRIMARY KEY (`activity_id`)"
+            + ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
+        DB.executeUpdate(activitiesQuery);
+
+        // Create the custom data table
+        @Language("SQL") String extraQuery = "CREATE TABLE IF NOT EXISTS `"
+            + storageConfig.prefix() + "activities_custom_data` ("
+            + "`extra_id` int(10) unsigned NOT NULL AUTO_INCREMENT,"
+            + "`activity_id` int(10) unsigned NOT NULL,"
+            + "`data` text,"
+            + "PRIMARY KEY (`extra_id`)"
+            + ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
+        DB.executeUpdate(extraQuery);
+
+        // Create the material data table
+        @Language("SQL") String matDataQuery = "CREATE TABLE IF NOT EXISTS `" + storageConfig.prefix() + "material_data` ("
+            + "`material_id` smallint(6) NOT NULL AUTO_INCREMENT,"
+            + "`material` varchar(45) DEFAULT NULL,"
+            + "`data` varchar(155) DEFAULT NULL,"
+            + "PRIMARY KEY (`material_id`),"
+            + "UNIQUE KEY `materialdata` (`material`,`data`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
+        DB.executeUpdate(matDataQuery);
+
+        // Create the meta data table
+        @Language("SQL") String metaQuery = "CREATE TABLE IF NOT EXISTS `" + storageConfig.prefix() + "meta` ("
+            + "`meta_id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,"
+            + "`k` varchar(25) NOT NULL,"
+            + "`v` varchar(155) NOT NULL,"
+            + "PRIMARY KEY (`meta_id`),"
+            + "UNIQUE KEY `k_UNIQUE` (`k`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
+        DB.executeUpdate(metaQuery);
+
+        // Create the players table
+        @Language("SQL") String playersQuery = "CREATE TABLE IF NOT EXISTS `"
+            + storageConfig.prefix() + "players` ("
+            + "`player_id` int(10) unsigned NOT NULL AUTO_INCREMENT,"
+            + "`player` varchar(16) NOT NULL,"
+            + "`player_uuid` binary(16) NOT NULL,"
+            + "PRIMARY KEY (`player_id`),"
+            + "UNIQUE KEY `player_uuid` (`player_uuid`)"
+            + ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
+        DB.executeUpdate(playersQuery);
+
+        // Create worlds table
+        @Language("SQL") String worldsQuery = "CREATE TABLE IF NOT EXISTS `" + storageConfig.prefix() + "worlds` ("
+            + "`world_id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,"
+            + "`world` varchar(255) NOT NULL,"
+            + "`world_uuid` binary(16) NOT NULL,"
+            + "PRIMARY KEY (`world_id`),"
+            + "UNIQUE KEY `world_uuid_UNIQUE` (`world_uuid`)"
+            + ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
+        DB.executeUpdate(worldsQuery);
     }
 
     /**
