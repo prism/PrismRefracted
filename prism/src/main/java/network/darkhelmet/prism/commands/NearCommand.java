@@ -5,6 +5,9 @@ import me.mattstudios.mf.annotations.Command;
 import me.mattstudios.mf.annotations.SubCommand;
 import me.mattstudios.mf.base.CommandBase;
 
+import net.kyori.adventure.text.Component;
+
+import network.darkhelmet.prism.I18n;
 import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.api.PaginatedResults;
 import network.darkhelmet.prism.api.activities.ActivityQuery;
@@ -42,6 +45,9 @@ public class NearCommand extends CommandBase {
 
                 Prism.getInstance().displayManager().show(formatter, player, paginatedResults);
             } catch (Exception e) {
+                Component error = Prism.getInstance().outputFormatter().error(I18n.translateStr("query-error"));
+                Prism.getInstance().audiences().player(player).sendMessage(error);
+
                 Prism.getInstance().handleException(e);
             }
         }).execute();

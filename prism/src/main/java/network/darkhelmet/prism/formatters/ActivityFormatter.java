@@ -6,6 +6,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.Template;
 
+import network.darkhelmet.prism.I18n;
 import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.api.actions.types.ActionResultType;
 import network.darkhelmet.prism.api.activities.IActivity;
@@ -70,8 +71,8 @@ public class ActivityFormatter extends OutputFormatter implements DisplayFormatt
             causeName = offlinePlayer.getName();
         }
 
-        // @todo languagize me
-        return causeName == null ? "unknown" : causeName;
+        return causeName == null || causeName.equalsIgnoreCase("unknown")
+            ? I18n.translateStr("cause-unknown") : causeName;
     }
 
     /**
@@ -96,8 +97,7 @@ public class ActivityFormatter extends OutputFormatter implements DisplayFormatt
         long diffInSeconds = System.currentTimeMillis() / 1000 - timestamp;
 
         if (diffInSeconds < 60) {
-            // @todo languagize me
-            return "just now";
+            return I18n.translateStr("just-now");
         }
 
         long period = 24 * 60 * 60;
@@ -122,20 +122,18 @@ public class ActivityFormatter extends OutputFormatter implements DisplayFormatt
             timeAgo.append(diff[2]).append('m');
         }
 
-        // 'time_ago' will have something at this point, because if all 'diff's
-        // were 0, the first if check would have caught and returned "just now"
-        // @todo languagize me
-        return timeAgo.append(" ago").toString();
+        // 'time_ago' will have something at this point
+        return timeAgo.append(" ").append(I18n.translateStr("ago")).toString();
     }
 
     @Override
     public Component heading() {
-        return info("Showing %d results (Page 1 of 1)\n")
-            .append(subdued("Using defaults: 3d"));
+        Component header = MiniMessage.get().parse(I18n.translateStr("pagination-header"));
+        return header.append(subdued(I18n.translateStr("using-defaults")));
     }
 
     @Override
     public Component noResults() {
-        return error("no results");
+        return error(I18n.translateStr("no-results"));
     }
 }
