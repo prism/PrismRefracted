@@ -24,7 +24,7 @@ public class MysqlSchemaUpdater {
      * @param storageConfig The storage config
      * @throws SQLException The database exception
      */
-    public static void update_8_to_v4(
+    public static boolean update_8_to_v4(
         StorageConfiguration storageConfig) throws SQLException {
         Prism.getInstance().log("Beginning database schema update to v4. This make take some time...");
 
@@ -121,10 +121,8 @@ public class MysqlSchemaUpdater {
 
         // Populate the causes table. Prism <= v3 treated non-players as fake players and there's
         // sadly no way to separate them here. Clean databases on v4 will have them separated.
-        // there's some janky fake-player stuff that exceeds the 16 char player names, we have to ignore it.
         @Language("SQL") String causesPopulator = "INSERT INTO `" + storageConfig.prefix() + "causes` "
-            + "(cause, player_id) SELECT player, player_id FROM `" + storageConfig.prefix() + "players` "
-            + "WHERE LENGTH(player) <= 16";
+            + "(cause, player_id) SELECT \"player\", player_id FROM `" + storageConfig.prefix() + "players` ";
         DB.executeUpdate(causesPopulator);
 
         // Convert activities table player_ids into cause_ids
@@ -187,5 +185,7 @@ public class MysqlSchemaUpdater {
         DB.executeUpdate(updateSchema);
 
         Prism.getInstance().log("Updated database schema to version: v4");
+
+        return true;
     }
 }

@@ -84,7 +84,11 @@ public class MysqlStorageAdapter implements IStorageAdapter {
 
         String version = dbInfo.get("version");
         String versionComment = dbInfo.get("version_comment");
-        String msg = String.format("Database version: %s / %s", version, versionComment);
+        String versionMsg = String.format("Database version: %s / %s", version, versionComment);
+        Prism.getInstance().log(versionMsg);
+
+        long innodbSizeMb = Long.parseLong(dbInfo.get("innodb_buffer_pool_size")) / 1024 / 1024;
+        String msg = String.format("innodb_buffer_pool_size: %d", innodbSizeMb);
         Prism.getInstance().log(msg);
     }
 
@@ -99,10 +103,9 @@ public class MysqlStorageAdapter implements IStorageAdapter {
         // 2. Updater logic needs it for 8->v4
         @Language("SQL") String createCauses = "CREATE TABLE IF NOT EXISTS `" + storageConfig.prefix() + "causes` ("
             + "`cause_id` int unsigned NOT NULL AUTO_INCREMENT,"
-            + "`cause` varchar(16) NOT NULL,"
+            + "`cause` varchar(25) NOT NULL,"
             + "`player_id` int NULL,"
-            + "PRIMARY KEY (`cause_id`),"
-            + "UNIQUE KEY `cause` (`cause`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
+            + "PRIMARY KEY (`cause_id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
         DB.executeUpdate(createCauses);
 
         // Look for existing tables first.
@@ -130,7 +133,7 @@ public class MysqlStorageAdapter implements IStorageAdapter {
     protected void updateSchemas(String schemaVersion) throws SQLException {
         // Update: 8 -> v4
         if (schemaVersion.equalsIgnoreCase("8")) {
-            MysqlSchemaUpdater.update_8_to_v4(storageConfig);
+            DB.createTransaction(stm -> MysqlSchemaUpdater.update_8_to_v4(storageConfig));
         }
     }
 

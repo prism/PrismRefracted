@@ -11,10 +11,20 @@ Please be patient as I work to get this project where I want, establish document
 
 - [**Discord**][discord] - Please visit discord for help before opening issues.
 
-# Updating from v2/v3
+## Updating from v2/v3
 
-Prism will automatically convert your database schema to the new format. However, for large
-databases this may take time. This should ideally be done when no players are online.
+**Database**
+
+Prism can automatically convert your database schema to the new format. However, for large
+databases this may take time. This should definitely be done when no players are online.
+
+However, because v4 has a drastically improved database than older versions we recommend
+starting fresh, because:
+
+- v4's block state/item/entity serialization process is far better than v3, however this means
+it's also incompatible. Lookups will generally work but rollbacks will generally not. (Invalid 
+data will be safely skipped.)
+- v3 tracked non-player "causes" as fake players. v4 can't separate those when migrating data.
 
 Prism 4 uses a different configuration format/structure. Options may not be 1:1 with new
 configurations so please ask in discord if you need help.
