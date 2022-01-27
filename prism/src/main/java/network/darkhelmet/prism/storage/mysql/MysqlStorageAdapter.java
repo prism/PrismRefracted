@@ -88,8 +88,8 @@ public class MysqlStorageAdapter implements IStorageAdapter {
         Prism.getInstance().log(versionMsg);
 
         long innodbSizeMb = Long.parseLong(dbInfo.get("innodb_buffer_pool_size")) / 1024 / 1024;
-        String msg = String.format("innodb_buffer_pool_size: %d", innodbSizeMb);
-        Prism.getInstance().log(msg);
+        Prism.getInstance().log(String.format("innodb_buffer_pool_size: %d", innodbSizeMb));
+        Prism.getInstance().log(String.format("sql_mode: %s", dbInfo.get("sql_mode")));
     }
 
     /**
@@ -234,9 +234,8 @@ public class MysqlStorageAdapter implements IStorageAdapter {
      *
      * @param results The results
      * @return The activity list
-     * @throws SQLException Database exception
      */
-    protected List<IActivity> activityMapper(List<DbRow> results) throws SQLException {
+    protected List<IActivity> activityMapper(List<DbRow> results) {
         List<IActivity> activities = new ArrayList<>();
 
         for (DbRow row : results) {
