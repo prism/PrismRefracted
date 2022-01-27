@@ -26,6 +26,8 @@ it's also incompatible. Lookups will generally work but rollbacks will generally
 data will be safely skipped.)
 - v3 tracked non-player "causes" as fake players. v4 can't separate those when migrating data.
 
+**Configs**
+
 Prism 4 uses a different configuration format/structure. Options may not be 1:1 with new
 configurations so please ask in discord if you need help.
 

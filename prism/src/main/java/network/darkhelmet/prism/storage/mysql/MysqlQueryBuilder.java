@@ -64,7 +64,13 @@ public class MysqlQueryBuilder {
             sql += "WHERE " + String.join(" AND ", conditions);
         }
 
+        // Order by
+        sql += " ORDER BY `timestamp` ASC, `x` ASC, `z` ASC, `y` ASC, `activities`.`activity_id` ASC";
+
         Prism.getInstance().debug(String.format("Querying activities: %s", sql));
+        for (int i = 0; i < parameters.size(); i++) {
+            Prism.getInstance().debug(String.format("param[%d] %s", i, parameters.get(i)));
+        }
 
         return DB.getResults(sql, parameters.toArray());
     }
