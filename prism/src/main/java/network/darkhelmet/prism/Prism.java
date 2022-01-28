@@ -44,7 +44,7 @@ import network.darkhelmet.prism.config.StorageConfiguration;
 import network.darkhelmet.prism.injection.PrismModule;
 import network.darkhelmet.prism.listeners.BlockBreakListener;
 import network.darkhelmet.prism.listeners.PlayerDropItemListener;
-import network.darkhelmet.prism.recording.RecordingManager;
+import network.darkhelmet.prism.services.recording.RecordingService;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -113,7 +113,8 @@ public class Prism extends JavaPlugin {
         // Load the plugin configuration
         loadConfiguration();
 
-        this.injector = Guice.createInjector(new PrismModule(logger, prismConfig, storageConfig));
+        this.injector = Guice.createInjector(
+            new PrismModule(this, logger, prismConfig, storageConfig));
 
         storageAdapter = injector.getInstance(IStorageAdapter.class);
         if (!storageAdapter.ready()) {
@@ -135,16 +136,16 @@ public class Prism extends JavaPlugin {
 
         if (isEnabled()) {
             // Initialize some classes
-            injector.getInstance(RecordingManager.class);
+            injector.getInstance(RecordingService.class);
             taskChainFactory = BukkitTaskChainFactory.create(this);
 
             // Register listeners
             getServer().getPluginManager().registerEvents(injector.getInstance(BlockBreakListener.class), this);
             getServer().getPluginManager().registerEvents(injector.getInstance(PlayerDropItemListener.class), this);
 
-            // Register command
+            // Register commands
             CommandManager commandManager = new CommandManager(this);
-            commandManager.register(new AboutCommand());
+            commandManager.register(injector.getInstance(AboutCommand.class));
             commandManager.register(injector.getInstance(NearCommand.class));
             commandManager.register(injector.getInstance(RestoreCommand.class));
             commandManager.register(injector.getInstance(RollbackCommand.class));

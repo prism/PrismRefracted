@@ -18,7 +18,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package network.darkhelmet.prism;
+package network.darkhelmet.prism.services.translation;
+
+import com.google.inject.Inject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,11 +44,16 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import net.kyori.adventure.translation.Translator;
+import net.kyori.moonshine.message.IMessageSource;
+
+import network.darkhelmet.prism.config.PrismConfiguration;
 
 import org.apache.logging.log4j.Logger;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
-public class I18n {
+public class TranslationService implements IMessageSource<CommandSender, String> {
     /**
      * The default locale.
      */
@@ -77,33 +84,109 @@ public class I18n {
      *
      * @param logger The logger
      * @param dataDirectory The data directory
-     * @param defaultLocale The default locale
+     * @param prismConfiguration The default locale
      * @throws IOException IO Exception
      */
-    public I18n(Logger logger, Path dataDirectory, Locale defaultLocale) throws IOException {
+    @Inject
+    public TranslationService(
+        Logger logger, Path dataDirectory, PrismConfiguration prismConfiguration) throws IOException {
         this.logger = logger;
         this.dataDirectory = dataDirectory;
-        this.defaultLocale = defaultLocale;
-
+        this.defaultLocale = prismConfiguration.defaultLocale();
         this.pluginJar = pluginJar();
 
         this.reloadTranslations();
     }
 
+    @Override
+    public String messageOf(final CommandSender receiver, final String messageKey) {
+        if (receiver instanceof Player player) {
+            return this.forPlayer(messageKey, player);
+        }
+
+        return this.forAudience(messageKey);
+    }
+
+    /**
+     * Get the translation for a key for specific player locale.
+     *
+     * @param messageKey The message key
+     * @param player The player
+     * @return The translation
+     */
+    private String forPlayer(final String messageKey, final Player player) {
+        Locale locale = getLocaleFromString(player.getLocale());
+        final Properties properties = this.locales.get(locale);
+
+        if (properties != null) {
+            final var message = properties.getProperty(messageKey);
+
+            if (message != null) {
+                return message;
+            }
+        }
+
+        return forAudience(messageKey);
+    }
+
     /**
      * Get a translation by key.
      *
-     * @param key The key
+     * @param messageKey The key
      * @return The translation
      */
-    public String messageOf(final String key) {
-        final String value = this.locales.get(this.defaultLocale).getProperty(key);
+    private String forAudience(final String messageKey) {
+        final String value = this.locales.get(this.defaultLocale).getProperty(messageKey);
 
         if (value == null) {
-            throw new IllegalStateException("No message mapping for key " + key);
+            throw new IllegalStateException("No message mapping for key " + messageKey);
         }
 
         return value;
+    }
+
+    /**
+     * Convert a string based locale into a Locale Object.
+     *
+     * <p>Assumes the string has form "{language}_{country}_{variant}".
+     * Examples: "en", "de_DE", "_GB", "en_US_WIN", "de__POSIX", "fr_MAC"</p>
+     *
+     * @param localeString The String
+     * @return the Locale
+     */
+    private static Locale getLocaleFromString(String localeString) {
+        if (localeString == null) {
+            return null;
+        }
+
+        localeString = localeString.trim();
+        if (localeString.equalsIgnoreCase("default")) {
+            return Locale.getDefault();
+        }
+
+        // Extract language
+        int languageIndex = localeString.indexOf('_');
+        String language = null;
+        if (languageIndex == -1) {
+            // No further "_" so is "{language}" only
+            return new Locale(localeString, "");
+        } else {
+            language = localeString.substring(0, languageIndex);
+        }
+
+        // Extract country
+        int countryIndex = localeString.indexOf('_', languageIndex + 1);
+        String country = null;
+        if (countryIndex == -1) {
+            // No further "_" so is "{language}_{country}"
+            country = localeString.substring(languageIndex + 1);
+            return new Locale(language, country);
+        } else {
+            // Assume all remaining is the variant so is "{language}_{country}_{variant}"
+            country = localeString.substring(languageIndex + 1, countryIndex);
+            String variant = localeString.substring(countryIndex + 1);
+            return new Locale(language, country, variant);
+        }
     }
 
     /**
@@ -113,7 +196,7 @@ public class I18n {
      */
     private static Path pluginJar() {
         try {
-            URL sourceUrl = I18n.class.getProtectionDomain().getCodeSource().getLocation();
+            URL sourceUrl = TranslationService.class.getProtectionDomain().getCodeSource().getLocation();
             // Some class loaders give the full url to the class, some give the URL to its jar.
             // We want the containing jar, so we will unwrap jar-schema code sources.
             if (sourceUrl.getProtocol().equals("jar")) {
@@ -189,9 +272,7 @@ public class I18n {
             return;
         }
         try (final FileSystem jar = FileSystems.newFileSystem(this.pluginJar, this.getClass().getClassLoader())) {
-            final Path root = jar.getRootDirectories()
-                    .iterator()
-                    .next();
+            final Path root = jar.getRootDirectories().iterator().next();
             try (final var stream = Files.walk(root)) {
                 user.accept(stream);
             }

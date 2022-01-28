@@ -46,9 +46,6 @@ public class PrismConfiguration {
     @Comment("Sets the default radius to use when searching for nearby activity.")
     private int nearRadius = 5;
 
-    @Comment("Configure in-game command outputs.")
-    private OutputConfiguration outputs = new OutputConfiguration();
-
     /**
      * Get the actions config.
      *
@@ -81,14 +78,5 @@ public class PrismConfiguration {
      */
     public int nearRadius() {
         return nearRadius;
-    }
-
-    /**
-     * Get the outout configuration.
-     *
-     * @return The outputs
-     */
-    public OutputConfiguration outputs() {
-        return outputs;
     }
 }

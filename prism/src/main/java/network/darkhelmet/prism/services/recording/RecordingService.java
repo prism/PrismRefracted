@@ -18,16 +18,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package network.darkhelmet.prism.recording;
+package network.darkhelmet.prism.services.recording;
 
 import com.google.inject.Inject;
-import network.darkhelmet.prism.Prism;
 
+import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.api.recording.IRecordingService;
+
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
-public class RecordingManager implements IRecordingService {
+public class RecordingService implements IRecordingService {
     /**
      * Cache the scheduled task.
      */
@@ -37,7 +38,7 @@ public class RecordingManager implements IRecordingService {
      * Construct the recording manager.
      */
     @Inject
-    public RecordingManager(RecordingTask recordingTask) {
+    public RecordingService(RecordingTask recordingTask) {
         queueNextRecording(recordingTask);
     }
 

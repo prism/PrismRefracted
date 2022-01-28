@@ -47,7 +47,7 @@ public abstract class MaterialAction extends Action implements IMaterialAction {
 
     @Override
     public String formatContent() {
-        return material.toString().toLowerCase(Locale.ENGLISH);
+        return material.toString().toLowerCase(Locale.ENGLISH).replace("_", " ");
     }
 
     @Override

@@ -25,8 +25,6 @@ import java.util.Locale;
 
 import net.kyori.adventure.translation.Translator;
 
-import network.darkhelmet.prism.Prism;
-
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;

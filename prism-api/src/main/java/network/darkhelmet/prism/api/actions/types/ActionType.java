@@ -49,29 +49,22 @@ public abstract class ActionType implements IActionType {
         this.reversible = reversible;
     }
 
-    /**
-     * Get the key.
-     *
-     * @return The key
-     */
+    @Override
     public String key() {
         return key;
     }
 
-    /**
-     * Get the action result type.
-     *
-     * @return The result type
-     */
+    @Override
+    public String pastTenseTranslationKey() {
+        return "past-tense." + key;
+    }
+
+    @Override
     public ActionResultType resultType() {
         return resultType;
     }
 
-    /**
-     * Get if this action type if usually reversible.
-     *
-     * @return True if reversible
-     */
+    @Override
     public boolean reversible() {
         return reversible;
     }

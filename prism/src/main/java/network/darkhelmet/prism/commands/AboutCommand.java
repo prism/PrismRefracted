@@ -20,23 +20,45 @@
 
 package network.darkhelmet.prism.commands;
 
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
+
 import me.mattstudios.mf.annotations.Alias;
 import me.mattstudios.mf.annotations.Command;
 import me.mattstudios.mf.annotations.Default;
 import me.mattstudios.mf.annotations.SubCommand;
 import me.mattstudios.mf.base.CommandBase;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
-
-import network.darkhelmet.prism.Prism;
+import network.darkhelmet.prism.services.messages.MessageService;
+import network.darkhelmet.prism.services.translation.TranslationKey;
 
 import org.bukkit.command.CommandSender;
 
 @Command("prism")
 @Alias("pr")
 public class AboutCommand extends CommandBase {
+    /**
+     * The message service.
+     */
+    private final MessageService messageService;
+
+    /**
+     * The version.
+     */
+    private final String version;
+
+    /**
+     * Construct the about command.
+     *
+     * @param messageService The message service
+     * @param version The prism version
+     */
+    @Inject
+    public AboutCommand(MessageService messageService, @Named("version") String version) {
+        this.messageService = messageService;
+        this.version = version;
+    }
+
     /**
      * Run the about command, or default to this if prism is run with no subcommand.
      *
@@ -45,14 +67,7 @@ public class AboutCommand extends CommandBase {
     @Default
     @SubCommand("about")
     public void onAbout(final CommandSender sender) {
-//        String version = Prism.getInstance().getDescription().getVersion();
-//
-//        Component message = Prism.getInstance().outputFormatter().prefix()
-//            .append(Component.text("v", NamedTextColor.GRAY))
-//            .append(Component.text(version, TextColor.fromCSSHexString("#ffd900")))
-//            .append(Component.text(" by ", NamedTextColor.GRAY))
-//            .append(Component.text("viveleroi"));
-//
-//        Prism.getInstance().audiences().sender(sender).sendMessage(message);
+        messageService.about(sender, version);
+        messageService.error(sender, new TranslationKey("query-error"));
     }
 }

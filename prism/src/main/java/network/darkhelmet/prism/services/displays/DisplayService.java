@@ -18,45 +18,47 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package network.darkhelmet.prism.displays;
+package network.darkhelmet.prism.services.displays;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import net.kyori.adventure.text.Component;
+import com.google.inject.Inject;
 
 import network.darkhelmet.prism.api.PaginatedResults;
-import network.darkhelmet.prism.api.displays.DisplayFormatter;
+import network.darkhelmet.prism.api.activities.IActivity;
+import network.darkhelmet.prism.services.messages.MessageService;
 
 import org.bukkit.command.CommandSender;
 
-public class DisplayManager {
+public class DisplayService {
+    /**
+     * The message service.
+     */
+    private final MessageService messageService;
+
+    /**
+     * Construct the display service.
+     *
+     * @param messageService The message service
+     */
+    @Inject
+    public DisplayService(MessageService messageService) {
+        this.messageService = messageService;
+    }
+
     /**
      * Display paginated results to a command sender.
      *
      * @param sender The command sender
      * @param results The paginated results
      */
-    public static <T> void show(DisplayFormatter<T> formatter, CommandSender sender, PaginatedResults<T> results) {
-        // Cache all message so we can send once formatted
-        List<Component> messages = new ArrayList<>();
+    public void show(CommandSender sender, PaginatedResults<IActivity> results) {
+        messageService.paginationHeader(sender, results);
 
-        // Heading
-        messages.add(formatter.heading());
-
-        // No results
         if (results.isEmpty()) {
-            messages.add(formatter.noResults());
+            messageService.noResults(sender);
         } else {
-            for (T row : results.results()) {
-                messages.add(formatter.format(row));
+            for (IActivity activity : results.results()) {
+                messageService.listActivityRow(sender, activity);
             }
         }
-
-        // Send all messages!
-//        Audience audience = Prism.getInstance().audiences().sender(sender);
-//        for (Component message : messages) {
-//            audience.sendMessage(message);
-//        }
     }
 }

@@ -33,8 +33,7 @@ import network.darkhelmet.prism.api.activities.ActivityQuery;
 import network.darkhelmet.prism.api.activities.IActivity;
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
 import network.darkhelmet.prism.config.PrismConfiguration;
-import network.darkhelmet.prism.displays.DisplayManager;
-import network.darkhelmet.prism.formatters.ActivityFormatter;
+import network.darkhelmet.prism.services.displays.DisplayService;
 import network.darkhelmet.prism.utils.LocationUtils;
 
 import org.bukkit.Location;
@@ -47,12 +46,17 @@ public class NearCommand extends CommandBase {
     /**
      * The prism configuration.
      */
-    private PrismConfiguration prismConfig;
+    private final PrismConfiguration prismConfig;
 
     /**
      * The storage adapter.
      */
-    private IStorageAdapter storageAdapter;
+    private final IStorageAdapter storageAdapter;
+
+    /**
+     * The display service.
+     */
+    private final DisplayService displayService;
 
     /**
      * Construct the near command.
@@ -61,9 +65,10 @@ public class NearCommand extends CommandBase {
      * @param storageAdapter The storage adapter
      */
     @Inject
-    public NearCommand(PrismConfiguration prismConfig, IStorageAdapter storageAdapter) {
+    public NearCommand(PrismConfiguration prismConfig, IStorageAdapter storageAdapter, DisplayService displayService) {
         this.prismConfig = prismConfig;
         this.storageAdapter = storageAdapter;
+        this.displayService = displayService;
     }
 
     /**
@@ -81,12 +86,10 @@ public class NearCommand extends CommandBase {
 
         final ActivityQuery query = ActivityQuery.builder().minVector(minVector).maxVector(maxVector).build();
         Prism.newChain().async(() -> {
-            ActivityFormatter formatter = new ActivityFormatter();
-
             try {
                 PaginatedResults<IActivity> paginatedResults = storageAdapter.queryActivitiesPaginated(query);
 
-                DisplayManager.show(formatter, player, paginatedResults);
+                displayService.show(player, paginatedResults);
             } catch (Exception e) {
                 Prism.getInstance().handleException(e);
             }

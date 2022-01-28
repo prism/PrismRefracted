@@ -18,30 +18,37 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package network.darkhelmet.prism.api.displays;
+package network.darkhelmet.prism.services.recording;
 
-import net.kyori.adventure.text.Component;
+import java.util.concurrent.LinkedBlockingQueue;
 
-public interface DisplayFormatter<T> {
+import network.darkhelmet.prism.api.activities.IActivity;
+
+public class RecordingQueue {
     /**
-     * Format an object for display.
-     *
-     * @param object The object
-     * @return The component
+     * Queue of activities.
      */
-    Component format(T object);
-
-    /**
-     * Format a heading.
-     *
-     * @return The component
-     */
-    Component heading();
+    private static final LinkedBlockingQueue<IActivity> queue = new LinkedBlockingQueue<>();
 
     /**
-     * Format a no-results message for this type.
+     * Add an activity to the recording queue.
      *
-     * @return The component
+     * @param activity Activity
      */
-    Component noResults();
+    public static void addToQueue(final IActivity activity) {
+        if (activity == null) {
+            return;
+        }
+
+        queue.add(activity);
+    }
+
+    /**
+     * Get the queue.
+     *
+     * @return the queue
+     */
+    public static LinkedBlockingQueue<IActivity> getQueue() {
+        return queue;
+    }
 }

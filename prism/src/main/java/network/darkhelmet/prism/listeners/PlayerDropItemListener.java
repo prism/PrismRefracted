@@ -28,7 +28,7 @@ import network.darkhelmet.prism.api.actions.IActionRegistry;
 import network.darkhelmet.prism.api.activities.Activity;
 import network.darkhelmet.prism.api.activities.IActivity;
 import network.darkhelmet.prism.config.PrismConfiguration;
-import network.darkhelmet.prism.recording.RecordingQueue;
+import network.darkhelmet.prism.services.recording.RecordingQueue;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;

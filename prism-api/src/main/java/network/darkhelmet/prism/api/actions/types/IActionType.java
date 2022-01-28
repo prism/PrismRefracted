@@ -31,4 +31,32 @@ public interface IActionType {
      * @return The action
      */
     IAction createAction(ActionData actionData);
+
+    /**
+     * Get the key.
+     *
+     * @return The key
+     */
+    String key();
+
+    /**
+     * Get the past-tense translation key for this specific action.
+     *
+     * @return The past tense translation key
+     */
+    String pastTenseTranslationKey();
+
+    /**
+     * Get the action result type.
+     *
+     * @return The result type
+     */
+    ActionResultType resultType();
+
+    /**
+     * Get if this action type if usually reversible.
+     *
+     * @return True if reversible
+     */
+    boolean reversible();
 }

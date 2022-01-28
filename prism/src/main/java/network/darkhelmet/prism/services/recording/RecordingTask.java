@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package network.darkhelmet.prism.recording;
+package network.darkhelmet.prism.services.recording;
 
 import com.google.inject.Inject;
 

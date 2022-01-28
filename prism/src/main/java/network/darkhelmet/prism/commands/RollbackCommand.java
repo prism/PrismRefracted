@@ -20,9 +20,9 @@
 
 package network.darkhelmet.prism.commands;
 
-import java.util.List;
-
 import com.google.inject.Inject;
+
+import java.util.List;
 
 import me.mattstudios.mf.annotations.Alias;
 import me.mattstudios.mf.annotations.Command;
@@ -35,6 +35,8 @@ import network.darkhelmet.prism.api.activities.ActivityQuery;
 import network.darkhelmet.prism.api.activities.IActivity;
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
 import network.darkhelmet.prism.config.PrismConfiguration;
+import network.darkhelmet.prism.services.messages.MessageService;
+import network.darkhelmet.prism.services.translation.TranslationKey;
 import network.darkhelmet.prism.utils.LocationUtils;
 
 import org.bukkit.Location;
@@ -47,12 +49,18 @@ public class RollbackCommand extends CommandBase {
     /**
      * The prism configuration.
      */
-    private PrismConfiguration prismConfig;
+    private final PrismConfiguration prismConfig;
 
     /**
      * The storage adapter.
      */
-    private IStorageAdapter storageAdapter;
+    private final IStorageAdapter storageAdapter;
+
+    /**
+     * The message service.
+     */
+    private final MessageService messageService;
+
 
     /**
      * Construct the near command.
@@ -61,9 +69,13 @@ public class RollbackCommand extends CommandBase {
      * @param storageAdapter The storage adapter
      */
     @Inject
-    public RollbackCommand(PrismConfiguration prismConfig, IStorageAdapter storageAdapter) {
+    public RollbackCommand(
+            PrismConfiguration prismConfig,
+            IStorageAdapter storageAdapter,
+            MessageService messageService) {
         this.prismConfig = prismConfig;
         this.storageAdapter = storageAdapter;
+        this.messageService = messageService;
     }
 
     /**
@@ -85,6 +97,7 @@ public class RollbackCommand extends CommandBase {
             try {
                 return storageAdapter.queryActivities(query);
             } catch (Exception e) {
+                messageService.error(player, new TranslationKey("query-error"));
                 Prism.getInstance().handleException(e);
             }
 

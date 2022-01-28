@@ -22,10 +22,10 @@ package network.darkhelmet.prism.storage.mysql;
 
 import co.aikar.idb.DB;
 
+import com.google.inject.Inject;
+
 import java.sql.SQLException;
 
-import com.google.inject.Inject;
-import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.config.StorageConfiguration;
 import network.darkhelmet.prism.utils.TypeUtils;
 
