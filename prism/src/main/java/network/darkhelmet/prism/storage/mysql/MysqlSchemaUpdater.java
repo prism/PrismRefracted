@@ -26,7 +26,7 @@ public class MysqlSchemaUpdater {
      */
     public static boolean update_8_to_v4(
         StorageConfiguration storageConfig) throws SQLException {
-        Prism.getInstance().log("Beginning database schema update to v4. This make take some time...");
+        Prism.getInstance().logger().info("Beginning database schema update to v4. This make take some time...");
 
         // -------------
         // ACTIONS TABLE
@@ -168,8 +168,8 @@ public class MysqlSchemaUpdater {
             + "WHERE world_uuid IS NULL";
         int deletions = DB.executeUpdate(deleteWorlds);
 
-        String worldMsg = String.format("Deleted %d worlds from the database that are no longer present.", deletions);
-        Prism.getInstance().log(worldMsg);
+        String worldMsg = "Deleted {} worlds from the database that are no longer present.";
+        Prism.getInstance().logger().info(worldMsg, deletions);
 
         // Make uuid non-null
         @Language("SQL") String removeWorldNames = "ALTER TABLE `" + storageConfig.prefix() + "worlds`"
@@ -185,7 +185,7 @@ public class MysqlSchemaUpdater {
             + "SET v = ? WHERE k = ?";
         DB.executeUpdate(updateSchema, "v4", "schema_ver");
 
-        Prism.getInstance().log("Updated database schema to version: v4");
+        Prism.getInstance().logger().info("Updated database schema to version: v4");
 
         return true;
     }

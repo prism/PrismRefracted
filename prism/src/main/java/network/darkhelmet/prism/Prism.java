@@ -43,7 +43,7 @@ public class Prism extends JavaPlugin {
     /**
      * The logger.
      */
-    private static final Logger log = LogManager.getLogger("Minecraft");
+    private static final Logger logger = LogManager.getLogger("Prism");
 
     /**
      * Sets a numeric version we can use to handle differences between serialization formats.
@@ -128,10 +128,10 @@ public class Prism extends JavaPlugin {
     public void onEnable() {
         pluginName = this.getDescription().getName();
         String pluginVersion = this.getDescription().getVersion();
-        log(String.format("Initializing %s %s by viveleroi", pluginName, pluginVersion));
+        logger.info("Initializing {} {} by viveleroi", pluginName, pluginVersion);
 
         serializerVersion = mcVersion();
-        log(String.format("Serializer version: %d", serializerVersion));
+        logger.info("Serializer version: {}", serializerVersion);
 
         // Load the plugin configuration
         loadConfiguration();
@@ -139,7 +139,7 @@ public class Prism extends JavaPlugin {
         if (isEnabled()) {
             // Initialize the translation system
             try {
-                i18n = new I18n(log, getDataFolder().toPath(), prismConfig.defaultLocale());
+                i18n = new I18n(logger, getDataFolder().toPath(), prismConfig.defaultLocale());
             } catch (IOException e) {
                 handleException(e);
             }
@@ -170,7 +170,7 @@ public class Prism extends JavaPlugin {
     protected void disable() {
         Bukkit.getPluginManager().disablePlugin(Prism.getInstance());
 
-        error("Prism has to disable due to a fatal error.");
+        logger.error("Prism has to disable due to a fatal error.");
     }
 
     @Override
@@ -316,21 +316,10 @@ public class Prism extends JavaPlugin {
     }
 
     /**
-     * Log a message to console.
-     *
-     * @param message String
+     * Get the logger.
      */
-    public void log(String message) {
-        log.info("[{}]: {}", pluginName, message);
-    }
-
-    /**
-     * Log a message to console.
-     *
-     * @param message String
-     */
-    public void error(String message) {
-        log.warn("[{}]: {}", pluginName, message);
+    public Logger logger() {
+        return logger;
     }
 
     /**
@@ -340,7 +329,7 @@ public class Prism extends JavaPlugin {
      */
     public void debug(String message) {
         if (prismConfig.debug()) {
-            log.info("[{}]: {}", pluginName, message);
+            logger.info(message);
         }
     }
 

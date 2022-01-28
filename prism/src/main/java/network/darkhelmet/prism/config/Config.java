@@ -80,7 +80,7 @@ public class Config {
 
             return config;
         } catch (final ConfigurateException e) {
-            Prism.getInstance().log("An error occurred while loading the configuration: " + e.getMessage());
+            Prism.getInstance().logger().error("An error occurred while loading the configuration: " + e.getMessage());
             if (e.getCause() != null) {
                 e.getCause().printStackTrace();
             }

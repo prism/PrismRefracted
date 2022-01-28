@@ -85,11 +85,11 @@ public class MysqlStorageAdapter implements IStorageAdapter {
         String version = dbInfo.get("version");
         String versionComment = dbInfo.get("version_comment");
         String versionMsg = String.format("Database version: %s / %s", version, versionComment);
-        Prism.getInstance().log(versionMsg);
+        Prism.getInstance().logger().info(versionMsg);
 
         long innodbSizeMb = Long.parseLong(dbInfo.get("innodb_buffer_pool_size")) / 1024 / 1024;
-        Prism.getInstance().log(String.format("innodb_buffer_pool_size: %d", innodbSizeMb));
-        Prism.getInstance().log(String.format("sql_mode: %s", dbInfo.get("sql_mode")));
+        Prism.getInstance().logger().info(String.format("innodb_buffer_pool_size: %d", innodbSizeMb));
+        Prism.getInstance().logger().info(String.format("sql_mode: %s", dbInfo.get("sql_mode")));
     }
 
     /**
@@ -119,7 +119,7 @@ public class MysqlStorageAdapter implements IStorageAdapter {
             @Language("SQL") String sql = "SELECT v FROM " + storageConfig.prefix() + "meta WHERE k = 'schema_ver'";
 
             String schemaVersion = DB.getFirstColumn(sql);
-            Prism.getInstance().log(String.format("Prism database version: %s", schemaVersion));
+            Prism.getInstance().logger().info(String.format("Prism database version: %s", schemaVersion));
 
             updateSchemas(schemaVersion);
         }
@@ -245,7 +245,7 @@ public class MysqlStorageAdapter implements IStorageAdapter {
             Optional<ActionType> optionalActionType = Prism.getInstance().actionRegistry().getActionType(actionKey);
             if (optionalActionType.isEmpty()) {
                 String msg = "Failed to find action type. Type: %s";
-                Prism.getInstance().error(String.format(msg, actionKey));
+                Prism.getInstance().logger().warn(String.format(msg, actionKey));
                 continue;
             }
 
@@ -260,7 +260,7 @@ public class MysqlStorageAdapter implements IStorageAdapter {
             World world = Bukkit.getServer().getWorld(worldUuid);
             if (world == null) {
                 String msg = "Failed to find game world for activity query. World UUID: %s";
-                Prism.getInstance().error(String.format(msg, worldUuid));
+                Prism.getInstance().logger().warn(String.format(msg, worldUuid));
                 continue;
             }
 
