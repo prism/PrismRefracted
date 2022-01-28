@@ -1,9 +1,4 @@
 /*
- * NOTICE: Some methods in this file are subject to the following license:
- *
- * Original: https://github.com/Hexaoxide/Carbon/blob/684548f192a78c9d7b3f39d07b68dfb0f6b6f37f
- * /common/src/main/java/net/draycia/carbon/common/messages/CarbonMessageSource.java
- *
  * CarbonChat
  *
  * Copyright (c) 2021 Josua Parks (Vicarious)
