@@ -26,6 +26,8 @@ import co.aikar.idb.DatabaseOptions;
 import co.aikar.idb.DbRow;
 import co.aikar.idb.PooledDatabaseOptions;
 
+import com.google.inject.Inject;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,9 +37,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.api.PaginatedResults;
 import network.darkhelmet.prism.api.actions.ActionData;
+import network.darkhelmet.prism.api.actions.IActionRegistry;
 import network.darkhelmet.prism.api.actions.types.ActionType;
 import network.darkhelmet.prism.api.activities.Activity;
 import network.darkhelmet.prism.api.activities.ActivityQuery;
@@ -47,6 +49,7 @@ import network.darkhelmet.prism.api.storage.IStorageAdapter;
 import network.darkhelmet.prism.config.StorageConfiguration;
 import network.darkhelmet.prism.utils.TypeUtils;
 
+import org.apache.logging.log4j.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -55,9 +58,24 @@ import org.intellij.lang.annotations.Language;
 
 public class MysqlStorageAdapter implements IStorageAdapter {
     /**
+     * The logger.
+     */
+    private final Logger logger;
+
+    /**
      * The storage configuration.
      */
-    protected StorageConfiguration storageConfig;
+    protected final StorageConfiguration storageConfig;
+
+    /**
+     * The action registry.
+     */
+    protected final IActionRegistry actionRegistry;
+
+    /**
+     * The schema updater.
+     */
+    private final MysqlSchemaUpdater schemaUpdater;
 
     /**
      * Toggle whether this storage system is enabled and ready.
@@ -69,8 +87,16 @@ public class MysqlStorageAdapter implements IStorageAdapter {
      *
      * @param storageConfiguration The storage configuration
      */
-    public MysqlStorageAdapter(StorageConfiguration storageConfiguration) {
+    @Inject
+    public MysqlStorageAdapter(
+            Logger logger,
+            StorageConfiguration storageConfiguration,
+            IActionRegistry actionRegistry,
+            MysqlSchemaUpdater schemaUpdater) {
+        this.logger = logger;
         this.storageConfig = storageConfiguration;
+        this.actionRegistry = actionRegistry;
+        this.schemaUpdater = schemaUpdater;
 
         try {
             DatabaseOptions options = DatabaseOptions.builder().mysql(
@@ -105,11 +131,11 @@ public class MysqlStorageAdapter implements IStorageAdapter {
         String version = dbInfo.get("version");
         String versionComment = dbInfo.get("version_comment");
         String versionMsg = String.format("Database version: %s / %s", version, versionComment);
-        Prism.getInstance().logger().info(versionMsg);
+        logger.info(versionMsg);
 
         long innodbSizeMb = Long.parseLong(dbInfo.get("innodb_buffer_pool_size")) / 1024 / 1024;
-        Prism.getInstance().logger().info(String.format("innodb_buffer_pool_size: %d", innodbSizeMb));
-        Prism.getInstance().logger().info(String.format("sql_mode: %s", dbInfo.get("sql_mode")));
+        logger.info(String.format("innodb_buffer_pool_size: %d", innodbSizeMb));
+        logger.info(String.format("sql_mode: %s", dbInfo.get("sql_mode")));
     }
 
     /**
@@ -139,7 +165,7 @@ public class MysqlStorageAdapter implements IStorageAdapter {
             @Language("SQL") String sql = "SELECT v FROM " + storageConfig.prefix() + "meta WHERE k = 'schema_ver'";
 
             String schemaVersion = DB.getFirstColumn(sql);
-            Prism.getInstance().logger().info(String.format("Prism database version: %s", schemaVersion));
+            logger.info(String.format("Prism database version: %s", schemaVersion));
 
             updateSchemas(schemaVersion);
         }
@@ -235,7 +261,7 @@ public class MysqlStorageAdapter implements IStorageAdapter {
     protected void updateSchemas(String schemaVersion) throws SQLException {
         // Update: 8 -> v4
         if (schemaVersion.equalsIgnoreCase("8")) {
-            DB.createTransaction(stm -> MysqlSchemaUpdater.update_8_to_v4(storageConfig));
+            DB.createTransaction(stm -> schemaUpdater.update_8_to_v4(storageConfig));
         }
     }
 
@@ -262,10 +288,10 @@ public class MysqlStorageAdapter implements IStorageAdapter {
 
         for (DbRow row : results) {
             String actionKey = row.getString("action");
-            Optional<ActionType> optionalActionType = Prism.getInstance().actionRegistry().getActionType(actionKey);
+            Optional<ActionType> optionalActionType = actionRegistry.getActionType(actionKey);
             if (optionalActionType.isEmpty()) {
                 String msg = "Failed to find action type. Type: %s";
-                Prism.getInstance().logger().warn(String.format(msg, actionKey));
+                logger.warn(String.format(msg, actionKey));
                 continue;
             }
 
@@ -280,7 +306,7 @@ public class MysqlStorageAdapter implements IStorageAdapter {
             World world = Bukkit.getServer().getWorld(worldUuid);
             if (world == null) {
                 String msg = "Failed to find game world for activity query. World UUID: %s";
-                Prism.getInstance().logger().warn(String.format(msg, worldUuid));
+                logger.warn(String.format(msg, worldUuid));
                 continue;
             }
 

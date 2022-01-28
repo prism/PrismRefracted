@@ -26,7 +26,6 @@ import java.util.Locale;
 
 import net.kyori.adventure.serializer.configurate4.ConfigurateComponentSerializer;
 
-import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.config.serializers.LocaleSerializerConfigurate;
 
 import org.spongepowered.configurate.ConfigurateException;
@@ -100,7 +99,6 @@ public class Config {
 
             return config;
         } catch (final ConfigurateException e) {
-            Prism.getInstance().logger().error("An error occurred while loading the configuration: " + e.getMessage());
             if (e.getCause() != null) {
                 e.getCause().printStackTrace();
             }

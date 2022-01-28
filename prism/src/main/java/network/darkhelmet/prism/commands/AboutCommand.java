@@ -45,14 +45,14 @@ public class AboutCommand extends CommandBase {
     @Default
     @SubCommand("about")
     public void onAbout(final CommandSender sender) {
-        String version = Prism.getInstance().getDescription().getVersion();
-
-        Component message = Prism.getInstance().outputFormatter().prefix()
-            .append(Component.text("v", NamedTextColor.GRAY))
-            .append(Component.text(version, TextColor.fromCSSHexString("#ffd900")))
-            .append(Component.text(" by ", NamedTextColor.GRAY))
-            .append(Component.text("viveleroi"));
-
-        Prism.getInstance().audiences().sender(sender).sendMessage(message);
+//        String version = Prism.getInstance().getDescription().getVersion();
+//
+//        Component message = Prism.getInstance().outputFormatter().prefix()
+//            .append(Component.text("v", NamedTextColor.GRAY))
+//            .append(Component.text(version, TextColor.fromCSSHexString("#ffd900")))
+//            .append(Component.text(" by ", NamedTextColor.GRAY))
+//            .append(Component.text("viveleroi"));
+//
+//        Prism.getInstance().audiences().sender(sender).sendMessage(message);
     }
 }

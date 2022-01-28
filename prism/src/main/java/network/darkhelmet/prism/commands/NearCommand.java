@@ -20,6 +20,8 @@
 
 package network.darkhelmet.prism.commands;
 
+import com.google.inject.Inject;
+
 import me.mattstudios.mf.annotations.Alias;
 import me.mattstudios.mf.annotations.Command;
 import me.mattstudios.mf.annotations.SubCommand;
@@ -29,6 +31,9 @@ import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.api.PaginatedResults;
 import network.darkhelmet.prism.api.activities.ActivityQuery;
 import network.darkhelmet.prism.api.activities.IActivity;
+import network.darkhelmet.prism.api.storage.IStorageAdapter;
+import network.darkhelmet.prism.config.PrismConfiguration;
+import network.darkhelmet.prism.displays.DisplayManager;
 import network.darkhelmet.prism.formatters.ActivityFormatter;
 import network.darkhelmet.prism.utils.LocationUtils;
 
@@ -40,6 +45,28 @@ import org.bukkit.util.Vector;
 @Alias("pr")
 public class NearCommand extends CommandBase {
     /**
+     * The prism configuration.
+     */
+    private PrismConfiguration prismConfig;
+
+    /**
+     * The storage adapter.
+     */
+    private IStorageAdapter storageAdapter;
+
+    /**
+     * Construct the near command.
+     *
+     * @param prismConfig The prism configuration
+     * @param storageAdapter The storage adapter
+     */
+    @Inject
+    public NearCommand(PrismConfiguration prismConfig, IStorageAdapter storageAdapter) {
+        this.prismConfig = prismConfig;
+        this.storageAdapter = storageAdapter;
+    }
+
+    /**
      * Run the near command. Searches for records nearby the player.
      *
      * @param player The player
@@ -47,7 +74,7 @@ public class NearCommand extends CommandBase {
     @SubCommand("near")
     public void onNear(final Player player) {
         Location loc = player.getLocation();
-        int radius = Prism.getInstance().config().nearRadius();
+        int radius = prismConfig.nearRadius();
 
         Vector minVector = LocationUtils.getMinVector(loc, radius);
         Vector maxVector = LocationUtils.getMaxVector(loc, radius);
@@ -57,10 +84,9 @@ public class NearCommand extends CommandBase {
             ActivityFormatter formatter = new ActivityFormatter();
 
             try {
-                PaginatedResults<IActivity> paginatedResults = Prism.getInstance()
-                    .storageAdapter().queryActivitiesPaginated(query);
+                PaginatedResults<IActivity> paginatedResults = storageAdapter.queryActivitiesPaginated(query);
 
-                Prism.getInstance().displayManager().show(formatter, player, paginatedResults);
+                DisplayManager.show(formatter, player, paginatedResults);
             } catch (Exception e) {
                 Prism.getInstance().handleException(e);
             }

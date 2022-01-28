@@ -26,7 +26,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.Template;
 
-import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.api.actions.types.ActionResultType;
 import network.darkhelmet.prism.api.activities.IActivity;
 import network.darkhelmet.prism.api.displays.DisplayFormatter;
@@ -48,7 +47,7 @@ public class ActivityFormatter extends OutputFormatter implements DisplayFormatt
      * Construct a new activity formatter.
      */
     public ActivityFormatter() {
-        super(Prism.getInstance().config().outputs());
+//        super(Prism.getInstance().config().outputs());
 
         // Compile and cache some templates that won't change per-row
         signMinus = MiniMessage.get().parse(outputConfiguration.signMinus());

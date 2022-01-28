@@ -39,17 +39,6 @@ public class OutputFormatter {
      */
     protected Component prefix;
 
-    /**
-     * Construct a new instance.
-     *
-     * @param outputConfiguration The output configuration
-     */
-    public OutputFormatter(OutputConfiguration outputConfiguration) {
-        this.outputConfiguration = outputConfiguration;
-
-        // Format the prefix now as we'll never change it.
-        prefix = MiniMessage.get().parse(outputConfiguration.prefix());
-    }
 
     public Component prefix() {
         return prefix;

@@ -23,10 +23,8 @@ package network.darkhelmet.prism.displays;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 
-import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.api.PaginatedResults;
 import network.darkhelmet.prism.api.displays.DisplayFormatter;
 
@@ -39,7 +37,7 @@ public class DisplayManager {
      * @param sender The command sender
      * @param results The paginated results
      */
-    public <T> void show(DisplayFormatter<T> formatter, CommandSender sender, PaginatedResults<T> results) {
+    public static <T> void show(DisplayFormatter<T> formatter, CommandSender sender, PaginatedResults<T> results) {
         // Cache all message so we can send once formatted
         List<Component> messages = new ArrayList<>();
 
@@ -56,9 +54,9 @@ public class DisplayManager {
         }
 
         // Send all messages!
-        Audience audience = Prism.getInstance().audiences().sender(sender);
-        for (Component message : messages) {
-            audience.sendMessage(message);
-        }
+//        Audience audience = Prism.getInstance().audiences().sender(sender);
+//        for (Component message : messages) {
+//            audience.sendMessage(message);
+//        }
     }
 }

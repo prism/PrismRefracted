@@ -20,11 +20,14 @@
 
 package network.darkhelmet.prism.listeners;
 
-import network.darkhelmet.prism.Prism;
+import com.google.inject.Inject;
+
 import network.darkhelmet.prism.actions.ActionRegistry;
 import network.darkhelmet.prism.api.actions.IAction;
+import network.darkhelmet.prism.api.actions.IActionRegistry;
 import network.darkhelmet.prism.api.activities.Activity;
 import network.darkhelmet.prism.api.activities.IActivity;
+import network.darkhelmet.prism.config.PrismConfiguration;
 import network.darkhelmet.prism.recording.RecordingQueue;
 import network.darkhelmet.prism.utils.BlockUtils;
 
@@ -37,6 +40,27 @@ import org.bukkit.event.block.BlockBreakEvent;
 
 public class BlockBreakListener implements Listener {
     /**
+     * The prism config.
+     */
+    private final PrismConfiguration prismConfig;
+
+    /**
+     * The action registry.
+     */
+    private final IActionRegistry actionRegistry;
+
+    /**
+     * Construct the listener.
+     *
+     * @param prismConfig The prism config
+     */
+    @Inject
+    public BlockBreakListener(PrismConfiguration prismConfig, IActionRegistry actionRegistry) {
+        this.prismConfig = prismConfig;
+        this.actionRegistry = actionRegistry;
+    }
+
+    /**
      * Listens for block break events.
      *
      * @param event The event
@@ -44,7 +68,7 @@ public class BlockBreakListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockBreak(final BlockBreakEvent event) {
         // Ignore if this event is disabled
-        if (!Prism.getInstance().config().actions().blockBreak()) {
+        if (!prismConfig.actions().blockBreak()) {
             return;
         }
 
@@ -52,8 +76,7 @@ public class BlockBreakListener implements Listener {
         final Block block = BlockUtils.getRootBlock(event.getBlock());
 
         // Build the action
-        final IAction action = Prism.getInstance().actionRegistry()
-            .createBlockAction(ActionRegistry.BLOCK_BREAK, block);
+        final IAction action = actionRegistry.createBlockAction(ActionRegistry.BLOCK_BREAK, block);
 
         // Build the block break by player activity
         final IActivity activity = Activity.builder()

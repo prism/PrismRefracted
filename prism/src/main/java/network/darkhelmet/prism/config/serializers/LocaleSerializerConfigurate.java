@@ -40,7 +40,6 @@ public class LocaleSerializerConfigurate implements TypeSerializer<Locale> {
         final @Nullable String value = node.getString();
 
         if (value == null) {
-            Prism.getInstance().logger().warn("value null for locale! defaulting to en_US");
             return Locale.ENGLISH;
         }
 

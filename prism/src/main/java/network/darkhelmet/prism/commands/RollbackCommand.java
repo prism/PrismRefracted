@@ -22,6 +22,8 @@ package network.darkhelmet.prism.commands;
 
 import java.util.List;
 
+import com.google.inject.Inject;
+
 import me.mattstudios.mf.annotations.Alias;
 import me.mattstudios.mf.annotations.Command;
 import me.mattstudios.mf.annotations.SubCommand;
@@ -31,6 +33,8 @@ import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.api.actions.IAction;
 import network.darkhelmet.prism.api.activities.ActivityQuery;
 import network.darkhelmet.prism.api.activities.IActivity;
+import network.darkhelmet.prism.api.storage.IStorageAdapter;
+import network.darkhelmet.prism.config.PrismConfiguration;
 import network.darkhelmet.prism.utils.LocationUtils;
 
 import org.bukkit.Location;
@@ -41,6 +45,28 @@ import org.bukkit.util.Vector;
 @Alias("pr")
 public class RollbackCommand extends CommandBase {
     /**
+     * The prism configuration.
+     */
+    private PrismConfiguration prismConfig;
+
+    /**
+     * The storage adapter.
+     */
+    private IStorageAdapter storageAdapter;
+
+    /**
+     * Construct the near command.
+     *
+     * @param prismConfig The prism configuration
+     * @param storageAdapter The storage adapter
+     */
+    @Inject
+    public RollbackCommand(PrismConfiguration prismConfig, IStorageAdapter storageAdapter) {
+        this.prismConfig = prismConfig;
+        this.storageAdapter = storageAdapter;
+    }
+
+    /**
      * Run the rollback command.
      *
      * @param player The player
@@ -49,7 +75,7 @@ public class RollbackCommand extends CommandBase {
     @Alias("rb")
     public void onRollback(final Player player) {
         Location loc = player.getLocation();
-        int radius = Prism.getInstance().config().nearRadius();
+        int radius = prismConfig.nearRadius();
 
         Vector minVector = LocationUtils.getMinVector(loc, radius);
         Vector maxVector = LocationUtils.getMaxVector(loc, radius);
@@ -57,7 +83,7 @@ public class RollbackCommand extends CommandBase {
         final ActivityQuery query = ActivityQuery.builder().minVector(minVector).maxVector(maxVector).build();
         Prism.newChain().asyncFirst(() -> {
             try {
-                return Prism.getInstance().storageAdapter().queryActivities(query);
+                return storageAdapter.queryActivities(query);
             } catch (Exception e) {
                 Prism.getInstance().handleException(e);
             }

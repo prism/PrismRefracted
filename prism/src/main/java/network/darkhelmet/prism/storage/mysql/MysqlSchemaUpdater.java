@@ -24,19 +24,31 @@ import co.aikar.idb.DB;
 
 import java.sql.SQLException;
 
+import com.google.inject.Inject;
 import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.config.StorageConfiguration;
 import network.darkhelmet.prism.utils.TypeUtils;
 
+import org.apache.logging.log4j.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.intellij.lang.annotations.Language;
 
 public class MysqlSchemaUpdater {
     /**
-     * Prevent instantiation.
+     * The logger.
      */
-    private MysqlSchemaUpdater() {}
+    private final Logger logger;
+
+    /**
+     * Construct the updater.
+     *
+     * @param logger The logger
+     */
+    @Inject
+    public MysqlSchemaUpdater(Logger logger) {
+        this.logger = logger;
+    }
 
     /**
      * Updates schema from 8 (Prism 2.x & 3.x) to v4 (4.x).
@@ -44,9 +56,9 @@ public class MysqlSchemaUpdater {
      * @param storageConfig The storage config
      * @throws SQLException The database exception
      */
-    public static boolean update_8_to_v4(
+    public boolean update_8_to_v4(
         StorageConfiguration storageConfig) throws SQLException {
-        Prism.getInstance().logger().info("Beginning database schema update to v4. This make take some time...");
+        logger.info("Beginning database schema update to v4. This make take some time...");
 
         // -------------
         // ACTIONS TABLE
@@ -189,7 +201,7 @@ public class MysqlSchemaUpdater {
         int deletions = DB.executeUpdate(deleteWorlds);
 
         String worldMsg = "Deleted {} worlds from the database that are no longer present.";
-        Prism.getInstance().logger().info(worldMsg, deletions);
+        logger.info(worldMsg, deletions);
 
         // Make uuid non-null
         @Language("SQL") String removeWorldNames = "ALTER TABLE `" + storageConfig.prefix() + "worlds`"
@@ -205,7 +217,7 @@ public class MysqlSchemaUpdater {
             + "SET v = ? WHERE k = ?";
         DB.executeUpdate(updateSchema, "v4", "schema_ver");
 
-        Prism.getInstance().logger().info("Updated database schema to version: v4");
+        logger.info("Updated database schema to version: v4");
 
         return true;
     }

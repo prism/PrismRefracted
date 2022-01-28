@@ -20,29 +20,32 @@
 
 package network.darkhelmet.prism.recording;
 
+import com.google.inject.Inject;
 import network.darkhelmet.prism.Prism;
 
+import network.darkhelmet.prism.api.recording.IRecordingService;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
-public class RecordingManager {
+public class RecordingManager implements IRecordingService {
     /**
-     * Cache the recording task.
+     * Cache the scheduled task.
      */
-    BukkitTask recordingTask;
+    private BukkitTask task;
 
     /**
      * Construct the recording manager.
      */
-    public RecordingManager() {
-        queueNextRecording();
+    @Inject
+    public RecordingManager(RecordingTask recordingTask) {
+        queueNextRecording(recordingTask);
     }
 
     /**
      * Queue the next execution of this task.
      */
-    public void queueNextRecording() {
-        recordingTask = Bukkit.getServer().getScheduler()
-            .runTaskLaterAsynchronously(Prism.getInstance(), new RecordingTask(), 10);
+    public void queueNextRecording(Runnable recordingTask) {
+        task = Bukkit.getServer().getScheduler()
+            .runTaskLaterAsynchronously(Prism.getInstance(), recordingTask, 10);
     }
 }

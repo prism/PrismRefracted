@@ -20,18 +20,50 @@
 
 package network.darkhelmet.prism.recording;
 
+import com.google.inject.Inject;
+
 import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.api.activities.IActivity;
+import network.darkhelmet.prism.api.recording.IRecordingService;
 import network.darkhelmet.prism.api.storage.IActivityBatch;
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
+import network.darkhelmet.prism.config.StorageConfiguration;
 
 public class RecordingTask implements Runnable {
+    /**
+     * The storage config.
+     */
+    private final StorageConfiguration storageConfig;
+
+    /**
+     * The storage adapter.
+     */
+    private final IStorageAdapter storageAdapter;
+
+    /**
+     * The recording manager.
+     */
+    private final IRecordingService recordingService;
+
+    /**
+     * Construct a new recording task.
+     *
+     * @param storageAdapter The storage adapter
+     */
+    @Inject
+    public RecordingTask(
+        StorageConfiguration storageConfig, IStorageAdapter storageAdapter, IRecordingService recordingService) {
+        this.storageConfig = storageConfig;
+        this.storageAdapter = storageAdapter;
+        this.recordingService = recordingService;
+    }
+
     @Override
     public void run() {
         save();
 
         // Schedule the next recording
-        Prism.getInstance().recordingManager().queueNextRecording();
+        recordingService.queueNextRecording(new RecordingTask(storageConfig, storageAdapter, recordingService));
     }
 
     /**
@@ -41,9 +73,8 @@ public class RecordingTask implements Runnable {
         if (!RecordingQueue.getQueue().isEmpty()) {
             try {
                 int batchCount = 0;
-                int batchMax = Prism.getInstance().storageConfig().batchMax();
+                int batchMax = storageConfig.batchMax();
 
-                IStorageAdapter storageAdapter = Prism.getInstance().storageAdapter();
                 IActivityBatch batch = storageAdapter.createActivityBatch();
                 batch.startBatch();
 

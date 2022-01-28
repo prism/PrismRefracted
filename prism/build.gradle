@@ -39,6 +39,7 @@ targetCompatibility = sourceCompatibility = JavaVersion.VERSION_17
 dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.17-R0.1-SNAPSHOT'
     compileOnly 'org.apache.logging.log4j:log4j-api:2.17.1'
+    implementation 'com.google.inject:guice:5.1.0'
     implementation 'com.zaxxer:HikariCP:5.0.0'
     implementation 'net.kyori:adventure-api:4.9.3'
     implementation 'net.kyori:adventure-serializer-configurate4:4.9.3'
@@ -66,6 +67,7 @@ jar {
 }
 
 shadowJar {
+    relocate 'com.google.inject', 'network.darkhelmet.prism.inject'
     relocate 'co.aikar.idb', 'network.darkhelmet.prism.idb'
     relocate 'co.aikar.taskchain', 'network.darkhelmet.prism.taskchain'
     relocate 'com.zaxxer', 'network.darkhelmet.prism.zaxxer'
