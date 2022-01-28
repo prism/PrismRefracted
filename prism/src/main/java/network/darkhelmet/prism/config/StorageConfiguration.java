@@ -8,8 +8,10 @@ public class StorageConfiguration {
     @Comment("Set the max number of records saved to storage per batch.")
     private int batchMax = 500;
 
-    @Comment("Set the datasource. This determines which storage system is used\n"
-            + "Available options: mysql")
+    @Comment("""
+        Set the datasource. This determines which storage system is used.
+        Available options: mysql
+        """)
     private String datasource = "mysql";
 
     @Comment("Configure the database name.")
@@ -18,16 +20,16 @@ public class StorageConfiguration {
     @Comment("Configure the hostname.")
     private String host = "localhost";
 
-    @Comment("Enter the password, if the selected datasource uses authentication")
+    @Comment("Enter the password, if the selected datasource uses authentication.")
     private String password = "";
 
     @Comment("Configure the port.")
     private String port = "3306";
 
-    @Comment("Enter the prefix prism should use for database table names. i.e. prism_activities")
+    @Comment("Enter the prefix prism should use for database table names. i.e. prism_activities.")
     private String prefix = "prism_";
 
-    @Comment("Enter the username, if the selected datasource uses authentication")
+    @Comment("Enter the username, if the selected datasource uses authentication.")
     private String username = "root";
 
     /**

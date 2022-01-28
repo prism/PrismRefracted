@@ -7,16 +7,20 @@ import org.spongepowered.configurate.objectmapping.meta.Comment;
 
 @ConfigSerializable
 public class PrismConfiguration {
-    @Comment("Actions are in-game events/changes that Prism can record data for.\n"
-            + "Some are purely informational, some can be reversed/restored.\n"
-            + "Disabling any here will completely prevent prism from recording them.")
+    @Comment("""
+        Actions are in-game events/changes that Prism can record data for.
+        Some are purely informational, some can be reversed/restored.
+        Disabling any here will completely prevent prism from recording them.
+        """)
     private ActionsConfig actions = new ActionsConfig();
 
     @Comment("Enable plugin debug mode. Produces extra logging to help diagnose issues.")
     private boolean debug = false;
 
-    @Comment("The default locale for plugin messages. Messages given to players\n"
-            + "will use their client locale settings.")
+    @Comment("""
+        The default locale for plugin messages. Messages given to players
+        will use their client locale settings.
+        """)
     private Locale defaultLocale = Locale.US;
 
     @Comment("Sets the default radius to use when searching for nearby activity.")

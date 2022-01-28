@@ -20,7 +20,7 @@ public class OutputConfiguration {
     @Comment("Used for the heading message before outputting a list (of events, etc).")
     private String heading = "<prefix><white><heading> <underlined><#0ccfcb><bold><message>";
 
-    @Comment("Configure the primary line of activity messages. (for multiple actions grouped together)")
+    @Comment("Configure the primary line of activity messages. (for multiple actions grouped together).")
     private String activity = "<sign> <#03a5fc><cause> <white><actionPastTense>"
         + " <#03a5fc><content> <gray>x<count> <white><since> <gray>(a:<actionFamily>)";
 
