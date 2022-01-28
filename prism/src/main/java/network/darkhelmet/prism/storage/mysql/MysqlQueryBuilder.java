@@ -52,7 +52,7 @@ public class MysqlQueryBuilder {
             + "`material`,"
             + "`materials`.`data` AS material_data,"
             + "`custom_data`.`data` AS custom_data,"
-            + "`custom_data`.`version`,"
+            + "COALESCE(`custom_data`.`version`, 0) AS `data_version`,"
             + "`cause`,"
             + "HEX(`player_uuid`) AS playerUuid "
             + "FROM " + prefix + "activities AS activities "

@@ -299,8 +299,8 @@ public class MysqlStorageAdapter implements IStorageAdapter {
 
             String materialData = row.getString("material_data");
             String customData = row.getString("custom_data");
-            Integer customDataVersion = row.getInt("version");
-            Short version = customDataVersion == null ? null : customDataVersion.shortValue();
+            Integer customDataVersion = row.getInt("data_version");
+            short version = customDataVersion.shortValue();
 
             // Cause/player
             Object cause = row.getString("cause");

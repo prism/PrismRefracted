@@ -51,7 +51,7 @@ public class BlockActionType extends ActionType {
         }
 
         NBTContainer nbtContainer = null;
-        if (actionData.customData() != null && actionData.customDataVersion() != null) {
+        if (actionData.customData() != null && actionData.customDataVersion() > 0) {
             nbtContainer = new NBTContainer(actionData.customData());
         }
 

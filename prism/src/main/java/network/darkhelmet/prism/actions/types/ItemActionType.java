@@ -45,8 +45,11 @@ public class ItemActionType extends ActionType {
 
     @Override
     public IAction createAction(ActionData actionData) {
-        NBTContainer container = new NBTContainer(actionData.customData());
-        ItemStack itemStack = NBTItem.convertNBTtoItem(container);
+        ItemStack itemStack = null;
+        if (actionData.customData() != null && actionData.customDataVersion() > 0) {
+            NBTContainer container = new NBTContainer(actionData.customData());
+            itemStack = NBTItem.convertNBTtoItem(container);
+        }
 
         return new ItemStackAction(this, itemStack);
     }
