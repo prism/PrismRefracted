@@ -36,9 +36,9 @@ public record ActivityQuery(
     }
 
     /**
-     * Get the minumum vector.
+     * Get the minimum vector.
      *
-     * @return The minumum vector
+     * @return The minimum vector
      */
     @Override
     public Vector minVector() {
