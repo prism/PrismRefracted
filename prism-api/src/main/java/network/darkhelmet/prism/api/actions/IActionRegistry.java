@@ -25,6 +25,7 @@ import java.util.Optional;
 import network.darkhelmet.prism.api.actions.types.ActionType;
 
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 
 public interface IActionRegistry {
@@ -36,6 +37,15 @@ public interface IActionRegistry {
      * @return The block action
      */
     IBlockAction createBlockAction(ActionType type, Block block);
+
+    /**
+     * Create a new action for the given entity.
+     *
+     * @param type The action type
+     * @param entity The entity
+     * @return The entity action
+     */
+    IEntityAction createEntityAction(ActionType type, Entity entity);
 
     /**
      * Create a new action for the given type/item stack.

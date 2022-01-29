@@ -54,6 +54,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.entity.EntityType;
 import org.intellij.lang.annotations.Language;
 
 public class MysqlStorageAdapter implements IStorageAdapter {
@@ -189,8 +190,9 @@ public class MysqlStorageAdapter implements IStorageAdapter {
             + "`y` int(11) NOT NULL,"
             + "`z` int(11) NOT NULL,"
             + "`action_id` tinyint(3) unsigned NOT NULL,"
-            + "`material_id` mediumint(9) DEFAULT NULL,"
-            + "`old_material_id` mediumint(9) DEFAULT NULL,"
+            + "`material_id` smallint(6) unsigned DEFAULT NULL,"
+            + "`old_material_id` smallint(6) unsigned DEFAULT NULL,"
+            + "`entity_type_id` smallint(6) unsigned NULL,"
             + "`cause_id` int(11) NOT NULL,"
             + "PRIMARY KEY (`activity_id`)"
             + ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
@@ -206,6 +208,15 @@ public class MysqlStorageAdapter implements IStorageAdapter {
             + "PRIMARY KEY (`extra_id`)"
             + ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
         DB.executeUpdate(extraQuery);
+
+        // Create the entity types table
+        @Language("SQL") String entityTypeQuery = "CREATE TABLE IF NOT EXISTS `"
+            + storageConfig.prefix() + "entity_types` ("
+            + "`entity_type_id` smallint(6) NOT NULL AUTO_INCREMENT,"
+            + "`entity_type` varchar(45) DEFAULT NULL,"
+            + "PRIMARY KEY (`entity_type_id`),"
+            + "UNIQUE KEY `entity_type` (`entity_type`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
+        DB.executeUpdate(entityTypeQuery);
 
         // Create the material data table
         @Language("SQL") String matDataQuery = "CREATE TABLE IF NOT EXISTS `"
@@ -223,7 +234,7 @@ public class MysqlStorageAdapter implements IStorageAdapter {
             + "`k` varchar(25) NOT NULL,"
             + "`v` varchar(155) NOT NULL,"
             + "PRIMARY KEY (`meta_id`),"
-            + "UNIQUE KEY `k_UNIQUE` (`k`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
+            + "UNIQUE KEY `k` (`k`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
         DB.executeUpdate(metaQuery);
 
         // Create the players table
@@ -243,7 +254,7 @@ public class MysqlStorageAdapter implements IStorageAdapter {
             + "`world` varchar(255) NOT NULL,"
             + "`world_uuid` binary(16) NOT NULL,"
             + "PRIMARY KEY (`world_id`),"
-            + "UNIQUE KEY `world_uuid_UNIQUE` (`world_uuid`)"
+            + "UNIQUE KEY `world_uuid` (`world_uuid`)"
             + ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
         DB.executeUpdate(worldsQuery);
 
@@ -323,6 +334,13 @@ public class MysqlStorageAdapter implements IStorageAdapter {
             int z = row.getInt("z");
             Location location = new Location(world, x, y, z);
 
+            // Entity type
+            EntityType entityType = null;
+            String entityTypeName = row.getString("entity_type");
+            if (entityTypeName != null) {
+                entityType = EntityType.valueOf(entityTypeName.toUpperCase(Locale.ENGLISH));
+            }
+
             // Material/serialization data
             Material material = null;
             String materialName = row.getString("material");
@@ -345,7 +363,8 @@ public class MysqlStorageAdapter implements IStorageAdapter {
             long timestamp = row.getLong("timestamp");
 
             // Build the action data
-            ActionData actionData = new ActionData(material, materialName, materialData, customData, version);
+            ActionData actionData = new ActionData(
+                material, materialName, materialData, entityType, customData, version);
 
             // Build the activity
             IActivity activity = Activity.builder()

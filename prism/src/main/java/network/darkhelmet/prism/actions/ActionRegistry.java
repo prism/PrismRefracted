@@ -25,14 +25,17 @@ import java.util.Map;
 import java.util.Optional;
 
 import network.darkhelmet.prism.actions.types.BlockActionType;
+import network.darkhelmet.prism.actions.types.EntityActionType;
 import network.darkhelmet.prism.actions.types.ItemActionType;
 import network.darkhelmet.prism.api.actions.IActionRegistry;
 import network.darkhelmet.prism.api.actions.IBlockAction;
+import network.darkhelmet.prism.api.actions.IEntityAction;
 import network.darkhelmet.prism.api.actions.IItemAction;
 import network.darkhelmet.prism.api.actions.types.ActionResultType;
 import network.darkhelmet.prism.api.actions.types.ActionType;
 
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 
 public class ActionRegistry implements IActionRegistry {
@@ -45,6 +48,7 @@ public class ActionRegistry implements IActionRegistry {
      * Static cache of Prism action types.
      */
     public static final ActionType BLOCK_BREAK = new BlockActionType("block-break", ActionResultType.REMOVES, true);
+    public static final ActionType ENTITY_KILL = new EntityActionType("entity-kill", ActionResultType.REMOVES, true);
     public static final ActionType ITEM_DROP = new ItemActionType("item-drop", ActionResultType.REMOVES, true);
 
     /**
@@ -53,6 +57,7 @@ public class ActionRegistry implements IActionRegistry {
     public ActionRegistry() {
         // Register Prism actions
         registerAction(BLOCK_BREAK);
+        registerAction(ENTITY_KILL);
         registerAction(ITEM_DROP);
     }
 
@@ -72,6 +77,15 @@ public class ActionRegistry implements IActionRegistry {
         }
 
         return new ItemStackAction(type, itemStack);
+    }
+
+    @Override
+    public IEntityAction createEntityAction(ActionType type, Entity entity) {
+        if (!(type instanceof EntityActionType)) {
+            throw new IllegalArgumentException("Entity actions cannot be made from non-entity action types.");
+        }
+
+        return new EntityAction(type, entity);
     }
 
     @Override

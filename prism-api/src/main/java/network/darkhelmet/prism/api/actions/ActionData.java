@@ -21,11 +21,13 @@
 package network.darkhelmet.prism.api.actions;
 
 import org.bukkit.Material;
+import org.bukkit.entity.EntityType;
 
 public record ActionData(
     Material material,
     String materialName,
     String materialData,
+    EntityType entityType,
     String customData,
     short customDataVersion) {
 }

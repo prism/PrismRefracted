@@ -28,6 +28,9 @@ public class ActionsConfig {
     @Comment("block-break is when a player or entity destroys a block (except from burn/explode).")
     private boolean blockBreak = true;
 
+    @Comment("entity-kill is when an entity (or player) kills another.")
+    private boolean entityKill = true;
+
     @Comment("item-drop is when a player or block drops an item on the ground.")
     private boolean itemDrop = true;
 
@@ -38,6 +41,15 @@ public class ActionsConfig {
      */
     public boolean blockBreak() {
         return blockBreak;
+    }
+
+    /**
+     * Get if entity kill enabled.
+     *
+     * @return True if enabled
+     */
+    public boolean entityKill() {
+        return entityKill;
     }
 
     /**

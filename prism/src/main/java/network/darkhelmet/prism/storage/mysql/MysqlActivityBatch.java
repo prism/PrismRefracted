@@ -34,6 +34,7 @@ import java.util.UUID;
 import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.api.actions.IBlockAction;
 import network.darkhelmet.prism.api.actions.ICustomData;
+import network.darkhelmet.prism.api.actions.IEntityAction;
 import network.darkhelmet.prism.api.actions.IMaterialAction;
 import network.darkhelmet.prism.api.activities.IActivity;
 import network.darkhelmet.prism.api.storage.IActivityBatch;
@@ -90,8 +91,8 @@ public class MysqlActivityBatch implements IActivityBatch {
 
         // Build the INSERT query
         @Language("SQL") String sql = "INSERT INTO " + storageConfig.prefix() + "activities "
-            + "(`timestamp`, `x`, `y`, `z`, `action_id`, `material_id`, `world_id`, `cause_id`) "
-            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            + "(`timestamp`, `x`, `y`, `z`, `action_id`, `entity_type_id`, `material_id`, `world_id`, `cause_id`) "
+            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     }
@@ -107,6 +108,13 @@ public class MysqlActivityBatch implements IActivityBatch {
         byte actionId = getOrCreateActionId(activity.action().type().key());
         statement.setByte(5, actionId);
 
+        // Set the entity relationship
+        int entityTypeId = 0;
+        if (activity.action() instanceof IEntityAction entityAction) {
+            entityTypeId = getOrCreateEntityTypeId(entityAction.serializeEntityType());
+        }
+        statement.setInt(6, entityTypeId);
+
         // Set the material relationship
         int materialId = 0;
         if (activity.action() instanceof IMaterialAction materialAction) {
@@ -119,12 +127,12 @@ public class MysqlActivityBatch implements IActivityBatch {
 
             materialId = getOrCreateMaterialId(material, data);
         }
-        statement.setInt(6, materialId);
+        statement.setInt(7, materialId);
 
         // Set the world relationship
         World world = activity.location().getWorld();
         byte worldId = getOrCreateWorldId(world.getUID(), world.getName());
-        statement.setByte(7, worldId);
+        statement.setByte(8, worldId);
 
         // Set the player relationship
         Long playerId = null;
@@ -135,7 +143,7 @@ public class MysqlActivityBatch implements IActivityBatch {
 
         // Set the cause relationship
         long causeId = getOrCreateCauseId(cause, playerId);
-        statement.setLong(8, causeId);
+        statement.setLong(9, causeId);
 
         if (activity.action() instanceof ICustomData customData) {
             if (customData.hasCustomData()) {
@@ -209,6 +217,35 @@ public class MysqlActivityBatch implements IActivityBatch {
                 + "WHERE cause = ? ";
 
             primaryKey = DB.getFirstColumn(select, cause);
+        }
+
+        return primaryKey;
+    }
+
+    /**
+     * Get or create the entity type record and return the primary key.
+     *
+     * @param entityType The entity type
+     * @return The primary key
+     * @throws SQLException The database exception
+     */
+    private int getOrCreateEntityTypeId(String entityType) throws SQLException {
+        int primaryKey;
+
+        // Attempt to create the record
+        @Language("SQL") String insert = "INSERT INTO " + storageConfig.prefix() + "entity_types "
+            + "(`entity_type`) VALUES (?) ON DUPLICATE KEY UPDATE `entity_type` = `entity_type`";
+
+        Long longPk = DB.executeInsert(insert, entityType);
+
+        if (longPk != null) {
+            primaryKey = longPk.intValue();
+        } else {
+            // Select the existing record
+            @Language("SQL") String select = "SELECT entity_type_id FROM " + storageConfig.prefix() + "entity_types "
+                + "WHERE entity_type = ? ";
+
+            primaryKey = DB.getFirstColumn(select, entityType);
         }
 
         return primaryKey;

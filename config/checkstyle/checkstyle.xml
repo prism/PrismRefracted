@@ -242,7 +242,6 @@
                     PARAMETER_DEF, VARIABLE_DEF, METHOD_DEF"/> 
         </module>
         <module name="OverloadMethodsDeclarationOrder"/>
-        <module name="VariableDeclarationUsageDistance"/>
         <module name="ImportOrder">
 			<property name="groups" value="*,co,com,de,io,java,me,net,network,org"/>
 			<property name="ordered" value="true"/>

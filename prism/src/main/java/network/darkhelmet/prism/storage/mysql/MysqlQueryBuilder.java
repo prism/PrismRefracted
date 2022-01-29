@@ -43,17 +43,18 @@ public class MysqlQueryBuilder {
      */
     public static List<DbRow> queryActivities(ActivityQuery query, String prefix) throws SQLException {
         @Language("SQL") String sql = "SELECT "
-            + "HEX(`world_uuid`) AS worldUuid,"
-            + "`x`,"
-            + "`y`,"
-            + "`z`,"
-            + "`action`,"
-            + "`timestamp`,"
-            + "`material`,"
-            + "`materials`.`data` AS material_data,"
-            + "`custom_data`.`data` AS custom_data,"
-            + "COALESCE(`custom_data`.`version`, 0) AS `data_version`,"
-            + "`cause`,"
+            + "HEX(`world_uuid`) AS worldUuid, "
+            + "`x`, "
+            + "`y`, "
+            + "`z`, "
+            + "`action`, "
+            + "`timestamp`, "
+            + "`entity_type`, "
+            + "`material`, "
+            + "`materials`.`data` AS material_data, "
+            + "`custom_data`.`data` AS custom_data, "
+            + "COALESCE(`custom_data`.`version`, 0) AS `data_version`, "
+            + "`cause`, "
             + "HEX(`player_uuid`) AS playerUuid, "
             + "COUNT(*) OVER() AS totalRows "
             + "FROM " + prefix + "activities AS activities "
@@ -63,6 +64,8 @@ public class MysqlQueryBuilder {
             + "LEFT JOIN " + prefix + "activities_custom_data AS custom_data "
                 + "ON `custom_data`.`activity_id` = `activities`.`activity_id`"
             + "LEFT JOIN " + prefix + "players AS players ON `players`.`player_id` = `causes`.`player_id` "
+            + "LEFT JOIN " + prefix + "entity_types AS entity_types "
+                + "ON `entity_types`.`entity_type_id` = `activities`.`entity_type_id` "
             + "LEFT JOIN " + prefix + "material_data AS materials "
                 + "ON `materials`.`material_id` = `activities`.`material_id` ";
 
@@ -97,9 +100,11 @@ public class MysqlQueryBuilder {
         sql += String.format(orderBy, sortDir);
 
         // Limits
-        sql += "LIMIT ?, ?";
-        parameters.add(query.offset());
-        parameters.add(query.limit());
+        if (query.limit() > 0) {
+            sql += "LIMIT ?, ?";
+            parameters.add(query.offset());
+            parameters.add(query.limit());
+        }
 
         Prism.getInstance().debug(String.format("Querying activities: %s", sql));
         for (int i = 0; i < parameters.size(); i++) {

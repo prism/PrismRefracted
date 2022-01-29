@@ -91,10 +91,11 @@ public class MysqlSchemaUpdater {
             + "CHANGE COLUMN `id` `activity_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,"
             + "CHANGE COLUMN `epoch` `timestamp` INT UNSIGNED NOT NULL,"
             + "CHANGE COLUMN `world_id` `world_id` TINYINT UNSIGNED NOT NULL ,"
-            + "CHANGE COLUMN `block_id` `material_id` MEDIUMINT NULL,"
-            + "CHANGE COLUMN `old_block_id` `old_material_id` MEDIUMINT NULL DEFAULT NULL,"
+            + "CHANGE COLUMN `block_id` `material_id` SMALLINT UNSIGNED NULL,"
+            + "CHANGE COLUMN `old_block_id` `old_material_id` SMALLINT UNSIGNED NULL DEFAULT NULL,"
             + "CHANGE COLUMN `player_id` `player_id` INT UNSIGNED NOT NULL AFTER `old_material_id`,"
-            + "ADD COLUMN `cause_id` INT NOT NULL AFTER `player_id`;";
+            + "ADD COLUMN `cause_id` INT NOT NULL AFTER `player_id`,"
+            + "ADD COLUMN `entity_type_id` SMALLINT NOT NULL AFTER `old_material_id`;";
         DB.executeUpdate(updateData);
 
         // Rename data extra table
@@ -105,7 +106,6 @@ public class MysqlSchemaUpdater {
         // Update activities data table
         @Language("SQL") String updateDataExtra = "ALTER TABLE `" + storageConfig.prefix() + "activities_custom_data`"
             + "DROP INDEX `data_id`,"
-            + "DROP COLUMN `te_data`,"
             + "CHANGE COLUMN `extra_id` `extra_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,"
             + "CHANGE COLUMN `data_id` `activity_id` INT UNSIGNED NOT NULL,"
             + "ADD COLUMN `version` SMALLINT NULL AFTER `activity_id`,"
@@ -131,7 +131,6 @@ public class MysqlSchemaUpdater {
             + "CHANGE COLUMN `block_id` `material_id` SMALLINT NOT NULL AUTO_INCREMENT FIRST,"
             + "CHANGE COLUMN `material` `material` VARCHAR(45) NULL,"
             + "CHANGE COLUMN `state` `data` VARCHAR(155) NULL,"
-            + "ADD COLUMN `te_data` VARCHAR(255) NULL DEFAULT NULL AFTER `data`,"
             + "DROP PRIMARY KEY,"
             + "DROP INDEX `block_id`,"
             + "ADD PRIMARY KEY (`material_id`),"
@@ -145,7 +144,7 @@ public class MysqlSchemaUpdater {
         // Change material data schema
         @Language("SQL") String metaSchema = "ALTER TABLE `" + storageConfig.prefix() + "meta` "
             + "CHANGE COLUMN `id` `meta_id` TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,"
-            + "ADD UNIQUE INDEX `k_UNIQUE` (`k` ASC);";
+            + "ADD UNIQUE INDEX `k` (`k` ASC);";
         DB.executeUpdate(metaSchema);
 
         // -------------
@@ -183,7 +182,7 @@ public class MysqlSchemaUpdater {
         @Language("SQL") String updateWorlds = "ALTER TABLE `" + storageConfig.prefix() + "worlds`"
             + "CHANGE COLUMN `world_id` `world_id` TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,"
             + "ADD COLUMN `world_uuid` BINARY(16) NULL AFTER `world`,"
-            + "ADD UNIQUE INDEX `world_uuid_UNIQUE` (`world_uuid` ASC);";
+            + "ADD UNIQUE INDEX `world_uuid` (`world_uuid` ASC);";
         DB.executeUpdate(updateWorlds);
 
         // Update schema with world UUIDs
