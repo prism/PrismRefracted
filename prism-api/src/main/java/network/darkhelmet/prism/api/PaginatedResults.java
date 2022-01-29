@@ -24,6 +24,24 @@ import java.util.List;
 
 public record PaginatedResults<T>(List<T> results, int perPage, int totalResults, int currentPage) {
     /**
+     * Check if these results have a next page.
+     *
+     * @return True if there's a next page
+     */
+    public boolean hasNextPage() {
+        return currentPage < totalPages();
+    }
+
+    /**
+     * Check if these results have a previous page.
+     *
+     * @return True if there's a previous page
+     */
+    public boolean hasPrevPage() {
+        return currentPage > 1;
+    }
+
+    /**
      * Check if the results are empty.
      *
      * @return True if no results
