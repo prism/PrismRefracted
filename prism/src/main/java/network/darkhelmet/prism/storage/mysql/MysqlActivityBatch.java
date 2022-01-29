@@ -139,6 +139,8 @@ public class MysqlActivityBatch implements IActivityBatch {
         String cause = "unknown";
         if (activity.cause() instanceof Player player) {
             playerId = getOrCreatePlayerId(player.getUniqueId(), player.getName());
+        } else if (activity.cause() instanceof String causeStr) {
+            cause = causeStr;
         }
 
         // Set the cause relationship
