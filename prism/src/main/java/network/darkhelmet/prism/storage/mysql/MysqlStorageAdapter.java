@@ -267,9 +267,16 @@ public class MysqlStorageAdapter implements IStorageAdapter {
 
     @Override
     public PaginatedResults<IActivity> queryActivitiesPaginated(ActivityQuery query) throws SQLException {
-        List<IActivity> results = activityMapper(MysqlQueryBuilder.queryActivities(query, storageConfig.prefix()));
+        List<DbRow> rows = MysqlQueryBuilder.queryActivities(query, storageConfig.prefix());
 
-        return new PaginatedResults<>(results);
+        int totalResults = 0;
+        if (!rows.isEmpty()) {
+            totalResults = rows.get(0).getInt("totalRows");
+        }
+
+        int currentPage = (query.offset() / query.limit()) + 1;
+
+        return new PaginatedResults<>(activityMapper(rows), query.limit(), totalResults, currentPage);
     }
 
     @Override

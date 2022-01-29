@@ -22,21 +22,7 @@ package network.darkhelmet.prism.api;
 
 import java.util.List;
 
-public class PaginatedResults<T> {
-    /**
-     * The segmented results.
-     */
-    List<T> results;
-
-    /**
-     * Construct a new paginated results object.
-     *
-     * @param results A list of results
-     */
-    public PaginatedResults(List<T> results) {
-        this.results = results;
-    }
-
+public record PaginatedResults<T>(List<T> results, int perPage, int totalResults, int currentPage) {
     /**
      * Check if the results are empty.
      *
@@ -53,5 +39,14 @@ public class PaginatedResults<T> {
      */
     public List<T> results() {
         return results;
+    }
+
+    /**
+     * Get the total number of pages.
+     *
+     * @return The total pages
+     */
+    public int totalPages() {
+        return (int) Math.ceil(totalResults / (double) perPage);
     }
 }

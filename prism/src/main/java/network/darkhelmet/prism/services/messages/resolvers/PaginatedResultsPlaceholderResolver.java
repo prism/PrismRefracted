@@ -26,11 +26,13 @@ public class PaginatedResultsPlaceholderResolver
         final Type owner,
         final Method method,
         final @Nullable Object[] parameters) {
-        Component perPage = Component.text("123");
-        Component currentPage = Component.text("123");
-        Component totalPages = Component.text("123");
+        Component perPage = Component.text(value.perPage());
+        Component currentPage = Component.text(value.currentPage());
+        Component totalPages = Component.text(value.totalPages());
+        Component totalResults = Component.text(value.totalResults());
 
         return Map.of(placeholderName + "PerPage", Either.left(ConclusionValue.conclusionValue(perPage)),
+                placeholderName + "TotalResults", Either.left(ConclusionValue.conclusionValue(totalResults)),
                 placeholderName + "CurrentPage", Either.left(ConclusionValue.conclusionValue(currentPage)),
                 placeholderName + "TotalPages", Either.left(ConclusionValue.conclusionValue(totalPages)));
     }
