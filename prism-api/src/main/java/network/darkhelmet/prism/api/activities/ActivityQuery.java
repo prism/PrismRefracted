@@ -22,36 +22,17 @@ package network.darkhelmet.prism.api.activities;
 
 import org.bukkit.util.Vector;
 
-public class ActivityQuery {
+public record ActivityQuery(
+    Vector minVector,
+    Vector maxVector,
+    int offset,
+    int limit,
+    ActivityQuery.Sort sort) {
+    /**
+     * Describe the sort directions.
+     */
     public enum Sort {
         ASCENDING, DESCENDING
-    }
-
-    /**
-     * The minimum vector. Sets a corner of a bounding box.
-     */
-    private Vector minVector;
-
-    /**
-     * The maximum vector. Sets a corner of a bounding box.
-     */
-    private Vector maxVector;
-
-    /**
-     * The sort direction.
-     */
-    private Sort sort;
-
-    /**
-     * Construct an activity query.
-     *
-     * @param minVector The minimum vector
-     * @param maxVector The maximum vector
-     */
-    public ActivityQuery(Vector minVector, Vector maxVector, Sort sort) {
-        this.minVector = minVector;
-        this.maxVector = maxVector;
-        this.sort = sort;
     }
 
     /**
@@ -59,6 +40,7 @@ public class ActivityQuery {
      *
      * @return The minumum vector
      */
+    @Override
     public Vector minVector() {
         return minVector;
     }
@@ -68,6 +50,7 @@ public class ActivityQuery {
      *
      * @return The maximum vector
      */
+    @Override
     public Vector maxVector() {
         return maxVector;
     }
@@ -77,6 +60,7 @@ public class ActivityQuery {
      *
      * @return The sort direction
      */
+    @Override
     public Sort sort() {
         return sort;
     }
@@ -100,6 +84,16 @@ public class ActivityQuery {
          * The maximum vector.
          */
         private Vector maxVector;
+
+        /**
+         * The offset.
+         */
+        private int offset = 0;
+
+        /**
+         * The limit.
+         */
+        private int limit = 0;
 
         /**
          * The sort direction.
@@ -129,6 +123,28 @@ public class ActivityQuery {
         }
 
         /**
+         * Set the offset.
+         *
+         * @param offset The offset
+         * @return The builder
+         */
+        public Builder offset(int offset) {
+            this.offset = offset;
+            return this;
+        }
+
+        /**
+         * Set the limit.
+         *
+         * @param limit The limit
+         * @return The builder
+         */
+        public Builder limit(int limit) {
+            this.limit = limit;
+            return this;
+        }
+
+        /**
          * Set the sort direction. Defaults to descending.
          *
          * @param sort The sort direction.
@@ -145,7 +161,7 @@ public class ActivityQuery {
          * @return The activity query
          */
         public ActivityQuery build() {
-            return new ActivityQuery(minVector, maxVector, sort);
+            return new ActivityQuery(minVector, maxVector, offset, limit, sort);
         }
     }
 }

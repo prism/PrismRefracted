@@ -91,8 +91,14 @@ public class MysqlQueryBuilder {
             sortDir = "ASC";
         }
 
-        String orderBy = " ORDER BY `timestamp` %s, `x` ASC, `z` ASC, `y` ASC, `activities`.`activity_id` %1$s";
+        @Language("SQL") String orderBy = " ORDER BY `timestamp` %s, `x` ASC, `z` ASC, `y` ASC,"
+            + " `activities`.`activity_id` %1$s ";
         sql += String.format(orderBy, sortDir);
+
+        // Limits
+        sql += "LIMIT ?, ?";
+        parameters.add(query.offset());
+        parameters.add(query.limit());
 
         Prism.getInstance().debug(String.format("Querying activities: %s", sql));
         for (int i = 0; i < parameters.size(); i++) {

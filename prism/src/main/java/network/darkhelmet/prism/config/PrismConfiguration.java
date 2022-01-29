@@ -46,6 +46,9 @@ public class PrismConfiguration {
     @Comment("Sets the default radius to use when searching for nearby activity.")
     private int nearRadius = 5;
 
+    @Comment("Limits how many results are shown \"per page\" when doing lookups.")
+    private int perPage = 5;
+
     /**
      * Get the actions config.
      *
@@ -78,5 +81,14 @@ public class PrismConfiguration {
      */
     public int nearRadius() {
         return nearRadius;
+    }
+
+    /**
+     * Get the per page limit.
+     *
+     * @return The per page limit
+     */
+    public int perPage() {
+        return perPage;
     }
 }

@@ -79,12 +79,11 @@ public class NearCommand extends CommandBase {
     @SubCommand("near")
     public void onNear(final Player player) {
         Location loc = player.getLocation();
-        int radius = prismConfig.nearRadius();
+        Vector minVector = LocationUtils.getMinVector(loc, prismConfig.nearRadius());
+        Vector maxVector = LocationUtils.getMaxVector(loc, prismConfig.nearRadius());
 
-        Vector minVector = LocationUtils.getMinVector(loc, radius);
-        Vector maxVector = LocationUtils.getMaxVector(loc, radius);
-
-        final ActivityQuery query = ActivityQuery.builder().minVector(minVector).maxVector(maxVector).build();
+        final ActivityQuery query = ActivityQuery.builder()
+            .minVector(minVector).maxVector(maxVector).limit(prismConfig.perPage()).build();
         Prism.newChain().async(() -> {
             try {
                 PaginatedResults<IActivity> paginatedResults = storageAdapter.queryActivitiesPaginated(query);
