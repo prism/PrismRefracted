@@ -68,9 +68,22 @@ public class TagLib {
         Material.TALL_SEAGRASS);
 
     /**
-     * All plants.
+     * All plants (not counting crops).
      */
     public static final MaterialTag ALL_PLANTS = new MaterialTag(PLANTS).append(TALL_PLANTS);
+
+    /**
+     * All vegetation that can be grown.
+     */
+    public static final MaterialTag GROWABLES = new MaterialTag(
+        Material.BAMBOO,
+        Material.CACTUS,
+        Material.KELP,
+        Material.KELP_PLANT,
+        Material.SUGAR_CANE,
+        Material.CHORUS_PLANT,
+        Material.CHORUS_FLOWER
+    ).append(Tag.CROPS);
 
     /**
      * All banners that are placed on the top of a block.
@@ -88,6 +101,18 @@ public class TagLib {
      */
     public static final MaterialTag DETACHABLES = new MaterialTag(
         Material.AMETHYST_CLUSTER);
+
+    /**
+     * All redstone-related items that detach when connected block is broken.
+     */
+    public static final MaterialTag REDSTONE_DETACHABLE = new MaterialTag(
+        Material.COMPARATOR,
+        Material.LEVER,
+        Material.REPEATER,
+        Material.REDSTONE_TORCH,
+        Material.REDSTONE_WALL_TORCH,
+        Material.REDSTONE_WIRE
+    ).append(Tag.BUTTONS, Tag.PRESSURE_PLATES);
 
     /**
      * Materials that attach to the bottom of a block.
@@ -126,6 +151,7 @@ public class TagLib {
         Material.GLOW_LICHEN,
         Material.LEVER,
         Material.NETHER_PORTAL,
+        Material.SCAFFOLDING,
         Material.TRIPWIRE_HOOK)
         .append(Tag.BUTTONS, Tag.WALL_SIGNS, Tag.CLIMBABLE)
         .append(WALL_BANNERS, DETACHABLES);
@@ -141,47 +167,34 @@ public class TagLib {
         Material.MOVING_PISTON,
         Material.TORCH,
         Material.SOUL_TORCH,
-        Material.REDSTONE,
         Material.LEVER,
-        Material.STONE_PRESSURE_PLATE,
-        Material.REDSTONE_TORCH,
         Material.SNOW,
-        Material.CACTUS,
-        Material.SUGAR_CANE,
         Material.NETHER_PORTAL,
-        Material.REPEATER,
-        Material.PUMPKIN_STEM,
-        Material.MELON_STEM,
         Material.LILY_PAD,
         Material.NETHER_WART,
-        Material.CARROTS,
-        Material.POTATOES,
-        Material.BEETROOTS,
-        Material.COMPARATOR,
-        Material.BAMBOO,
-        Material.TURTLE_EGG,
-        Material.HEAVY_WEIGHTED_PRESSURE_PLATE,
-        Material.LIGHT_WEIGHTED_PRESSURE_PLATE,
         Material.BEACON,
         Material.ITEM_FRAME,
         Material.LANTERN,
         Material.CHAIN,
         Material.CONDUIT,
+        Material.SCAFFOLDING,
         Material.BELL)
-        .append(Tag.DOORS,
+        .append(
+            Tag.DOORS,
             Tag.RAILS,
             Tag.SAPLINGS,
             Tag.STANDING_SIGNS)
         .append(
-            Tag.WOODEN_PRESSURE_PLATES,
             Tag.BUTTONS,
             Tag.CARPETS,
             Tag.FLOWER_POTS)
-        .append(ALL_PLANTS, DETACHABLES, TOP_BANNERS);
+        .append(REDSTONE_DETACHABLE, GROWABLES, ALL_PLANTS, DETACHABLES, TOP_BANNERS);
 
     public static final MaterialTag RECURSIVE_TOP_DETACHABLES = new MaterialTag(
         Material.BAMBOO,
         Material.KELP,
+        Material.CACTUS,
+        Material.SCAFFOLDING,
         Material.SUGAR_CANE,
         Material.TWISTING_VINES,
         Material.TWISTING_VINES_PLANT,
