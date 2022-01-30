@@ -27,6 +27,7 @@ import network.darkhelmet.prism.api.actions.IBlockAction;
 import network.darkhelmet.prism.api.actions.types.ActionResultType;
 import network.darkhelmet.prism.api.actions.types.ActionType;
 import network.darkhelmet.prism.api.activities.IActivity;
+import network.darkhelmet.prism.api.modifications.ModificationResult;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -99,9 +100,9 @@ public class BlockStateAction extends MaterialAction implements IBlockAction {
     }
 
     @Override
-    public void applyRollback(IActivity activityContext) {
+    public ModificationResult applyRollback(IActivity activityContext, boolean isPreview) {
         if (!type().reversible()) {
-            return;
+            return ModificationResult.SKIPPED;
         }
 
         if (type().resultType().equals(ActionResultType.REMOVES)) {
@@ -111,12 +112,14 @@ public class BlockStateAction extends MaterialAction implements IBlockAction {
             // If the action type creates a block, rollback means we remove it
             removeBlock(activityContext.location());
         }
+
+        return ModificationResult.APPLIED;
     }
 
     @Override
-    public void applyRestore(IActivity activityContext) {
+    public ModificationResult applyRestore(IActivity activityContext, boolean isPreview) {
         if (!type().reversible()) {
-            return;
+            return ModificationResult.SKIPPED;
         }
 
         if (type().resultType().equals(ActionResultType.CREATES)) {
@@ -126,6 +129,8 @@ public class BlockStateAction extends MaterialAction implements IBlockAction {
             // If the action type removes a block, restore means we remove it again
             removeBlock(activityContext.location());
         }
+
+        return ModificationResult.APPLIED;
     }
 
     /**

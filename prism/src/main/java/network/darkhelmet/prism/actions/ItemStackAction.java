@@ -26,6 +26,7 @@ import de.tr7zw.nbtapi.NBTItem;
 import network.darkhelmet.prism.api.actions.IItemAction;
 import network.darkhelmet.prism.api.actions.types.ActionType;
 import network.darkhelmet.prism.api.activities.IActivity;
+import network.darkhelmet.prism.api.modifications.ModificationResult;
 
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -65,8 +66,12 @@ public class ItemStackAction extends MaterialAction implements IItemAction {
     }
 
     @Override
-    public void applyRollback(IActivity activityContext) {}
+    public ModificationResult applyRollback(IActivity activityContext, boolean isPreview) {
+        return ModificationResult.SKIPPED;
+    }
 
     @Override
-    public void applyRestore(IActivity activityContext) {}
+    public ModificationResult applyRestore(IActivity activityContext, boolean isPreview) {
+        return ModificationResult.SKIPPED;
+    }
 }

@@ -28,6 +28,7 @@ import java.util.Locale;
 import network.darkhelmet.prism.api.actions.IEntityAction;
 import network.darkhelmet.prism.api.actions.types.ActionType;
 import network.darkhelmet.prism.api.activities.IActivity;
+import network.darkhelmet.prism.api.modifications.ModificationResult;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -110,15 +111,21 @@ public class EntityAction extends Action implements IEntityAction {
     }
 
     @Override
-    public void applyRollback(IActivity activityContext) {
+    public ModificationResult applyRollback(IActivity activityContext, boolean isPreview) {
         Location loc = activityContext.location();
         if (loc.getWorld() != null && entityType.getEntityClass() != null) {
             loc.getWorld().spawn(loc, entityType.getEntityClass(), entity -> {
                 new NBTEntity(entity).mergeCompound(nbtContainer);
             });
+
+            return ModificationResult.APPLIED;
         }
+
+        return ModificationResult.SKIPPED;
     }
 
     @Override
-    public void applyRestore(IActivity activityContext) {}
+    public ModificationResult applyRestore(IActivity activityContext, boolean isPreview) {
+        return ModificationResult.SKIPPED;
+    }
 }

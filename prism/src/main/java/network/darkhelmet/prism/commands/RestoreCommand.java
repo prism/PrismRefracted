@@ -32,7 +32,8 @@ import me.mattstudios.mf.base.CommandBase;
 import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.api.actions.IAction;
 import network.darkhelmet.prism.api.activities.ActivityQuery;
-import network.darkhelmet.prism.api.activities.IActivity;
+import network.darkhelmet.prism.api.modifications.IModificationQueue;
+import network.darkhelmet.prism.api.modifications.IModificationQueueService;
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
 import network.darkhelmet.prism.config.PrismConfiguration;
 import network.darkhelmet.prism.services.messages.MessageService;
@@ -62,6 +63,11 @@ public class RestoreCommand extends CommandBase {
     private final MessageService messageService;
 
     /**
+     * The modification queue service.
+     */
+    private final IModificationQueueService modificationQueueService;
+
+    /**
      * Construct the near command.
      *
      * @param prismConfig The prism configuration
@@ -71,10 +77,12 @@ public class RestoreCommand extends CommandBase {
     public RestoreCommand(
             PrismConfiguration prismConfig,
             IStorageAdapter storageAdapter,
-            MessageService messageService) {
+            MessageService messageService,
+            IModificationQueueService modificationQueueService) {
         this.prismConfig = prismConfig;
         this.storageAdapter = storageAdapter;
         this.messageService = messageService;
+        this.modificationQueueService = modificationQueueService;
     }
 
     /**
@@ -85,6 +93,13 @@ public class RestoreCommand extends CommandBase {
     @SubCommand("restore")
     @Alias("rs")
     public void onRestore(final Player player) {
+        // Ensure a queue is free
+        if (!modificationQueueService.queueAvailable()) {
+            messageService.error(player, new TranslationKey("queue-not-free"));
+
+            return;
+        }
+
         Location loc = player.getLocation();
         int radius = prismConfig.nearRadius();
 
@@ -103,9 +118,8 @@ public class RestoreCommand extends CommandBase {
 
             return null;
         }).abortIfNull().<List<IAction>>sync(results -> {
-            for (IActivity activity : results) {
-                activity.action().applyRestore(activity);
-            }
+            IModificationQueue queue = modificationQueueService.newRestoreQueue(player, results);
+            queue.apply();
 
             return null;
         }).execute();

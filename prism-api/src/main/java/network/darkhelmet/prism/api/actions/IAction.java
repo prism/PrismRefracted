@@ -22,21 +22,24 @@ package network.darkhelmet.prism.api.actions;
 
 import network.darkhelmet.prism.api.actions.types.ActionType;
 import network.darkhelmet.prism.api.activities.IActivity;
+import network.darkhelmet.prism.api.modifications.ModificationResult;
 
 public interface IAction {
     /**
      * Apply the rollback. If the action type is not reversible, this does nothing.
      *
      * @param activityContext The activity as a context
+     * @param isPreview If preview only
      */
-    void applyRollback(IActivity activityContext);
+    ModificationResult applyRollback(IActivity activityContext, boolean isPreview);
 
     /**
      * Apply the restore. If the action type is not reversible, this does nothing.
      *
      * @param activityContext The activity as a context
+     * @param isPreview If preview only
      */
-    void applyRestore(IActivity activityContext);
+    ModificationResult applyRestore(IActivity activityContext, boolean isPreview);
 
     /**
      * Format the content of this action for text tdisplay.
