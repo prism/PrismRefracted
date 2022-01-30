@@ -118,9 +118,9 @@ public class TagLib {
      * All materials that can attach to themselves on the bottom (breaks travel downward).
      */
     public static final MaterialTag RECURSIVE_BOTTOM_DETACHABLES = new MaterialTag(
-            Material.CHAIN,
-            Material.POINTED_DRIPSTONE,
-            Material.VINE
+        Material.CHAIN,
+        Material.POINTED_DRIPSTONE,
+        Material.VINE
     ).append(Tag.CAVE_VINES);
 
     /**
