@@ -92,7 +92,7 @@ public class RestoreCommand extends CommandBase {
         Vector maxVector = LocationUtils.getMaxVector(loc, radius);
 
         final ActivityQuery query = ActivityQuery.builder()
-            .minVector(minVector).maxVector(maxVector).sort(ActivityQuery.Sort.ASCENDING).build();
+            .minVector(minVector).maxVector(maxVector).sort(ActivityQuery.Sort.ASCENDING).setLookup(false).build();
         Prism.newChain().asyncFirst(() -> {
             try {
                 return storageAdapter.queryActivities(query);

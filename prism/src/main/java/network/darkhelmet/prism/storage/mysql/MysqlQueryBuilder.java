@@ -95,9 +95,24 @@ public class MysqlQueryBuilder {
             sortDir = "ASC";
         }
 
-        @Language("SQL") String orderBy = " ORDER BY `timestamp` %s, `x` ASC, `z` ASC, `y` ASC,"
-            + " `activities`.`activity_id` %1$s ";
-        sql += String.format(orderBy, sortDir);
+        if (query.isLookup()) {
+            @Language("SQL") String orderBy = " ORDER BY `timestamp` %s, `activities`.`activity_id` %1$s ";
+            sql += String.format(orderBy, sortDir);
+        } else {
+            // Most rollbacks "build up" but some hanging blocks need to be "built down" or they just break.
+            // In order to do this, we tell hanging blocks to sort *after* everything else,
+            // then we sort everything by `y asc` and sort these hanging blocks by `y desc`.
+            // cave_vines are sorted to come after cave_vines_plant so the plant is rebuilt first.
+            @Language("SQL") String orderBy = " ORDER BY "
+                + "CASE material WHEN 'cave_vines' THEN 1 ELSE -1 END ASC, "
+                + "CASE material WHEN 'cave_vines_plant' THEN 1 ELSE -1 END ASC, "
+                + "CASE material WHEN 'pointed_dripstone' THEN 1 ELSE -1 END ASC, "
+                + "`x` ASC, "
+                + "`z` ASC, "
+                + "CASE WHEN material IN ('pointed_dripstone', 'cave_vines_plant') THEN y END DESC, "
+                + "CASE WHEN material NOT IN ('pointed_dripstone', 'cave_vines_plant') THEN y END ASC ";
+            sql += orderBy;
+        }
 
         // Limits
         if (query.limit() > 0) {

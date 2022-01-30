@@ -92,7 +92,8 @@ public class RollbackCommand extends CommandBase {
         Vector minVector = LocationUtils.getMinVector(loc, radius);
         Vector maxVector = LocationUtils.getMaxVector(loc, radius);
 
-        final ActivityQuery query = ActivityQuery.builder().minVector(minVector).maxVector(maxVector).build();
+        final ActivityQuery query = ActivityQuery.builder()
+            .minVector(minVector).maxVector(maxVector).setLookup(false).build();
         Prism.newChain().asyncFirst(() -> {
             try {
                 return storageAdapter.queryActivities(query);

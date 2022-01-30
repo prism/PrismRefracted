@@ -23,6 +23,7 @@ package network.darkhelmet.prism.api.activities;
 import org.bukkit.util.Vector;
 
 public record ActivityQuery(
+    boolean isLookup,
     Vector minVector,
     Vector maxVector,
     int offset,
@@ -76,6 +77,11 @@ public record ActivityQuery(
 
     public static class Builder {
         /**
+         * Indicate this is a lookup query.
+         */
+        private boolean isLookup = true;
+
+        /**
          * The minimum vector.
          */
         private Vector minVector;
@@ -99,6 +105,18 @@ public record ActivityQuery(
          * The sort direction.
          */
         private Sort sort = Sort.DESCENDING;
+
+        /**
+         * Set whether this is a lookup. The query results can be grouped
+         * and the order by is different.
+         *
+         * @param isLookup If lookup
+         * @return The builder
+         */
+        public Builder setLookup(boolean isLookup) {
+            this.isLookup = isLookup;
+            return this;
+        }
 
         /**
          * Set the min vector - the min corner of a bounding box.
@@ -161,7 +179,7 @@ public record ActivityQuery(
          * @return The activity query
          */
         public ActivityQuery build() {
-            return new ActivityQuery(minVector, maxVector, offset, limit, sort);
+            return new ActivityQuery(isLookup, minVector, maxVector, offset, limit, sort);
         }
     }
 }
