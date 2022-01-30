@@ -1,7 +1,7 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
-    id "com.github.johnrengelman.shadow" version "7.0.0"
+    id "com.github.johnrengelman.shadow" version "7.1.2"
     id "xyz.jpenilla.run-paper" version "1.0.6"
 }
 
@@ -76,6 +76,8 @@ shadowJar {
     relocate 'net.kyori', 'network.darkhelmet.prism.kyori'
     relocate 'org.spongepowered', 'network.darkhelmet.prism.spongepowered'
     relocate 'de.tr7zw', 'network.darkhelmet.prism.tr7zw'
+
+    minimize()
 }
 
 runServer {
