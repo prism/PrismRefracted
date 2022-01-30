@@ -84,6 +84,11 @@ public class BlockBreakListener implements Listener {
             recordBlockBreak(detachable, player);
         }
 
+        // Record all blocks that will fall
+        for (Block faller : BlockUtils.gravity(new ArrayList<>(), block)) {
+            recordBlockBreak(faller, player);
+        }
+
         // Find any hanging entities
         for (Entity hanging : EntityUtils.hangingEntities(block.getLocation(), 2)) {
             final IAction action = actionRegistry.createEntityAction(ActionRegistry.HANGING_BREAK, hanging);

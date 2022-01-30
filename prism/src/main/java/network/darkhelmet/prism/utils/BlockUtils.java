@@ -64,6 +64,25 @@ public class BlockUtils {
     }
 
     /**
+     * Query all gravity-affected blocks on top of a given block.
+     *
+     * @param accumulator Accumulation list as there may be recursion
+     * @param startBlock The start block
+     * @return A list of any blocks that are considered "fallers"
+     */
+    public static List<Block> gravity(List<Block> accumulator, Block startBlock) {
+        Block neighbor = startBlock.getRelative(BlockFace.UP);
+        if (TagLib.GRAVITY_AFFECTED.isTagged(neighbor.getType())) {
+            accumulator.add(neighbor);
+
+            // Recurse upwards
+            gravity(accumulator, neighbor);
+        }
+
+        return accumulator;
+    }
+
+    /**
      * Query all blocks that can detach from a given start block.
      *
      * @param accumulator Accumulation list as there may be recursion

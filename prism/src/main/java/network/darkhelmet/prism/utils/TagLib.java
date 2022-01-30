@@ -97,6 +97,15 @@ public class TagLib {
     public static final MaterialTag WALL_BANNERS = new MaterialTag(Tag.BANNERS).exclude(TOP_BANNERS);
 
     /**
+     * Materials that will fall due to physics if the supporting block is broken.
+     */
+    public static final MaterialTag GRAVITY_AFFECTED = new MaterialTag(
+        Material.GRAVEL,
+        Material.ANVIL,
+        Material.DRAGON_EGG
+    ).append(Tag.SAND).append("_CONCRETE_POWDER", MaterialTag.MatchMode.SUFFIX);
+
+    /**
      * Materials that attach to any side of a block.
      */
     public static final MaterialTag DETACHABLES = new MaterialTag(
