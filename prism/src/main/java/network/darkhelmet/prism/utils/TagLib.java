@@ -115,17 +115,21 @@ public class TagLib {
     ).append(Tag.BUTTONS, Tag.PRESSURE_PLATES);
 
     /**
+     * All materials that can attach to themselves on the bottom (breaks travel downward).
+     */
+    public static final MaterialTag RECURSIVE_BOTTOM_DETACHABLES = new MaterialTag(
+            Material.CHAIN,
+            Material.POINTED_DRIPSTONE,
+            Material.VINE
+    ).append(Tag.CAVE_VINES);
+
+    /**
      * Materials that attach to the bottom of a block.
      */
     public static final MaterialTag BOTTOM_DETACHABLES = new MaterialTag(
-        Material.CHAIN,
         Material.SPORE_BLOSSOM,
-        Material.LANTERN,
-        Material.TWISTING_VINES,
-        Material.TWISTING_VINES_PLANT,
-        Material.WEEPING_VINES,
-        Material.WEEPING_VINES_PLANT
-    ).append(Tag.CAVE_VINES).append(DETACHABLES);
+        Material.LANTERN
+    ).append(Tag.CAVE_VINES).append(DETACHABLES, RECURSIVE_BOTTOM_DETACHABLES);
 
     /**
      * All materials that can detach from the side of a block.
@@ -157,6 +161,21 @@ public class TagLib {
         .append(WALL_BANNERS, DETACHABLES);
 
     /**
+     * All materials that can attach to themselves on the top (breaks travel upward).
+     */
+    public static final MaterialTag RECURSIVE_TOP_DETACHABLES = new MaterialTag(
+        Material.BAMBOO,
+        Material.KELP,
+        Material.CACTUS,
+        Material.SCAFFOLDING,
+        Material.SUGAR_CANE,
+        Material.TWISTING_VINES,
+        Material.TWISTING_VINES_PLANT,
+        Material.WEEPING_VINES,
+        Material.WEEPING_VINES_PLANT
+    ).append(Tag.CAVE_VINES);
+
+    /**
      * All materials that can detach from the top of a block.
      */
     public static final MaterialTag TOP_DETACHABLES = new MaterialTag(
@@ -177,7 +196,6 @@ public class TagLib {
         Material.LANTERN,
         Material.CHAIN,
         Material.CONDUIT,
-        Material.SCAFFOLDING,
         Material.BELL)
         .append(
             Tag.DOORS,
@@ -188,28 +206,5 @@ public class TagLib {
             Tag.BUTTONS,
             Tag.CARPETS,
             Tag.FLOWER_POTS)
-        .append(REDSTONE_DETACHABLE, GROWABLES, ALL_PLANTS, DETACHABLES, TOP_BANNERS);
-
-    /**
-     * All materials that can attach to themselves on the top (breaks travel upward).
-     */
-    public static final MaterialTag RECURSIVE_TOP_DETACHABLES = new MaterialTag(
-        Material.BAMBOO,
-        Material.KELP,
-        Material.CACTUS,
-        Material.SCAFFOLDING,
-        Material.SUGAR_CANE,
-        Material.TWISTING_VINES,
-        Material.TWISTING_VINES_PLANT,
-        Material.WEEPING_VINES,
-        Material.WEEPING_VINES_PLANT
-    ).append(Tag.CAVE_VINES);
-
-    /**
-     * All materials that can attach to themselves on the bottom (breaks travel downward).
-     */
-    public static final MaterialTag RECURSIVE_BOTTOM_DETACHABLES = new MaterialTag(
-        Material.POINTED_DRIPSTONE,
-        Material.VINE
-    ).append(Tag.CAVE_VINES);
+        .append(REDSTONE_DETACHABLE, GROWABLES, ALL_PLANTS, DETACHABLES, TOP_BANNERS, RECURSIVE_TOP_DETACHABLES);
 }

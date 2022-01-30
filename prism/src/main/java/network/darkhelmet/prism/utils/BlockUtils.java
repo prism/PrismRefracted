@@ -92,7 +92,7 @@ public class BlockUtils {
 
             // Recurse downwards
             if (TagLib.RECURSIVE_BOTTOM_DETACHABLES.isTagged(neighbor.getType())) {
-                topDetachables(accumulator, neighbor);
+                bottomDetachables(accumulator, neighbor);
             }
         }
 
