@@ -69,6 +69,7 @@ jar {
 }
 
 shadowJar {
+    relocate 'com.google.guava', 'network.darkhelmet.prism.guava'
     relocate 'com.google.inject', 'network.darkhelmet.prism.inject'
     relocate 'co.aikar.idb', 'network.darkhelmet.prism.idb'
     relocate 'co.aikar.taskchain', 'network.darkhelmet.prism.taskchain'

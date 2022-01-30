@@ -31,11 +31,17 @@ public class ActionsConfig {
     @Comment("entity-kill is when an entity (or player) kills another.")
     private boolean entityKill = true;
 
+    @Comment("""
+            hanging-break is when an item frame or painting is broken/detached.
+            This event will operate if block-break is false, even for detachments.
+            """)
+    private boolean hangingBreak = true;
+
     @Comment("item-drop is when a player or block drops an item on the ground.")
     private boolean itemDrop = true;
 
     /**
-     * Get if block break enabled.
+     * Get if block-break enabled.
      *
      * @return True if enabled
      */
@@ -44,7 +50,7 @@ public class ActionsConfig {
     }
 
     /**
-     * Get if entity kill enabled.
+     * Get if entity-kill enabled.
      *
      * @return True if enabled
      */
@@ -53,7 +59,16 @@ public class ActionsConfig {
     }
 
     /**
-     * Get if item drop enabled.
+     * Get if hanging-break enabled.
+     *
+     * @return True if enabled
+     */
+    public boolean hangingBreak() {
+        return hangingBreak;
+    }
+
+    /**
+     * Get if item-drop enabled.
      *
      * @return True if enabled
      */

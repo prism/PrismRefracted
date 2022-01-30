@@ -44,6 +44,7 @@ import network.darkhelmet.prism.api.recording.IRecordingService;
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
 import network.darkhelmet.prism.config.PrismConfiguration;
 import network.darkhelmet.prism.config.StorageConfiguration;
+import network.darkhelmet.prism.services.ExpectationService;
 import network.darkhelmet.prism.services.messages.MessageRenderer;
 import network.darkhelmet.prism.services.messages.MessageSender;
 import network.darkhelmet.prism.services.messages.MessageService;
@@ -171,6 +172,7 @@ public class PrismModule extends AbstractModule {
         bind(TranslationService.class).in(Singleton.class);
         bind(ActivityPlaceholderResolver.class).in(Singleton.class);
         bind(TranslatableStringPlaceholderResolver.class).in(Singleton.class);
+        bind(ExpectationService.class).in(Singleton.class);
 
         if (storageConfig.datasource().equalsIgnoreCase("mysql")) {
             bind(MysqlSchemaUpdater.class).in(Singleton.class);

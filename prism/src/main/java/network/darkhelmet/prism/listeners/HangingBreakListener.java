@@ -22,7 +22,7 @@ package network.darkhelmet.prism.listeners;
 
 import com.google.inject.Inject;
 
-import java.util.ArrayList;
+import java.util.Optional;
 
 import network.darkhelmet.prism.actions.ActionRegistry;
 import network.darkhelmet.prism.api.actions.IAction;
@@ -32,18 +32,15 @@ import network.darkhelmet.prism.api.activities.IActivity;
 import network.darkhelmet.prism.config.PrismConfiguration;
 import network.darkhelmet.prism.services.ExpectationService;
 import network.darkhelmet.prism.services.recording.RecordingQueue;
-import network.darkhelmet.prism.utils.BlockUtils;
-import network.darkhelmet.prism.utils.EntityUtils;
 
-import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.Hanging;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.hanging.HangingBreakEvent;
 
-public class BlockBreakListener implements Listener {
+public class HangingBreakListener implements Listener {
     /**
      * The prism config.
      */
@@ -65,7 +62,7 @@ public class BlockBreakListener implements Listener {
      * @param prismConfig The prism config
      */
     @Inject
-    public BlockBreakListener(
+    public HangingBreakListener(
             PrismConfiguration prismConfig,
             IActionRegistry actionRegistry,
             ExpectationService expectationService) {
@@ -75,54 +72,50 @@ public class BlockBreakListener implements Listener {
     }
 
     /**
-     * Listens for block break events.
+     * Listens to hanging break events.
      *
-     * @param event The event
+     * <p>Hanging items broken directly by a player fall under HangingBreakByEntityEvent.
+     * This is merely here to capture indirect causes (physics) for when they detach
+     * from a block.</p>
+     *
+     * @param event HangingBreakEvent The hanging break event
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onBlockBreak(final BlockBreakEvent event) {
-        final Player player = event.getPlayer();
-        final Block block = BlockUtils.rootBlock(event.getBlock());
-
-        // Find any hanging entities.
-        if (prismConfig.actions().hangingBreak()) {
-            for (Entity hanging : EntityUtils.hangingEntities(block.getLocation(), 2)) {
-                expectationService.expect(hanging, player);
-            }
-        }
-
+    public void onHangingBreakEvent(final HangingBreakEvent event) {
         // Ignore if this event is disabled
-        if (!prismConfig.actions().blockBreak()) {
+        if (!prismConfig.actions().hangingBreak()) {
             return;
         }
 
-        // Record all blocks that will detach
-        for (Block detachable : BlockUtils.detachables(new ArrayList<>(), block)) {
-            recordBlockBreak(detachable, player);
+        // Ignore other causes. Entity cause already handled.
+        if (!event.getCause().equals(HangingBreakEvent.RemoveCause.PHYSICS)) {
+            return;
         }
 
-        // Record all blocks that will fall
-        for (Block faller : BlockUtils.gravity(new ArrayList<>(), block)) {
-            recordBlockBreak(faller, player);
-        }
+        final Hanging hanging = event.getEntity();
 
-        // Record this block
-        recordBlockBreak(block, player);
+        Optional<Object> expectation = expectationService.expectation(hanging);
+        expectation.ifPresent(o -> {
+            // Queue a recording
+            recordHangingBreak(hanging, o);
+
+            // Remove from cache
+            expectationService.metExpectation(hanging);
+        });
     }
 
     /**
-     * Convenience method for recording a block break by a player.
+     * Record a hanging entity break.
      *
-     * @param block The broken block
-     * @param player The player
+     * @param hanging The hanging entity
+     * @param cause The cause
      */
-    protected void recordBlockBreak(Block block, Player player) {
-        // Build the action
-        final IAction action = actionRegistry.createBlockAction(ActionRegistry.BLOCK_BREAK, block);
+    protected void recordHangingBreak(Entity hanging, Object cause) {
+        final IAction action = actionRegistry.createEntityAction(ActionRegistry.HANGING_BREAK, hanging);
 
         // Build the block break by player activity
         final IActivity activity = Activity.builder()
-            .action(action).location(block.getLocation()).cause(player).build();
+            .action(action).location(hanging.getLocation()).cause(cause).build();
 
         RecordingQueue.addToQueue(activity);
     }
