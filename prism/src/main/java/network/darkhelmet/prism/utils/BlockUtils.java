@@ -20,6 +20,9 @@
 
 package network.darkhelmet.prism.utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Bisected;
@@ -35,12 +38,18 @@ public class BlockUtils {
     private BlockUtils() {}
 
     /**
+     * List all *side* block faces.
+     */
+    private static final BlockFace[] attachmentFacesSides = {
+        BlockFace.EAST, BlockFace.WEST, BlockFace.NORTH, BlockFace.SOUTH };
+
+    /**
      * Gets the "root" block of connected block. If not a
      * double block, the passed block is returned.
      *
      * @param block Block
      */
-    public static Block getRootBlock(Block block) {
+    public static Block rootBlock(Block block) {
         BlockData data = block.getBlockData();
         if (data instanceof Bed bed) {
             if (bed.getPart() == Bed.Part.HEAD) {
@@ -53,5 +62,73 @@ public class BlockUtils {
         }
 
         return block;
+    }
+
+    /**
+     * Query all blocks that can detach from a given start block.
+     *
+     * @param startBlock The start block
+     * @return A list of any detachable blocks
+     */
+    public static List<Block> detachables(Block startBlock) {
+        List<Block> detachables = new ArrayList<>();
+        detachables.addAll(sideDetachables(startBlock));
+        detachables.addAll(topDetachables(startBlock));
+        detachables.addAll(bottomDetachables(startBlock));
+
+        return detachables;
+    }
+
+    /**
+     * Query all "detachable" blocks on the bottom of a given block.
+     *
+     * @param startBlock The start block
+     * @return A list of any blocks that are considered "detachable"
+     */
+    protected static List<Block> bottomDetachables(Block startBlock) {
+        List<Block> detachables = new ArrayList<>();
+
+        Block neighbor = startBlock.getRelative(BlockFace.DOWN);
+        if (TagLib.BOTTOM_DETACHABLES.isTagged(neighbor.getType())) {
+            detachables.add(neighbor);
+        }
+
+        return detachables;
+    }
+
+    /**
+     * Query all "detachable" blocks on top of a given block.
+     *
+     * @param startBlock The start block
+     * @return A list of any blocks that are considered "detachable"
+     */
+    protected static List<Block> topDetachables(Block startBlock) {
+        List<Block> detachables = new ArrayList<>();
+
+        Block neighbor = startBlock.getRelative(BlockFace.UP);
+        if (TagLib.TOP_DETACHABLES.isTagged(neighbor.getType())) {
+            detachables.add(neighbor);
+        }
+
+        return detachables;
+    }
+
+    /**
+     * Query all "detachable" blocks on the sides of a given block.
+     *
+     * @param startBlock The start block
+     * @return A list of any blocks that are considered "detachable"
+     */
+    protected static List<Block> sideDetachables(Block startBlock) {
+        List<Block> detachables = new ArrayList<>();
+
+        for (BlockFace face : attachmentFacesSides) {
+            Block neighbor = startBlock.getRelative(face);
+            if (TagLib.SIDE_DETACHABLES.isTagged(neighbor.getType())) {
+                detachables.add(neighbor);
+            }
+        }
+
+        return detachables;
     }
 }

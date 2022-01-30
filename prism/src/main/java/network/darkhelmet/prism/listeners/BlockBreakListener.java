@@ -73,8 +73,24 @@ public class BlockBreakListener implements Listener {
         }
 
         final Player player = event.getPlayer();
-        final Block block = BlockUtils.getRootBlock(event.getBlock());
+        final Block block = BlockUtils.rootBlock(event.getBlock());
 
+        // Record all blocks that will detach
+        for (Block detachable : BlockUtils.detachables(block)) {
+            recordBlockBreak(detachable, player);
+        }
+
+        // Record this block
+        recordBlockBreak(block, player);
+    }
+
+    /**
+     * Convenience method for recording a block break by a player.
+     *
+     * @param block The broken block
+     * @param player The player
+     */
+    protected void recordBlockBreak(Block block, Player player) {
         // Build the action
         final IAction action = actionRegistry.createBlockAction(ActionRegistry.BLOCK_BREAK, block);
 
