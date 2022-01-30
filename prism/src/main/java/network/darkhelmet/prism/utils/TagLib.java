@@ -190,6 +190,9 @@ public class TagLib {
             Tag.FLOWER_POTS)
         .append(REDSTONE_DETACHABLE, GROWABLES, ALL_PLANTS, DETACHABLES, TOP_BANNERS);
 
+    /**
+     * All materials that can attach to themselves on the top (breaks travel upward).
+     */
     public static final MaterialTag RECURSIVE_TOP_DETACHABLES = new MaterialTag(
         Material.BAMBOO,
         Material.KELP,
@@ -202,6 +205,9 @@ public class TagLib {
         Material.WEEPING_VINES_PLANT
     ).append(Tag.CAVE_VINES);
 
+    /**
+     * All materials that can attach to themselves on the bottom (breaks travel downward).
+     */
     public static final MaterialTag RECURSIVE_BOTTOM_DETACHABLES = new MaterialTag(
         Material.POINTED_DRIPSTONE,
         Material.VINE
