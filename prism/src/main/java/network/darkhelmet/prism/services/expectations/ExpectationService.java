@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package network.darkhelmet.prism.services;
+package network.darkhelmet.prism.services.expectations;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;

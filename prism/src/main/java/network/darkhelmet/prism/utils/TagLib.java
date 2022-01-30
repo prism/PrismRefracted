@@ -109,6 +109,7 @@ public class TagLib {
      * Materials that attach to any side of a block.
      */
     public static final MaterialTag DETACHABLES = new MaterialTag(
+        Material.CHORUS_PLANT,
         Material.AMETHYST_CLUSTER);
 
     /**

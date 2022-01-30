@@ -44,7 +44,7 @@ import network.darkhelmet.prism.api.recording.IRecordingService;
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
 import network.darkhelmet.prism.config.PrismConfiguration;
 import network.darkhelmet.prism.config.StorageConfiguration;
-import network.darkhelmet.prism.services.ExpectationService;
+import network.darkhelmet.prism.services.expectations.ExpectationService;
 import network.darkhelmet.prism.services.messages.MessageRenderer;
 import network.darkhelmet.prism.services.messages.MessageSender;
 import network.darkhelmet.prism.services.messages.MessageService;
