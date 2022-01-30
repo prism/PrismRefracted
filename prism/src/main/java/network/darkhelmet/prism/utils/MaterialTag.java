@@ -61,17 +61,6 @@ public class MaterialTag implements Tag<Material> {
         append(materials);
     }
 
-    /**
-     * Constructor.
-     *
-     * @param segment Sting
-     * @param mode MatchMode
-     */
-    public MaterialTag(String segment, MatchMode mode) {
-        this.materials = EnumSet.noneOf(Material.class);
-        append(segment, mode);
-    }
-
     @NotNull
     @Override
     public NamespacedKey getKey() {

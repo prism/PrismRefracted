@@ -47,9 +47,14 @@ public class ActionRegistry implements IActionRegistry {
     /**
      * Static cache of Prism action types.
      */
-    public static final ActionType BLOCK_BREAK = new BlockActionType("block-break", ActionResultType.REMOVES, true);
-    public static final ActionType ENTITY_KILL = new EntityActionType("entity-kill", ActionResultType.REMOVES, true);
-    public static final ActionType ITEM_DROP = new ItemActionType("item-drop", ActionResultType.REMOVES, true);
+    public static final ActionType BLOCK_BREAK =
+        new BlockActionType("block-break", ActionResultType.REMOVES, true);
+    public static final ActionType ENTITY_KILL =
+        new EntityActionType("entity-kill", ActionResultType.REMOVES, true);
+    public static final ActionType HANGING_BREAK =
+        new EntityActionType("hanging-break", ActionResultType.REMOVES, true);
+    public static final ActionType ITEM_DROP =
+        new ItemActionType("item-drop", ActionResultType.REMOVES, true);
 
     /**
      * Construct the action registry.
@@ -58,6 +63,7 @@ public class ActionRegistry implements IActionRegistry {
         // Register Prism actions
         registerAction(BLOCK_BREAK);
         registerAction(ENTITY_KILL);
+        registerAction(HANGING_BREAK);
         registerAction(ITEM_DROP);
     }
 

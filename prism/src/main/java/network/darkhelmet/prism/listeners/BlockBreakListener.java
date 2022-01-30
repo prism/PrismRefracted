@@ -32,8 +32,10 @@ import network.darkhelmet.prism.api.activities.IActivity;
 import network.darkhelmet.prism.config.PrismConfiguration;
 import network.darkhelmet.prism.services.recording.RecordingQueue;
 import network.darkhelmet.prism.utils.BlockUtils;
+import network.darkhelmet.prism.utils.EntityUtils;
 
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -80,6 +82,17 @@ public class BlockBreakListener implements Listener {
         // Record all blocks that will detach
         for (Block detachable : BlockUtils.detachables(new ArrayList<>(), block)) {
             recordBlockBreak(detachable, player);
+        }
+
+        // Find any hanging entities
+        for (Entity hanging : EntityUtils.hangingEntities(block.getLocation(), 2)) {
+            final IAction action = actionRegistry.createEntityAction(ActionRegistry.HANGING_BREAK, hanging);
+
+            // Build the block break by player activity
+            final IActivity activity = Activity.builder()
+                .action(action).location(hanging.getLocation()).cause(player).build();
+
+            RecordingQueue.addToQueue(activity);
         }
 
         // Record this block
