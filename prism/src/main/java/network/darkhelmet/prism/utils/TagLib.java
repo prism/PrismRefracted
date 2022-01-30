@@ -138,7 +138,8 @@ public class TagLib {
      */
     public static final MaterialTag BOTTOM_DETACHABLES = new MaterialTag(
         Material.SPORE_BLOSSOM,
-        Material.LANTERN
+        Material.LANTERN,
+        Material.SOUL_LANTERN
     ).append(Tag.CAVE_VINES).append(DETACHABLES, RECURSIVE_BOTTOM_DETACHABLES);
 
     /**

@@ -22,6 +22,7 @@ package network.darkhelmet.prism.utils;
 
 import java.util.List;
 
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Bisected;
@@ -151,6 +152,11 @@ public class BlockUtils {
             Block neighbor = startBlock.getRelative(face);
             if (TagLib.SIDE_DETACHABLES.isTagged(neighbor.getType())) {
                 accumulator.add(neighbor);
+
+                // Vines can extend down from a side attachment
+                if (neighbor.getType().equals(Material.VINE)) {
+                    bottomDetachables(accumulator, neighbor);
+                }
             }
         }
 

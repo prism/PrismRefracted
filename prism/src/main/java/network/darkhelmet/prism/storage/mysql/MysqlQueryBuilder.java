@@ -107,10 +107,11 @@ public class MysqlQueryBuilder {
                 + "CASE material WHEN 'cave_vines' THEN 1 ELSE -1 END ASC, "
                 + "CASE material WHEN 'cave_vines_plant' THEN 1 ELSE -1 END ASC, "
                 + "CASE material WHEN 'pointed_dripstone' THEN 1 ELSE -1 END ASC, "
+                + "CASE WHEN material IN ('vine', 'pointed_dripstone') THEN 1 ELSE -1 END ASC, "
                 + "`x` ASC, "
                 + "`z` ASC, "
-                + "CASE WHEN material IN ('pointed_dripstone', 'cave_vines_plant') THEN y END DESC, "
-                + "CASE WHEN material NOT IN ('pointed_dripstone', 'cave_vines_plant') THEN y END ASC ";
+                + "CASE WHEN material IN ('pointed_dripstone', 'cave_vines_plant', 'vine') THEN y END DESC, "
+                + "CASE WHEN material NOT IN ('pointed_dripstone', 'cave_vines_plant', 'vine') THEN y END ASC ";
             sql += orderBy;
         }
 
