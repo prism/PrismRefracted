@@ -22,6 +22,8 @@ package network.darkhelmet.prism.listeners;
 
 import com.google.inject.Inject;
 
+import java.util.ArrayList;
+
 import network.darkhelmet.prism.actions.ActionRegistry;
 import network.darkhelmet.prism.api.actions.IAction;
 import network.darkhelmet.prism.api.actions.IActionRegistry;
@@ -76,7 +78,7 @@ public class BlockBreakListener implements Listener {
         final Block block = BlockUtils.rootBlock(event.getBlock());
 
         // Record all blocks that will detach
-        for (Block detachable : BlockUtils.detachables(block)) {
+        for (Block detachable : BlockUtils.detachables(new ArrayList<>(), block)) {
             recordBlockBreak(detachable, player);
         }
 

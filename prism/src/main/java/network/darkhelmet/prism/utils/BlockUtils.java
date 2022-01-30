@@ -20,7 +20,6 @@
 
 package network.darkhelmet.prism.utils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.block.Block;
@@ -67,68 +66,75 @@ public class BlockUtils {
     /**
      * Query all blocks that can detach from a given start block.
      *
+     * @param accumulator Accumulation list as there may be recursion
      * @param startBlock The start block
      * @return A list of any detachable blocks
      */
-    public static List<Block> detachables(Block startBlock) {
-        List<Block> detachables = new ArrayList<>();
-        detachables.addAll(sideDetachables(startBlock));
-        detachables.addAll(topDetachables(startBlock));
-        detachables.addAll(bottomDetachables(startBlock));
+    public static List<Block> detachables(List<Block> accumulator, Block startBlock) {
+        sideDetachables(accumulator, startBlock);
+        topDetachables(accumulator, startBlock);
+        bottomDetachables(accumulator, startBlock);
 
-        return detachables;
+        return accumulator;
     }
 
     /**
      * Query all "detachable" blocks on the bottom of a given block.
      *
+     * @param accumulator Accumulation list as there may be recursion
      * @param startBlock The start block
      * @return A list of any blocks that are considered "detachable"
      */
-    protected static List<Block> bottomDetachables(Block startBlock) {
-        List<Block> detachables = new ArrayList<>();
-
+    protected static List<Block> bottomDetachables(List<Block> accumulator, Block startBlock) {
         Block neighbor = startBlock.getRelative(BlockFace.DOWN);
         if (TagLib.BOTTOM_DETACHABLES.isTagged(neighbor.getType())) {
-            detachables.add(neighbor);
+            accumulator.add(neighbor);
+
+            // Recurse downwards
+            if (TagLib.RECURSIVE_BOTTOM_DETACHABLES.isTagged(neighbor.getType())) {
+                topDetachables(accumulator, neighbor);
+            }
         }
 
-        return detachables;
+        return accumulator;
     }
 
     /**
      * Query all "detachable" blocks on top of a given block.
      *
+     * @param accumulator Accumulation list as there may be recursion
      * @param startBlock The start block
      * @return A list of any blocks that are considered "detachable"
      */
-    protected static List<Block> topDetachables(Block startBlock) {
-        List<Block> detachables = new ArrayList<>();
-
+    protected static List<Block> topDetachables(List<Block> accumulator, Block startBlock) {
         Block neighbor = startBlock.getRelative(BlockFace.UP);
         if (TagLib.TOP_DETACHABLES.isTagged(neighbor.getType())) {
-            detachables.add(neighbor);
+            accumulator.add(neighbor);
+
+            // Recurse upwards
+            if (TagLib.RECURSIVE_TOP_DETACHABLES.isTagged(neighbor.getType())) {
+                topDetachables(accumulator, neighbor);
+            }
         }
 
-        return detachables;
+        return accumulator;
     }
 
     /**
      * Query all "detachable" blocks on the sides of a given block.
      *
+     * @param accumulator Accumulation list as there may be recursion
      * @param startBlock The start block
      * @return A list of any blocks that are considered "detachable"
      */
-    protected static List<Block> sideDetachables(Block startBlock) {
-        List<Block> detachables = new ArrayList<>();
-
+    protected static List<Block> sideDetachables(List<Block> accumulator, Block startBlock) {
         for (BlockFace face : attachmentFacesSides) {
             Block neighbor = startBlock.getRelative(face);
             if (TagLib.SIDE_DETACHABLES.isTagged(neighbor.getType())) {
-                detachables.add(neighbor);
+                accumulator.add(neighbor);
             }
         }
 
-        return detachables;
+        return accumulator;
     }
 }

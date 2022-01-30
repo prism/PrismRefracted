@@ -84,7 +84,13 @@ public class TagLib {
     public static final MaterialTag WALL_BANNERS = new MaterialTag(Tag.BANNERS).exclude(TOP_BANNERS);
 
     /**
-     * Materials the attach to the bottom of a block.
+     * Materials that attach to any side of a block.
+     */
+    public static final MaterialTag DETACHABLES = new MaterialTag(
+        Material.AMETHYST_CLUSTER);
+
+    /**
+     * Materials that attach to the bottom of a block.
      */
     public static final MaterialTag BOTTOM_DETACHABLES = new MaterialTag(
         Material.CHAIN,
@@ -94,7 +100,7 @@ public class TagLib {
         Material.TWISTING_VINES_PLANT,
         Material.WEEPING_VINES,
         Material.WEEPING_VINES_PLANT
-    ).append(Tag.CAVE_VINES);
+    ).append(Tag.CAVE_VINES).append(DETACHABLES);
 
     /**
      * All materials that can detach from the side of a block.
@@ -122,7 +128,7 @@ public class TagLib {
         Material.NETHER_PORTAL,
         Material.TRIPWIRE_HOOK)
         .append(Tag.BUTTONS, Tag.WALL_SIGNS, Tag.CLIMBABLE)
-        .append(WALL_BANNERS);
+        .append(WALL_BANNERS, DETACHABLES);
 
     /**
      * All materials that can detach from the top of a block.
@@ -165,12 +171,26 @@ public class TagLib {
         .append(Tag.DOORS,
             Tag.RAILS,
             Tag.SAPLINGS,
-            TOP_BANNERS,
             Tag.STANDING_SIGNS)
         .append(
             Tag.WOODEN_PRESSURE_PLATES,
             Tag.BUTTONS,
             Tag.CARPETS,
             Tag.FLOWER_POTS)
-        .append(ALL_PLANTS);
+        .append(ALL_PLANTS, DETACHABLES, TOP_BANNERS);
+
+    public static final MaterialTag RECURSIVE_TOP_DETACHABLES = new MaterialTag(
+        Material.BAMBOO,
+        Material.KELP,
+        Material.SUGAR_CANE,
+        Material.TWISTING_VINES,
+        Material.TWISTING_VINES_PLANT,
+        Material.WEEPING_VINES,
+        Material.WEEPING_VINES_PLANT
+    ).append(Tag.CAVE_VINES);
+
+    public static final MaterialTag RECURSIVE_BOTTOM_DETACHABLES = new MaterialTag(
+        Material.POINTED_DRIPSTONE,
+        Material.VINE
+    ).append(Tag.CAVE_VINES);
 }
