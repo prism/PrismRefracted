@@ -223,7 +223,7 @@ public class BlockAction extends GenericAction {
             final CommandActionData ad = (CommandActionData) blockActionData;
             name += " (" + ad.command + ")";
         }
-        if (blockActionData.customName != null) {
+        if (blockActionData.customName != null && !blockActionData.customName.isEmpty()) {
             name += ChatColor.RESET + " (" + blockActionData.customName + ChatColor.RESET + ") ";
         }
         if (getActionType().getName().equals("crop-trample") && getMaterial() == AIR) {
