@@ -47,8 +47,8 @@ public class ActionMessage {
      * @return String
      */
     public String getRawMessage() {
-        String format1 = "<prefix> <handlerId> <target> <actor> <extendedInfo><actorNice> <count>"
-                + " <timeDiff> <location>";
+        String format1 = "<prefix> <handlerId> <target> <actor> <extendedInfo><actorNice><count>"
+                + "<timeDiff> <location>";
         ActionType action = handler.getActionType();
         return PlainComponentSerializer.plain().serialize(getMainMessage(action, format1));
     }
@@ -58,7 +58,7 @@ public class ActionMessage {
         TextComponent out = Component.text().content(format1).build();
         Component result = out.replaceFirstText(Pattern.compile("<prefix>"), builder -> getPosNegPrefix())
                 .replaceFirstText(Pattern.compile("<index>"),
-                      builder -> builder.content("[" + index + "] ").color(NamedTextColor.GRAY))
+                      builder -> builder.content("[" + index + "]").color(NamedTextColor.GRAY))
                 .replaceFirstText(Pattern.compile("<target>"),
                       builder -> Component.text().content(handler.getSourceName()).color(highlight))
                 .replaceFirstText(Pattern.compile("<description>"),
@@ -98,7 +98,7 @@ public class ActionMessage {
      */
     public TextComponent getMessage() {
         String format1 =
-                "<prefix> <index> <target> <description> <actorNice> <extendedInfo><count> <timeDiff> <actionType>";
+                "<prefix> <index> <target> <description> <actorNice><extendedInfo><count><timeDiff> <actionType>";
         String format2 = "-<handlerId>- <dateTime> - <location>";
         ActionType action = handler.getActionType();
         TextComponent out = getMainMessage(action, format1);
@@ -144,19 +144,18 @@ public class ActionMessage {
     }
 
     private TextComponent.Builder getActor(ActionTypeImpl action, TextColor highlight) {
-        String target = "unknown";
+        String target = "";
         if (action.getHandler() != null) {
             if (!handler.getNiceName().isEmpty()) {
-                target = handler.getNiceName();
+                target = handler.getNiceName() + " ";
             }
         } else {
             // We should really improve this, but this saves me from having to
-            // make
-            // a custom handler.
+            // make a custom handler.
             if (action.getName().equals("lava-bucket")) {
-                target = "lava";
+                target = "lava ";
             } else if (action.getName().equals("water-bucket")) {
-                target = "water";
+                target = "water ";
             }
         }
         return Component.text()
@@ -166,7 +165,7 @@ public class ActionMessage {
 
     private TextComponent getCount() {
         if (handler.getAggregateCount() > 1) {
-            return Component.text("x" + handler.getAggregateCount());
+            return Component.text("x" + handler.getAggregateCount() + " ");
         }
         return Component.empty();
     }
