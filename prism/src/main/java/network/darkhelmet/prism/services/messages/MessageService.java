@@ -25,9 +25,11 @@ import net.kyori.moonshine.annotation.Placeholder;
 
 import network.darkhelmet.prism.api.PaginatedResults;
 import network.darkhelmet.prism.api.activities.IActivity;
+import network.darkhelmet.prism.api.services.wands.WandMode;
 import network.darkhelmet.prism.services.translation.TranslationKey;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public interface MessageService {
     @Message("about")
@@ -44,4 +46,13 @@ public interface MessageService {
 
     @Message("no-results")
     void noResults(CommandSender receiver);
+
+    @Message("wand-activated")
+    void wandActivated(Player player, @Placeholder WandMode wandMode);
+
+    @Message("wand-switched")
+    void wandSwitched(Player player, @Placeholder WandMode wandMode);
+
+    @Message("wand-deactivated")
+    void wandDeactivated(Player player, @Placeholder WandMode wandMode);
 }

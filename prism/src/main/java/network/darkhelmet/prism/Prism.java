@@ -28,16 +28,22 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import me.mattstudios.mf.base.CommandManager;
+import me.mattstudios.mf.base.components.TypeResult;
 
+import network.darkhelmet.prism.api.services.wands.WandMode;
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
 import network.darkhelmet.prism.commands.AboutCommand;
 import network.darkhelmet.prism.commands.NearCommand;
 import network.darkhelmet.prism.commands.RestoreCommand;
 import network.darkhelmet.prism.commands.RollbackCommand;
+import network.darkhelmet.prism.commands.WandCommand;
 import network.darkhelmet.prism.config.Config;
 import network.darkhelmet.prism.config.PrismConfiguration;
 import network.darkhelmet.prism.config.StorageConfiguration;
@@ -46,6 +52,7 @@ import network.darkhelmet.prism.listeners.BlockBreakListener;
 import network.darkhelmet.prism.listeners.EntityDeathListener;
 import network.darkhelmet.prism.listeners.HangingBreakListener;
 import network.darkhelmet.prism.listeners.PlayerDropItemListener;
+import network.darkhelmet.prism.listeners.PlayerInteractListener;
 import network.darkhelmet.prism.services.recording.RecordingService;
 
 import org.apache.logging.log4j.LogManager;
@@ -146,13 +153,42 @@ public class Prism extends JavaPlugin {
             getServer().getPluginManager().registerEvents(injector.getInstance(EntityDeathListener.class), this);
             getServer().getPluginManager().registerEvents(injector.getInstance(HangingBreakListener.class), this);
             getServer().getPluginManager().registerEvents(injector.getInstance(PlayerDropItemListener.class), this);
+            getServer().getPluginManager().registerEvents(injector.getInstance(PlayerInteractListener.class), this);
 
             // Register commands
             CommandManager commandManager = new CommandManager(this);
+
+            // Register wand mode command parameter type
+            commandManager.getParameterHandler().register(WandMode.class, argument -> {
+                if (argument == null) {
+                    return new TypeResult(null);
+                }
+
+                try {
+                    WandMode wandMode = WandMode.valueOf(argument.toString().toUpperCase(Locale.ENGLISH));
+
+                    return new TypeResult(wandMode, argument);
+                } catch (IllegalArgumentException e) {
+                    return new TypeResult(argument);
+                }
+            });
+
+            // Register wand mode command auto-suggest
+            commandManager.getCompletionHandler().register("#wands", input -> {
+                List<String> wandModes = new ArrayList<>();
+
+                for (WandMode mode : WandMode.values()) {
+                    wandModes.add(mode.toString().toLowerCase(Locale.ENGLISH));
+                }
+
+                return wandModes;
+            });
+
             commandManager.register(injector.getInstance(AboutCommand.class));
             commandManager.register(injector.getInstance(NearCommand.class));
             commandManager.register(injector.getInstance(RestoreCommand.class));
             commandManager.register(injector.getInstance(RollbackCommand.class));
+            commandManager.register(injector.getInstance(WandCommand.class));
         }
     }
 

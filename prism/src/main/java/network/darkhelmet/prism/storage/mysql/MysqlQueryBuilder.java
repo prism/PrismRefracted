@@ -72,7 +72,12 @@ public class MysqlQueryBuilder {
         List<String> conditions = new ArrayList<>();
         List<Object> parameters = new ArrayList<>();
 
-        if (query.minVector() != null && query.maxVector() != null) {
+        if (query.location() != null) {
+            conditions.add("(`x` = ? AND `y` = ? AND `z` = ?)");
+            parameters.add(query.location().getBlockX());
+            parameters.add(query.location().getBlockY());
+            parameters.add(query.location().getBlockZ());
+        } else if (query.minVector() != null && query.maxVector() != null) {
             conditions.add("(`x` BETWEEN ? AND ?)");
             conditions.add("(`y` BETWEEN ? AND ?)");
             conditions.add("(`z` BETWEEN ? AND ?)");

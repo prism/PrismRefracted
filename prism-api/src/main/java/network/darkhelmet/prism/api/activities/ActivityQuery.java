@@ -20,10 +20,12 @@
 
 package network.darkhelmet.prism.api.activities;
 
+import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
 public record ActivityQuery(
     boolean isLookup,
+    Location location,
     Vector minVector,
     Vector maxVector,
     int offset,
@@ -82,6 +84,11 @@ public record ActivityQuery(
         private boolean isLookup = true;
 
         /**
+         * The location.
+         */
+        private Location location;
+
+        /**
          * The minimum vector.
          */
         private Vector minVector;
@@ -113,8 +120,19 @@ public record ActivityQuery(
          * @param isLookup If lookup
          * @return The builder
          */
-        public Builder setLookup(boolean isLookup) {
+        public Builder lookup(boolean isLookup) {
             this.isLookup = isLookup;
+            return this;
+        }
+
+        /**
+         * Set a single location.
+         *
+         * @param location The location
+         * @return The builder
+         */
+        public Builder location(Location location) {
+            this.location = location;
             return this;
         }
 
@@ -179,7 +197,7 @@ public record ActivityQuery(
          * @return The activity query
          */
         public ActivityQuery build() {
-            return new ActivityQuery(isLookup, minVector, maxVector, offset, limit, sort);
+            return new ActivityQuery(isLookup, location, minVector, maxVector, offset, limit, sort);
         }
     }
 }

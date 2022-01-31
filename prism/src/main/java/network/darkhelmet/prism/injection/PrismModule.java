@@ -24,6 +24,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import com.google.inject.multibindings.MapBinder;
 import com.google.inject.name.Named;
 
 import io.leangen.geantyref.TypeToken;
@@ -42,6 +43,8 @@ import network.darkhelmet.prism.api.actions.IActionRegistry;
 import network.darkhelmet.prism.api.activities.IActivity;
 import network.darkhelmet.prism.api.services.modifications.IModificationQueueService;
 import network.darkhelmet.prism.api.services.recording.IRecordingService;
+import network.darkhelmet.prism.api.services.wands.IWand;
+import network.darkhelmet.prism.api.services.wands.WandMode;
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
 import network.darkhelmet.prism.config.PrismConfiguration;
 import network.darkhelmet.prism.config.StorageConfiguration;
@@ -54,10 +57,15 @@ import network.darkhelmet.prism.services.messages.resolvers.ActivityPlaceholderR
 import network.darkhelmet.prism.services.messages.resolvers.PaginatedResultsPlaceholderResolver;
 import network.darkhelmet.prism.services.messages.resolvers.StringPlaceholderResolver;
 import network.darkhelmet.prism.services.messages.resolvers.TranslatableStringPlaceholderResolver;
+import network.darkhelmet.prism.services.messages.resolvers.WandModePlaceholderResolver;
 import network.darkhelmet.prism.services.modifications.ModificationQueueService;
 import network.darkhelmet.prism.services.recording.RecordingService;
 import network.darkhelmet.prism.services.translation.TranslationKey;
 import network.darkhelmet.prism.services.translation.TranslationService;
+import network.darkhelmet.prism.services.wands.InspectionWand;
+import network.darkhelmet.prism.services.wands.RestoreWand;
+import network.darkhelmet.prism.services.wands.RollbackWand;
+import network.darkhelmet.prism.services.wands.WandService;
 import network.darkhelmet.prism.storage.mysql.MysqlSchemaUpdater;
 import network.darkhelmet.prism.storage.mysql.MysqlStorageAdapter;
 
@@ -128,7 +136,12 @@ public class PrismModule extends AbstractModule {
     /**
      * Get the message service.
      *
-     * @param translationService The translation service.
+     * @param translationService The translation service
+     * @param messageRenderer The message renderer
+     * @param messageSender The message sender
+     * @param activityPlaceholderResolver The activity placeholder resolver
+     * @param translatableStringPlaceholderResolver The translatable string resolver
+     * @param wandModePlaceholderResolver The wand mode resolver
      * @return The message service
      */
     @Provides
@@ -139,7 +152,8 @@ public class PrismModule extends AbstractModule {
             MessageRenderer messageRenderer,
             MessageSender messageSender,
             ActivityPlaceholderResolver activityPlaceholderResolver,
-            TranslatableStringPlaceholderResolver translatableStringPlaceholderResolver) {
+            TranslatableStringPlaceholderResolver translatableStringPlaceholderResolver,
+            WandModePlaceholderResolver wandModePlaceholderResolver) {
         try {
             return Moonshine.<MessageService, CommandSender>builder(
                     TypeToken.get(MessageService.class))
@@ -152,6 +166,7 @@ public class PrismModule extends AbstractModule {
                 .weightedPlaceholderResolver(TranslationKey.class, translatableStringPlaceholderResolver, 0)
                 .weightedPlaceholderResolver(String.class, new StringPlaceholderResolver(), 0)
                 .weightedPlaceholderResolver(IActivity.class, activityPlaceholderResolver, 0)
+                .weightedPlaceholderResolver(WandMode.class, wandModePlaceholderResolver, 0)
                 .weightedPlaceholderResolver(new TypeToken<>(){}, new PaginatedResultsPlaceholderResolver(), 0)
                 .create(this.getClass().getClassLoader());
         } catch (UnscannableMethodException e) {
@@ -176,6 +191,12 @@ public class PrismModule extends AbstractModule {
         bind(ActivityPlaceholderResolver.class).in(Singleton.class);
         bind(TranslatableStringPlaceholderResolver.class).in(Singleton.class);
         bind(ExpectationService.class).in(Singleton.class);
+        bind(WandService.class).in(Singleton.class);
+
+        MapBinder<WandMode, IWand> mapBinder = MapBinder.newMapBinder(binder(), WandMode.class, IWand.class);
+        mapBinder.addBinding(WandMode.INSPECT).to(InspectionWand.class);
+        mapBinder.addBinding(WandMode.ROLLBACK).to(RollbackWand.class);
+        mapBinder.addBinding(WandMode.RESTORE).to(RestoreWand.class);
 
         if (storageConfig.datasource().equalsIgnoreCase("mysql")) {
             bind(MysqlSchemaUpdater.class).in(Singleton.class);

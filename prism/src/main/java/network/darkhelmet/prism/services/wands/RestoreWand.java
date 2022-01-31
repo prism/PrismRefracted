@@ -18,37 +18,30 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package network.darkhelmet.prism.commands;
+package network.darkhelmet.prism.services.wands;
 
 import com.google.inject.Inject;
 
 import java.util.List;
-
-import me.mattstudios.mf.annotations.Alias;
-import me.mattstudios.mf.annotations.Command;
-import me.mattstudios.mf.annotations.SubCommand;
-import me.mattstudios.mf.base.CommandBase;
 
 import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.api.actions.IAction;
 import network.darkhelmet.prism.api.activities.ActivityQuery;
 import network.darkhelmet.prism.api.services.modifications.IModificationQueue;
 import network.darkhelmet.prism.api.services.modifications.IModificationQueueService;
+import network.darkhelmet.prism.api.services.wands.IWand;
+import network.darkhelmet.prism.api.services.wands.WandMode;
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
 import network.darkhelmet.prism.config.PrismConfiguration;
 import network.darkhelmet.prism.services.messages.MessageService;
 import network.darkhelmet.prism.services.translation.TranslationKey;
-import network.darkhelmet.prism.utils.LocationUtils;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 
-@Command("prism")
-@Alias("pr")
-public class RollbackCommand extends CommandBase {
+public class RestoreWand implements IWand {
     /**
-     * The prism configuration.
+     * The prism config.
      */
     private final PrismConfiguration prismConfig;
 
@@ -68,59 +61,62 @@ public class RollbackCommand extends CommandBase {
     private final IModificationQueueService modificationQueueService;
 
     /**
-     * Construct the near command.
+     * The owner.
+     */
+    private Player owner;
+
+    /**
+     * Construct a new inspection wand.
      *
-     * @param prismConfig The prism configuration
+     * @param prismConfig The prism config
      * @param storageAdapter The storage adapter
      * @param messageService The message service
      * @param modificationQueueService The modification queue service
      */
     @Inject
-    public RollbackCommand(
+    public RestoreWand(
             PrismConfiguration prismConfig,
             IStorageAdapter storageAdapter,
             MessageService messageService,
             IModificationQueueService modificationQueueService) {
-        this.prismConfig = prismConfig;
         this.storageAdapter = storageAdapter;
+        this.prismConfig = prismConfig;
         this.messageService = messageService;
         this.modificationQueueService = modificationQueueService;
     }
 
-    /**
-     * Run the rollback command.
-     *
-     * @param player The player
-     */
-    @SubCommand("rollback")
-    @Alias("rb")
-    public void onRollback(final Player player) {
+    @Override
+    public WandMode mode() {
+        return WandMode.RESTORE;
+    }
+
+    @Override
+    public void setOwner(Player owner) {
+        this.owner = owner;
+    }
+
+    @Override
+    public void use(Location location) {
         // Ensure a queue is free
         if (!modificationQueueService.queueAvailable()) {
-            messageService.error(player, new TranslationKey("queue-not-free"));
+            messageService.error(owner, new TranslationKey("queue-not-free"));
 
             return;
         }
 
-        Location loc = player.getLocation();
-        int radius = prismConfig.nearRadius();
+        final ActivityQuery query = ActivityQuery.builder().location(location).limit(prismConfig.perPage()).build();
 
-        Vector minVector = LocationUtils.getMinVector(loc, radius);
-        Vector maxVector = LocationUtils.getMaxVector(loc, radius);
-
-        final ActivityQuery query = ActivityQuery.builder()
-            .minVector(minVector).maxVector(maxVector).lookup(false).build();
         Prism.newChain().asyncFirst(() -> {
             try {
                 return storageAdapter.queryActivities(query);
             } catch (Exception e) {
-                messageService.error(player, new TranslationKey("query-error"));
+                messageService.error(owner, new TranslationKey("query-error"));
                 Prism.getInstance().handleException(e);
             }
 
             return null;
         }).abortIfNull().<List<IAction>>sync(results -> {
-            IModificationQueue queue = modificationQueueService.newRollbackQueue(player, results);
+            IModificationQueue queue = modificationQueueService.newRestoreQueue(owner, results);
             queue.apply();
 
             return null;
