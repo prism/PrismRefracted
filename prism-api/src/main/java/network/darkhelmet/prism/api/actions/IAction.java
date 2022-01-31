@@ -22,7 +22,7 @@ package network.darkhelmet.prism.api.actions;
 
 import network.darkhelmet.prism.api.actions.types.ActionType;
 import network.darkhelmet.prism.api.activities.IActivity;
-import network.darkhelmet.prism.api.modifications.ModificationResult;
+import network.darkhelmet.prism.api.services.modifications.ModificationResult;
 
 public interface IAction {
     /**

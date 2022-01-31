@@ -18,14 +18,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package network.darkhelmet.prism.modifications;
+package network.darkhelmet.prism.services.modifications;
 
 import java.util.List;
 import java.util.function.Consumer;
 
 import network.darkhelmet.prism.api.activities.IActivity;
-import network.darkhelmet.prism.api.modifications.ModificationQueueResult;
-import network.darkhelmet.prism.api.modifications.ModificationResult;
+import network.darkhelmet.prism.api.services.modifications.ModificationQueueResult;
+import network.darkhelmet.prism.api.services.modifications.ModificationResult;
 
 public class Restore extends AbstractWorldModificationQueue {
     /**

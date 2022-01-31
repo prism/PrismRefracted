@@ -26,7 +26,7 @@ import de.tr7zw.nbtapi.NBTItem;
 import network.darkhelmet.prism.api.actions.IItemAction;
 import network.darkhelmet.prism.api.actions.types.ActionType;
 import network.darkhelmet.prism.api.activities.IActivity;
-import network.darkhelmet.prism.api.modifications.ModificationResult;
+import network.darkhelmet.prism.api.services.modifications.ModificationResult;
 
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;

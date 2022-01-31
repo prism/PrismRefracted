@@ -23,7 +23,7 @@ package network.darkhelmet.prism.services.recording;
 import com.google.inject.Inject;
 
 import network.darkhelmet.prism.Prism;
-import network.darkhelmet.prism.api.recording.IRecordingService;
+import network.darkhelmet.prism.api.services.recording.IRecordingService;
 
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;

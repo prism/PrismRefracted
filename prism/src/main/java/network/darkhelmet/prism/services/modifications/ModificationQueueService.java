@@ -18,14 +18,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package network.darkhelmet.prism.modifications;
+package network.darkhelmet.prism.services.modifications;
 
 import java.util.List;
 
 import network.darkhelmet.prism.api.activities.IActivity;
-import network.darkhelmet.prism.api.modifications.IModificationQueue;
-import network.darkhelmet.prism.api.modifications.IModificationQueueService;
-import network.darkhelmet.prism.api.modifications.ModificationQueueResult;
+import network.darkhelmet.prism.api.services.modifications.IModificationQueue;
+import network.darkhelmet.prism.api.services.modifications.IModificationQueueService;
+import network.darkhelmet.prism.api.services.modifications.ModificationQueueResult;
 
 import org.bukkit.command.CommandSender;
 

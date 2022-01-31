@@ -1,4 +1,4 @@
-package network.darkhelmet.prism.api.recording;
+package network.darkhelmet.prism.api.services.recording;
 
 public interface IRecordingService {
     /**

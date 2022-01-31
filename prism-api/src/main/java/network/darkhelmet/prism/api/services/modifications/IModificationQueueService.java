@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package network.darkhelmet.prism.api.modifications;
+package network.darkhelmet.prism.api.services.modifications;
 
 import java.util.List;
 

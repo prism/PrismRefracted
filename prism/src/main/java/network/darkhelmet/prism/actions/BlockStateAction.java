@@ -27,7 +27,7 @@ import network.darkhelmet.prism.api.actions.IBlockAction;
 import network.darkhelmet.prism.api.actions.types.ActionResultType;
 import network.darkhelmet.prism.api.actions.types.ActionType;
 import network.darkhelmet.prism.api.activities.IActivity;
-import network.darkhelmet.prism.api.modifications.ModificationResult;
+import network.darkhelmet.prism.api.services.modifications.ModificationResult;
 
 import org.bukkit.Location;
 import org.bukkit.Material;

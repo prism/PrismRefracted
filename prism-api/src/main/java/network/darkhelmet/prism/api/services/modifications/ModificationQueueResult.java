@@ -18,16 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package network.darkhelmet.prism.api.modifications;
+package network.darkhelmet.prism.api.services.modifications;
 
-public interface IModificationQueue {
-    /**
-     * Preview the modifications.
-     */
-    void preview();
-
-    /**
-     * Apply the modifications.
-     */
-    void apply();
+public record ModificationQueueResult(int countSkipped, int countPlanned, int countApplied) {
 }
