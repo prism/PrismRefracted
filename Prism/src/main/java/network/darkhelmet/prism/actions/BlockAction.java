@@ -224,7 +224,7 @@ public class BlockAction extends GenericAction {
             name += " (" + ad.command + ")";
         }
         if (blockActionData.customName != null && !blockActionData.customName.isEmpty()) {
-            name += ChatColor.RESET + " (" + blockActionData.customName + ChatColor.RESET + ") ";
+            name += " (" + blockActionData.customName + ")";
         }
         if (getActionType().getName().equals("crop-trample") && getMaterial() == AIR) {
             return "empty soil";
