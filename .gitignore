@@ -1,4 +1,5 @@
 .gradle
+Prism/run
 
 # Numerous always-ignore extensions
 *.diff
