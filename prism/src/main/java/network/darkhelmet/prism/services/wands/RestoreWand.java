@@ -32,7 +32,6 @@ import network.darkhelmet.prism.api.services.modifications.IModificationQueueSer
 import network.darkhelmet.prism.api.services.wands.IWand;
 import network.darkhelmet.prism.api.services.wands.WandMode;
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
-import network.darkhelmet.prism.config.PrismConfiguration;
 import network.darkhelmet.prism.services.messages.MessageService;
 import network.darkhelmet.prism.services.translation.TranslationKey;
 
@@ -40,11 +39,6 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 public class RestoreWand implements IWand {
-    /**
-     * The prism config.
-     */
-    private final PrismConfiguration prismConfig;
-
     /**
      * The storage adapter.
      */
@@ -68,19 +62,16 @@ public class RestoreWand implements IWand {
     /**
      * Construct a new inspection wand.
      *
-     * @param prismConfig The prism config
      * @param storageAdapter The storage adapter
      * @param messageService The message service
      * @param modificationQueueService The modification queue service
      */
     @Inject
     public RestoreWand(
-            PrismConfiguration prismConfig,
             IStorageAdapter storageAdapter,
             MessageService messageService,
             IModificationQueueService modificationQueueService) {
         this.storageAdapter = storageAdapter;
-        this.prismConfig = prismConfig;
         this.messageService = messageService;
         this.modificationQueueService = modificationQueueService;
     }
@@ -104,7 +95,7 @@ public class RestoreWand implements IWand {
             return;
         }
 
-        final ActivityQuery query = ActivityQuery.builder().location(location).limit(prismConfig.perPage()).build();
+        final ActivityQuery query = ActivityQuery.builder().location(location).limit(1).build();
 
         Prism.newChain().asyncFirst(() -> {
             try {
