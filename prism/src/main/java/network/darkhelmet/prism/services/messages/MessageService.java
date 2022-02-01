@@ -47,6 +47,9 @@ public interface MessageService {
     @Message("no-results")
     void noResults(CommandSender receiver);
 
+    @Message("reloaded-locales")
+    void reloadedLocales(CommandSender receiver);
+
     @Message("wand-activated")
     void wandActivated(Player player, @Placeholder WandMode wandMode);
 

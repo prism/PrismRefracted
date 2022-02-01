@@ -41,6 +41,7 @@ import network.darkhelmet.prism.api.services.wands.WandMode;
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
 import network.darkhelmet.prism.commands.AboutCommand;
 import network.darkhelmet.prism.commands.NearCommand;
+import network.darkhelmet.prism.commands.ReloadCommand;
 import network.darkhelmet.prism.commands.RestoreCommand;
 import network.darkhelmet.prism.commands.RollbackCommand;
 import network.darkhelmet.prism.commands.WandCommand;
@@ -186,6 +187,7 @@ public class Prism extends JavaPlugin {
 
             commandManager.register(injector.getInstance(AboutCommand.class));
             commandManager.register(injector.getInstance(NearCommand.class));
+            commandManager.register(injector.getInstance(ReloadCommand.class));
             commandManager.register(injector.getInstance(RestoreCommand.class));
             commandManager.register(injector.getInstance(RollbackCommand.class));
             commandManager.register(injector.getInstance(WandCommand.class));

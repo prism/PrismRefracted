@@ -216,7 +216,7 @@ public class TranslationService implements IMessageSource<CommandSender, String>
      *
      * @throws IOException IO Exception
      */
-    private void reloadTranslations() throws IOException {
+    public void reloadTranslations() throws IOException {
         final Path localeDirectory = this.dataDirectory.resolve("locale");
 
         // Create locale directory
