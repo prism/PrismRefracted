@@ -46,7 +46,9 @@ public class PaginatedResultsPlaceholderResolver
         final Type owner,
         final Method method,
         final @Nullable Object[] parameters) {
-        Component perPage = Component.text(value.perPage());
+        int showing = value.totalResults() < value.perPage() ? value.totalResults() : value.perPage();
+
+        Component perPage = Component.text(showing);
         Component currentPage = Component.text(value.currentPage());
         Component totalPages = Component.text(value.totalPages());
         Component totalResults = Component.text(value.totalResults());
