@@ -29,6 +29,7 @@ import java.util.List;
 
 import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.api.activities.ActivityQuery;
+import network.darkhelmet.prism.utils.TypeUtils;
 
 import org.intellij.lang.annotations.Language;
 
@@ -88,6 +89,11 @@ public class MysqlQueryBuilder {
             parameters.add(query.maxVector().getY());
             parameters.add(query.minVector().getZ());
             parameters.add(query.maxVector().getZ());
+        }
+
+        if (query.worldUuid() != null) {
+            conditions.add("`world_uuid` = UNHEX(?)");
+            parameters.add(TypeUtils.uuidToDbString(query.worldUuid()));
         }
 
         if (conditions.size() > 0) {

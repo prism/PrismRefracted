@@ -20,12 +20,15 @@
 
 package network.darkhelmet.prism.api.activities;
 
+import java.util.UUID;
+
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
 public record ActivityQuery(
     boolean isLookup,
     Location location,
+    UUID worldUuid,
     Vector minVector,
     Vector maxVector,
     int offset,
@@ -89,6 +92,11 @@ public record ActivityQuery(
         private Location location;
 
         /**
+         * The world uuid.
+         */
+        private UUID worldUuid;
+
+        /**
          * The minimum vector.
          */
         private Vector minVector;
@@ -126,13 +134,24 @@ public record ActivityQuery(
         }
 
         /**
-         * Set a single location.
+         * Set a single location. Also sets the world.
          *
          * @param location The location
          * @return The builder
          */
         public Builder location(Location location) {
             this.location = location;
+            return world(location.getWorld().getUID());
+        }
+
+        /**
+         * Set the world.
+         *
+         * @param worldUuid The world uuid
+         * @return The builder
+         */
+        public Builder world(UUID worldUuid) {
+            this.worldUuid = worldUuid;
             return this;
         }
 
@@ -197,7 +216,7 @@ public record ActivityQuery(
          * @return The activity query
          */
         public ActivityQuery build() {
-            return new ActivityQuery(isLookup, location, minVector, maxVector, offset, limit, sort);
+            return new ActivityQuery(isLookup, location, worldUuid, minVector, maxVector, offset, limit, sort);
         }
     }
 }

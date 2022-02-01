@@ -82,7 +82,7 @@ public class NearCommand extends CommandBase {
         Vector minVector = LocationUtils.getMinVector(loc, prismConfig.nearRadius());
         Vector maxVector = LocationUtils.getMaxVector(loc, prismConfig.nearRadius());
 
-        final ActivityQuery query = ActivityQuery.builder()
+        final ActivityQuery query = ActivityQuery.builder().world(loc.getWorld().getUID())
             .minVector(minVector).maxVector(maxVector).limit(prismConfig.perPage()).build();
         Prism.newChain().async(() -> {
             try {
