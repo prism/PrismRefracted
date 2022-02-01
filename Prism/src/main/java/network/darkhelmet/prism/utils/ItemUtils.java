@@ -513,10 +513,9 @@ public class ItemUtils {
     private static void applyEnchantments(Map<Enchantment, Integer> enchants, StringBuilder itemName) {
         int i = 1;
         if (enchants.size() > 0) {
-            itemName.append(" with");
+            itemName.append(" with ");
             for (Map.Entry<Enchantment, Integer> ench : enchants.entrySet()) {
-                itemName.append(" ").append(
-                      EnchantmentUtils.getClientSideEnchantmentName(ench.getKey(), ench.getValue()));
+                itemName.append(EnchantmentUtils.getClientSideEnchantmentName(ench.getKey(), ench.getValue()));
                 itemName.append(i < enchants.size() ? ", " : "");
                 i++;
             }
@@ -524,7 +523,7 @@ public class ItemUtils {
     }
 
     /**
-     * Determines if an itemstack can be stacked. Maz stack size, meta data, and
+     * Determines if an itemstack can be stacked. Max stack size, meta data, and
      * more taken into account.
      *
      * @param item ItemStack
