@@ -26,7 +26,7 @@ import de.tr7zw.nbtapi.NBTEntity;
 import java.util.Locale;
 
 import network.darkhelmet.prism.api.actions.IEntityAction;
-import network.darkhelmet.prism.api.actions.types.ActionType;
+import network.darkhelmet.prism.api.actions.types.IActionType;
 import network.darkhelmet.prism.api.activities.IActivity;
 import network.darkhelmet.prism.api.services.modifications.ModificationResult;
 
@@ -52,7 +52,7 @@ public class EntityAction extends Action implements IEntityAction {
      * @param type The action type
      * @param entity The entity
      */
-    public EntityAction(ActionType type, Entity entity) {
+    public EntityAction(IActionType type, Entity entity) {
         super(type);
 
         this.entityType = entity.getType();
@@ -83,7 +83,7 @@ public class EntityAction extends Action implements IEntityAction {
      * @param entityType The entity type
      * @param container The nbt container
      */
-    public EntityAction(ActionType type, EntityType entityType, NBTContainer container) {
+    public EntityAction(IActionType type, EntityType entityType, NBTContainer container) {
         super(type);
 
         this.entityType = entityType;

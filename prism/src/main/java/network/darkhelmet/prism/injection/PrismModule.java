@@ -66,6 +66,7 @@ import network.darkhelmet.prism.services.wands.InspectionWand;
 import network.darkhelmet.prism.services.wands.RestoreWand;
 import network.darkhelmet.prism.services.wands.RollbackWand;
 import network.darkhelmet.prism.services.wands.WandService;
+import network.darkhelmet.prism.storage.mysql.MysqlQueryBuilder;
 import network.darkhelmet.prism.storage.mysql.MysqlSchemaUpdater;
 import network.darkhelmet.prism.storage.mysql.MysqlStorageAdapter;
 
@@ -192,6 +193,7 @@ public class PrismModule extends AbstractModule {
         bind(TranslatableStringPlaceholderResolver.class).in(Singleton.class);
         bind(ExpectationService.class).in(Singleton.class);
         bind(WandService.class).in(Singleton.class);
+        bind(MysqlQueryBuilder.class);
 
         MapBinder<WandMode, IWand> mapBinder = MapBinder.newMapBinder(binder(), WandMode.class, IWand.class);
         mapBinder.addBinding(WandMode.INSPECT).to(InspectionWand.class);

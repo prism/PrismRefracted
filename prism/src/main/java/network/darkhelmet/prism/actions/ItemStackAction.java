@@ -24,7 +24,7 @@ import de.tr7zw.nbtapi.NBTContainer;
 import de.tr7zw.nbtapi.NBTItem;
 
 import network.darkhelmet.prism.api.actions.IItemAction;
-import network.darkhelmet.prism.api.actions.types.ActionType;
+import network.darkhelmet.prism.api.actions.types.IActionType;
 import network.darkhelmet.prism.api.activities.IActivity;
 import network.darkhelmet.prism.api.services.modifications.ModificationResult;
 
@@ -48,7 +48,7 @@ public class ItemStackAction extends MaterialAction implements IItemAction {
      * @param type The action type
      * @param itemStack The item stack
      */
-    public ItemStackAction(ActionType type, ItemStack itemStack) {
+    public ItemStackAction(IActionType type, ItemStack itemStack) {
         super(type, itemStack.getType());
 
         this.itemStack = itemStack;

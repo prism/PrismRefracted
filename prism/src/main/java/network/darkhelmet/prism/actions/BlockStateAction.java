@@ -26,6 +26,7 @@ import de.tr7zw.nbtapi.NBTTileEntity;
 import network.darkhelmet.prism.api.actions.IBlockAction;
 import network.darkhelmet.prism.api.actions.types.ActionResultType;
 import network.darkhelmet.prism.api.actions.types.ActionType;
+import network.darkhelmet.prism.api.actions.types.IActionType;
 import network.darkhelmet.prism.api.activities.IActivity;
 import network.darkhelmet.prism.api.services.modifications.ModificationResult;
 
@@ -54,7 +55,7 @@ public class BlockStateAction extends MaterialAction implements IBlockAction {
      * @param type The action type
      * @param blockState The block state
      */
-    public BlockStateAction(ActionType type, BlockState blockState) {
+    public BlockStateAction(IActionType type, BlockState blockState) {
         super(type, blockState.getType());
 
         this.blockData = blockState.getBlockData();

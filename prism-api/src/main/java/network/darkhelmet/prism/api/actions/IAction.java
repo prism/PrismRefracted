@@ -20,7 +20,7 @@
 
 package network.darkhelmet.prism.api.actions;
 
-import network.darkhelmet.prism.api.actions.types.ActionType;
+import network.darkhelmet.prism.api.actions.types.IActionType;
 import network.darkhelmet.prism.api.activities.IActivity;
 import network.darkhelmet.prism.api.services.modifications.ModificationResult;
 
@@ -53,5 +53,5 @@ public interface IAction {
      *
      * @return The action type
      */
-    ActionType type();
+    IActionType type();
 }

@@ -20,6 +20,7 @@
 
 package network.darkhelmet.prism.actions;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -33,6 +34,7 @@ import network.darkhelmet.prism.api.actions.IEntityAction;
 import network.darkhelmet.prism.api.actions.IItemAction;
 import network.darkhelmet.prism.api.actions.types.ActionResultType;
 import network.darkhelmet.prism.api.actions.types.ActionType;
+import network.darkhelmet.prism.api.actions.types.IActionType;
 
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -42,7 +44,7 @@ public class ActionRegistry implements IActionRegistry {
     /**
      * Cache of action types by key.
      */
-    private final Map<String, ActionType> actionsTypes = new HashMap<>();
+    private final Map<String, IActionType> actionsTypes = new HashMap<>();
 
     /**
      * Static cache of Prism action types.
@@ -68,7 +70,12 @@ public class ActionRegistry implements IActionRegistry {
     }
 
     @Override
-    public IBlockAction createBlockAction(ActionType type, Block block) {
+    public Collection<IActionType> actionTypes() {
+        return actionsTypes.values();
+    }
+
+    @Override
+    public IBlockAction createBlockAction(IActionType type, Block block) {
         if (!(type instanceof BlockActionType)) {
             throw new IllegalArgumentException("Block actions cannot be made from non-block action types.");
         }
@@ -77,7 +84,7 @@ public class ActionRegistry implements IActionRegistry {
     }
 
     @Override
-    public IItemAction createItemStackAction(ActionType type, ItemStack itemStack) {
+    public IItemAction createItemStackAction(IActionType type, ItemStack itemStack) {
         if (!(type instanceof ItemActionType)) {
             throw new IllegalArgumentException("Item actions cannot be made from non-item action types.");
         }
@@ -86,7 +93,7 @@ public class ActionRegistry implements IActionRegistry {
     }
 
     @Override
-    public IEntityAction createEntityAction(ActionType type, Entity entity) {
+    public IEntityAction createEntityAction(IActionType type, Entity entity) {
         if (!(type instanceof EntityActionType)) {
             throw new IllegalArgumentException("Entity actions cannot be made from non-entity action types.");
         }
@@ -95,7 +102,7 @@ public class ActionRegistry implements IActionRegistry {
     }
 
     @Override
-    public void registerAction(ActionType actionType) {
+    public void registerAction(IActionType actionType) {
         if (actionsTypes.containsKey(actionType.key())) {
             throw new IllegalArgumentException("Registry already has an action type with that key.");
         }
@@ -104,7 +111,7 @@ public class ActionRegistry implements IActionRegistry {
     }
 
     @Override
-    public Optional<ActionType> getActionType(String key) {
+    public Optional<IActionType> getActionType(String key) {
         if (actionsTypes.containsKey(key)) {
             return Optional.of(actionsTypes.get(key));
         }

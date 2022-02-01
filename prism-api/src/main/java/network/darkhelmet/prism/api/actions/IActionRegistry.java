@@ -20,9 +20,10 @@
 
 package network.darkhelmet.prism.api.actions;
 
+import java.util.Collection;
 import java.util.Optional;
 
-import network.darkhelmet.prism.api.actions.types.ActionType;
+import network.darkhelmet.prism.api.actions.types.IActionType;
 
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -30,13 +31,20 @@ import org.bukkit.inventory.ItemStack;
 
 public interface IActionRegistry {
     /**
+     * Get all registered action types.
+     *
+     * @return All registered action types
+     */
+    Collection<IActionType> actionTypes();
+
+    /**
      * Create a new action for the given type/block.
      *
      * @param type The action type
      * @param block The block
      * @return The block action
      */
-    IBlockAction createBlockAction(ActionType type, Block block);
+    IBlockAction createBlockAction(IActionType type, Block block);
 
     /**
      * Create a new action for the given entity.
@@ -45,7 +53,7 @@ public interface IActionRegistry {
      * @param entity The entity
      * @return The entity action
      */
-    IEntityAction createEntityAction(ActionType type, Entity entity);
+    IEntityAction createEntityAction(IActionType type, Entity entity);
 
     /**
      * Create a new action for the given type/item stack.
@@ -54,7 +62,7 @@ public interface IActionRegistry {
      * @param itemStack The item stack
      * @return The item stack action
      */
-    IItemAction createItemStackAction(ActionType type, ItemStack itemStack);
+    IItemAction createItemStackAction(IActionType type, ItemStack itemStack);
 
     /**
      * Get an action type by key.
@@ -62,12 +70,12 @@ public interface IActionRegistry {
      * @param key The key
      * @return The action type, if any
      */
-    Optional<ActionType> getActionType(String key);
+    Optional<IActionType> getActionType(String key);
 
     /**
      * Register a new action type.
      *
      * @param actionType The action type
      */
-    void registerAction(ActionType actionType);
+    void registerAction(IActionType actionType);
 }

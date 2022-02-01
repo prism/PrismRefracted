@@ -41,7 +41,7 @@ import java.util.UUID;
 import network.darkhelmet.prism.api.PaginatedResults;
 import network.darkhelmet.prism.api.actions.ActionData;
 import network.darkhelmet.prism.api.actions.IActionRegistry;
-import network.darkhelmet.prism.api.actions.types.ActionType;
+import network.darkhelmet.prism.api.actions.types.IActionType;
 import network.darkhelmet.prism.api.activities.Activity;
 import network.darkhelmet.prism.api.activities.ActivityQuery;
 import network.darkhelmet.prism.api.activities.GroupedActivity;
@@ -81,6 +81,11 @@ public class MysqlStorageAdapter implements IStorageAdapter {
     private final MysqlSchemaUpdater schemaUpdater;
 
     /**
+     * The query builder.
+     */
+    private final MysqlQueryBuilder queryBuilder;
+
+    /**
      * Toggle whether this storage system is enabled and ready.
      */
     protected boolean ready = false;
@@ -95,11 +100,13 @@ public class MysqlStorageAdapter implements IStorageAdapter {
             Logger logger,
             StorageConfiguration storageConfiguration,
             IActionRegistry actionRegistry,
-            MysqlSchemaUpdater schemaUpdater) {
+            MysqlSchemaUpdater schemaUpdater,
+            MysqlQueryBuilder queryBuilder) {
         this.logger = logger;
         this.storageConfig = storageConfiguration;
         this.actionRegistry = actionRegistry;
         this.schemaUpdater = schemaUpdater;
+        this.queryBuilder = queryBuilder;
 
         try {
             DatabaseOptions options = DatabaseOptions.builder().mysql(
@@ -280,7 +287,7 @@ public class MysqlStorageAdapter implements IStorageAdapter {
 
     @Override
     public PaginatedResults<IActivity> queryActivitiesAsInformation(ActivityQuery query) throws SQLException {
-        List<DbRow> rows = MysqlQueryBuilder.queryActivities(query, storageConfig.prefix());
+        List<DbRow> rows = queryBuilder.queryActivities(query, storageConfig.prefix());
 
         int totalResults = 0;
         if (!rows.isEmpty()) {
@@ -294,7 +301,7 @@ public class MysqlStorageAdapter implements IStorageAdapter {
 
     @Override
     public List<IActivity> queryActivitiesAsModification(ActivityQuery query) throws SQLException {
-        List<DbRow> results = MysqlQueryBuilder.queryActivities(query, storageConfig.prefix());
+        List<DbRow> results = queryBuilder.queryActivities(query, storageConfig.prefix());
         return activityMapper(results, query);
     }
 
@@ -310,18 +317,14 @@ public class MysqlStorageAdapter implements IStorageAdapter {
 
         for (DbRow row : results) {
             String actionKey = row.getString("action");
-            Optional<ActionType> optionalActionType = actionRegistry.getActionType(actionKey);
+            Optional<IActionType> optionalActionType = actionRegistry.getActionType(actionKey);
             if (optionalActionType.isEmpty()) {
                 String msg = "Failed to find action type. Type: %s";
                 logger.warn(String.format(msg, actionKey));
                 continue;
             }
 
-            ActionType actionType = optionalActionType.get();
-            if (!query.isLookup() && !actionType.reversible()) {
-                // Skip because this action type is not reversible
-                continue;
-            }
+            IActionType actionType = optionalActionType.get();
 
             // World
             UUID worldUuid = TypeUtils.uuidFromDbString(row.getString("worldUuid"));

@@ -21,20 +21,20 @@
 package network.darkhelmet.prism.actions;
 
 import network.darkhelmet.prism.api.actions.IAction;
-import network.darkhelmet.prism.api.actions.types.ActionType;
+import network.darkhelmet.prism.api.actions.types.IActionType;
 
 public abstract class Action implements IAction {
     /**
      * The type.
      */
-    private ActionType type;
+    private IActionType type;
 
     /**
      * Construct a new action.
      *
      * @param type The action type
      */
-    public Action(ActionType type) {
+    public Action(IActionType type) {
         this.type = type;
     }
 
@@ -43,7 +43,7 @@ public abstract class Action implements IAction {
      *
      * @return The action type
      */
-    public ActionType type() {
+    public IActionType type() {
         return type;
     }
 }

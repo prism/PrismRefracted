@@ -23,17 +23,36 @@ package network.darkhelmet.prism.storage.mysql;
 import co.aikar.idb.DB;
 import co.aikar.idb.DbRow;
 
+import com.google.inject.Inject;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import network.darkhelmet.prism.Prism;
+import network.darkhelmet.prism.actions.ActionRegistry;
+import network.darkhelmet.prism.api.actions.types.IActionType;
 import network.darkhelmet.prism.api.activities.ActivityQuery;
 import network.darkhelmet.prism.utils.TypeUtils;
 
 import org.intellij.lang.annotations.Language;
 
 public class MysqlQueryBuilder {
+    /**
+     * The action registry.
+     */
+    private final ActionRegistry actionRegistry;
+
+    /**
+     * Construct a new query builder.
+     *
+     * @param actionRegistry The action registry
+     */
+    @Inject
+    public MysqlQueryBuilder(ActionRegistry actionRegistry) {
+        this.actionRegistry = actionRegistry;
+    }
+
     /**
      * Query the activities table given an activity query object.
      *
@@ -42,7 +61,7 @@ public class MysqlQueryBuilder {
      * @return A list of DbRow results
      * @throws SQLException Database exception
      */
-    public static List<DbRow> queryActivities(ActivityQuery query, String prefix) throws SQLException {
+    public List<DbRow> queryActivities(ActivityQuery query, String prefix) throws SQLException {
         // Add all fields that are used in both grouping and non-grouping queries
         List<String> fields = new ArrayList<>();
         fields.add("HEX(`world_uuid`) AS worldUuid");
@@ -110,6 +129,19 @@ public class MysqlQueryBuilder {
         if (query.worldUuid() != null) {
             conditions.add("`world_uuid` = UNHEX(?)");
             parameters.add(TypeUtils.uuidToDbString(query.worldUuid()));
+        }
+
+        if (!query.isLookup()) {
+            // Include *only* reversible activities
+            List<String> actions = new ArrayList<>();
+            for (IActionType actionType : actionRegistry.actionTypes()) {
+                if (actionType.reversible()) {
+                    actions.add("?");
+                    parameters.add(actionType.key());
+                }
+            }
+
+            conditions.add(String.format("(`action` IN (%s))", String.join(",", actions)));
         }
 
         if (conditions.size() > 0) {
