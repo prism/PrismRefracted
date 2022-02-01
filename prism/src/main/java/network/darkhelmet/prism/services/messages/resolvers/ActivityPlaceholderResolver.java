@@ -35,6 +35,7 @@ import net.kyori.moonshine.util.Either;
 
 import network.darkhelmet.prism.api.actions.types.ActionResultType;
 import network.darkhelmet.prism.api.activities.IActivity;
+import network.darkhelmet.prism.api.activities.IGroupedActivity;
 import network.darkhelmet.prism.services.translation.TranslationService;
 
 import org.bukkit.OfflinePlayer;
@@ -75,7 +76,11 @@ public class ActivityPlaceholderResolver implements IPlaceholderResolver<Command
         Component cause = cause(receiver, value.cause());
         Component since = since(receiver, value.timestamp());
         Component content = Component.text(value.action().formatContent());
+
         Component count = Component.text("1");
+        if (value instanceof IGroupedActivity grouped) {
+            count = Component.text(grouped.count());
+        }
 
         Component sign;
         if (value.action().type().resultType().equals(ActionResultType.REMOVES)) {

@@ -43,22 +43,37 @@ public class MysqlQueryBuilder {
      * @throws SQLException Database exception
      */
     public static List<DbRow> queryActivities(ActivityQuery query, String prefix) throws SQLException {
-        @Language("SQL") String sql = "SELECT "
-            + "HEX(`world_uuid`) AS worldUuid, "
-            + "`x`, "
-            + "`y`, "
-            + "`z`, "
-            + "`action`, "
-            + "`timestamp`, "
-            + "`entity_type`, "
-            + "`material`, "
-            + "`materials`.`data` AS material_data, "
-            + "`custom_data`.`data` AS custom_data, "
-            + "COALESCE(`custom_data`.`version`, 0) AS `data_version`, "
-            + "`cause`, "
-            + "HEX(`player_uuid`) AS playerUuid, "
-            + "COUNT(*) OVER() AS totalRows "
-            + "FROM " + prefix + "activities AS activities "
+        // Add all fields that are used in both grouping and non-grouping queries
+        List<String> fields = new ArrayList<>();
+        fields.add("HEX(`world_uuid`) AS worldUuid");
+        fields.add("`action`");
+        fields.add("`material`");
+        fields.add("`entity_type`");
+        fields.add("`cause`");
+        fields.add("HEX(`player_uuid`) AS playerUuid");
+        fields.add("COUNT(*) OVER() AS totalRows");
+
+        if (query.grouped()) {
+            // Add fields for grouped queries
+            fields.add("AVG(`x`) AS `x`");
+            fields.add("AVG(`y`) AS `y`");
+            fields.add("AVG(`z`) AS `z`");
+            fields.add("AVG(`timestamp`) AS `timestamp`");
+            fields.add("COUNT(*) AS groupCount");
+        } else {
+            // Add fields for non-grouped queries
+            fields.add("`timestamp`");
+            fields.add("`x`");
+            fields.add("`y`");
+            fields.add("`z`");
+            fields.add("`materials`.`data` AS material_data");
+            fields.add("`custom_data`.`data` AS custom_data");
+            fields.add("COALESCE(`custom_data`.`version`, 0) AS `data_version`");
+        }
+
+        @Language("SQL") String sql = "SELECT " + String.join(", ", fields) + " ";
+
+        @Language("SQL") String from = "FROM " + prefix + "activities AS activities "
             + "JOIN " + prefix + "actions AS actions ON `actions`.`action_id` = `activities`.`action_id` "
             + "JOIN " + prefix + "causes AS causes ON `causes`.`cause_id` = `activities`.`cause_id` "
             + "JOIN " + prefix + "worlds AS worlds ON `worlds`.`world_id` = `activities`.`world_id` "
@@ -69,6 +84,7 @@ public class MysqlQueryBuilder {
                 + "ON `entity_types`.`entity_type_id` = `activities`.`entity_type_id` "
             + "LEFT JOIN " + prefix + "material_data AS materials "
                 + "ON `materials`.`material_id` = `activities`.`material_id` ";
+        sql += from;
 
         List<String> conditions = new ArrayList<>();
         List<Object> parameters = new ArrayList<>();
@@ -98,6 +114,12 @@ public class MysqlQueryBuilder {
 
         if (conditions.size() > 0) {
             sql += "WHERE " + String.join(" AND ", conditions);
+        }
+
+        if (query.grouped()) {
+            @Language("SQL") String groupBy = "GROUP BY `world_uuid`, `activities`.`action_id`, "
+                + "`activities`.`material_id`, `cause`, `player_uuid` ";
+            sql += groupBy;
         }
 
         // Order by

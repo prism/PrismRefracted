@@ -23,6 +23,7 @@ package network.darkhelmet.prism.api.activities;
 import network.darkhelmet.prism.api.actions.IAction;
 
 import org.bukkit.Location;
+import org.jetbrains.annotations.NotNull;
 
 public record Activity(IAction action, Location location, Object cause, long timestamp) implements IActivity {
     /**
@@ -30,7 +31,7 @@ public record Activity(IAction action, Location location, Object cause, long tim
      *
      * @return The activity builder
      */
-    public static Builder builder() {
+    public static @NotNull Builder builder() {
         return new Builder();
     }
 

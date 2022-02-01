@@ -28,6 +28,7 @@ import co.aikar.idb.PooledDatabaseOptions;
 
 import com.google.inject.Inject;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,6 +44,7 @@ import network.darkhelmet.prism.api.actions.IActionRegistry;
 import network.darkhelmet.prism.api.actions.types.ActionType;
 import network.darkhelmet.prism.api.activities.Activity;
 import network.darkhelmet.prism.api.activities.ActivityQuery;
+import network.darkhelmet.prism.api.activities.GroupedActivity;
 import network.darkhelmet.prism.api.activities.IActivity;
 import network.darkhelmet.prism.api.storage.IActivityBatch;
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
@@ -277,7 +279,7 @@ public class MysqlStorageAdapter implements IStorageAdapter {
     }
 
     @Override
-    public PaginatedResults<IActivity> queryActivitiesPaginated(ActivityQuery query) throws SQLException {
+    public PaginatedResults<IActivity> queryActivitiesAsInformation(ActivityQuery query) throws SQLException {
         List<DbRow> rows = MysqlQueryBuilder.queryActivities(query, storageConfig.prefix());
 
         int totalResults = 0;
@@ -287,21 +289,23 @@ public class MysqlStorageAdapter implements IStorageAdapter {
 
         int currentPage = (query.offset() / query.limit()) + 1;
 
-        return new PaginatedResults<>(activityMapper(rows), query.limit(), totalResults, currentPage);
+        return new PaginatedResults<>(activityMapper(rows, query), query.limit(), totalResults, currentPage);
     }
 
     @Override
-    public List<IActivity> queryActivities(ActivityQuery query) throws SQLException {
-        return activityMapper(MysqlQueryBuilder.queryActivities(query, storageConfig.prefix()));
+    public List<IActivity> queryActivitiesAsModification(ActivityQuery query) throws SQLException {
+        List<DbRow> results = MysqlQueryBuilder.queryActivities(query, storageConfig.prefix());
+        return activityMapper(results, query);
     }
 
     /**
      * Maps activity data to an action and IActivity.
      *
      * @param results The results
+     * @param query The original query
      * @return The activity list
      */
-    protected List<IActivity> activityMapper(List<DbRow> results) {
+    protected List<IActivity> activityMapper(List<DbRow> results, ActivityQuery query) {
         List<IActivity> activities = new ArrayList<>();
 
         for (DbRow row : results) {
@@ -314,7 +318,7 @@ public class MysqlStorageAdapter implements IStorageAdapter {
             }
 
             ActionType actionType = optionalActionType.get();
-            if (!actionType.reversible()) {
+            if (!query.isLookup() && !actionType.reversible()) {
                 // Skip because this action type is not reversible
                 continue;
             }
@@ -328,7 +332,7 @@ public class MysqlStorageAdapter implements IStorageAdapter {
                 continue;
             }
 
-            // Location
+            // Location (average location for grouped)
             int x = row.getInt("x");
             int y = row.getInt("y");
             int z = row.getInt("z");
@@ -348,11 +352,6 @@ public class MysqlStorageAdapter implements IStorageAdapter {
                 material = Material.valueOf(materialName.toUpperCase(Locale.ENGLISH));
             }
 
-            String materialData = row.getString("material_data");
-            String customData = row.getString("custom_data");
-            Integer customDataVersion = row.getInt("data_version");
-            short version = customDataVersion.shortValue();
-
             // Cause/player
             Object cause = row.getString("cause");
             if (row.getString("playerUuid") != null) {
@@ -360,19 +359,40 @@ public class MysqlStorageAdapter implements IStorageAdapter {
                 cause = Bukkit.getOfflinePlayer(playerUuid);
             }
 
-            long timestamp = row.getLong("timestamp");
+            if (!query.grouped()) {
+                long timestamp = row.get("timestamp");
+                String materialData = row.getString("material_data");
+                String customData = row.getString("custom_data");
+                Integer customDataVersion = row.getInt("data_version");
+                short version = customDataVersion.shortValue();
 
-            // Build the action data
-            ActionData actionData = new ActionData(
-                material, materialName, materialData, entityType, customData, version);
+                // Build the action data
+                ActionData actionData = new ActionData(
+                    material, materialName, materialData, entityType, customData, version);
 
-            // Build the activity
-            IActivity activity = Activity.builder()
-                .action(actionType.createAction(actionData))
-                .timestamp(timestamp).cause(cause).location(location).build();
+                // Build the activity
+                IActivity activity = new Activity(actionType.createAction(actionData), location, cause, timestamp);
 
-            // Add to result list
-            activities.add(activity);
+                // Add to result list
+                activities.add(activity);
+            } else {
+                // Build the action data
+                ActionData actionData = new ActionData(
+                    material, materialName, null, entityType, null, (short) 0);
+
+                // Count
+                int count = row.getInt("groupCount");
+
+                // Timestamp
+                BigDecimal timestamp = row.get("timestamp");
+
+                // Build the grouped activity
+                IActivity activity = new GroupedActivity(
+                    actionType.createAction(actionData), location, cause, timestamp.longValue(), count);
+
+                // Add to result list
+                activities.add(activity);
+            }
         }
 
         return activities;

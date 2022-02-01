@@ -89,7 +89,7 @@ public class InspectionWand implements IWand {
 
         Prism.newChain().async(() -> {
             try {
-                PaginatedResults<IActivity> paginatedResults = storageAdapter.queryActivitiesPaginated(query);
+                PaginatedResults<IActivity> paginatedResults = storageAdapter.queryActivitiesAsInformation(query);
 
                 displayService.show(owner, paginatedResults);
             } catch (Exception e) {

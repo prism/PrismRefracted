@@ -112,7 +112,7 @@ public class RollbackCommand extends CommandBase {
             .minVector(minVector).maxVector(maxVector).lookup(false).build();
         Prism.newChain().asyncFirst(() -> {
             try {
-                return storageAdapter.queryActivities(query);
+                return storageAdapter.queryActivitiesAsModification(query);
             } catch (Exception e) {
                 messageService.error(player, new TranslationKey("query-error"));
                 Prism.getInstance().handleException(e);

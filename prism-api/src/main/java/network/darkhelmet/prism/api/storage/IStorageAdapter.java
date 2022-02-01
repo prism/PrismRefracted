@@ -40,21 +40,22 @@ public interface IStorageAdapter {
     IActivityBatch createActivityBatch();
 
     /**
-     * Query activities as a paginated set.
+     * Query activities in a format intended for information display.
      *
      * @param query The activity query
+     * @return Paginated list of activities
      * @throws Exception Storage layer exception
      */
-    PaginatedResults<IActivity> queryActivitiesPaginated(ActivityQuery query) throws Exception;
+    PaginatedResults<IActivity> queryActivitiesAsInformation(ActivityQuery query) throws Exception;
 
     /**
-     * Query activities.
+     * Query activities in a format for world modification.
      *
      * @param query The activity query
-     * @return List of action
+     * @return List of activities
      * @throws Exception Storage layer exception
      */
-    List<IActivity> queryActivities(ActivityQuery query) throws Exception;
+    List<IActivity> queryActivitiesAsModification(ActivityQuery query) throws Exception;
 
     /**
      * Check whether this storage system is enabled and ready.

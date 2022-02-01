@@ -86,7 +86,7 @@ public class NearCommand extends CommandBase {
             .minVector(minVector).maxVector(maxVector).limit(prismConfig.perPage()).build();
         Prism.newChain().async(() -> {
             try {
-                PaginatedResults<IActivity> paginatedResults = storageAdapter.queryActivitiesPaginated(query);
+                PaginatedResults<IActivity> paginatedResults = storageAdapter.queryActivitiesAsInformation(query);
 
                 displayService.show(player, paginatedResults);
             } catch (Exception e) {

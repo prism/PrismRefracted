@@ -27,6 +27,7 @@ import org.bukkit.util.Vector;
 
 public record ActivityQuery(
     boolean isLookup,
+    boolean grouped,
     Location location,
     UUID worldUuid,
     Vector minVector,
@@ -39,36 +40,6 @@ public record ActivityQuery(
      */
     public enum Sort {
         ASCENDING, DESCENDING
-    }
-
-    /**
-     * Get the minimum vector.
-     *
-     * @return The minimum vector
-     */
-    @Override
-    public Vector minVector() {
-        return minVector;
-    }
-
-    /**
-     * Get the maximum vector.
-     *
-     * @return The maximum vector
-     */
-    @Override
-    public Vector maxVector() {
-        return maxVector;
-    }
-
-    /**
-     * Get the sort direction.
-     *
-     * @return The sort direction
-     */
-    @Override
-    public Sort sort() {
-        return sort;
     }
 
     /**
@@ -85,6 +56,11 @@ public record ActivityQuery(
          * Indicate this is a lookup query.
          */
         private boolean isLookup = true;
+
+        /**
+         * Indicate if results should be grouped.
+         */
+        private boolean grouped = true;
 
         /**
          * The location.
@@ -122,6 +98,17 @@ public record ActivityQuery(
         private Sort sort = Sort.DESCENDING;
 
         /**
+         * Set whether results should be grouped.
+         *
+         * @param isGrouped If grouped
+         * @return The builder
+         */
+        public Builder grouped(boolean isGrouped) {
+            this.grouped = isGrouped;
+            return this;
+        }
+
+        /**
          * Set whether this is a lookup. The query results can be grouped
          * and the order by is different.
          *
@@ -130,6 +117,11 @@ public record ActivityQuery(
          */
         public Builder lookup(boolean isLookup) {
             this.isLookup = isLookup;
+
+            if (!isLookup) {
+                grouped(false);
+            }
+
             return this;
         }
 
@@ -216,7 +208,7 @@ public record ActivityQuery(
          * @return The activity query
          */
         public ActivityQuery build() {
-            return new ActivityQuery(isLookup, location, worldUuid, minVector, maxVector, offset, limit, sort);
+            return new ActivityQuery(isLookup, grouped, location, worldUuid, minVector, maxVector, offset, limit, sort);
         }
     }
 }
