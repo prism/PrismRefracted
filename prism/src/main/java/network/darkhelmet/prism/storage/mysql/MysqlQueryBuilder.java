@@ -150,7 +150,7 @@ public class MysqlQueryBuilder {
 
         if (query.grouped()) {
             @Language("SQL") String groupBy = "GROUP BY `world_uuid`, `activities`.`action_id`, "
-                + "`activities`.`material_id`, `cause`, `player_uuid` ";
+                + "`material`, `entity_type`, `cause`, `player_uuid` ";
             sql += groupBy;
         }
 

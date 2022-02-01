@@ -18,7 +18,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 package network.darkhelmet.prism.commands;
 
 import com.google.inject.Inject;

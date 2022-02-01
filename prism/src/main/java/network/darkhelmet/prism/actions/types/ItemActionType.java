@@ -49,6 +49,8 @@ public class ItemActionType extends ActionType {
         if (actionData.customData() != null && actionData.customDataVersion() > 0) {
             NBTContainer container = new NBTContainer(actionData.customData());
             itemStack = NBTItem.convertNBTtoItem(container);
+        } else {
+            itemStack = new ItemStack(actionData.material());
         }
 
         return new ItemStackAction(this, itemStack);
