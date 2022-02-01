@@ -50,6 +50,7 @@ import network.darkhelmet.prism.config.PrismConfiguration;
 import network.darkhelmet.prism.config.StorageConfiguration;
 import network.darkhelmet.prism.injection.PrismModule;
 import network.darkhelmet.prism.listeners.BlockBreakListener;
+import network.darkhelmet.prism.listeners.BlockPlaceListener;
 import network.darkhelmet.prism.listeners.EntityDeathListener;
 import network.darkhelmet.prism.listeners.HangingBreakListener;
 import network.darkhelmet.prism.listeners.PlayerDropItemListener;
@@ -151,6 +152,7 @@ public class Prism extends JavaPlugin {
 
             // Register listeners
             getServer().getPluginManager().registerEvents(injector.getInstance(BlockBreakListener.class), this);
+            getServer().getPluginManager().registerEvents(injector.getInstance(BlockPlaceListener.class), this);
             getServer().getPluginManager().registerEvents(injector.getInstance(EntityDeathListener.class), this);
             getServer().getPluginManager().registerEvents(injector.getInstance(HangingBreakListener.class), this);
             getServer().getPluginManager().registerEvents(injector.getInstance(PlayerDropItemListener.class), this);

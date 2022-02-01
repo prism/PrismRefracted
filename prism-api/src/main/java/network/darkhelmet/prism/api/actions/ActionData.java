@@ -25,8 +25,9 @@ import org.bukkit.entity.EntityType;
 
 public record ActionData(
     Material material,
-    String materialName,
     String materialData,
+    Material replacedMaterial,
+    String replacedMaterialData,
     EntityType entityType,
     String customData,
     short customDataVersion) {

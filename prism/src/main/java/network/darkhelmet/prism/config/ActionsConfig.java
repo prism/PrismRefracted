@@ -28,6 +28,9 @@ public class ActionsConfig {
     @Comment("block-break is when a player or entity destroys a block (except from burn/explode).")
     private boolean blockBreak = true;
 
+    @Comment("block-place is when a player or entity places a block.")
+    private boolean blockPlace = true;
+
     @Comment("entity-kill is when an entity (or player) kills another.")
     private boolean entityKill = true;
 
@@ -47,6 +50,15 @@ public class ActionsConfig {
      */
     public boolean blockBreak() {
         return blockBreak;
+    }
+
+    /**
+     * Get if block-place enabled.
+     *
+     * @return True if enabled
+     */
+    public boolean blockPlace() {
+        return blockPlace;
     }
 
     /**

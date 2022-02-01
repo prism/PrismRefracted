@@ -23,6 +23,8 @@ package network.darkhelmet.prism.actions;
 import de.tr7zw.nbtapi.NBTContainer;
 import de.tr7zw.nbtapi.NBTTileEntity;
 
+import java.util.Locale;
+
 import network.darkhelmet.prism.api.actions.IBlockAction;
 import network.darkhelmet.prism.api.actions.types.ActionResultType;
 import network.darkhelmet.prism.api.actions.types.ActionType;
@@ -42,27 +44,49 @@ public class BlockStateAction extends MaterialAction implements IBlockAction {
     /**
      * The block data.
      */
-    private BlockData blockData;
+    private final BlockData blockData;
 
     /**
      * The nbt container.
      */
-    private NBTContainer nbtContainer;
+    private final NBTContainer nbtContainer;
+
+    /**
+     * The replaced material.
+     */
+    private final Material replacedMaterial;
+
+    /**
+     * The replaced block data.
+     */
+    private final BlockData replacedBlockData;
 
     /**
      * Construct a block state action.
      *
      * @param type The action type
      * @param blockState The block state
+     * @param replacedBlockState The replaced block state
      */
-    public BlockStateAction(IActionType type, BlockState blockState) {
+    public BlockStateAction(IActionType type, BlockState blockState, @Nullable BlockState replacedBlockState) {
         super(type, blockState.getType());
 
+        // Set new block data
         this.blockData = blockState.getBlockData();
-
         if (blockState instanceof TileState) {
             NBTTileEntity nbtTe = new NBTTileEntity(blockState);
             this.nbtContainer = new NBTContainer(nbtTe.getCompound());
+        } else {
+            this.nbtContainer = null;
+        }
+
+        // Set old block data
+        if (replacedBlockState != null) {
+            this.replacedBlockData = replacedBlockState.getBlockData();
+            this.replacedMaterial = replacedBlockState.getType();
+        } else {
+            this.replacedBlockData = null;
+            this.replacedMaterial = Material.AIR;
         }
     }
 
@@ -72,13 +96,23 @@ public class BlockStateAction extends MaterialAction implements IBlockAction {
      * @param type The action type
      * @param material The material
      * @param blockData The block data
-     * @param teData The tile entity data
+     * @param teData The custom data
+     * @param replacedMaterial The replaced material
+     * @param replacedBlockData The replaced block data
      */
-    public BlockStateAction(ActionType type, Material material, BlockData blockData, NBTContainer teData) {
+    public BlockStateAction(
+            ActionType type,
+            Material material,
+            BlockData blockData,
+            NBTContainer teData,
+            Material replacedMaterial,
+            BlockData replacedBlockData) {
         super(type, material);
 
         this.blockData = blockData;
         this.nbtContainer = teData;
+        this.replacedMaterial = replacedMaterial;
+        this.replacedBlockData = replacedBlockData;
     }
 
     @Override
@@ -101,6 +135,24 @@ public class BlockStateAction extends MaterialAction implements IBlockAction {
     }
 
     @Override
+    public @Nullable String serializeReplacedMaterial() {
+        if (replacedMaterial == null) {
+            return null;
+        }
+
+        return replacedMaterial.toString().toLowerCase(Locale.ENGLISH);
+    }
+
+    @Override
+    public @Nullable String serializeReplacedBlockData() {
+        if (replacedBlockData == null) {
+            return null;
+        }
+
+        return this.replacedBlockData.getAsString().replaceAll("^[^\\[]+", "");
+    }
+
+    @Override
     public ModificationResult applyRollback(IActivity activityContext, boolean isPreview) {
         if (!type().reversible()) {
             return ModificationResult.SKIPPED;
@@ -108,10 +160,10 @@ public class BlockStateAction extends MaterialAction implements IBlockAction {
 
         if (type().resultType().equals(ActionResultType.REMOVES)) {
             // If the action type removes a block, rollback means we re-set it
-            setBlock(activityContext.location());
+            setBlock(activityContext.location(), material, blockData, nbtContainer);
         } else if (type().resultType().equals(ActionResultType.CREATES)) {
             // If the action type creates a block, rollback means we remove it
-            removeBlock(activityContext.location());
+            setBlock(activityContext.location(), replacedMaterial, replacedBlockData, null);
         }
 
         return ModificationResult.APPLIED;
@@ -125,43 +177,29 @@ public class BlockStateAction extends MaterialAction implements IBlockAction {
 
         if (type().resultType().equals(ActionResultType.CREATES)) {
             // If the action type creates a block, restore means we re-set it
-            setBlock(activityContext.location());
+            setBlock(activityContext.location(), material, blockData, nbtContainer);
         } else if (type().resultType().equals(ActionResultType.REMOVES)) {
             // If the action type removes a block, restore means we remove it again
-            removeBlock(activityContext.location());
+            setBlock(activityContext.location(), replacedMaterial, replacedBlockData, null);
         }
 
         return ModificationResult.APPLIED;
     }
 
     /**
-     * Sets an in-world block to air.
-     */
-    protected void removeBlock(Location location) {
-        final Block block = location.getWorld().getBlockAt(location);
-        block.setType(Material.AIR);
-    }
-
-    /**
      * Sets an in-world block to this block data.
      */
-    protected void setBlock(Location location) {
+    protected void setBlock(
+            Location location, Material newMaterial, BlockData newBlockData, NBTContainer newNbtContainer) {
         final Block block = location.getWorld().getBlockAt(location);
-        block.setType(material);
+        block.setType(newMaterial);
 
-        if (blockData != null) {
-            block.setBlockData(blockData, true);
+        if (newBlockData != null) {
+            block.setBlockData(newBlockData, true);
         }
 
-        if (this.nbtContainer != null) {
-            new NBTTileEntity(block.getState()).mergeCompound(this.nbtContainer);
+        if (newNbtContainer != null) {
+            new NBTTileEntity(block.getState()).mergeCompound(newNbtContainer);
         }
-    }
-
-    @Override
-    public String toString() {
-        return "BlockStateAction["
-            + "material=" + material + ","
-            + "nbtContainer=" + nbtContainer + ']';
     }
 }

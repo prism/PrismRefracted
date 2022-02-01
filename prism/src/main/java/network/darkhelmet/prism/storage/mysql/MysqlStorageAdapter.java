@@ -369,9 +369,18 @@ public class MysqlStorageAdapter implements IStorageAdapter {
                 Integer customDataVersion = row.getInt("data_version");
                 short version = customDataVersion.shortValue();
 
+                // Material/serialization data
+                Material replacedMaterial = null;
+                String replacedMaterialName = row.getString("old_material");
+                if (replacedMaterialName != null) {
+                    replacedMaterial = Material.valueOf(replacedMaterialName.toUpperCase(Locale.ENGLISH));
+                }
+
+                String replacedMaterialData = row.getString("old_material_data");
+
                 // Build the action data
                 ActionData actionData = new ActionData(
-                    material, materialName, materialData, entityType, customData, version);
+                    material, materialData, replacedMaterial, replacedMaterialData, entityType, customData, version);
 
                 // Build the activity
                 IActivity activity = new Activity(actionType.createAction(actionData), location, cause, timestamp);
@@ -381,7 +390,7 @@ public class MysqlStorageAdapter implements IStorageAdapter {
             } else {
                 // Build the action data
                 ActionData actionData = new ActionData(
-                    material, materialName, null, entityType, null, (short) 0);
+                    material, null, null, null, entityType, null, (short) 0);
 
                 // Count
                 int count = row.getInt("groupCount");

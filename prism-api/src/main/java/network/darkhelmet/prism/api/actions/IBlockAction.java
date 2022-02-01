@@ -20,6 +20,8 @@
 
 package network.darkhelmet.prism.api.actions;
 
+import org.jetbrains.annotations.Nullable;
+
 public interface IBlockAction extends IMaterialAction, ICustomData {
     /**
      * Serialize block data.
@@ -27,4 +29,18 @@ public interface IBlockAction extends IMaterialAction, ICustomData {
      * @return The block data string
      */
     String serializeBlockData();
+
+    /**
+     * Serialize the replaced block material.
+     *
+     * @return The serialized material
+     */
+    @Nullable String serializeReplacedMaterial();
+
+    /**
+     * Serialized the replaced block data.
+     *
+     * @return The serialized block data
+     */
+    @Nullable String serializeReplacedBlockData();
 }

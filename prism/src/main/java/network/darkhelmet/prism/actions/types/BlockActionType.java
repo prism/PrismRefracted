@@ -22,6 +22,8 @@ package network.darkhelmet.prism.actions.types;
 
 import de.tr7zw.nbtapi.NBTContainer;
 
+import java.util.Locale;
+
 import network.darkhelmet.prism.actions.BlockStateAction;
 import network.darkhelmet.prism.api.actions.ActionData;
 import network.darkhelmet.prism.api.actions.IAction;
@@ -47,7 +49,8 @@ public class BlockActionType extends ActionType {
     public IAction createAction(ActionData actionData) {
         BlockData blockData = null;
         if (actionData.materialData() != null) {
-            blockData = Bukkit.createBlockData(actionData.materialName() + actionData.materialData());
+            String materialName = actionData.material().toString().toLowerCase(Locale.ENGLISH);
+            blockData = Bukkit.createBlockData(materialName + actionData.materialData());
         }
 
         NBTContainer nbtContainer = null;
@@ -55,6 +58,13 @@ public class BlockActionType extends ActionType {
             nbtContainer = new NBTContainer(actionData.customData());
         }
 
-        return new BlockStateAction(this, actionData.material(), blockData, nbtContainer);
+        BlockData replacedBlockData = null;
+        if (actionData.replacedMaterialData() != null) {
+            String replacedMaterialName = actionData.replacedMaterial().toString().toLowerCase(Locale.ENGLISH);
+            replacedBlockData = Bukkit.createBlockData(replacedMaterialName + actionData.replacedMaterialData());
+        }
+
+        return new BlockStateAction(
+            this, actionData.material(), blockData, nbtContainer, actionData.replacedMaterial(), replacedBlockData);
     }
 }

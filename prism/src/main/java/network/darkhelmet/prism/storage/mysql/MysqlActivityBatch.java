@@ -68,7 +68,7 @@ public class MysqlActivityBatch implements IActivityBatch {
      * <p>The integer is "index" of the activity in this batch. Used to map
      * generated keys to the activity when we need to write custom data.</p>
      */
-    private Map<Integer, IActivity> activitiesWithCustomData = new HashMap<>();
+    private final Map<Integer, IActivity> activitiesWithCustomData = new HashMap<>();
 
     /**
      * Count the "index" of the activities in this batch.
@@ -91,8 +91,9 @@ public class MysqlActivityBatch implements IActivityBatch {
 
         // Build the INSERT query
         @Language("SQL") String sql = "INSERT INTO " + storageConfig.prefix() + "activities "
-            + "(`timestamp`, `x`, `y`, `z`, `action_id`, `entity_type_id`, `material_id`, `world_id`, `cause_id`) "
-            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            + "(`timestamp`, `x`, `y`, `z`, `action_id`, `entity_type_id`,"
+                + "`material_id`, `old_material_id`, `world_id`, `cause_id`) "
+            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     }
@@ -129,10 +130,20 @@ public class MysqlActivityBatch implements IActivityBatch {
         }
         statement.setInt(7, materialId);
 
+        // Set the replaced material relationship
+        int oldMaterialId = 0;
+        if (activity.action() instanceof IBlockAction blockAction) {
+            String replacedMaterial = blockAction.serializeReplacedMaterial();
+            String replacedData = blockAction.serializeReplacedBlockData();
+
+            oldMaterialId = getOrCreateMaterialId(replacedMaterial, replacedData);
+        }
+        statement.setInt(8, oldMaterialId);
+
         // Set the world relationship
         World world = activity.location().getWorld();
         byte worldId = getOrCreateWorldId(world.getUID(), world.getName());
-        statement.setByte(8, worldId);
+        statement.setByte(9, worldId);
 
         // Set the player relationship
         Long playerId = null;
@@ -145,7 +156,7 @@ public class MysqlActivityBatch implements IActivityBatch {
 
         // Set the cause relationship
         long causeId = getOrCreateCauseId(cause, playerId);
-        statement.setLong(9, causeId);
+        statement.setLong(10, causeId);
 
         if (activity.action() instanceof ICustomData customData) {
             if (customData.hasCustomData()) {

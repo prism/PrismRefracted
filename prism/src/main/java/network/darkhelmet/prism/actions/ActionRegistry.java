@@ -37,6 +37,7 @@ import network.darkhelmet.prism.api.actions.types.ActionType;
 import network.darkhelmet.prism.api.actions.types.IActionType;
 
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 
@@ -51,6 +52,8 @@ public class ActionRegistry implements IActionRegistry {
      */
     public static final ActionType BLOCK_BREAK =
         new BlockActionType("block-break", ActionResultType.REMOVES, true);
+    public static final ActionType BLOCK_PLACE =
+            new BlockActionType("block-place", ActionResultType.CREATES, true);
     public static final ActionType ENTITY_KILL =
         new EntityActionType("entity-kill", ActionResultType.REMOVES, true);
     public static final ActionType HANGING_BREAK =
@@ -64,6 +67,7 @@ public class ActionRegistry implements IActionRegistry {
     public ActionRegistry() {
         // Register Prism actions
         registerAction(BLOCK_BREAK);
+        registerAction(BLOCK_PLACE);
         registerAction(ENTITY_KILL);
         registerAction(HANGING_BREAK);
         registerAction(ITEM_DROP);
@@ -76,11 +80,17 @@ public class ActionRegistry implements IActionRegistry {
 
     @Override
     public IBlockAction createBlockAction(IActionType type, Block block) {
+        return createBlockAction(type, block, null);
+    }
+
+    @Override
+    public IBlockAction createBlockAction(IActionType type, Block block, BlockState replaced) {
         if (!(type instanceof BlockActionType)) {
-            throw new IllegalArgumentException("Block actions cannot be made from non-block action types.");
+            throw new IllegalArgumentException(
+                "Block change actions cannot be made from non-block change action types.");
         }
 
-        return new BlockStateAction(type, block.getState());
+        return new BlockStateAction(type, block.getState(), replaced);
     }
 
     @Override

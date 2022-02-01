@@ -66,7 +66,7 @@ public class MysqlQueryBuilder {
         List<String> fields = new ArrayList<>();
         fields.add("HEX(`world_uuid`) AS worldUuid");
         fields.add("`action`");
-        fields.add("`material`");
+        fields.add("`materials`.`material`");
         fields.add("`entity_type`");
         fields.add("`cause`");
         fields.add("HEX(`player_uuid`) AS playerUuid");
@@ -86,6 +86,8 @@ public class MysqlQueryBuilder {
             fields.add("`y`");
             fields.add("`z`");
             fields.add("`materials`.`data` AS material_data");
+            fields.add("`oldMaterials`.`material` AS old_material");
+            fields.add("`oldMaterials`.`data` AS old_material_data");
             fields.add("`custom_data`.`data` AS custom_data");
             fields.add("COALESCE(`custom_data`.`version`, 0) AS `data_version`");
         }
@@ -103,6 +105,13 @@ public class MysqlQueryBuilder {
                 + "ON `entity_types`.`entity_type_id` = `activities`.`entity_type_id` "
             + "LEFT JOIN " + prefix + "material_data AS materials "
                 + "ON `materials`.`material_id` = `activities`.`material_id` ";
+
+        if (!query.grouped()) {
+            @Language("SQL") String oldMats = "LEFT JOIN " + prefix + "material_data AS oldMaterials "
+                + "ON `oldMaterials`.`material_id` = `activities`.`old_material_id` ";
+            from += oldMats;
+        }
+
         sql += from;
 
         List<String> conditions = new ArrayList<>();
@@ -141,16 +150,16 @@ public class MysqlQueryBuilder {
                 }
             }
 
-            conditions.add(String.format("(`action` IN (%s))", String.join(",", actions)));
+            conditions.add(String.format("`action` IN (%s)", String.join(",", actions)));
         }
 
         if (conditions.size() > 0) {
-            sql += "WHERE " + String.join(" AND ", conditions);
+            sql += "WHERE " + String.join(" AND ", conditions) + " ";
         }
 
         if (query.grouped()) {
             @Language("SQL") String groupBy = "GROUP BY `world_uuid`, `activities`.`action_id`, "
-                + "`material`, `entity_type`, `cause`, `player_uuid` ";
+                + "`materials`.`material`, `entity_type`, `cause`, `player_uuid` ";
             sql += groupBy;
         }
 
@@ -169,13 +178,15 @@ public class MysqlQueryBuilder {
             // then we sort everything by `y asc` and sort these hanging blocks by `y desc`.
             // cave_vines are sorted to come after cave_vines_plant so the plant is rebuilt first.
             @Language("SQL") String orderBy = " ORDER BY "
-                + "CASE material WHEN 'cave_vines' THEN 1 ELSE -1 END ASC, "
-                + "CASE material WHEN 'cave_vines_plant' THEN 1 ELSE -1 END ASC, "
-                + "CASE WHEN material IN ('vine', 'pointed_dripstone') THEN 1 ELSE -1 END ASC, "
+                + "CASE `materials`.`material` WHEN 'cave_vines' THEN 1 ELSE -1 END ASC, "
+                + "CASE `materials`.`material` WHEN 'cave_vines_plant' THEN 1 ELSE -1 END ASC, "
+                + "CASE WHEN `materials`.`material` IN ('vine', 'pointed_dripstone') THEN 1 ELSE -1 END ASC, "
                 + "`x` ASC, "
                 + "`z` ASC, "
-                + "CASE WHEN material IN ('pointed_dripstone', 'cave_vines_plant', 'vine') THEN y END DESC, "
-                + "CASE WHEN material NOT IN ('pointed_dripstone', 'cave_vines_plant', 'vine') THEN y END ASC ";
+                + "CASE WHEN `materials`.`material` IN ('pointed_dripstone', 'cave_vines_plant', 'vine') "
+                    + "THEN y END DESC, "
+                + "CASE WHEN `materials`.`material` NOT IN ('pointed_dripstone', 'cave_vines_plant', 'vine') "
+                    + "THEN y END ASC ";
             sql += orderBy;
         }
 

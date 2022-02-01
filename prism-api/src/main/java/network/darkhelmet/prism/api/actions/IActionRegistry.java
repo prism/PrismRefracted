@@ -26,6 +26,7 @@ import java.util.Optional;
 import network.darkhelmet.prism.api.actions.types.IActionType;
 
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 
@@ -45,6 +46,16 @@ public interface IActionRegistry {
      * @return The block action
      */
     IBlockAction createBlockAction(IActionType type, Block block);
+
+    /**
+     * Create a new action for the given type/block, including a replaced block state.
+     *
+     * @param type The action type
+     * @param block The new block
+     * @param replaced The replaced block state
+     * @return The block action
+     */
+    IBlockAction createBlockAction(IActionType type, Block block, BlockState replaced);
 
     /**
      * Create a new action for the given entity.
