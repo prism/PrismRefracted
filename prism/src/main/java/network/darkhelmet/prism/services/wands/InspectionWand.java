@@ -29,7 +29,7 @@ import network.darkhelmet.prism.api.activities.IActivity;
 import network.darkhelmet.prism.api.services.wands.IWand;
 import network.darkhelmet.prism.api.services.wands.WandMode;
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
-import network.darkhelmet.prism.services.configuration.PrismConfiguration;
+import network.darkhelmet.prism.services.configuration.ConfigurationService;
 import network.darkhelmet.prism.services.displays.DisplayService;
 
 import org.bukkit.Location;
@@ -37,9 +37,9 @@ import org.bukkit.entity.Player;
 
 public class InspectionWand implements IWand {
     /**
-     * The prism config.
+     * The configuration service.
      */
-    private final PrismConfiguration prismConfig;
+    private final ConfigurationService configurationService;
 
     /**
      * The storage adapter.
@@ -59,18 +59,18 @@ public class InspectionWand implements IWand {
     /**
      * Construct a new inspection wand.
      *
-     * @param prismConfig The prism config
+     * @param configurationService The configuration service
      * @param storageAdapter The storage adapter
      * @param displayService The display server
      */
     @Inject
     public InspectionWand(
-            PrismConfiguration prismConfig,
+            ConfigurationService configurationService,
             IStorageAdapter storageAdapter,
             DisplayService displayService) {
+        this.configurationService = configurationService;
         this.storageAdapter = storageAdapter;
         this.displayService = displayService;
-        this.prismConfig = prismConfig;
     }
 
     @Override
@@ -85,7 +85,8 @@ public class InspectionWand implements IWand {
 
     @Override
     public void use(Location location) {
-        final ActivityQuery query = ActivityQuery.builder().location(location).limit(prismConfig.perPage()).build();
+        final ActivityQuery query = ActivityQuery.builder()
+            .location(location).limit(configurationService.prismConfig().perPage()).build();
 
         Prism.newChain().async(() -> {
             try {
