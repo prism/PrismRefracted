@@ -169,8 +169,11 @@ public class MysqlQueryBuilder {
             sortDir = "ASC";
         }
 
-        if (query.isLookup()) {
-            @Language("SQL") String orderBy = " ORDER BY `timestamp` %s, `activities`.`activity_id` %1$s ";
+        if (query.isLookup() && query.grouped()) {
+            @Language("SQL") String orderBy = " ORDER BY AVG(`timestamp`) %s ";
+            sql += String.format(orderBy, sortDir);
+        } else if (query.isLookup()) {
+            @Language("SQL") String orderBy = " ORDER BY `timestamp` %s ";
             sql += String.format(orderBy, sortDir);
         } else {
             // Most rollbacks "build up" but some hanging blocks need to be "built down" or they just break.
