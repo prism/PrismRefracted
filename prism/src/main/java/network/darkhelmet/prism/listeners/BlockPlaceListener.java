@@ -27,7 +27,7 @@ import network.darkhelmet.prism.api.actions.IAction;
 import network.darkhelmet.prism.api.actions.IActionRegistry;
 import network.darkhelmet.prism.api.activities.Activity;
 import network.darkhelmet.prism.api.activities.IActivity;
-import network.darkhelmet.prism.services.configuration.PrismConfiguration;
+import network.darkhelmet.prism.services.configuration.ConfigurationService;
 import network.darkhelmet.prism.services.filters.FilterService;
 import network.darkhelmet.prism.services.recording.RecordingQueue;
 
@@ -41,9 +41,9 @@ import org.bukkit.event.block.BlockPlaceEvent;
 
 public class BlockPlaceListener implements Listener {
     /**
-     * The prism config.
+     * The configuration service.
      */
-    private final PrismConfiguration prismConfig;
+    private final ConfigurationService configurationService;
 
     /**
      * The action registry.
@@ -58,16 +58,16 @@ public class BlockPlaceListener implements Listener {
     /**
      * Construct the listener.
      *
-     * @param prismConfig The prism configuration
+     * @param configurationService The configuration service
      * @param actionRegistry The action registry
      * @param filterService The filter service
      */
     @Inject
     public BlockPlaceListener(
-            PrismConfiguration prismConfig,
+            ConfigurationService configurationService,
             IActionRegistry actionRegistry,
             FilterService filterService) {
-        this.prismConfig = prismConfig;
+        this.configurationService = configurationService;
         this.actionRegistry = actionRegistry;
         this.filterService = filterService;
     }
@@ -82,7 +82,7 @@ public class BlockPlaceListener implements Listener {
         final Player player = event.getPlayer();
 
         // Ignore if this event is disabled
-        if (!prismConfig.actions().blockPlace()) {
+        if (!configurationService.prismConfig().actions().blockPlace()) {
             return;
         }
 

@@ -27,7 +27,7 @@ import network.darkhelmet.prism.api.actions.IAction;
 import network.darkhelmet.prism.api.actions.IActionRegistry;
 import network.darkhelmet.prism.api.activities.Activity;
 import network.darkhelmet.prism.api.activities.IActivity;
-import network.darkhelmet.prism.services.configuration.PrismConfiguration;
+import network.darkhelmet.prism.services.configuration.ConfigurationService;
 import network.darkhelmet.prism.services.filters.FilterService;
 import network.darkhelmet.prism.services.recording.RecordingQueue;
 
@@ -38,9 +38,9 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 
 public class PlayerDropItemListener implements Listener {
     /**
-     * The prism config.
+     * The configuration service.
      */
-    private PrismConfiguration prismConfig;
+    private final ConfigurationService configurationService;
 
     /**
      * The action registry.
@@ -55,15 +55,16 @@ public class PlayerDropItemListener implements Listener {
     /**
      * Construct the listener.
      *
-     * @param prismConfig The prism config
+     * @param configurationService The configuration service
      * @param actionRegistry The action registry
      * @param filterService The filter service
      */
     @Inject
-    public PlayerDropItemListener(PrismConfiguration prismConfig,
-                                  IActionRegistry actionRegistry,
-                                  FilterService filterService) {
-        this.prismConfig = prismConfig;
+    public PlayerDropItemListener(
+            ConfigurationService configurationService,
+            IActionRegistry actionRegistry,
+            FilterService filterService) {
+        this.configurationService = configurationService;
         this.actionRegistry = actionRegistry;
         this.filterService = filterService;
     }
@@ -76,7 +77,7 @@ public class PlayerDropItemListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerDropItem(final PlayerDropItemEvent event) {
         // Ignore if this event is disabled
-        if (!prismConfig.actions().itemDrop()) {
+        if (!configurationService.prismConfig().actions().itemDrop()) {
             return;
         }
 

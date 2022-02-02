@@ -29,7 +29,7 @@ import network.darkhelmet.prism.api.actions.IAction;
 import network.darkhelmet.prism.api.actions.IActionRegistry;
 import network.darkhelmet.prism.api.activities.Activity;
 import network.darkhelmet.prism.api.activities.IActivity;
-import network.darkhelmet.prism.services.configuration.PrismConfiguration;
+import network.darkhelmet.prism.services.configuration.ConfigurationService;
 import network.darkhelmet.prism.services.expectations.ExpectationService;
 import network.darkhelmet.prism.services.filters.FilterService;
 import network.darkhelmet.prism.services.recording.RecordingQueue;
@@ -46,9 +46,9 @@ import org.bukkit.event.block.BlockBreakEvent;
 
 public class BlockBreakListener implements Listener {
     /**
-     * The prism config.
+     * The configuration service.
      */
-    private final PrismConfiguration prismConfig;
+    private final ConfigurationService configurationService;
 
     /**
      * The action registry.
@@ -68,15 +68,18 @@ public class BlockBreakListener implements Listener {
     /**
      * Construct the listener.
      *
-     * @param prismConfig The prism config
+     * @param configurationService The configuration service
+     * @param actionRegistry The action registry
+     * @param expectationService The expectation service
+     * @param filterService The filter service
      */
     @Inject
     public BlockBreakListener(
-            PrismConfiguration prismConfig,
+            ConfigurationService configurationService,
             IActionRegistry actionRegistry,
             ExpectationService expectationService,
             FilterService filterService) {
-        this.prismConfig = prismConfig;
+        this.configurationService = configurationService;
         this.actionRegistry = actionRegistry;
         this.expectationService = expectationService;
         this.filterService = filterService;
@@ -93,14 +96,14 @@ public class BlockBreakListener implements Listener {
         final Block block = BlockUtils.rootBlock(event.getBlock());
 
         // Find any hanging entities.
-        if (prismConfig.actions().hangingBreak()) {
+        if (configurationService.prismConfig().actions().hangingBreak()) {
             for (Entity hanging : EntityUtils.hangingEntities(block.getLocation(), 2)) {
                 expectationService.expect(hanging, player);
             }
         }
 
         // Ignore if this event is disabled
-        if (!prismConfig.actions().blockBreak()) {
+        if (!configurationService.prismConfig().actions().blockBreak()) {
             return;
         }
 
