@@ -89,7 +89,7 @@ public class BlockPlaceListener implements Listener {
 
         // Build the action
         final IAction action = actionRegistry.createBlockAction(
-            ActionRegistry.BLOCK_PLACE, blockPlaced, replacedState);
+            ActionRegistry.BLOCK_PLACE, blockPlaced.getState(), replacedState);
 
         // Build the block break by player activity
         final IActivity activity = Activity.builder()

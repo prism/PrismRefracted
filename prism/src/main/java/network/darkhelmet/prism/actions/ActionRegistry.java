@@ -36,7 +36,6 @@ import network.darkhelmet.prism.api.actions.types.ActionResultType;
 import network.darkhelmet.prism.api.actions.types.ActionType;
 import network.darkhelmet.prism.api.actions.types.IActionType;
 
-import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
@@ -79,18 +78,18 @@ public class ActionRegistry implements IActionRegistry {
     }
 
     @Override
-    public IBlockAction createBlockAction(IActionType type, Block block) {
-        return createBlockAction(type, block, null);
+    public IBlockAction createBlockAction(IActionType type, BlockState blockState) {
+        return createBlockAction(type, blockState, null);
     }
 
     @Override
-    public IBlockAction createBlockAction(IActionType type, Block block, BlockState replaced) {
+    public IBlockAction createBlockAction(IActionType type, BlockState blockState, BlockState replaced) {
         if (!(type instanceof BlockActionType)) {
             throw new IllegalArgumentException(
                 "Block change actions cannot be made from non-block change action types.");
         }
 
-        return new BlockStateAction(type, block.getState(), replaced);
+        return new BlockStateAction(type, blockState, replaced);
     }
 
     @Override

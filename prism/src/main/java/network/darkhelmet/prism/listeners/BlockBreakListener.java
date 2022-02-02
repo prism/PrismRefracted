@@ -118,7 +118,7 @@ public class BlockBreakListener implements Listener {
      */
     protected void recordBlockBreak(Block block, Player player) {
         // Build the action
-        final IAction action = actionRegistry.createBlockAction(ActionRegistry.BLOCK_BREAK, block);
+        final IAction action = actionRegistry.createBlockAction(ActionRegistry.BLOCK_BREAK, block.getState());
 
         // Build the block break by player activity
         final IActivity activity = Activity.builder()
