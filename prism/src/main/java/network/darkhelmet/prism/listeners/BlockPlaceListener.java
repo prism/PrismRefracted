@@ -28,7 +28,7 @@ import network.darkhelmet.prism.api.actions.IActionRegistry;
 import network.darkhelmet.prism.api.activities.Activity;
 import network.darkhelmet.prism.api.activities.IActivity;
 import network.darkhelmet.prism.services.configuration.PrismConfiguration;
-import network.darkhelmet.prism.services.expectations.ExpectationService;
+import network.darkhelmet.prism.services.filters.FilterService;
 import network.darkhelmet.prism.services.recording.RecordingQueue;
 
 import org.bukkit.block.Block;
@@ -51,23 +51,25 @@ public class BlockPlaceListener implements Listener {
     private final IActionRegistry actionRegistry;
 
     /**
-     * The expectation service.
+     * The filter service.
      */
-    private final ExpectationService expectationService;
+    private final FilterService filterService;
 
     /**
      * Construct the listener.
      *
-     * @param prismConfig The prism config
+     * @param prismConfig The prism configuration
+     * @param actionRegistry The action registry
+     * @param filterService The filter service
      */
     @Inject
     public BlockPlaceListener(
             PrismConfiguration prismConfig,
             IActionRegistry actionRegistry,
-            ExpectationService expectationService) {
+            FilterService filterService) {
         this.prismConfig = prismConfig;
         this.actionRegistry = actionRegistry;
-        this.expectationService = expectationService;
+        this.filterService = filterService;
     }
 
     /**
@@ -95,6 +97,8 @@ public class BlockPlaceListener implements Listener {
         final IActivity activity = Activity.builder()
             .action(action).location(blockPlaced.getLocation()).cause(player).build();
 
-        RecordingQueue.addToQueue(activity);
+        if (filterService.allows(activity)) {
+            RecordingQueue.addToQueue(activity);
+        }
     }
 }

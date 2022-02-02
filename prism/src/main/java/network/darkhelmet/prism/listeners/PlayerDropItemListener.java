@@ -28,6 +28,7 @@ import network.darkhelmet.prism.api.actions.IActionRegistry;
 import network.darkhelmet.prism.api.activities.Activity;
 import network.darkhelmet.prism.api.activities.IActivity;
 import network.darkhelmet.prism.services.configuration.PrismConfiguration;
+import network.darkhelmet.prism.services.filters.FilterService;
 import network.darkhelmet.prism.services.recording.RecordingQueue;
 
 import org.bukkit.event.EventHandler;
@@ -47,14 +48,24 @@ public class PlayerDropItemListener implements Listener {
     private final IActionRegistry actionRegistry;
 
     /**
+     * The filter service.
+     */
+    private final FilterService filterService;
+
+    /**
      * Construct the listener.
      *
      * @param prismConfig The prism config
+     * @param actionRegistry The action registry
+     * @param filterService The filter service
      */
     @Inject
-    public PlayerDropItemListener(PrismConfiguration prismConfig, IActionRegistry actionRegistry) {
+    public PlayerDropItemListener(PrismConfiguration prismConfig,
+                                  IActionRegistry actionRegistry,
+                                  FilterService filterService) {
         this.prismConfig = prismConfig;
         this.actionRegistry = actionRegistry;
+        this.filterService = filterService;
     }
 
     /**
@@ -76,6 +87,8 @@ public class PlayerDropItemListener implements Listener {
         final IActivity activity = Activity.builder()
             .action(action).cause(event.getPlayer()).location(event.getPlayer().getLocation()).build();
 
-        RecordingQueue.addToQueue(activity);
+        if (filterService.allows(activity)) {
+            RecordingQueue.addToQueue(activity);
+        }
     }
 }
