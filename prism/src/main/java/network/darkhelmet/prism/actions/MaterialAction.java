@@ -45,6 +45,15 @@ public abstract class MaterialAction extends Action implements IMaterialAction {
         this.material = material;
     }
 
+    /**
+     * Get the material.
+     *
+     * @return The material
+     */
+    public Material material() {
+        return material;
+    }
+
     @Override
     public String formatContent() {
         return material.toString().toLowerCase(Locale.ENGLISH).replace("_", " ");

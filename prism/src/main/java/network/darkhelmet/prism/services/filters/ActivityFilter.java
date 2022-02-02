@@ -23,8 +23,10 @@ package network.darkhelmet.prism.services.filters;
 import java.util.List;
 import java.util.UUID;
 
+import network.darkhelmet.prism.actions.MaterialAction;
 import network.darkhelmet.prism.api.activities.IActivity;
 import network.darkhelmet.prism.api.services.filters.FilterBehavior;
+import network.darkhelmet.prism.utils.MaterialTag;
 
 public class ActivityFilter {
     /**
@@ -38,14 +40,32 @@ public class ActivityFilter {
     private final List<UUID> worldUuids;
 
     /**
+     * Actions.
+     */
+    private final List<String> actions;
+
+    /**
+     * The material tag.
+     */
+    private final MaterialTag materialTag;
+
+    /**
      * Construct a new activity filter.
      *
      * @param behavior The behavior
      * @param worldUuids The world UUIDs
+     * @param actions The actions
+     * @param materialTag The material tag
      */
-    public ActivityFilter(FilterBehavior behavior, List<UUID> worldUuids) {
+    public ActivityFilter(
+            FilterBehavior behavior,
+            List<UUID> worldUuids,
+            List<String> actions,
+            MaterialTag materialTag) {
         this.behavior = behavior;
         this.worldUuids = worldUuids;
+        this.actions = actions;
+        this.materialTag = materialTag;
     }
 
     /**
@@ -55,18 +75,21 @@ public class ActivityFilter {
      * @return True if the filter allows it
      */
     public boolean allows(IActivity activity) {
-        // Worlds matched...
-        boolean worldMatched =  worldsMatch(activity);
+        boolean actionMatched = actionsMatch(activity);
+        boolean worldMatched = worldsMatch(activity);
+        boolean materialMatched = materialsMatch(activity);
 
-        if (ignoring() && worldMatched) {
-            // Reject when filters match and we're ignoring
-            return false;
-        } else if (allowing() && !worldMatched) {
-            // Reject when we're allowing but filters don't match
-            return false;
+        // If this filter exists we're guaranteed to require matches.
+        // The filter can be either "ALLOW" or "IGNORE" but not both.
+        // If any of the criteria are empty, they automatically match.
+        // If any criteria were set, we compare against the activity for a match.
+        if (allowing()) {
+            // If ALLOW mode, all filters must match to approve this
+            return worldMatched && actionMatched && materialMatched;
+        } else {
+            // If IGNORE mode, we *reject* this if all filters match
+            return !(worldMatched && actionMatched && materialMatched);
         }
-
-        return true;
     }
 
     /**
@@ -97,5 +120,33 @@ public class ActivityFilter {
      */
     private boolean worldsMatch(IActivity activity) {
         return worldUuids.isEmpty() || worldUuids.contains(activity.location().getWorld().getUID());
+    }
+
+    /**
+     * Check if any actions match the activity action.
+     *
+     * <p>If none listed, the filter will match all.</p>
+     *
+     * @param activity The activity
+     * @return True if action key matches
+     */
+    private boolean actionsMatch(IActivity activity) {
+        return actions.isEmpty() || actions.contains(activity.action().type().key());
+    }
+
+    /**
+     * Check if any materials match the activity action.
+     *
+     * <p>If none listed, the filter will match all. Ignores non-material actions.</p>
+     *
+     * @param activity The activity
+     * @return True if action material matches
+     */
+    private boolean materialsMatch(IActivity activity) {
+        if (activity.action() instanceof MaterialAction materialAction) {
+            return materialTag.isTagged(materialAction.material());
+        }
+
+        return true;
     }
 }

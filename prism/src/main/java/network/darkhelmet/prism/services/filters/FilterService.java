@@ -24,15 +24,18 @@ import com.google.inject.Inject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import network.darkhelmet.prism.api.activities.IActivity;
 import network.darkhelmet.prism.api.services.filters.IFilterService;
 import network.darkhelmet.prism.services.configuration.ConfigurationService;
 import network.darkhelmet.prism.services.configuration.FilterConfiguartion;
+import network.darkhelmet.prism.utils.MaterialTag;
 
 import org.apache.logging.log4j.Logger;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.World;
 
 public class FilterService implements IFilterService {
@@ -73,12 +76,14 @@ public class FilterService implements IFilterService {
 
         // Convert all configured filters into Filter objects
         for (FilterConfiguartion config : configurationService.prismConfig().filters()) {
+            // Behavior
             if (config.behavior() == null) {
                 logger.warn("Filter error: No behavior defined. Behavior must be either IGNORE or ALLOW.");
 
                 continue;
             }
 
+            // Worlds
             List<UUID> worldUuids = new ArrayList<>();
             for (String worldName : config.worlds()) {
                 World world = Bukkit.getServer().getWorld(worldName);
@@ -91,7 +96,18 @@ public class FilterService implements IFilterService {
                 worldUuids.add(world.getUID());
             }
 
-            filters.add(new ActivityFilter(config.behavior(), worldUuids));
+            // Materials
+            MaterialTag materialTag = new MaterialTag();
+            for (String materialKey : config.materials()) {
+                try {
+                    Material material = Material.valueOf(materialKey.toUpperCase(Locale.ENGLISH));
+                    materialTag.append(material);
+                } catch (IllegalArgumentException e) {
+                    logger.warn("Filter error: No material matching {}", materialKey);
+                }
+            }
+
+            filters.add(new ActivityFilter(config.behavior(), worldUuids, config.actions(), materialTag));
         }
     }
 

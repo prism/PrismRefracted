@@ -42,6 +42,13 @@ public class MaterialTag implements Tag<Material> {
 
     /**
      * Constructor.
+     */
+    public MaterialTag() {
+        this.materials = EnumSet.noneOf(Material.class);
+    }
+
+    /**
+     * Constructor.
      *
      * @param materialTags Tags
      */

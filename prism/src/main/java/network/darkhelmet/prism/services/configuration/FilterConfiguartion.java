@@ -30,9 +30,19 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 @ConfigSerializable
 public class FilterConfiguartion {
     /**
+     * Actions.
+     */
+    private List<String> actions = new ArrayList<>();
+
+    /**
      * Worlds.
      */
     private List<String> worlds = new ArrayList<>();
+
+    /**
+     * Materials.
+     */
+    private List<String> materials = new ArrayList<>();
 
     /**
      * The filter behavior.
@@ -49,11 +59,29 @@ public class FilterConfiguartion {
     }
 
     /**
+     * Get the actions.
+     *
+     * @return The actions.
+     */
+    public List<String> actions() {
+        return actions;
+    }
+
+    /**
      * Get the worlds.
      *
      * @return The worlds.
      */
     public List<String> worlds() {
         return worlds;
+    }
+
+    /**
+     * Get the materials.
+     *
+     * @return The materials
+     */
+    public List<String> materials() {
+        return materials;
     }
 }
