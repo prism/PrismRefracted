@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package network.darkhelmet.prism.services.configuration;
+package network.darkhelmet.prism.services.configuration.serializers;
 
 import java.lang.reflect.Type;
 import java.util.Locale;

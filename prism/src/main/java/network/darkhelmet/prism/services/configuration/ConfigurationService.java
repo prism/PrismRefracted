@@ -28,6 +28,8 @@ import java.util.Locale;
 
 import net.kyori.adventure.serializer.configurate4.ConfigurateComponentSerializer;
 
+import network.darkhelmet.prism.services.configuration.serializers.LocaleSerializerConfigurate;
+
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
