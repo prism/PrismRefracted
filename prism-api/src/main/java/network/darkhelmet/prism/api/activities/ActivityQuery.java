@@ -20,18 +20,31 @@
 
 package network.darkhelmet.prism.api.activities;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
+import network.darkhelmet.prism.api.actions.types.IActionType;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.entity.EntityType;
 import org.bukkit.util.Vector;
 
 public record ActivityQuery(
     boolean isLookup,
     boolean grouped,
+    Collection<IActionType> actionTypes,
     Location location,
     UUID worldUuid,
     Vector minVector,
     Vector maxVector,
+    Collection<Material> materials,
+    Collection<EntityType> entityTypes,
+    Collection<String> playerNames,
+    Long since,
+    Long before,
     int offset,
     int limit,
     ActivityQuery.Sort sort) {
@@ -52,6 +65,11 @@ public record ActivityQuery(
     }
 
     public static class Builder {
+        /**
+         * The action types.
+         */
+        private Collection<IActionType> actionTypes = new ArrayList<>();
+
         /**
          * Indicate this is a lookup query.
          */
@@ -83,6 +101,31 @@ public record ActivityQuery(
         private Vector maxVector;
 
         /**
+         * A list of materials.
+         */
+        private final Collection<Material> materials = new ArrayList<>();
+
+        /**
+         * A list of entity types.
+         */
+        private final Collection<EntityType> entityTypes = new ArrayList<>();
+
+        /**
+         * A list of player names.
+         */
+        private final Collection<String> playerNames = new ArrayList<>();
+
+        /**
+         * A lower-bound timestamp.
+         */
+        private Long since = null;
+
+        /**
+         * A upper-bound timestamp.
+         */
+        private Long before = null;
+
+        /**
          * The offset.
          */
         private int offset = 0;
@@ -96,6 +139,28 @@ public record ActivityQuery(
          * The sort direction.
          */
         private Sort sort = Sort.DESCENDING;
+
+        /**
+         * Add an action type.
+         *
+         * @param actionType The action type
+         * @return The builder
+         */
+        public Builder actionType(IActionType actionType) {
+            this.actionTypes.add(actionType);
+            return this;
+        }
+
+        /**
+         * Add action types.
+         *
+         * @param actionTypes The action types
+         * @return The builder
+         */
+        public Builder actionTypes(Collection<IActionType> actionTypes) {
+            this.actionTypes.addAll(actionTypes);
+            return this;
+        }
 
         /**
          * Set whether results should be grouped.
@@ -139,6 +204,16 @@ public record ActivityQuery(
         /**
          * Set the world.
          *
+         * @param world The world
+         * @return The builder
+         */
+        public Builder world(World world) {
+            return world(world.getUID());
+        }
+
+        /**
+         * Set the world by uuid.
+         *
          * @param worldUuid The world uuid
          * @return The builder
          */
@@ -166,6 +241,83 @@ public record ActivityQuery(
          */
         public Builder maxVector(Vector vector) {
             this.maxVector = vector;
+            return this;
+        }
+
+        /**
+         * Add a material.
+         *
+         * @param material The material
+         * @return The builder
+         */
+        public Builder material(Material material) {
+            this.materials.add(material);
+            return this;
+        }
+
+        /**
+         * Add materials.
+         *
+         * @param materials The materials
+         * @return The builder
+         */
+        public Builder materials(Collection<Material> materials) {
+            this.materials.addAll(materials);
+            return this;
+        }
+
+        /**
+         * Add an entity type.
+         *
+         * @param entityType The entity type
+         * @return The builder
+         */
+        public Builder entityType(EntityType entityType) {
+            this.entityTypes.add(entityType);
+            return this;
+        }
+
+        /**
+         * Add an entity type.
+         *
+         * @param entityTypes The entity types
+         * @return The builder
+         */
+        public Builder entityTypes(Collection<EntityType> entityTypes) {
+            this.entityTypes.addAll(entityTypes);
+            return this;
+        }
+
+        /**
+         * Add a player by name.
+         *
+         * @param playerName The player name
+         * @return The builder
+         */
+        public Builder playerByName(String playerName) {
+            this.playerNames.add(playerName);
+            return this;
+        }
+
+        /**
+         * Set the lower-bound timestamp.
+         *
+         * @param since The timestamp
+         * @return The builder
+         */
+        public Builder since(long since) {
+            this.since = since;
+            return this;
+        }
+
+        /**
+         * Set the upper-bound timestamp.
+         *
+         * @param before The timestamp
+         * @return The builder
+         */
+        public Builder before(long before) {
+            this.before = before;
             return this;
         }
 
@@ -208,7 +360,9 @@ public record ActivityQuery(
          * @return The activity query
          */
         public ActivityQuery build() {
-            return new ActivityQuery(isLookup, grouped, location, worldUuid, minVector, maxVector, offset, limit, sort);
+            return new ActivityQuery(
+                isLookup, grouped, actionTypes, location, worldUuid,
+                minVector, maxVector, materials, entityTypes, playerNames, since, before, offset, limit, sort);
         }
     }
 }

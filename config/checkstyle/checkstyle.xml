@@ -249,7 +249,7 @@
         </module>
         <module name="OverloadMethodsDeclarationOrder"/>
         <module name="ImportOrder">
-			<property name="groups" value="*,co,com,de,io,java,me,net,network,org"/>
+			<property name="groups" value="*,co,com,dev,io,java,me,net,network,org"/>
 			<property name="ordered" value="true"/>
 			<property name="separated" value="true"/>
 			<property name="option" value="bottom"/>

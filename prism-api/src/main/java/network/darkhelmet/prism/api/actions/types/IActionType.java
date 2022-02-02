@@ -40,6 +40,13 @@ public interface IActionType {
     String key();
 
     /**
+     * Get the family key (The common part after the hyphen).
+     *
+     * @return The family key
+     */
+    String familyKey();
+
+    /**
      * Get the past-tense translation key for this specific action.
      *
      * @return The past tense translation key

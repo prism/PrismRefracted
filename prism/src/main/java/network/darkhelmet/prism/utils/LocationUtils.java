@@ -20,6 +20,7 @@
 
 package network.darkhelmet.prism.utils;
 
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
@@ -28,6 +29,32 @@ public class LocationUtils {
      * Prevent instantiation.
      */
     private LocationUtils() {}
+
+    /**
+     * Returns the minimum vector for the chunk.
+     *
+     * @param chunk The chunk
+     * @return The minimum vector
+     */
+    public static Vector getChunkMinVector(Chunk chunk) {
+        int blockMinX = chunk.getX() * 16;
+        int blockMinZ = chunk.getZ() * 16;
+        return new Vector(blockMinX, 0, blockMinZ);
+    }
+
+    /**
+     * Returns the maximum vector for the chunk.
+     *
+     * @param chunk The chunk
+     * @return The maximum vector
+     */
+    public static Vector getChunkMaxVector(Chunk chunk) {
+        int blockMinX = chunk.getX() * 16;
+        int blockMinZ = chunk.getZ() * 16;
+        int blockMaxX = blockMinX + 15;
+        int blockMaxZ = blockMinZ + 15;
+        return new Vector(blockMaxX, chunk.getWorld().getMaxHeight(), blockMaxZ);
+    }
 
     /**
      * Get a max vector from a location/radius. This is the max corner of a bounding box.

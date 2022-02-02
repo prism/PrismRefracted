@@ -27,18 +27,21 @@ import co.aikar.taskchain.TaskChainFactory;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
+import dev.triumphteam.cmd.bukkit.BukkitCommandManager;
+import dev.triumphteam.cmd.core.suggestion.SuggestionKey;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import me.mattstudios.mf.base.CommandManager;
-import me.mattstudios.mf.base.components.TypeResult;
-
-import network.darkhelmet.prism.api.services.wands.WandMode;
+import network.darkhelmet.prism.api.actions.IActionRegistry;
+import network.darkhelmet.prism.api.actions.types.IActionType;
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
 import network.darkhelmet.prism.commands.AboutCommand;
+import network.darkhelmet.prism.commands.LookupCommand;
 import network.darkhelmet.prism.commands.NearCommand;
 import network.darkhelmet.prism.commands.ReloadCommand;
 import network.darkhelmet.prism.commands.RestoreCommand;
@@ -57,6 +60,10 @@ import network.darkhelmet.prism.services.recording.RecordingService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Prism extends JavaPlugin {
@@ -91,6 +98,11 @@ public class Prism extends JavaPlugin {
     private ConfigurationService configurationService;
 
     /**
+     * The action registry.
+     */
+    private IActionRegistry actionRegistry;
+
+    /**
      * The storage adapter.
      */
     private IStorageAdapter storageAdapter;
@@ -118,6 +130,7 @@ public class Prism extends JavaPlugin {
 
         // Load the configuration service (and files)
         configurationService = injector.getInstance(ConfigurationService.class);
+        actionRegistry = injector.getInstance(IActionRegistry.class);
 
         // Choose and initialize the datasource
         storageAdapter = injector.getInstance(IStorageAdapter.class);
@@ -152,40 +165,61 @@ public class Prism extends JavaPlugin {
             getServer().getPluginManager().registerEvents(injector.getInstance(PlayerInteractListener.class), this);
 
             // Register commands
-            CommandManager commandManager = new CommandManager(this);
+            BukkitCommandManager<CommandSender> commandManager = BukkitCommandManager.create(this);
 
-            // Register wand mode command parameter type
-            commandManager.getParameterHandler().register(WandMode.class, argument -> {
-                if (argument == null) {
-                    return new TypeResult(null);
+            // Register action types auto-suggest
+            commandManager.registerSuggestion(SuggestionKey.of("actions"), (sender, context) -> {
+                List<String> actionFamilies = new ArrayList<>();
+                for (IActionType actionType : actionRegistry.actionTypes()) {
+                    actionFamilies.add(actionType.familyKey());
                 }
 
-                try {
-                    WandMode wandMode = WandMode.valueOf(argument.toString().toUpperCase(Locale.ENGLISH));
-
-                    return new TypeResult(wandMode, argument);
-                } catch (IllegalArgumentException e) {
-                    return new TypeResult(argument);
-                }
+                return actionFamilies;
             });
 
-            // Register wand mode command auto-suggest
-            commandManager.getCompletionHandler().register("#wands", input -> {
-                List<String> wandModes = new ArrayList<>();
-
-                for (WandMode mode : WandMode.values()) {
-                    wandModes.add(mode.toString().toLowerCase(Locale.ENGLISH));
+            // Register materials auto-suggest
+            // @todo remove when the command lib implements this
+            commandManager.registerSuggestion(SuggestionKey.of("materials"), (sender, context) -> {
+                List<String> materials = new ArrayList<>();
+                for (Material material : Material.values()) {
+                    materials.add(material.toString().toLowerCase(Locale.ENGLISH));
                 }
 
-                return wandModes;
+                return materials;
             });
 
-            commandManager.register(injector.getInstance(AboutCommand.class));
-            commandManager.register(injector.getInstance(NearCommand.class));
-            commandManager.register(injector.getInstance(ReloadCommand.class));
-            commandManager.register(injector.getInstance(RestoreCommand.class));
-            commandManager.register(injector.getInstance(RollbackCommand.class));
-            commandManager.register(injector.getInstance(WandCommand.class));
+            // Register entity types auto-suggest
+            // @todo remove when the command lib implements this
+            commandManager.registerSuggestion(SuggestionKey.of("entityTypes"), (sender, context) -> {
+                List<String> entityTypes = new ArrayList<>();
+                for (EntityType entityType : EntityType.values()) {
+                    entityTypes.add(entityType.toString().toLowerCase(Locale.ENGLISH));
+                }
+
+                return entityTypes;
+            });
+
+            // Register online player auto-suggest
+            commandManager.registerSuggestion(SuggestionKey.of("players"), (sender, context) -> {
+                List<String> players = new ArrayList<>();
+                for (Player player : getServer().getOnlinePlayers()) {
+                    players.add(player.getName());
+                }
+
+                return players;
+            });
+
+            // Register "in" parameter
+            commandManager.registerSuggestion(SuggestionKey.of("ins"), (sender, context) ->
+                Arrays.asList("chunk", "world"));
+
+            commandManager.registerCommand(injector.getInstance(AboutCommand.class));
+            commandManager.registerCommand(injector.getInstance(LookupCommand.class));
+            commandManager.registerCommand(injector.getInstance(NearCommand.class));
+            commandManager.registerCommand(injector.getInstance(ReloadCommand.class));
+            commandManager.registerCommand(injector.getInstance(RestoreCommand.class));
+            commandManager.registerCommand(injector.getInstance(RollbackCommand.class));
+            commandManager.registerCommand(injector.getInstance(WandCommand.class));
         }
     }
 

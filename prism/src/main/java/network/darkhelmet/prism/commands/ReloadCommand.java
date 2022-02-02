@@ -22,12 +22,11 @@ package network.darkhelmet.prism.commands;
 
 import com.google.inject.Inject;
 
-import java.io.IOException;
+import dev.triumphteam.cmd.core.BaseCommand;
+import dev.triumphteam.cmd.core.annotation.Command;
+import dev.triumphteam.cmd.core.annotation.SubCommand;
 
-import me.mattstudios.mf.annotations.Alias;
-import me.mattstudios.mf.annotations.Command;
-import me.mattstudios.mf.annotations.SubCommand;
-import me.mattstudios.mf.base.CommandBase;
+import java.io.IOException;
 
 import network.darkhelmet.prism.services.configuration.ConfigurationService;
 import network.darkhelmet.prism.services.filters.FilterService;
@@ -37,9 +36,8 @@ import network.darkhelmet.prism.services.translation.TranslationService;
 
 import org.bukkit.command.CommandSender;
 
-@Command("prism")
-@Alias("pr")
-public class ReloadCommand extends CommandBase {
+@Command(value = "prism", alias = {"pr"})
+public class ReloadCommand extends BaseCommand {
     /**
      * The message service.
      */

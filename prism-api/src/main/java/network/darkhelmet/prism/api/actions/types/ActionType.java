@@ -55,6 +55,12 @@ public abstract class ActionType implements IActionType {
     }
 
     @Override
+    public String familyKey() {
+        String[] segments = key.split("-");
+        return segments[segments.length - 1];
+    }
+
+    @Override
     public String pastTenseTranslationKey() {
         return "past-tense." + key;
     }

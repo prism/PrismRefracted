@@ -22,12 +22,11 @@ package network.darkhelmet.prism.commands;
 
 import com.google.inject.Inject;
 
-import java.util.List;
+import dev.triumphteam.cmd.core.BaseCommand;
+import dev.triumphteam.cmd.core.annotation.Command;
+import dev.triumphteam.cmd.core.annotation.SubCommand;
 
-import me.mattstudios.mf.annotations.Alias;
-import me.mattstudios.mf.annotations.Command;
-import me.mattstudios.mf.annotations.SubCommand;
-import me.mattstudios.mf.base.CommandBase;
+import java.util.List;
 
 import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.api.actions.IAction;
@@ -44,9 +43,8 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-@Command("prism")
-@Alias("pr")
-public class RestoreCommand extends CommandBase {
+@Command(value = "prism", alias = {"pr"})
+public class RestoreCommand extends BaseCommand {
     /**
      * The configuration service.
      */
@@ -90,8 +88,7 @@ public class RestoreCommand extends CommandBase {
      *
      * @param player The player
      */
-    @SubCommand("restore")
-    @Alias("rs")
+    @SubCommand(value = "restore", alias = {"rs"})
     public void onRestore(final Player player) {
         // Ensure a queue is free
         if (!modificationQueueService.queueAvailable()) {

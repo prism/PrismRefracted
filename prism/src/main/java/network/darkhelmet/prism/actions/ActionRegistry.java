@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import network.darkhelmet.prism.actions.types.BlockActionType;
 import network.darkhelmet.prism.actions.types.EntityActionType;
@@ -75,6 +76,12 @@ public class ActionRegistry implements IActionRegistry {
     @Override
     public Collection<IActionType> actionTypes() {
         return actionsTypes.values();
+    }
+
+    @Override
+    public Collection<IActionType> actionTypesInFamily(String family) {
+        return actionsTypes.values().stream().filter(
+            a -> a.familyKey().equalsIgnoreCase(family)).collect(Collectors.toList());
     }
 
     @Override

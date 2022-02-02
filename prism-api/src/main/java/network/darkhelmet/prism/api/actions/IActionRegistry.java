@@ -38,6 +38,14 @@ public interface IActionRegistry {
     Collection<IActionType> actionTypes();
 
     /**
+     * Get all action types that belong to a family.
+     *
+     * @param family The family
+     * @return All matching action types
+     */
+    Collection<IActionType> actionTypesInFamily(String family);
+
+    /**
      * Create a new action for the given type/block.
      *
      * @param type The action type

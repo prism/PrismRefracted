@@ -28,6 +28,7 @@ import com.google.inject.Inject;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.actions.ActionRegistry;
@@ -35,6 +36,8 @@ import network.darkhelmet.prism.api.actions.types.IActionType;
 import network.darkhelmet.prism.api.activities.ActivityQuery;
 import network.darkhelmet.prism.utils.TypeUtils;
 
+import org.bukkit.Material;
+import org.bukkit.entity.EntityType;
 import org.intellij.lang.annotations.Language;
 
 public class MysqlQueryBuilder {
@@ -117,6 +120,7 @@ public class MysqlQueryBuilder {
         List<String> conditions = new ArrayList<>();
         List<Object> parameters = new ArrayList<>();
 
+        // Locations
         if (query.location() != null) {
             conditions.add("(`x` = ? AND `y` = ? AND `z` = ?)");
             parameters.add(query.location().getBlockX());
@@ -135,22 +139,82 @@ public class MysqlQueryBuilder {
             parameters.add(query.maxVector().getZ());
         }
 
+        // World
         if (query.worldUuid() != null) {
             conditions.add("`world_uuid` = UNHEX(?)");
             parameters.add(TypeUtils.uuidToDbString(query.worldUuid()));
         }
 
-        if (!query.isLookup()) {
-            // Include *only* reversible activities
-            List<String> actions = new ArrayList<>();
-            for (IActionType actionType : actionRegistry.actionTypes()) {
-                if (actionType.reversible()) {
-                    actions.add("?");
+        // Actions
+        if (!query.actionTypes().isEmpty()) {
+            List<String> placeholders = new ArrayList<>();
+            for (IActionType actionType : query.actionTypes()) {
+                if (query.isLookup() || actionType.reversible()) {
+                    placeholders.add("?");
                     parameters.add(actionType.key());
                 }
             }
 
-            conditions.add(String.format("`action` IN (%s)", String.join(",", actions)));
+            conditions.add(String.format("`action` IN (%s)", String.join(",", placeholders)));
+        }
+
+        // Materials
+        if (!query.materials().isEmpty()) {
+            List<String> placeholders = new ArrayList<>();
+            for (Material material : query.materials()) {
+                placeholders.add("?");
+                parameters.add(material.toString().toLowerCase(Locale.ENGLISH));
+            }
+
+            conditions.add(String.format("`material` IN (%s)", String.join(",", placeholders)));
+        }
+
+        // Entity Types
+        if (!query.entityTypes().isEmpty()) {
+            List<String> placeholders = new ArrayList<>();
+            for (EntityType entityType : query.entityTypes()) {
+                placeholders.add("?");
+                parameters.add(entityType.toString().toLowerCase(Locale.ENGLISH));
+            }
+
+            conditions.add(String.format("`entity_type` IN (%s)", String.join(",", placeholders)));
+        }
+
+        // Players by name
+        if (!query.playerNames().isEmpty()) {
+            List<String> placeholders = new ArrayList<>();
+            for (String playerName : query.playerNames()) {
+                placeholders.add("?");
+                parameters.add(playerName);
+            }
+
+            conditions.add(String.format("`player` IN (%s)", String.join(",", placeholders)));
+        }
+
+        // Timestamps
+        if (query.since() != null && query.before() != null) {
+            conditions.add("`timestamp` BETWEEN ? AND ?");
+            parameters.add(query.since());
+            parameters.add(query.before());
+        } else if (query.since() != null) {
+            conditions.add("`timestamp` > ?");
+            parameters.add(query.since());
+        } else if (query.before() != null) {
+            conditions.add("`timestamp` < ?");
+            parameters.add(query.before());
+        }
+
+        if (!query.isLookup() && query.actionTypes().isEmpty()) {
+            // Include *only* reversible activities
+            List<String> placeholders = new ArrayList<>();
+            for (IActionType actionType : actionRegistry.actionTypes()) {
+                if (actionType.reversible()) {
+                    placeholders.add("?");
+                    parameters.add(actionType.key());
+                }
+            }
+
+            conditions.add(String.format("`action` IN (%s)", String.join(",", placeholders)));
         }
 
         if (conditions.size() > 0) {

@@ -23,20 +23,17 @@ package network.darkhelmet.prism.commands;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
-import me.mattstudios.mf.annotations.Alias;
-import me.mattstudios.mf.annotations.Command;
-import me.mattstudios.mf.annotations.Default;
-import me.mattstudios.mf.annotations.SubCommand;
-import me.mattstudios.mf.base.CommandBase;
+import dev.triumphteam.cmd.core.BaseCommand;
+import dev.triumphteam.cmd.core.annotation.Command;
+import dev.triumphteam.cmd.core.annotation.Default;
+import dev.triumphteam.cmd.core.annotation.SubCommand;
 
 import network.darkhelmet.prism.services.messages.MessageService;
-import network.darkhelmet.prism.services.translation.TranslationKey;
 
 import org.bukkit.command.CommandSender;
 
-@Command("prism")
-@Alias("pr")
-public class AboutCommand extends CommandBase {
+@Command(value = "prism", alias = {"pr"})
+public class AboutCommand extends BaseCommand {
     /**
      * The message service.
      */
@@ -68,6 +65,5 @@ public class AboutCommand extends CommandBase {
     @SubCommand("about")
     public void onAbout(final CommandSender sender) {
         messageService.about(sender, version);
-        messageService.error(sender, new TranslationKey("query-error"));
     }
 }

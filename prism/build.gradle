@@ -30,6 +30,9 @@ repositories {
 
     // Sonatype (kyori)
     maven { url = 'https://oss.sonatype.org/content/repositories/snapshots/' }
+
+    // TeamTriumph
+    maven { url = 'https://repo.triumphteam.dev/snapshots' }
 }
 
 group = project.property("group")
@@ -49,7 +52,7 @@ dependencies {
     implementation 'net.kyori.moonshine:moonshine-core:2.0.4'
     implementation 'net.kyori.moonshine:moonshine-standard:2.0.4'
     implementation 'org.spongepowered:configurate-hocon:4.1.2'
-    implementation 'me.mattstudios.utils:matt-framework:1.4.6'
+    implementation 'dev.triumphteam:triumph-cmd-bukkit:2.0.0-SNAPSHOT'
     implementation 'co.aikar:idb-core:1.0.0-SNAPSHOT'
     implementation 'co.aikar:taskchain-bukkit:3.7.2'
     implementation 'de.tr7zw:item-nbt-api-plugin:2.9.0'
