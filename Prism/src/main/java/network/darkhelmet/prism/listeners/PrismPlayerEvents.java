@@ -327,6 +327,8 @@ public class PrismPlayerEvents implements Listener {
             liquidType = "water";
         } else if (spot.getType() == Material.LAVA) {
             liquidType = "lava";
+        } else if (spot.getType() == Material.POWDER_SNOW) {
+            liquidType = "powder snow";
         }
 
         final Handler pa = ActionFactory.createPlayer("bucket-fill", player, liquidType);
