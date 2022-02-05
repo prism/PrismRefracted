@@ -5,7 +5,7 @@ import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.actionlibs.ActionMessage;
 import network.darkhelmet.prism.actionlibs.QueryResult;
 import network.darkhelmet.prism.api.actions.PrismProcessType;
-import me.botsko.prism.PrismLocalization;
+import io.github.rothes.prismcn.PrismLocalization;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;

@@ -3,7 +3,7 @@ package io.github.rothes.prismcn;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import me.botsko.prism.Prism;
+import network.darkhelmet.prism.Prism;
 import org.bukkit.Bukkit;
 
 import java.io.BufferedReader;
@@ -18,7 +18,7 @@ import java.util.Map;
 public class Updater {
 
     private final String VERSION_CHANNCEL = "Stable";
-    private final int VERSION_NUMBER = 11;
+    private final int VERSION_NUMBER = 1;
     private final HashMap<String, Integer> msgTimesMap = new HashMap<>();
 
     public void start() {
@@ -33,7 +33,7 @@ public class Updater {
 
     private String getJson() {
         try (
-                InputStream stream = new URL("https://raw.fastgit.org/Rothes/Prism-Bukkit/master/Version%20Infos.json")
+                InputStream stream = new URL("https://raw.fastgit.org/Rothes/PrismRefracted/v3-cn/Version%20Infos.json")
                         .openStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))
         ){

@@ -2,7 +2,7 @@ package network.darkhelmet.prism.utils;
 
 import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.api.objects.MaterialState;
-import me.botsko.prism.PrismLocalization;
+import io.github.rothes.prismcn.PrismLocalization;
 import org.bukkit.Bukkit;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;

@@ -1,9 +1,10 @@
 package network.darkhelmet.prism.actions.entity;
 
 import com.google.gson.annotations.SerializedName;
+import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.utils.EntityUtils;
 import network.darkhelmet.prism.utils.MiscUtils;
-import me.botsko.prism.PrismLocalization;
+import io.github.rothes.prismcn.PrismLocalization;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Ageable;
 import org.bukkit.entity.Entity;

@@ -1,6 +1,6 @@
-package me.botsko.prism.database;
+package network.darkhelmet.prism.database;
 
-import me.botsko.prism.api.actions.Handler;
+import network.darkhelmet.prism.api.actions.Handler;
 
 public interface UpdateQuery {
 

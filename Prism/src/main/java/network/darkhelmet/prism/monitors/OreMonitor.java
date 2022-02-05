@@ -5,7 +5,7 @@ import network.darkhelmet.prism.actionlibs.ActionsQuery;
 import network.darkhelmet.prism.actionlibs.QueryParameters;
 import network.darkhelmet.prism.actionlibs.QueryResult;
 import network.darkhelmet.prism.utils.MiscUtils;
-import me.botsko.prism.PrismLocalization;
+import io.github.rothes.prismcn.PrismLocalization;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;

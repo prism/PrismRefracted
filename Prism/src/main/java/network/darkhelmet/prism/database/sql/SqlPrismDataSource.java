@@ -12,7 +12,7 @@ import network.darkhelmet.prism.database.SelectIdQuery;
 import network.darkhelmet.prism.database.SelectProcessActionQuery;
 import network.darkhelmet.prism.database.SelectQuery;
 import network.darkhelmet.prism.database.SettingsQuery;
-import me.botsko.prism.database.UpdateQuery;
+import network.darkhelmet.prism.database.UpdateQuery;
 import org.bukkit.configuration.ConfigurationSection;
 
 import javax.annotation.Nonnull;

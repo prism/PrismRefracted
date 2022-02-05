@@ -1,7 +1,7 @@
 package network.darkhelmet.prism.utils;
 
-import me.botsko.prism.Prism;
-import me.botsko.prism.PrismLocalization;
+import network.darkhelmet.prism.Prism;
+import io.github.rothes.prismcn.PrismLocalization;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;

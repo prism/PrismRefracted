@@ -1,8 +1,8 @@
-package me.botsko.prism.database.sql;
+package network.darkhelmet.prism.database.sql;
 
-import me.botsko.prism.api.actions.Handler;
-import me.botsko.prism.database.PrismDataSource;
-import me.botsko.prism.database.UpdateQuery;
+import network.darkhelmet.prism.api.actions.Handler;
+import network.darkhelmet.prism.database.PrismDataSource;
+import network.darkhelmet.prism.database.UpdateQuery;
 
 import javax.annotation.Nullable;
 import java.sql.Connection;

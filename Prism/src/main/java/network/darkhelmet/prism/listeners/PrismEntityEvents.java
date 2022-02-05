@@ -8,7 +8,7 @@ import network.darkhelmet.prism.utils.InventoryUtils;
 import network.darkhelmet.prism.utils.MaterialTag;
 import network.darkhelmet.prism.utils.MiscUtils;
 import network.darkhelmet.prism.utils.WandUtils;
-import me.botsko.prism.PrismLocalization;
+import io.github.rothes.prismcn.PrismLocalization;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;

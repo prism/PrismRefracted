@@ -2,7 +2,7 @@ package network.darkhelmet.prism.appliers;
 
 import network.darkhelmet.prism.Il8nHelper;
 import network.darkhelmet.prism.Prism;
-import me.botsko.prism.actionlibs.ActionsQuery;
+import network.darkhelmet.prism.actionlibs.ActionsQuery;
 import network.darkhelmet.prism.actionlibs.QueryParameters;
 import network.darkhelmet.prism.actions.GenericAction;
 import network.darkhelmet.prism.api.BlockStateChange;

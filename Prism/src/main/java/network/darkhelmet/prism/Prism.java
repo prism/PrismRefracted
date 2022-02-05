@@ -1,5 +1,6 @@
 package network.darkhelmet.prism;
 
+import io.github.rothes.prismcn.PrismLocalization;
 import io.github.rothes.prismcn.Updater;
 import io.papermc.lib.PaperLib;
 import network.darkhelmet.prism.actionlibs.ActionRegistry;

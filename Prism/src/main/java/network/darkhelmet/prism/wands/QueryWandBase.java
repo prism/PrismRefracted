@@ -6,7 +6,7 @@ import network.darkhelmet.prism.actionlibs.QueryParameters;
 import network.darkhelmet.prism.actionlibs.QueryResult;
 import network.darkhelmet.prism.api.actions.PrismProcessType;
 import network.darkhelmet.prism.commandlibs.PreprocessArgs;
-import me.botsko.prism.PrismLocalization;
+import io.github.rothes.prismcn.PrismLocalization;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 

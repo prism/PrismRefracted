@@ -5,7 +5,7 @@ import network.darkhelmet.prism.api.objects.MaterialState;
 import network.darkhelmet.prism.database.IdMapQuery;
 import network.darkhelmet.prism.database.sql.SqlIdMapQuery;
 import network.darkhelmet.prism.utils.block.Utilities;
-import me.botsko.prism.PrismLocalization;
+import io.github.rothes.prismcn.PrismLocalization;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;

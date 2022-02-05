@@ -7,7 +7,7 @@ import network.darkhelmet.prism.settings.Settings;
 import network.darkhelmet.prism.text.ReplaceableTextComponent;
 import network.darkhelmet.prism.utils.ItemUtils;
 import network.darkhelmet.prism.wands.Wand;
-import me.botsko.prism.PrismLocalization;
+import io.github.rothes.prismcn.PrismLocalization;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import org.bukkit.Material;
