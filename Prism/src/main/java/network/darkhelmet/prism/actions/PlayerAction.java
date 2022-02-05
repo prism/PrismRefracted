@@ -23,6 +23,8 @@ public class PlayerAction extends GenericAction {
                             return "一个 熔岩桶";
                         case "water":
                             return "一个 水桶";
+                        case "powder snow":
+                            return "一个 细雪桶";
                         default:
                             return "一个 " + extraInfo + " 桶";
                     }
