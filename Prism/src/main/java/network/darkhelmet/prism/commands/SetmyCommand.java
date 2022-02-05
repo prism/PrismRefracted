@@ -7,6 +7,7 @@ import network.darkhelmet.prism.settings.Settings;
 import network.darkhelmet.prism.text.ReplaceableTextComponent;
 import network.darkhelmet.prism.utils.ItemUtils;
 import network.darkhelmet.prism.wands.Wand;
+import me.botsko.prism.PrismLocalization;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import org.bukkit.Material;
@@ -35,15 +36,15 @@ public class SetmyCommand extends AbstractCommand {
             setType = call.getArg(1);
         }
 
-        if (setType != null && !setType.equalsIgnoreCase("wand")) {
+        if (setType != null && !(setType.equalsIgnoreCase("wand") || setType.equalsIgnoreCase("魔棒"))) {
             Prism.messenger.sendMessage(call.getPlayer(),
-                    Prism.messenger.playerError("Invalid arguments. Use /prism ? for help."));
+                    Prism.messenger.playerError("无效的参数. 使用 '/pr ?' 获取帮助."));
             return;
         }
 
         if (!plugin.getConfig().getBoolean("prism.wands.allow-user-override")) {
             Prism.messenger.sendMessage(call.getPlayer(),
-                    Prism.messenger.playerError("Sorry, but personalizing the wand is currently not allowed."));
+                    Prism.messenger.playerError("抱歉, 现在暂不允许个性化魔棒."));
         }
 
         // Check for any wand permissions. @todo There should be some central
@@ -67,11 +68,30 @@ public class SetmyCommand extends AbstractCommand {
             setSubType = call.getArg(2).toLowerCase();
         }
 
-        if (setSubType != null && setSubType.equals("mode")) {
+        if (setSubType != null && (setSubType.equals("mode") || setSubType.equals("模式"))) {
 
             String setWandMode = null;
+            String localisation = null;
             if (call.getArgs().length >= 4) {
                 setWandMode = call.getArg(3);
+                switch (setWandMode) {
+                    case "hand":
+                    case "空手":
+                        setWandMode = "hand";
+                        localisation = "空手";
+                        break;
+                    case "item":
+                    case "物品":
+                        setWandMode = "item";
+                        localisation = "物品";
+                        break;
+                    case "block":
+                    case "方块":
+                        setWandMode = "block";
+                        localisation = "方块";
+                        break;
+                    default:
+                }
             }
             if (setWandMode != null
                     && (setWandMode.equals("hand") || setWandMode.equals("item") || setWandMode.equals("block"))) {
@@ -79,7 +99,7 @@ public class SetmyCommand extends AbstractCommand {
                 Settings.deleteSetting("wand.item", call.getPlayer());
                 Prism.messenger.sendMessage(call.getPlayer(), Prism.messenger.playerHeaderMsg(
                         ReplaceableTextComponent.builder("setWandMode")
-                                .replace("<wandMode>", setWandMode,
+                                .replace("<wandMode>", localisation,
                                         Style.style(NamedTextColor.GREEN))
                                 .build()));
                 return;
@@ -89,7 +109,7 @@ public class SetmyCommand extends AbstractCommand {
             return;
         }
 
-        if (setSubType != null && setSubType.equals("item")) {
+        if (setSubType != null && (setSubType.equals("item") || setSubType.equals("物品"))) {
             if (call.getArgs().length >= 4) {
                 String wandString = call.getArg(3);
                 Material setWand = Material.matchMaterial(wandString);
@@ -106,16 +126,19 @@ public class SetmyCommand extends AbstractCommand {
                     }
                 }
 
+                PrismLocalization prismLocalization = Prism.getInstance().getPrismLocalization();
+                String localization = prismLocalization.hasMaterialLocale(setWand.name()) ?
+                        prismLocalization.getMaterialLocale(setWand.name()) : wandString;
                 if (ItemUtils.isBadWand(setWand)) {
                     Prism.messenger.sendMessage(call.getPlayer(),
                             Prism.messenger.playerError(ReplaceableTextComponent.builder("wand-bad")
-                                    .replace("<itemName>", wandString).build()));
+                                    .replace("<itemName>", localization).build()));
                     return;
                 }
 
                 Settings.saveSetting("wand.item", wandString, call.getPlayer());
                 Prism.messenger.sendMessage(call.getPlayer(), Prism.messenger.playerHeaderMsg(
-                        ReplaceableTextComponent.builder("wand-item-change").replace("<itemName>", wandString)
+                        ReplaceableTextComponent.builder("wand-item-change").replace("<itemName>", localization)
                                 .build()));
                 return;
             }

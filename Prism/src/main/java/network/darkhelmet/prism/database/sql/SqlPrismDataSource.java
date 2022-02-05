@@ -12,6 +12,7 @@ import network.darkhelmet.prism.database.SelectIdQuery;
 import network.darkhelmet.prism.database.SelectProcessActionQuery;
 import network.darkhelmet.prism.database.SelectQuery;
 import network.darkhelmet.prism.database.SettingsQuery;
+import me.botsko.prism.database.UpdateQuery;
 import org.bukkit.configuration.ConfigurationSection;
 
 import javax.annotation.Nonnull;
@@ -89,10 +90,10 @@ public abstract class SqlPrismDataSource implements PrismDataSource {
                 return database.getConnection();
             }
         } catch (SQLException e) {
-            Prism.log("Could not retrieve a connection - with exception");
+            Prism.log("无法恢复连接 - 发生异常");
             return null;
         }
-        Prism.log("Could not retrieve a connection");
+        Prism.log("无法恢复连接");
         return null;
     }
 
@@ -134,13 +135,13 @@ public abstract class SqlPrismDataSource implements PrismDataSource {
                 return;
             }
         } catch (final SQLException ignored) {
-            Prism.warn("Database rescue was unsuccessful.");
+            Prism.warn("数据库抢救失败.");
         }
-        Prism.warn("Database connection error: " + e.getMessage());
+        Prism.warn("数据库连接错误: " + e.getMessage());
         if (e.getMessage().contains("marked as crashed")) {
             final String[] msg = new String[2];
-            msg[0] = "If MySQL crashes during write it may corrupt it's indexes.";
-            msg[1] = "Try running `CHECK TABLE " + getPrefix() + "data` and then `REPAIR TABLE "
+            msg[0] = "如果在写入时 MySQL 崩溃, 可能会损坏它的索引.";
+            msg[1] = "请尝试先执行 `CHECK TABLE " + getPrefix() + "data` , 然后执行 `REPAIR TABLE "
                     + getPrefix() + "data`.";
             Prism.logSection(msg);
         }
@@ -169,7 +170,7 @@ public abstract class SqlPrismDataSource implements PrismDataSource {
                     + "`world_id` int(10) unsigned NOT NULL," + "`x` int(11) NOT NULL," + "`y` int(11) NOT NULL,"
                     + "`z` int(11) NOT NULL," + "`block_id` mediumint(5) DEFAULT NULL,"
                     + "`block_subid` mediumint(5) DEFAULT NULL," + "`old_block_id` mediumint(5) DEFAULT NULL,"
-                    + "`old_block_subid` mediumint(5) DEFAULT NULL," + "PRIMARY KEY (`id`)," + "KEY `epoch` (`epoch`),"
+                    + "`old_block_subid` mediumint(5) DEFAULT NULL," + "`rollbacked` boolean NOT NULL DEFAULT 0," + "PRIMARY KEY (`id`)," + "KEY `epoch` (`epoch`),"
                     + "KEY  `location` (`world_id`, `x`, `z`, `y`, `action_id`),"
                     + "KEY  `player` (`player_id`)"
                     + ") ENGINE=InnoDB  DEFAULT CHARSET=utf8;";
@@ -239,7 +240,7 @@ public abstract class SqlPrismDataSource implements PrismDataSource {
         } catch (final SQLException e) {
             handleDataSourceException(e);
 
-            Prism.log("Database connection error: " + e.getMessage());
+            Prism.log("数据库连接错误: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -262,10 +263,10 @@ public abstract class SqlPrismDataSource implements PrismDataSource {
             s.executeUpdate();
             ResultSet rs = s.getGeneratedKeys();
             if (rs.next()) {
-                Prism.log("Registering new action type to the database/cache: " + actionName + " " + rs.getInt(1));
+                Prism.log("正在注册新一行为类型到 数据库/缓存: " + actionName + " " + rs.getInt(1));
                 Prism.prismActions.put(actionName, rs.getInt(1));
             } else {
-                throw new SQLException("Insert statement failed - no generated key obtained.");
+                throw new SQLException("插入语句失败 - 未获得生成的key.");
             }
             rs.close();
         } catch (final SQLException e) {
@@ -283,11 +284,11 @@ public abstract class SqlPrismDataSource implements PrismDataSource {
                 ResultSet rs = s.executeQuery()
                 ) {
             while (rs.next()) {
-                Prism.debug("Loaded " + rs.getString(2) + ", id:" + rs.getInt(1));
+                Prism.debug("已加载 " + rs.getString(2) + ", ID:" + rs.getInt(1));
                 Prism.prismActions.put(rs.getString(2), rs.getInt(1));
             }
 
-            Prism.debug("Loaded " + Prism.prismActions.size() + " actions into the cache.");
+            Prism.debug("已加载 " + Prism.prismActions.size() + " 个行为进入缓存.");
 
         } catch (final SQLException e) {
             handleDataSourceException(e);
@@ -311,7 +312,7 @@ public abstract class SqlPrismDataSource implements PrismDataSource {
             while (rs.next()) {
                 prismWorlds.put(rs.getString(2), rs.getInt(1));
             }
-            Prism.debug("Loaded " + prismWorlds.size() + " worlds into the cache.");
+            Prism.debug("已加载 " + prismWorlds.size() + " 个世界进入缓存.");
         } catch (final SQLException e) {
             handleDataSourceException(e);
         }
@@ -334,10 +335,10 @@ public abstract class SqlPrismDataSource implements PrismDataSource {
             s.executeUpdate();
             ResultSet rs = s.getGeneratedKeys();
             if (rs.next()) {
-                Prism.log("Registering new world to the database/cache: " + worldName + " " + rs.getInt(1));
+                Prism.log("正在注册新一世界到 数据库/缓存: " + worldName + " " + rs.getInt(1));
                 Prism.prismWorlds.put(worldName, rs.getInt(1));
             } else {
-                throw new SQLException("Insert statement failed - no generated key obtained.");
+                throw new SQLException("插入语句失败 - 未获得生成的key.");
             }
             rs.close();
         } catch (final SQLException e) {
@@ -389,6 +390,11 @@ public abstract class SqlPrismDataSource implements PrismDataSource {
     @Override
     public SelectProcessActionQuery createProcessQuery() {
         return new SqlSelectProcessQuery(this);
+    }
+
+    @Override
+    public UpdateQuery createUpdateQuery() {
+        return new SqlUpdateQuery(this);
     }
 
     public InsertQuery getDataInsertionQuery() {

@@ -1,10 +1,13 @@
-Drain
+.. _drain:
+
+排水
 =====
 
 .. tip::
 
-  /pr drain [ water | lava ] r:<radius>
+  | ``/pr drain [ water | lava ] r:<半径>``
+  | ``/pr 排水 [ 水 | 熔岩 ] r:<半径>``
 
-Drains water or lava in a region around the player.  Leaving out the type will drain both.
+排去玩家附近的水或熔岩. 遗漏类型将会排去两种液体.
 
 

@@ -103,11 +103,11 @@ public class SignAction extends GenericAction {
      */
     @Override
     public String getNiceName() {
-        String name = "sign (";
+        String name = "告示牌 (";
         if (actionData.lines != null && actionData.lines.length > 0) {
             name += TypeUtils.join(actionData.lines, ", ");
         } else {
-            name += "no text";
+            name += "无文本";
         }
         name += ")";
         return name;

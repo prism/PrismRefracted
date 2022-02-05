@@ -85,9 +85,9 @@ public class SqlBlockReportQueryBuilder extends SqlSelectQueryBuilder implements
                             .replaceText("<player>",
                                     Component.text(playerName).color(NamedTextColor.DARK_AQUA))));
             Prism.messenger.sendMessage(sender,
-                    Prism.messenger.playerMsg(Component.text(TypeUtils.padStringRight("Block", colTextLen)
-                            + TypeUtils.padStringRight("Placed", colIntLen)
-                            + TypeUtils.padStringRight("Broken", colIntLen))));
+                    Prism.messenger.playerMsg(Component.text(TypeUtils.padStringRight("方块", colTextLen)
+                            + TypeUtils.padStringRight("放置", colIntLen)
+                            + TypeUtils.padStringRight("破坏", colIntLen))));
             while (rs.next()) {
                 int blockId = rs.getInt(1);
                 MaterialState state = Prism.getItems().idsToMaterial(blockId, 0, true);

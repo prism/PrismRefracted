@@ -32,7 +32,7 @@ public class ViewCommand implements SubHandler {
 
         final String playerName = call.getPlayer().getName();
 
-        if (call.getArg(1).equals("chunk")) {
+        if (call.getArg(1).equals("chunk") || call.getArg(1).equals("区块")) {
 
             // Do they already have a view?
             if (plugin.playerActiveViews.containsKey(playerName)) {

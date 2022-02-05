@@ -93,7 +93,7 @@ public class TypeUtils {
             }
         }
         if (hex.length() != 7 && !hex.startsWith("#")) {
-            Prism.log("Could not decode as hex:" + hex);
+            Prism.log("无法解码为十六进制:" + hex);
             TextColor color = NamedTextColor.NAMES.value(hex);
             if (color != null) {
                 return color;

@@ -22,7 +22,7 @@ public class IdParameter extends SimplePrismParameterHandler {
     public void process(QueryParameters query, String alias, String input, CommandSender sender) {
 
         if (!TypeUtils.isNumeric(input)) {
-            throw new IllegalArgumentException("ID must be a number. Use /prism ? for help.");
+            throw new IllegalArgumentException("ID 必须为一个数值. 请使用 /pr ? 来获取帮助.");
         }
         query.setId(Long.parseLong(input));
     }

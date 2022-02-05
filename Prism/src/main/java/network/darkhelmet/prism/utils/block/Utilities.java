@@ -437,7 +437,7 @@ public class Utilities {
                 return BlockFace.SOUTH;
 
             default:
-                throw new IllegalArgumentException("Only cardinal directions are supported");
+                throw new IllegalArgumentException("仅支持基本方向");
         }
     }
 
@@ -462,7 +462,7 @@ public class Utilities {
                 return BlockFace.NORTH;
 
             default:
-                throw new IllegalArgumentException("Only cardinal directions are supported");
+                throw new IllegalArgumentException("仅支持基本方向");
         }
     }
 
@@ -510,7 +510,7 @@ public class Utilities {
             case SINGLE:
                 return null;
             default:
-                throw new IllegalStateException("Unexpected value: " + data.getType());
+                throw new IllegalStateException("非预期的值: " + data.getType());
         }
     }
 

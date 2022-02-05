@@ -114,12 +114,12 @@ public class SqlPlayerIdentificationHelper {
             ResultSet rs = s.getGeneratedKeys();
             if (rs.next()) {
                 prismPlayer.setId(rs.getInt(1));
-                Prism.debug("Saved and loaded player " + name + " (" + uuid
-                        + ") into the cache.");
+                Prism.debug("保存并加载了玩家 " + name + " (" + uuid
+                        + ") 进入缓存.");
                 Prism.prismPlayers.put(uuid,
                         new PrismPlayer(rs.getInt(1), uuid, name));
             } else {
-                throw new SQLException("Insert statement failed - no generated key obtained.");
+                throw new SQLException("插入语句失败 - 未获得生成的key.");
             }
             rs.close();
         } catch (SQLException e) {
@@ -148,10 +148,10 @@ public class SqlPlayerIdentificationHelper {
             ResultSet rs = s.getGeneratedKeys();
             if (rs.next()) {
                 fakePlayer.setId(rs.getInt(1));
-                Prism.debug("Saved and loaded fake player " + fakePlayer.getName() + " into the cache.");
+                Prism.debug("保存并加载了虚假玩家 " + fakePlayer.getName() + " 进入缓存.");
                 Prism.prismPlayers.put(fakePlayer.getUuid(), fakePlayer);
             } else {
-                throw new SQLException("Insert statement failed - no generated key obtained.");
+                throw new SQLException("插入语句失败 - 未获得生成的key.");
             }
             rs.close();
         } catch (SQLException e) {
@@ -194,10 +194,10 @@ public class SqlPlayerIdentificationHelper {
             if (offlinePlayer.getName() != null) {
                 if (offlinePlayer.getName().equals(prismPlayer.getName())) {
                     // 2 players with the same name - this is going to cause major issues.
-                    Prism.warn("2 Players exist with the same name Prism cannot load both as per the name.");
-                    Prism.warn("Player 1(player to update): " + prismPlayer.getName() + " / " + prismPlayer.getUuid());
-                    Prism.warn("Player 2(existing): " + offlinePlayer.getName() + " / " + test.getUuid());
-                    Prism.warn("Player 2 will have the name set with a random index.");
+                    Prism.warn("2 名玩家同名, Prism 无法同时载入两个.");
+                    Prism.warn("玩家 1(更新的玩家): " + prismPlayer.getName() + " / " + prismPlayer.getUuid());
+                    Prism.warn("玩家 2(现有的): " + offlinePlayer.getName() + " / " + test.getUuid());
+                    Prism.warn("玩家 2 将会使用随机索引设置名称.");
                     test.setName(offlinePlayer.getName() + "_" + offlinePlayer.getUniqueId().getMostSignificantBits());
                     updatePlayer(test);
                 }
@@ -221,7 +221,7 @@ public class SqlPlayerIdentificationHelper {
             while (rs.next()) {
                 PrismPlayer prismPlayer = new PrismPlayer(rs.getInt(1), uuidFromDbString(rs.getString(3)),
                         rs.getString(2));
-                Prism.debug("Loaded player " + rs.getString(2) + ", id: " + rs.getInt(1) + " into the cache.");
+                Prism.debug("已加载玩家 " + rs.getString(2) + ", ID: " + rs.getInt(1) + " 进入缓存.");
                 Prism.prismPlayers.put(UUID.fromString(rs.getString(2)), prismPlayer);
             }
             rs.close();

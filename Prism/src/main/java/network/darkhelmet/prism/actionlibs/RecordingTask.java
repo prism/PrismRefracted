@@ -59,29 +59,29 @@ public class RecordingTask implements Runnable {
         if (!RecordingQueue.getQueue().isEmpty()) {
             if (Prism.getPrismDataSource().isPaused()) {
                 Prism.log(
-                        "Prism database paused. An external actor has paused database processing..."
-                                + "scheduling next recording");
+                        "Prism 数据库已暂停. 外部行为暂停了数据库处理..."
+                                + "正在计划到下一次记录");
                 scheduleNextRecording();
                 return;
             }
             long start = System.currentTimeMillis();
-            Prism.debug("Beginning batch insert from queue. " + start);
+            Prism.debug("正在开始批次插入队列数据. " + start);
             try (
                     Connection conn = Prism.getPrismDataSource().getConnection()
             ) {
                 if ((conn == null) || (conn.isClosed())) {
                     if (RecordingManager.failedDbConnectionCount == 0) {
                         Prism.log(
-                                "Prism database error. Connection should be there but it's not. "
-                                        + "Leaving actions to log in queue.");
+                                "Prism 数据库错误. 应该有一个已有的连接, 但是没有. "
+                                        + "正在将行为放入队列.");
                     }
                     RecordingManager.failedDbConnectionCount++;
                     if (RecordingManager.failedDbConnectionCount > plugin.getConfig()
                             .getInt("prism.query.max-failures-before-wait")) {
-                        Prism.log("Too many problems connecting. Giving up for a bit.");
+                        Prism.log("连接问题过多. 暂时放弃处理.");
                         scheduleNextRecording();
                     }
-                    Prism.debug("Database connection still missing, incrementing count.");
+                    Prism.debug("数据库连接仍在丢失中, 增加计数.");
                     return;
                 } else {
                     RecordingManager.failedDbConnectionCount = 0;
@@ -100,7 +100,7 @@ public class RecordingTask implements Runnable {
                 if (e instanceof SQLException) {
                     Prism.getPrismDataSource().handleDataSourceException((SQLException) e);
                 }
-                Prism.debug("Database connection issue;");
+                Prism.debug("数据库连接问题;");
                 RecordingManager.failedDbConnectionCount++;
                 return;
             }
@@ -121,7 +121,7 @@ public class RecordingTask implements Runnable {
 
                 // Break out of the loop and just commit what we have
                 if (i >= perBatch) {
-                    Prism.debug("Recorder: Batch max exceeded, running insert. Queue remaining: "
+                    Prism.debug("记录器: 超出批次上限, 正在进行插入. 剩余队列: "
                             + RecordingQueue.getQueue().size());
                     break;
                 }
@@ -180,8 +180,8 @@ public class RecordingTask implements Runnable {
     private void scheduleNextRecording() {
         if (!plugin.isEnabled()) {
             Prism.log(
-                    "Can't schedule new recording tasks as plugin is now disabled. If you're shutting"
-                            + " down the server, ignore me.");
+                    "由于插件现已关闭, 无法计划新的记录任务. "
+                            + "如果您正在关闭服务器, 则可忽略这个问题.");
             return;
         }
         plugin.recordingTask = plugin.getServer().getScheduler().runTaskLaterAsynchronously(plugin,

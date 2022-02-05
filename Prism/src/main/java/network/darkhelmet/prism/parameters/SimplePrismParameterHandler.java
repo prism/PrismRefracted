@@ -98,7 +98,7 @@ public abstract class SimplePrismParameterHandler implements PrismParameterHandl
         final String alias = split[0];
         final String input = split[1];
         if (inputMatcher != null && !inputMatcher.matcher(input).matches()) {
-            throw new IllegalArgumentException("Invalid syntax for parameter " + input);
+            throw new IllegalArgumentException("参数 " + input + " 使用了非法的语法结构.");
         }
         process(query, alias, input, sender);
     }

@@ -18,7 +18,7 @@ public class WorldParameter extends SimplePrismParameterHandler {
      * Constructor.
      */
     public WorldParameter() {
-        super("World", Pattern.compile("[^\\s]+"), "w");
+        super("World", Pattern.compile("[^\\s]+"), "w", "世界");
     }
 
     /**
@@ -27,12 +27,12 @@ public class WorldParameter extends SimplePrismParameterHandler {
     @Override
     public void process(QueryParameters query, String alias, String input, CommandSender sender) {
         String worldName = input;
-        if (worldName.equalsIgnoreCase("current")) {
+        if (worldName.equalsIgnoreCase("current") || worldName.equalsIgnoreCase("现处")) {
             if (sender instanceof Player) {
                 worldName = ((Player) sender).getWorld().getName();
             } else {
                 Prism.messenger.sendMessage(sender, Prism.messenger
-                        .playerError("Can't use the current world since you're not a player. Using default world."));
+                        .playerError("由于您不是玩家, 无法使用 '现处(current)'. 已使用默认值 world."));
                 worldName = Bukkit.getServer().getWorlds().get(0).getName();
             }
         }

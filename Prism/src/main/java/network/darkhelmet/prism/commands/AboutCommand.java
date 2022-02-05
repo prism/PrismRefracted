@@ -30,7 +30,7 @@ public class AboutCommand implements SubHandler {
                                 .replaceText(Pattern.compile("<version>"),
                                     builder -> Component.text().content(plugin.getPrismVersion()))));
         Prism.messenger.sendMessage(call.getSender(), Prism.messenger.playerSubduedHeaderMsg(
-                Component.text("Help: ")
+                Component.text("指令帮助: ")
                         .append(Component.text("/pr ?")
                                 .color(NamedTextColor.WHITE))));
         Prism.messenger.sendMessage(call.getSender(),

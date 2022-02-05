@@ -48,12 +48,12 @@ public class BlockShiftAction extends GenericAction {
 
     @Override
     public String getNiceName() {
-        String location = "unknown";
+        String location = "未知坐标";
         if (actionData != null) {
             location = actionData.x + " " + actionData.y + " " + actionData.z;
         }
 
-        return Prism.getItems().getAlias(getMaterial(), getBlockData()) + " from " + location;
+        return Prism.getItems().getAlias(getMaterial(), getBlockData()) + " 坐标为 " + location;
     }
 
     public static class BlockShiftActionData {

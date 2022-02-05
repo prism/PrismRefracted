@@ -1,9 +1,12 @@
-Restore
+还原
 =======
 
-Restoring is a way to re-apply changes that usually have been rolled back already.
-Essentially a method to reverse a rollback.
+.. tip::
 
-Use `/prism restore (params)`.
+  | ``/prism restore (参数)``
+  | ``/prism 还原 (参数)``
 
-_Note: Both rollbacks and restores of block-place actions will try their best to avoid re-applying block changes to an area with newer activity. For example if you re-apply a block-place I did, but 'Natman93' has already put a new block there, Prism will skip it._
+还原是一个重新应用被回滚的世界变更的方法.
+实际上它是一个撤销回滚的方法.
+
+*备注: 无论是回滚还是还原放置方块的行为, Prism 都会尽量防止将方块的变更应用到有更新活动的地方. 例如如果您在还原一次 玩家A 放置的方块, 但 玩家B 已经在这里放置了一个新方块, Prism 就会跳过它.*

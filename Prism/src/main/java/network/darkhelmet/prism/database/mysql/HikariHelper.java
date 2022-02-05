@@ -40,14 +40,14 @@ class HikariHelper {
         }
         try {
             if (!propFile.getParentFile().exists() && !propFile.getParentFile().mkdirs()) {
-                Prism.log("Prism Directory couldn't be created");
+                Prism.log("无法创建 Prism 文件夹目录");
             }
             OutputStream out = new FileOutputStream(propFile);
-            prop.store(out, "Prism Hikari Datasource Properties for"
-                    + " advanced database Configuration");
-            Prism.log("Database Configuration saved to - " + propFile.getPath());
+            prop.store(out, "Prism Hikari 连接数据源配置文件. "
+                    + "用于高级数据库配置");
+            Prism.log("数据库配置文件已保存至 - " + propFile.getPath());
         } catch (IOException e) {
-            Prism.log("Could not save Hikari.properties - " + e.getMessage());
+            Prism.log("无法保存 Hikari.properties - " + e.getMessage());
         }
     }
 }

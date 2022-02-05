@@ -51,11 +51,13 @@ public class RollbackWand extends QueryWandBase {
                     new PrismApplierCallback());
             rb.apply();
         } else {
-            final String space_name = (block.getType().equals(Material.AIR) ? "space"
+            final String space_name = (block.getType().equals(Material.AIR) ? "空方块"
+                    : prismLocalization.hasMaterialLocale(block.getType().name())?
+                    prismLocalization.getMaterialLocale(block.getType().name())
                     : block.getType().toString().replaceAll("_", " ").toLowerCase()
-                    + (block.getType().toString().endsWith("BLOCK") ? "" : " block"));
+                    + (block.getType().toString().endsWith("BLOCK") ? "" : " 方块"));
             Prism.messenger.sendMessage(player,
-                    Prism.messenger.playerError("Nothing to rollback for this " + space_name + " found."));
+                    Prism.messenger.playerError("没有在这个 " + space_name + " 处查找到任何历史数据."));
         }
     }
 

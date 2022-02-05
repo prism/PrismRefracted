@@ -75,6 +75,7 @@ public class SqlSelectQueryBuilder extends QueryBuilder implements SelectQuery {
             columns.add("MIN(block_subid) block_subid");
             columns.add("MIN(old_block_id) old_block_id");
             columns.add("MIN(old_block_subid) old_block_subid");
+            columns.add("MAX(rollbacked) rollbacked");
             columns.add("MIN(data) data");
             columns.add("MIN(HEX(player_uuid)) AS uuid");
         } else {
@@ -82,6 +83,7 @@ public class SqlSelectQueryBuilder extends QueryBuilder implements SelectQuery {
             columns.add("block_subid");
             columns.add("old_block_id");
             columns.add("old_block_subid");
+            columns.add("rollbacked");
             columns.add("data");
             columns.add("HEX(player_uuid) AS uuid");
         }
@@ -334,7 +336,7 @@ public class SqlSelectQueryBuilder extends QueryBuilder implements SelectQuery {
     protected String group() {
         if (shouldGroup) {
             return " GROUP BY " + tableNameData + ".action_id, " + tableNameData + ".player_id, " + tableNameData
-                    + ".block_id, ex.data, DATE(FROM_UNIXTIME(" + tableNameData + ".epoch))";
+                    + ".block_id, " + tableNameData + ".rollbacked, ex.data, DATE(FROM_UNIXTIME(" + tableNameData + ".epoch))";
         }
         return "";
     }
@@ -465,7 +467,7 @@ public class SqlSelectQueryBuilder extends QueryBuilder implements SelectQuery {
         final List<Handler> actions = new ArrayList<>();
         // Build conditions based off final args
         final String query = getQuery(parameters, shouldGroup);
-        eventTimer.recordTimedEvent("query started");
+        eventTimer.recordTimedEvent("查询队列已开始");
 
         try (
                 Connection conn = Prism.getPrismDataSource().getDataSource().getConnection();
@@ -473,7 +475,7 @@ public class SqlSelectQueryBuilder extends QueryBuilder implements SelectQuery {
                 ResultSet rs = s.executeQuery()
         ) {
             RecordingManager.failedDbConnectionCount = 0;
-            eventTimer.recordTimedEvent("query returned, building results");
+            eventTimer.recordTimedEvent("查询队列已返回, 正在构建结果");
             Map<Integer, String> worldsInverse = new HashMap<>();
             for (final Entry<String, Integer> entry : Prism.prismWorlds.entrySet()) {
                 worldsInverse.put(entry.getValue(), entry.getKey());
@@ -496,7 +498,7 @@ public class SqlSelectQueryBuilder extends QueryBuilder implements SelectQuery {
                     }
                 }
                 if (actionName.isEmpty()) {
-                    Prism.warn("Record contains action ID that doesn't exist in cache: " + actionId
+                    Prism.warn("记录包括缓存中不存在的行为ID: " + actionId
                             + ", cacheSize=" + Prism.prismActions.size());
                     continue;
                 }
@@ -535,7 +537,9 @@ public class SqlSelectQueryBuilder extends QueryBuilder implements SelectQuery {
                     int oldBlockId = rs.getInt(11);
                     int oldBlockSubId = rs.getInt(12);
 
-                    String extraData = rs.getString(13);
+                    baseHandler.setRollbacked(rs.getBoolean(13));
+
+                    String extraData = rs.getString(14);
 
                     boolean validBlockId = false;
                     boolean validOldBlockId = false;
@@ -562,8 +566,8 @@ public class SqlSelectQueryBuilder extends QueryBuilder implements SelectQuery {
                                 newData = Bukkit.createBlockData(item.getType());
                             } catch (IllegalArgumentException e) {
                                 // This exception occurs, for example, with "ItemStack{DIAMOND_LEGGINGS x 1}"
-                                Prism.debug("IllegalArgumentException for record #" + rowId
-                                        + " calling createBlockData for " + item.toString());
+                                Prism.debug("记录 #" + rowId + " 发生了 IllegalArgumentException"
+                                        + " 正在为 " + item.toString() + " 调用 createBlockData");
                                 newData = null;
                             }
 
@@ -608,14 +612,14 @@ public class SqlSelectQueryBuilder extends QueryBuilder implements SelectQuery {
                             }
 
                             if (blockId > 0) {
-                                Prism.warn("Unable to convert record #" + rowId + " to material: "
+                                Prism.warn("无法转换记录 #" + rowId + " 为材料: "
                                         + "block_id=" + blockId + ", block_subid=" + blockSubId + itemMetadataDesc);
                             } else if (oldBlockId > 0) {
-                                Prism.warn("Unable to convert record #" + rowId + " to material: "
+                                Prism.warn("无法转换记录 #" + rowId + " 为材料: "
                                         + "old_block_id=" + oldBlockId + ", old_block_subid="
                                         + oldBlockSubId + itemMetadataDesc);
                             } else {
-                                Prism.warn("Unable to convert record #" + rowId + " to material: "
+                                Prism.warn("无法转换记录 #" + rowId + " 为材料: "
                                         + "block_id=0, old_block_id=0" + itemMetadataDesc);
                             }
                         }
@@ -626,7 +630,7 @@ public class SqlSelectQueryBuilder extends QueryBuilder implements SelectQuery {
                         baseHandler.deserialize(extraData);
                     } catch (JsonSyntaxException e) {
                         if (Prism.isDebug()) {
-                            Prism.warn("Deserialization Error: " + e.getLocalizedMessage(), e);
+                            Prism.warn("反序列化错误: " + e.getLocalizedMessage(), e);
                         }
                     }
 
@@ -637,7 +641,7 @@ public class SqlSelectQueryBuilder extends QueryBuilder implements SelectQuery {
                     try {
                         // Calls UUID.fromString, must handle potential exceptions
                         OfflinePlayer offline = Bukkit.getOfflinePlayer(
-                                SqlPlayerIdentificationHelper.uuidFromDbString(rs.getString(14)));
+                                SqlPlayerIdentificationHelper.uuidFromDbString(rs.getString(15)));
 
                         // Fake player
                         if (offline.hasPlayedBefore()) {
@@ -650,20 +654,20 @@ public class SqlSelectQueryBuilder extends QueryBuilder implements SelectQuery {
                     // Set aggregate counts if a lookup
                     int aggregated = 0;
                     if (shouldGroup) {
-                        aggregated = rs.getInt(15);
+                        aggregated = rs.getInt(16);
                     }
                     baseHandler.setAggregateCount(aggregated);
 
                     actions.add(baseHandler);
 
                 } catch (final SQLException e) {
-                    Prism.warn("Ignoring data from record #" + rowId + " because it caused an error:", e);
+                    Prism.warn("已忽略记录 #" + rowId + " 中的数据, 因为他导致了错误:", e);
                 }
             }
         } catch (NullPointerException e) {
             if (RecordingManager.failedDbConnectionCount == 0) {
                 Prism.log(
-                        "Prism database error. Connection missing. Leaving actions to log in queue.");
+                        "Prism 数据库错误. 连接丢失. 正在将行为放入队列.");
                 Prism.debug(e.getMessage());
             }
             RecordingManager.failedDbConnectionCount++;

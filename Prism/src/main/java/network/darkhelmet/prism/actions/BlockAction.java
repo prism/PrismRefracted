@@ -12,6 +12,7 @@ import network.darkhelmet.prism.utils.EntityUtils;
 import network.darkhelmet.prism.utils.MaterialTag;
 import network.darkhelmet.prism.utils.TypeUtils;
 import network.darkhelmet.prism.utils.block.Utilities;
+import me.botsko.prism.PrismLocalization;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
@@ -61,6 +62,12 @@ import static org.bukkit.Material.WATER;
 
 
 public class BlockAction extends GenericAction {
+
+    private PrismLocalization prismLocalization;
+
+    public BlockAction() {
+        prismLocalization = Prism.getInstance().getPrismLocalization();
+    }
 
     private BlockActionData actionData;
 
@@ -207,7 +214,8 @@ public class BlockAction extends GenericAction {
                 name += ad.owner + " ";
             } else if (blockActionData instanceof SpawnerActionData) {
                 final SpawnerActionData ad = (SpawnerActionData) blockActionData;
-                name += ad.entityType + " ";
+                name += prismLocalization.hasEntityLocale(ad.entityType.toUpperCase(Locale.ROOT)) ?
+                        prismLocalization.getEntityLocale(ad.entityType.toUpperCase(Locale.ROOT)) : ad.entityType;
             }
         }
         name += Prism.getItems().getAlias(getMaterial(), getBlockData());
@@ -227,7 +235,7 @@ public class BlockAction extends GenericAction {
             name += " (" + blockActionData.customName + ")";
         }
         if (getActionType().getName().equals("crop-trample") && getMaterial() == AIR) {
-            return "empty soil";
+            return "空耕地";
         }
         return name;
     }
@@ -235,7 +243,7 @@ public class BlockAction extends GenericAction {
     @Override
     public String getCustomDesc() {
         if (getActionType().getName().equals("water-bucket") && getBlockData() instanceof Waterlogged) {
-            return "waterlogged";
+            return "湿润的";
         }
 
         return null;
@@ -290,14 +298,14 @@ public class BlockAction extends GenericAction {
                 && !getActionType().requiresHandler(PrismRollbackAction.class) && !parameters.hasFlag(Flag.OVERWRITE);
 
         if (cancelIfBadPlace && !Utilities.isAcceptableForBlockPlace(block.getType())) {
-            Prism.debug("Block skipped due to being unacceptable for block place: " + block.getType().name());
+            Prism.debug("跳过了方块, 由于不可接受方块放置: " + block.getType().name());
             return new ChangeResultImpl(ChangeResultType.SKIPPED, null);
         }
 
         // On the blacklist (except an undo)
         if ((Prism.getIllegalBlocks().contains(getMaterial())
                 && !parameters.getProcessType().equals(PrismProcessType.UNDO)) && !parameters.hasFlag(Flag.OVERWRITE)) {
-            Prism.debug("Block skipped because it's not allowed to be placed unless its an UNDO: "
+            Prism.debug("跳过了方块, 由于不允许放置, 除非是撤销操作: "
                     + getMaterial().toString());
             return new ChangeResultImpl(ChangeResultType.SKIPPED, null);
         }
@@ -428,7 +436,7 @@ public class BlockAction extends GenericAction {
                 }
             }
         } else {
-            Prism.debug("BlockAction Data was null with " + parameters.toString());
+            Prism.debug("BlockAction 数据为 null :" + parameters.toString());
         }
         // -----------------------------
         // Sibling logic marker
@@ -441,8 +449,8 @@ public class BlockAction extends GenericAction {
             sibling = block.getRelative(BlockFace.DOWN).getState();
 
             if (cancelIfBadPlace && !MaterialTag.SOIL_CANDIDATES.isTagged(sibling.getType())) {
-                Prism.debug(parameters.getProcessType().name() + " skipped due to lack of soil for "
-                        + getMaterial().name());
+                Prism.debug(parameters.getProcessType().name() + " 已跳过, 由于缺少 "
+                        + getMaterial().name() + " 的土壤");
                 return new ChangeResultImpl(ChangeResultType.SKIPPED, null);
             }
             sibling.setType(FARMLAND);
@@ -456,8 +464,8 @@ public class BlockAction extends GenericAction {
                 sibling = s.getState();
 
                 if (cancelIfBadPlace && !Utilities.isAcceptableForBlockPlace(sibling.getType())) {
-                    Prism.debug(parameters.getProcessType().name() + " skipped due to lack of wrong sibling type for "
-                            + getMaterial().name());
+                    Prism.debug(parameters.getProcessType().name() + " 已跳过, 由于缺少 "
+                            + getMaterial().name() + " 的错误 sibling 类型");
                     return new ChangeResultImpl(ChangeResultType.SKIPPED, null);
                 }
 

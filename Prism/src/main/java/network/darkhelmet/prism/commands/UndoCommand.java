@@ -46,11 +46,11 @@ public class UndoCommand implements SubHandler {
                 recordId = Long.parseLong(call.getArg(1));
                 if (recordId <= 0) {
                     Prism.messenger.sendMessage(call.getPlayer(),
-                            Prism.messenger.playerError("Record ID must be greater than zero."));
+                            Prism.messenger.playerError("记录ID必须大于0."));
                     return;
                 }
             } else {
-                if (call.getArg(1).equals("last")) {
+                if (call.getArg(1).equals("last") || call.getArg(1).equals("上次")) {
                     recordId = aq.getUsersLastPrismProcessId(call.getPlayer().getName());
                 }
             }
@@ -58,21 +58,21 @@ public class UndoCommand implements SubHandler {
             // Invalid id
             if (recordId == 0) {
                 Prism.messenger.sendMessage(call.getPlayer(),
-                        Prism.messenger.playerError("Either you have no last process or an invalid ID."));
+                        Prism.messenger.playerError("您可能没有上次操作记录, 或者使用了无效的ID."));
                 return;
             }
 
             final PrismProcessAction process = aq.getPrismProcessRecord(recordId);
             if (process == null) {
                 Prism.messenger.sendMessage(call.getPlayer(),
-                        Prism.messenger.playerError("A process does not exists with that value."));
+                        Prism.messenger.playerError("不存在此值的操作记录."));
                 return;
             }
 
             // We only support this for drains
             if (!process.getProcessChildActionType().equals("prism-drain")) {
                 Prism.messenger.sendMessage(call.getPlayer(),
-                        Prism.messenger.playerError("You can't currently undo anything other than a drain process."));
+                        Prism.messenger.playerError("目前您仅可以撤销排水操作."));
                 return;
             }
 
@@ -98,7 +98,7 @@ public class UndoCommand implements SubHandler {
 
             } else {
                 Prism.messenger.sendMessage(call.getPlayer(),
-                        Prism.messenger.playerError("Nothing found to undo. Must be a problem with Prism."));
+                        Prism.messenger.playerError("没有找到任何可以撤销的东西. 这一定是 Prism 的问题."));
             }
 
         } else {
@@ -133,11 +133,11 @@ public class UndoCommand implements SubHandler {
                     }
                 } else {
                     Prism.messenger.sendMessage(call.getPlayer(),Prism.messenger
-                            .playerError("Pagination can't find anything. Do you have the right page number?"));
+                            .playerError("无法在此页码中找到任何东西. 请检查您是否输入了正确的页码."));
                 }
             } else {
                 Prism.messenger.sendMessage(call.getPlayer(),Prism.messenger.playerError(
-                        "Nothing found." + ChatColor.GRAY + " Either you're missing something, or we are."));
+                        "没有找到任何数据." + ChatColor.GRAY + " 要么是您错漏了一些东西, 要么是我们."));
             }
         }
     }

@@ -33,7 +33,7 @@ public final class PurgeManager implements Runnable {
     @Override
     public void run() {
 
-        Prism.log("Scheduled purge executor beginning new run...");
+        Prism.log("数据清理执行器计划任务已新一次开始执行...");
 
         if (!purgeRules.isEmpty()) {
 
@@ -46,14 +46,14 @@ public final class PurgeManager implements Runnable {
                       PrismProcessType.DELETE, 0, false);
 
                 if (parameters == null) {
-                    Prism.log("Invalid parameters for database purge: " + purgeArgs);
+                    Prism.log("未知的数据库数据清理参数: " + purgeArgs);
                     continue;
                 }
 
                 if (parameters.getFoundArgs().size() > 0) {
                     parameters.setStringFromRawArgs(purgeArgs.split(" "), 0);
                     paramList.add(parameters);
-                    Prism.log("Processed parameters for database purge: " + purgeArgs);
+                    Prism.log("数据库数据清理执行参数: " + purgeArgs);
                 }
             }
 
@@ -71,15 +71,15 @@ public final class PurgeManager implements Runnable {
                   completed and records remain
                  */
                 Prism.log(
-                        "Beginning prism database purge cycle. "
-                                + "Will be performed in batches so we don't tie up the db...");
+                        "正在开始 Prism 数据库周期数据清理. "
+                                + "清理将分批进行, 因此我们不会占用数据库...");
                 deleteTask = Bukkit.getServer().getScheduler().runTaskLaterAsynchronously(plugin,
                         new PurgeTask(plugin, paramList, purgeTickDelay, new LogPurgeCallback()),
                         purgeTickDelay);
 
             }
         } else {
-            Prism.log("Purge rules are empty, not purging anything.");
+            Prism.log("数据清理规则为空, 不会清理任何数据.");
         }
     }
 }

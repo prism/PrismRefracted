@@ -45,7 +45,7 @@ public class PrismPlayer {
      */
     public void setId(int newId) {
         if (playerId > 0) {
-            throw new IllegalArgumentException("Cannot overwrite PrismPlayer primary key.");
+            throw new IllegalArgumentException("不能重写 Prism玩家 的基本 key.");
         }
         playerId = newId;
     }

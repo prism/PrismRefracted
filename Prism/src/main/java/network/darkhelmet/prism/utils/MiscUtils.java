@@ -5,6 +5,7 @@ import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.actionlibs.ActionMessage;
 import network.darkhelmet.prism.actionlibs.QueryResult;
 import network.darkhelmet.prism.api.actions.PrismProcessType;
+import me.botsko.prism.PrismLocalization;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -31,6 +32,8 @@ import java.util.List;
 
 public class MiscUtils {
 
+    private static PrismLocalization prismLocalization;
+
     /**
      * Placing this here so it's easier to share the logic.
      *
@@ -51,14 +54,14 @@ public class MiscUtils {
         int maxLookupRadius = config.getInt("prism.queries.max-lookup-radius");
         if (maxLookupRadius <= 0) {
             maxLookupRadius = 5;
-            Prism.log("Max lookup radius may not be lower than one. Using safe inputue of five.");
+            Prism.log("最大查询半径不可小于1, 已使用安全输入值 5.");
         }
 
         // Safety checks for max applier radius
         int maxApplierRadius = config.getInt("prism.queries.max-applier-radius");
         if (maxApplierRadius <= 0) {
             maxApplierRadius = 5;
-            Prism.log("Max applier radius may not be lower than one. Using safe inputue of five.");
+            Prism.log("最大应用半径不可小于1, 已使用安全输入值 5.");
         }
 
         // Does the radius exceed the configured max?
@@ -122,15 +125,15 @@ public class MiscUtils {
         if (!Prism.getInstance().getConfig().getBoolean("prism.paste.enable")) {
             Prism.messenger.sendMessage(sender,
                     Prism.messenger.playerError(
-                            Component.text("Paste.gg support is currently disabled by config.")));
+                            Component.text("Paste.gg 支持目前已在配置文件中禁用.")));
             return;
         }
         ZonedDateTime expire = ZonedDateTime.now().plusMinutes(60);
-        PasteFile file = new PasteFile("Prism Result",
+        PasteFile file = new PasteFile("Prism 结果",
                 new PasteContent(PasteContent.ContentType.TEXT, results));
 
         final PasteBuilder.PasteResult result
-                = new PasteBuilder().name("Prism Results")
+                = new PasteBuilder().name("Prism 结果")
                 .setApiKey(Prism.getPasteKey())
                 .expires(expire)
                 .addFile(file)
@@ -139,14 +142,14 @@ public class MiscUtils {
         if (result.getPaste().isPresent()) {
             Paste paste = result.getPaste().get();
             Prism.messenger.sendMessage(sender,
-                    Prism.messenger.playerSuccess("Successfully pasted results: "
+                    Prism.messenger.playerSuccess("已成功粘贴结果: "
                             + prismWebUrl
                             + paste.getId()).clickEvent(ClickEvent.openUrl(prismWebUrl)));
         } else {
             String message = result.getMessage().isPresent() ? result.getMessage().get() : "";
             Prism.messenger.sendMessage(sender,
                     Prism.messenger.playerError(
-                            Component.text("Unable to paste results (")
+                            Component.text("无法粘贴结果 (")
                                     .append(Component.text(message).color(NamedTextColor.YELLOW))
                                     .append(Component.text(")."))
                     ));
@@ -242,12 +245,13 @@ public class MiscUtils {
      */
     public static String getEntityName(Entity entity) {
         if (entity == null) {
-            return "unknown";
+            return "未知";
         }
         if (entity.getType() == EntityType.PLAYER) {
             return entity.getName();
         }
-        return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, entity.getType().name());
+        return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, prismLocalization().hasEntityLocale(entity.getType().name()) ?
+                prismLocalization().getEntityLocale(entity.getType().name()) : entity.getType().name());
     }
 
     /**
@@ -256,9 +260,9 @@ public class MiscUtils {
      * @return TextComponent
      */
     public static TextComponent getPreviousButton() {
-        return Component.text(" [<< Prev]")
+        return Component.text(" [<< 上一页]")
                 .color(TextColor.fromHexString("#ef9696"))
-                .hoverEvent(HoverEvent.showText(Component.text("Click to view the previous page")))
+                .hoverEvent(HoverEvent.showText(Component.text("点击浏览上一页")))
                 .clickEvent(ClickEvent.runCommand("/pr pg p"));
     }
 
@@ -279,8 +283,8 @@ public class MiscUtils {
      * @return BaseComponent.
      */
     private static TextComponent getNextButtonComponent() {
-        return Component.text("[Next >>]")
-                .hoverEvent(HoverEvent.showText(Component.text("Click to view the next page")))
+        return Component.text("[下一页 >>]")
+                .hoverEvent(HoverEvent.showText(Component.text("点击浏览下一页")))
                 .color(TextColor.fromHexString("#01a960"))
                 .clickEvent(ClickEvent.runCommand("/pr pg n"));
     }
@@ -298,4 +302,12 @@ public class MiscUtils {
                 .append(divider)
                 .append(getNextButton()).build();
     }
+
+    private static PrismLocalization prismLocalization() {
+        if (prismLocalization == null) {
+            prismLocalization = Prism.getInstance().getPrismLocalization();
+        }
+        return prismLocalization;
+    }
+
 }

@@ -41,7 +41,7 @@ public class HelpCommand implements SubHandler {
 
     @Override
     public String[] getHelp() {
-        return new String[]{"Displays Help"};
+        return new String[]{"显示帮助"};
     }
 
     @Override
@@ -77,7 +77,7 @@ public class HelpCommand implements SubHandler {
             return;
         }
         TextComponent component = Prism.messenger.playerHeaderMsg(
-                Component.text("--- Basic Usage ---").color(NamedTextColor.GOLD))
+                Component.text("--- 基础用法 ---").color(NamedTextColor.GOLD))
                 .append(Component.newline())
                 .append(Prism.messenger.playerSubduedHeaderMsg(Il8nHelper.getMessage("help-extended-message")))
                 .append(Component.newline());

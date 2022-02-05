@@ -81,7 +81,7 @@ public class ActionsQuery {
             }
         }
 
-        plugin.eventTimer.recordTimedEvent("results object completed");
+        plugin.eventTimer.recordTimedEvent("结果对象已完成");
 
         // Return it
         return res;
@@ -179,5 +179,15 @@ public class ActionsQuery {
         dqb.setShouldGroup(false);//make it clear that we dont want to group for deletes
         dqb.setShouldPause(shouldPauseDB); //will stop recording queue
         return dqb.execute();
+    }
+
+    /**
+     * Update the rollbacked state of actions.
+     *
+     * @param handlers the handlers need to update.
+     */
+    public void updateRollbacked(Handler... handlers) {
+        final UpdateQuery updateQuery = Prism.getPrismDataSource().createUpdateQuery();
+        updateQuery.updateRollbacked(handlers);
     }
 }

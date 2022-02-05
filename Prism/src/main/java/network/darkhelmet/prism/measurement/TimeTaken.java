@@ -59,7 +59,7 @@ public class TimeTaken {
             if (timers.size() > 0) {
                 long lastTime = 0;
                 long total = 0;
-                Prism.debug("-- Timer information for last action: --");
+                Prism.debug("-- 上次行为的计时信息: --");
                 for (final Entry<Long, String> entry : timers.entrySet()) {
                     long diff = 0;
                     if (lastTime > 0) {
@@ -69,7 +69,7 @@ public class TimeTaken {
                     Prism.debug(entry.getValue() + " " + diff + "ms");
                     lastTime = entry.getKey();
                 }
-                Prism.debug("Total time: " + total + "ms");
+                Prism.debug("总计时长: " + total + "ms");
             }
         }
         plugin.eventTimer.resetEventList();

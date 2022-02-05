@@ -3,11 +3,13 @@
 Mysql
 =====
 
-Installing in Ubuntu - honestly just run `sudo apt-get install mysql-server` follow the prompts done but you can find a comprehensive guid here: `MySQL Installation <https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-18-04>`_  You may need to use google to find your specific server type.
+在 Ubuntu 上安装 - 实际上只需要运行 `sudo apt-get install mysql-server` 并按照提示来完成安装, 但是如果需要, 您也可以在这里找到全面的指南: `安装 MySQL <https://wangxin1248.github.io/linux/2018/07/ubuntu18.04-install-mysqlserver.html>`_  您可能需要百度来寻找您的特定服务器类型.
 
-On Windows (and I reinterate Windows IS NOT A Operating System to run a Minecraft Server) but if you have to  `Mysql On Windows <https://www.mysqltutorial.org/install-mysql/>`_
+在 Windows 上安装 (\ **原作者:**\ 我重申, Windows 并不是适合运行 Minecraft 服务器的操作系统) , 但如果您需要的话, 可参考  `在 Windows 上安装 MySQL <https://www.cnblogs.com/kendoziyu/p/MySQL.html>`_
 
-Once installed configurating Prism is pretty straight forward.  Open a MYSQL command line and type
+\ *上面中文的链接都是我瞎找的, 如果懒的话您也可以使用PHPStudy来一键架设.*\
+
+安装完毕后, 配置 Prism 非常容易. 只需要打开 MYSQL 命令行然后输入
 
 .. code:: sql
 
@@ -15,10 +17,12 @@ Once installed configurating Prism is pretty straight forward.  Open a MYSQL com
   CREATE USER `prism`@`localhost` identified by `prism`;
   GRANT ALL PRIVILEGES ON prism.* TO 'prism'@'localhost';
 
-Keep in mind if you server is not running on the same machine you will need to adjust the `localhost` string to the appropriate host name.  If you are not sure adjust it to `%`  but this has security implications.
+即可.
+
+记住如果您的 MySQL 和 Minecraft 服务器并不运行在同一个机器, 您就需要调整 `localhost` 字符串为 MySQL 服务器主机名. 如果您不确定, 可以将其调为 `%`, 但是这并不安全.
 
 
-Mysql configuration looks typically like:-
+MySQL 配置一般应该调整成这样:-
 
 .. code:: yaml
 
@@ -33,5 +37,5 @@ Mysql configuration looks typically like:-
       port: '3306'
       useNonStandardSql: true
 
-You should adjust the properties "hostname", "username" and "password" to suit your configuration.  If you are using MySql leave "useNonStandardSql" as true for MariaDb see :ref:`mariadb` set it as false.
-Percona is a fork of MYSQL that aims to be a performant version of mysql that is fully mysql compatible.
+您需要调整配置项 "hostname"(主机名), "username"(用户名) 和 "password"(密码), 让它们符合您的配置. 如果您使用的是 MySQL, 设置 "useNonStandardSql" 为 true. 如果是 MariaDb (参阅 :ref:`mariadb`\ ) 请设置为 false.
+Percona 是 MYSQL 的一个分叉, 旨在完全兼容 MySQL 的前提下提供更高的性能.

@@ -2,6 +2,7 @@ package network.darkhelmet.prism.appliers;
 
 import network.darkhelmet.prism.Il8nHelper;
 import network.darkhelmet.prism.Prism;
+import me.botsko.prism.actionlibs.ActionsQuery;
 import network.darkhelmet.prism.actionlibs.QueryParameters;
 import network.darkhelmet.prism.actions.GenericAction;
 import network.darkhelmet.prism.api.BlockStateChange;
@@ -43,6 +44,7 @@ public class Preview implements Previewable {
     private final PrismProcessType processType;
     private final HashMap<Entity, Integer> entitiesMoved = new HashMap<>();
     private final List<Handler> worldChangeQueue = Collections.synchronizedList(new LinkedList<>());
+    private final List<Handler> updateRollbackedList = new ArrayList<>();
     private boolean isPreview = false;
     private int skippedBlockCount;
     private int changesAppliedCount;
@@ -149,7 +151,7 @@ public class Preview implements Previewable {
                     // Inform nearby players
                     plugin.notifyNearby(player, parameters.getRadius(), ReplaceableTextComponent.builder("notify-near")
                           .replace("<player>", player.getDisplayName())
-                          .replace("<processType>", processType.name().toLowerCase())
+                          .replace("<processType>", processType.getLocale())
                           .build());
                     // Inform staff
                     if (plugin.getConfig().getBoolean("prism.alerts.alert-staff-to-applied-process")) {
@@ -157,7 +159,7 @@ public class Preview implements Previewable {
                         if (cmd != null) {
                             plugin.alertPlayers(player, ReplaceableTextComponent.builder("notify-staff")
                                     .replace("<player>", player.getDisplayName())
-                                    .replace("<processType>", processType.name().toLowerCase())
+                                    .replace("<processType>", processType.getLocale())
                                     .replace("<originalCommand>", parameters.getOriginalCommand(),
                                             Style.style(NamedTextColor.GRAY))
                                     .build().colorIfAbsent(NamedTextColor.WHITE), null);
@@ -179,7 +181,7 @@ public class Preview implements Previewable {
         worldChangeQueueTaskId = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
 
             if (plugin.getConfig().getBoolean("prism.debug")) {
-                Prism.debug("World change queue size: " + worldChangeQueue.size());
+                Prism.debug("世界更改队列大小: " + worldChangeQueue.size());
             }
 
             if (worldChangeQueue.isEmpty()) {
@@ -218,9 +220,13 @@ public class Preview implements Previewable {
                             GenericAction action = (GenericAction) a;
                             if (processType.equals(PrismProcessType.ROLLBACK)) {
                                 result = action.applyRollback(player, parameters, isPreview);
+                                action.setRollbacked(true);
+                                updateRollbackedList.add(action);
                             }
                             if (processType.equals(PrismProcessType.RESTORE)) {
                                 result = action.applyRestore(player, parameters, isPreview);
+                                action.setRollbacked(false);
+                                updateRollbackedList.add(action);
                             }
                             if (processType.equals(PrismProcessType.UNDO)) {
                                 result = action.applyUndo(player, parameters, isPreview);
@@ -250,10 +256,10 @@ public class Preview implements Previewable {
                             iterator.remove();
                         }
                     } catch (final Exception e) {
-                        String msg = e.getMessage() == null ? "unknown cause" : e.getMessage();
-                        Prism.log(String.format("Applier error: %s (ID: %d)", msg, a.getId()));
-                        Prism.log(String.format("Block type: %s (old %s)", a.getMaterial(), a.getOldMaterial()));
-                        Prism.log(String.format("Block location: %d, %d, %d",
+                        String msg = e.getMessage() == null ? "未知原因" : e.getMessage();
+                        Prism.log(String.format("应用器错误: %s (ID: %d)", msg, a.getId()));
+                        Prism.log(String.format("方块类型: %s (旧类型: %s)", a.getMaterial(), a.getOldMaterial()));
+                        Prism.log(String.format("方块坐标: %d, %d, %d",
                                 a.getLoc().getBlockX(),
                                 a.getLoc().getBlockY(),
                                 a.getLoc().getBlockZ()));
@@ -272,6 +278,8 @@ public class Preview implements Previewable {
                 if (isPreview) {
                     postProcessPreview();
                 } else {
+                    plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> new ActionsQuery(plugin).
+                            updateRollbacked(updateRollbackedList.toArray(new Handler[0])));
                     postProcess();
                 }
             }
@@ -348,15 +356,15 @@ public class Preview implements Previewable {
             plugin.getServer().getPluginManager().callEvent(event);
         }
 
-        plugin.eventTimer.recordTimedEvent("applier function complete");
+        plugin.eventTimer.recordTimedEvent("应用器功能已完成");
 
         // record timed events to log
         if (plugin.getConfig().getBoolean("prism.debug")) {
             // Flush timed data
             plugin.eventTimer.printTimeRecord();
-            Prism.debug("Changes: " + changesAppliedCount);
-            Prism.debug("Planned: " + changesPlannedCount);
-            Prism.debug("Skipped: " + skippedBlockCount);
+            Prism.debug("变化数: " + changesAppliedCount);
+            Prism.debug("计划数: " + changesPlannedCount);
+            Prism.debug("跳过数: " + skippedBlockCount);
         }
     }
 }

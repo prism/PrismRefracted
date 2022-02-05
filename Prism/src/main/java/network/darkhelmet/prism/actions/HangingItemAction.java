@@ -9,10 +9,7 @@ import network.darkhelmet.prism.utils.block.Utilities;
 import org.bukkit.Art;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Hanging;
-import org.bukkit.entity.ItemFrame;
-import org.bukkit.entity.Painting;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 
 public class HangingItemAction extends GenericAction {
 
@@ -27,7 +24,19 @@ public class HangingItemAction extends GenericAction {
         actionData = new HangingItemActionData();
 
         if (hanging != null) {
-            this.actionData.type = hanging.getType().name().toLowerCase();
+            if (hanging instanceof Painting) {
+                this.actionData.type = "画";
+            } else if (hanging instanceof LeashHitch) {
+                this.actionData.type = "栓绳";
+            } else if (hanging instanceof ItemFrame) {
+                this.actionData.type = "物品展示框";
+            }
+            //TODO: Rothes - API版本
+            /* else if (hanging instanceof GlowItemFrame) {
+                this.actionData.type = "发光的物品展示框";
+            }*/ else {
+                this.actionData.type = hanging.getType().name().toLowerCase();
+            }
             this.actionData.direction = hanging.getAttachedFace().name().toLowerCase();
             if (hanging instanceof Painting) {
                 this.actionData.art = ((Painting) hanging).getArt().name();
@@ -82,7 +91,7 @@ public class HangingItemAction extends GenericAction {
 
     @Override
     public String getNiceName() {
-        return this.actionData.type != null ? this.actionData.type : "unknown";
+        return this.actionData.type != null ? this.actionData.type : "未知";
     }
 
     @Override
@@ -105,7 +114,7 @@ public class HangingItemAction extends GenericAction {
      */
     private ChangeResult hangItem(Player player, PrismParameters parameters, boolean isPreview) {
         if (actionData == null) {
-            Prism.debug(parameters.getProcessType() + "Skipped - Hanging action data was null");
+            Prism.debug(parameters.getProcessType() + "已跳过 - 悬挂上行为数据为 null");
             return new ChangeResultImpl(ChangeResultType.SKIPPED, null);
         }
 
@@ -116,16 +125,16 @@ public class HangingItemAction extends GenericAction {
 
         // Ensure there's a block at this location that accepts an attachment
         if (Utilities.materialMeansBlockDetachment(loc.getBlock().getType())) {
-            Prism.debug(parameters.getProcessType() + "Hanging Skipped - block would detach: "
+            Prism.debug(parameters.getProcessType() + "悬挂上已跳过 - 方块会脱离: "
                     + loc.getBlock().getType());
             return new ChangeResultImpl(ChangeResultType.SKIPPED, null);
         }
         try {
-            if (getHangingType().equals("item_frame")) {
+            if (getHangingType().equals("物品展示框")) {
                 final Hanging hangingItem = getWorld().spawn(loc, ItemFrame.class);
                 hangingItem.setFacingDirection(attachedFace, true);
                 return new ChangeResultImpl(ChangeResultType.APPLIED, null); //no change recorded
-            } else if (getHangingType().equals("painting")) {
+            } else if (getHangingType().equals("画")) {
                 final Painting hangingItem = getWorld().spawn(loc, Painting.class);
                 hangingItem.setFacingDirection(getDirection(), true);
                 Art art = Art.getByName(getArt());

@@ -35,6 +35,7 @@ public class MySqlSelectQueryBuilder extends SqlSelectQueryBuilder {
         columns.add("block_subid");
         columns.add("old_block_id");
         columns.add("old_block_subid");
+        columns.add("rollbacked");
         columns.add("data");
         columns.add("HEX(player_uuid)");
 

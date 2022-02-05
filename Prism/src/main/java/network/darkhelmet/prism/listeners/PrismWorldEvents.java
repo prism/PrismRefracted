@@ -4,6 +4,7 @@ import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.actionlibs.ActionFactory;
 import network.darkhelmet.prism.actionlibs.RecordingQueue;
 import network.darkhelmet.prism.utils.block.Utilities;
+import me.botsko.prism.PrismLocalization;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
@@ -38,7 +39,7 @@ public class PrismWorldEvents implements Listener {
                 if (event.getPlayer() != null) {
                     RecordingQueue.addToQueue(ActionFactory.createGrow(type, block, event.getPlayer()));
                 } else {
-                    RecordingQueue.addToQueue(ActionFactory.createGrow(type, block, "Environment"));
+                    RecordingQueue.addToQueue(ActionFactory.createGrow(type, block, "环境"));
                 }
             }
         }
@@ -110,7 +111,10 @@ public class PrismWorldEvents implements Listener {
         if (e instanceof Player) {
             RecordingQueue.addToQueue(ActionFactory.createPortal(type, newBlock, oldBlock, (Player) event.getEntity()));
         } else {
-            RecordingQueue.addToQueue(ActionFactory.createPortal(type, newBlock, oldBlock, e.getName().toLowerCase()));
+            RecordingQueue.addToQueue(ActionFactory.createPortal(type, newBlock, oldBlock
+                    , Prism.getInstance().getPrismLocalization().hasEntityLocale(e.getType().name()) ?
+                            Prism.getInstance().getPrismLocalization().getEntityLocale(e.getType().name())
+                            : e.getName().toLowerCase()));
         }
     }
 }

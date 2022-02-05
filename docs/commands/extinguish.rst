@@ -1,9 +1,12 @@
-Extinguish
+.. _extinguish:
+
+灭火
 ==========
 
 .. tip::
 
-  /pr extinguish r:<radius>
-  /pr ex
+  | ``/pr extinguish r:<半径>``
+  | ``/pr ex``
+  | ``/pr 灭火 r:<半径>``
 
-Extinguish all fire in a radius around the player.
+扑灭玩家附近的火焰.

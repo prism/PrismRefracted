@@ -52,7 +52,7 @@ public class SqlInsertBuilder extends QueryBuilder implements InsertQuery {
         int playerId = prismPlayer.getId();
 
         if (worldId == 0 || actionId == 0 || playerId == 0) {
-            Prism.debug("Sql data error: Handler:" + a.toString());
+            Prism.debug("SQL 数据错误: Handler:" + a.toString());
         }
         IntPair newIds = Prism.getItems().materialToIds(a.getMaterial(),
                 Utilities.dataString(a.getBlockData()));
@@ -95,7 +95,7 @@ public class SqlInsertBuilder extends QueryBuilder implements InsertQuery {
     public void createBatch() throws SQLException {
         batchConnection = dataSource.getConnection();
         if (batchConnection == null) {
-            throw new SQLException("No Connection to database");
+            throw new SQLException("没有数据库连接");
         }
         batchConnection.setAutoCommit(false);
         batchStatement = batchConnection.prepareStatement(getQuery(), Statement.RETURN_GENERATED_KEYS);
@@ -138,12 +138,12 @@ public class SqlInsertBuilder extends QueryBuilder implements InsertQuery {
      */
     public void processBatch() throws SQLException {
         if (batchStatement == null) {
-            Prism.debug("Batch insert was null");
-            throw new SQLException("no batch statement configured");
+            Prism.debug("批次插入为空");
+            throw new SQLException("没有配置批处理语句");
         }
         batchStatement.executeBatch();
         batchConnection.commit();
-        Prism.debug("Batch insert was commit: " + System.currentTimeMillis());
+        Prism.debug("批次插入已提交: " + System.currentTimeMillis());
         processExtraData(batchStatement.getGeneratedKeys());
         batchConnection.close();
     }
@@ -167,8 +167,8 @@ public class SqlInsertBuilder extends QueryBuilder implements InsertQuery {
             while (keys.next()) {
                 // @todo should not happen
                 if (i >= extraDataQueue.size()) {
-                    Prism.log("Skipping extra data for " + prefix + "data.id " + keys.getLong(1)
-                            + " because the queue doesn't have data for it.");
+                    Prism.log("跳过 " + prefix + " 的额外数据 data.id " + keys.getLong(1)
+                            + " 因为队列没有它的数据.");
                     continue;
                 }
 
@@ -182,8 +182,8 @@ public class SqlInsertBuilder extends QueryBuilder implements InsertQuery {
                         s.addBatch();
                     }
                 } else {
-                    Prism.debug("Skipping extra data for " + prefix + "data.id " + keys.getLong(1)
-                            + " because the queue doesn't have data for it.");
+                    Prism.debug("跳过 " + prefix + " 的额外数据 data.id " + keys.getLong(1)
+                            + " 因为队列没有它的数据.");
                 }
 
                 i++;
@@ -194,8 +194,7 @@ public class SqlInsertBuilder extends QueryBuilder implements InsertQuery {
 
             if (conn.isClosed()) {
                 Prism.log(
-                        "Prism database error. We have to bail in the middle of building extra "
-                                + "data bulk insert query.");
+                        "Prism 数据库错误. 我们得在构建批量插入查询的额外数据的过程中保释.");
             } else {
                 conn.commit();
             }

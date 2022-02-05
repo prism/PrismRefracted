@@ -55,11 +55,11 @@ public class ActionRegistry {
     public void registerCustomAction(Plugin apiPlugin, ActionTypeImpl actionType) throws InvalidActionException {
         final List<String> allowedPlugins = Prism.config.getStringList("prism.tracking.api.allowed-plugins");
         if (!allowedPlugins.contains(apiPlugin.getName())) {
-            throw new InvalidActionException("Registering action type not allowed. Plugin '" + apiPlugin.getName()
-                    + "' is not in list of allowed plugins.");
+            throw new InvalidActionException("有插件正尝试注册不允许的行为类型. 插件 '" + apiPlugin.getName()
+                    + "' 并未被列入在允许的插件列表中.");
         }
         if (TypeUtils.subStrOccurences(actionType.getName(), "-") != 2) {
-            throw new InvalidActionException("Invalid action type. Custom actions must contain two hyphens.");
+            throw new InvalidActionException("未知的行为类型. 自定义行为必须包含2个连接号.");
         }
         Prism.getPrismDataSource().addActionName(actionType.getName());
         registeredActions.put(actionType.getName(), actionType);
@@ -281,7 +281,7 @@ public class ActionRegistry {
         registerAction(new ActionTypeImpl("tnt-prime", false, false, false,
                 UseAction.class, Il8nHelper.getRawMessage("primed")));
         registerAction(new ActionTypeImpl("tree-grow", true, true, true,
-                GrowAction.class, Il8nHelper.getRawMessage("grew")));
+                GrowAction.class, "生长了"));
         registerAction(new ActionTypeImpl("vehicle-break", false, true, false,
                 VehicleAction.class, Il8nHelper.getRawMessage("broke")));
         registerAction(new ActionTypeImpl("vehicle-enter", false, false, false,

@@ -89,7 +89,7 @@ public class EntityAction extends GenericAction {
             return serializer.toString();
         }
 
-        return "unknown";
+        return "未知";
     }
 
     @Override

@@ -5,6 +5,7 @@ import network.darkhelmet.prism.api.objects.MaterialState;
 import network.darkhelmet.prism.database.IdMapQuery;
 import network.darkhelmet.prism.database.sql.SqlIdMapQuery;
 import network.darkhelmet.prism.utils.block.Utilities;
+import me.botsko.prism.PrismLocalization;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
@@ -33,6 +34,8 @@ public class MaterialAliases {
 
     private final HashMap<String, String> itemAliases = new HashMap<>();
 
+    private final PrismLocalization prismLocalization;
+
     /**
      * Load the yml file and save config to hashmap.
      */
@@ -40,7 +43,7 @@ public class MaterialAliases {
         FileConfiguration items = null;
         InputStream defConfigStream = this.getClass().getResourceAsStream("/items.yml");
         if (defConfigStream != null) {
-            Prism.log("Elixr: Loaded items directory");
+            Prism.log("Elixr: 已加载物品名录");
             items = YamlConfiguration.loadConfiguration(new InputStreamReader(defConfigStream));
         }
 
@@ -67,8 +70,10 @@ public class MaterialAliases {
             }
 
         } else {
-            Prism.warn("ERROR: The Item library was unable to load an internal item alias list.");
+            Prism.warn("错误: 物品库无法加载内部物品别名表.");
         }
+
+        prismLocalization = Prism.getInstance().getPrismLocalization();
     }
 
     public void initAllMaterials() {
@@ -178,7 +183,7 @@ public class MaterialAliases {
                   }
               }, () -> {
                   if (logMaterialErrors) {
-                      Prism.log("matError: [" + blockId + ", " + blockSubId + "] -> ???");
+                      Prism.log("材料错误: [" + blockId + ", " + blockSubId + "] -> ???");
                   }
               });
 
@@ -321,7 +326,8 @@ public class MaterialAliases {
             itemName = itemAliases.get(key);
         }
         if (itemName == null) {
-            itemName = material.name().toLowerCase().replace("_", " ");
+            itemName = prismLocalization.hasMaterialLocale(material.name())?
+                    prismLocalization.getMaterialLocale(material.name()) : material.name().toLowerCase().replace("_", " ");
         }
         return itemName;
     }

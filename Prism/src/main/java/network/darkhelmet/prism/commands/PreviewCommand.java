@@ -35,10 +35,12 @@ public class PreviewCommand extends AbstractCommand {
         secondaries = new ArrayList<>();
         secondaries.add("apply");
         secondaries.add("cancel");
+        secondaries.add("应用");
+        secondaries.add("取消");
         secondaries.add("rollback");
         secondaries.add("restore");
-        secondaries.add("rb");
-        secondaries.add("rs");
+        secondaries.add("回滚");
+        secondaries.add("还原");
     }
 
     @Override
@@ -46,19 +48,19 @@ public class PreviewCommand extends AbstractCommand {
         final Audience audience = Prism.getAudiences().sender(call.getPlayer());
         if (call.getArgs().length >= 2) {
 
-            if (call.getArg(1).equalsIgnoreCase("apply")) {
+            if (call.getArg(1).equalsIgnoreCase("apply") || call.getArg(1).equalsIgnoreCase("应用")) {
                 if (plugin.playerActivePreviews.containsKey(call.getPlayer().getName())) {
                     final PreviewSession previewSession = plugin.playerActivePreviews.get(call.getPlayer().getName());
                     previewSession.getPreviewer().apply_preview();
                     plugin.playerActivePreviews.remove(call.getPlayer().getName());
                 } else {
                     Prism.messenger.sendMessage(call.getPlayer(),
-                          Prism.messenger.playerError("You have no preview pending."));
+                          Prism.messenger.playerError("您没有任何挂起的预览."));
                 }
                 return;
             }
 
-            if (call.getArg(1).equalsIgnoreCase("cancel")) {
+            if (call.getArg(1).equalsIgnoreCase("cancel") || call.getArg(1).equalsIgnoreCase("取消")) {
                 if (plugin.playerActivePreviews.containsKey(call.getPlayer().getName())) {
                     final PreviewSession previewSession = plugin.playerActivePreviews.get(call.getPlayer().getName());
                     previewSession.getPreviewer().cancel_preview();
@@ -78,7 +80,8 @@ public class PreviewCommand extends AbstractCommand {
             }
 
             if (call.getArg(1).equalsIgnoreCase("rollback") || call.getArg(1).equalsIgnoreCase("restore")
-                    || call.getArg(1).equalsIgnoreCase("rb") || call.getArg(1).equalsIgnoreCase("rs")) {
+                    || call.getArg(1).equalsIgnoreCase("rb") || call.getArg(1).equalsIgnoreCase("rs")
+                    || call.getArg(1).equalsIgnoreCase("回滚") || call.getArg(1).equalsIgnoreCase("还原")) {
 
                 final QueryParameters parameters = PreprocessArgs.process(plugin, call.getPlayer(), call.getArgs(),
                         PrismProcessType.ROLLBACK, 2,
@@ -106,13 +109,15 @@ public class PreviewCommand extends AbstractCommand {
 
                     // Rollback
                     if (call.getArg(1).equalsIgnoreCase("rollback")
-                            || call.getArg(1).equalsIgnoreCase("rb")) {
+                            || call.getArg(1).equalsIgnoreCase("rb")
+                            || call.getArg(1).equalsIgnoreCase("回滚")) {
                         handleRollBack(call, parameters, results, audience);
                         assert (parameters.getProcessType() == PrismProcessType.ROLLBACK); //todo remove debug
                     }
                     // Restore
                     if (call.getArg(1).equalsIgnoreCase("restore")
-                            || call.getArg(1).equalsIgnoreCase("rs")) {
+                            || call.getArg(1).equalsIgnoreCase("rs")
+                            || call.getArg(1).equalsIgnoreCase("还原")) {
                         handleRestore(call, parameters, results, audience);
                         assert (parameters.getProcessType() == PrismProcessType.RESTORE);//todo remove debug
                     }
@@ -161,7 +166,7 @@ public class PreviewCommand extends AbstractCommand {
             });
         } else {
             Prism.messenger.sendMessage(call.getPlayer(),
-                  Prism.messenger.playerError("Nothing found to preview."));
+                    Prism.messenger.playerError("没有找到任何可以预览的东西."));
         }
     }
 

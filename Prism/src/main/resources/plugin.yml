@@ -1,8 +1,9 @@
 name: Prism
 main: network.darkhelmet.prism.Prism
 version: @version@
-softdepend: [WorldEdit]
+softdepend: [WorldEdit, Multiverse-Core]
 author: viveleroi
+authors: [viveleroi, Rothes]
 website: https://github.com/darkhelmet-gaming/PrismRefracted
 api-version: @apiversion@
 commands:

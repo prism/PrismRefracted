@@ -1,9 +1,9 @@
-Tracked Actions
+行为追踪
 ===============
 
-The following list of actions can be tracked and or ignored via config. To ensure they are tracked add the option to your configuration file. Any item NOT in the list will be set as false.
+下面的列表中的行为可以通过配置文件设定追踪或忽略. 要确保一个行为是会被追踪的, 请在您的配置文件中添加特定选项. 任何不存在于列表之中的行为都会被设为 false.
 
-e.g.
+例如
 
 .. code-block:: yaml
 
@@ -11,63 +11,75 @@ e.g.
     tracking:
       item-remove: true
 
-List of Tracked Actions
+可追踪行为列表
 -----------------------
 
-see :ref:`action-list`
+参阅 :ref:`action-list`
 
-Reports
+报告
 -------
 
-Prism offers a limited set of reports on block and action data per player.
+.. tip::
 
-`/prism (rp|report) sum (blocks|actions) (player)`
+  | ``/prism (rp|report) sum (blocks|actions) (玩家)``
+  | ``/prism 报告 总计 (方块|行为) (玩家)``
 
-A summary report for blocks will list the total number of block break/place actions for the player, broken down by block.
+Prism 可以针对单个玩家的方块和行为数据提供一组有限的报告.
 
-The actions summary will display a count for each action type for the specific player.
+方块概要报告将列出玩家放置/破坏方块行为的总计数, 并以方块类型分类.
 
-Ore Alerts
+行为概要报告将列出玩家每一行为类型的总计数.
+
+挖矿警告
 ----------
 
-This system alerts you when a player discovers a natural (non-placed) vein of ores.
-It reports the ore type and the lighting levels (not always indicative of xray due to brightness differences).
-The ore type messages are colored for easy recognition.
+此功能将在玩家发现了一个自然的(非放置的)矿脉时, 向您发送警告消息.
+它会报告出矿石类型和光照强度 (但请注意光照强度并不能在所有情况下都表示玩家使用了矿透).
+警告消息会通过矿石类型来添加颜色, 以易于辨认.
 
-We've found this extremely effective at spotting xray. Players who show very clear patterns are very easy to identify.
+这对辨认矿透玩家极其有效, 十分容易识别出挖矿轨迹清晰的玩家.
 
-Item Use Alerts
+物品使用警告
 ---------------
 
-Item use alerts tell when you a player is using something that's possibly related to griefing.
-Lighting fires, placing tnt, placing pistons, etc.
+此功能将在玩家使用了一些和熊服有关的物品时, 向您发送警告消息.
+例如点燃火焰, 放置TNT, 放置活塞, 等等. 这完全可以在配置文件中配置.
 
-If you wish, you may also define a list blocks that will alert you when broken.
+如果需要的话, 您也可以在配置文件中配置破坏方块警告列表.
 
-Vanilla Piston Xray Alert
+活塞卡透视警告
 -------------------------
 
-There's a known exploit involving a piston that lets you see through blocks.
-Prism will attempt to alert you when it seems like a player is trying to use this trick.
+在原版中存在着一个漏洞(特性), 利用活塞可以使玩家透过方块去看别的东西.
+Prism 会在玩家可能使用了该特性后, 向您发送警告信息.
 
-Ex, Drain
----------
+灭火与排水
+----------
 
-Use `/prism ex [radius]` to extinguish all fires in the radius, or `/prism drain [radius]` to remove all liquid (water and lava) in the radius.
+参阅 :ref:`extinguish` 以及 :ref:`drain`.
 
-You may also drain specific subtypes of liquid, so `/prism drain water` or `lava`, and if providing a radius, `/prism drain lava 10`.
-
-When performing a rollback of block-burn actions, Prism will automatically extinguish the fires as well.
+当执行一次行为为 block-burn 的回滚操作时, Prism 会自动执行一次灭火操作.
 
 
-Chunk Boundary View
+区块边界视图
 -------------------
-Use `/pr view chunk` to view a glowstone preview of the chunk edges.
-Repeat the command to disable.
 
-Delete
+.. tip::
+
+  | ``/prism view chunk``
+  | ``/prism 视图 区块``
+
+使用此指令会向您在区块边界显示出一个萤石边框.
+重复输入一次指令即可关闭.
+
+删除
 ------
 
-Server operators can use `/prism delete [timeframe]` to manually purge records from the database.
-This isn't usually necessary, as Prism will automatically purge records (per config) every 12 hours.
-See :ref:`purging` .
+.. tip::
+
+  | ``/prism delete [时长]``
+  | ``/prism 删除 [时长]``
+
+服务器管理员可使用此指令来手动清理数据库中的数据记录.
+一般来说这不是必须的操作, 因为 Prism 每隔 12 小时就会自动执行一次数据清理任务.
+参阅 :ref:`purging` .

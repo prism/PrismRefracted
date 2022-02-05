@@ -77,7 +77,7 @@ public class SqlIdMapQuery implements IdMapQuery {
                 }
             }
         } catch (final SQLException e) {
-            Prism.warn("Database connection error: ", e);
+            Prism.warn("数据库连接错误: ", e);
         }
     }
 
@@ -117,7 +117,7 @@ public class SqlIdMapQuery implements IdMapQuery {
                 }
             }
         } catch (final SQLException e) {
-            Prism.warn("Database connection error: ", e);
+            Prism.warn("数据库连接错误: ", e);
         }
     }
 
@@ -144,7 +144,7 @@ public class SqlIdMapQuery implements IdMapQuery {
                 handleIdResult(st,success,failure);
             }
         } catch (final SQLException e) {
-            Prism.warn("Database connection error: ", e);
+            Prism.warn("数据库连接错误: ", e);
             e.printStackTrace();
         }
     }
@@ -175,7 +175,7 @@ public class SqlIdMapQuery implements IdMapQuery {
                 handleIdResult(st, success, failure);
             }
         } catch (final SQLException e) {
-            Prism.warn("Database connection error: ", e);
+            Prism.warn("数据库连接错误: ", e);
             e.printStackTrace();
         }
     }
@@ -238,7 +238,7 @@ public class SqlIdMapQuery implements IdMapQuery {
                     st.executeUpdate();
                 }
             } catch (final SQLException e) {
-                Prism.warn("Database connection error: ", e);
+                Prism.warn("数据库连接错误: ", e);
                 e.printStackTrace();
             }
         } else {
@@ -252,7 +252,7 @@ public class SqlIdMapQuery implements IdMapQuery {
                     st.executeUpdate();
                 }
             } catch (final SQLException e) {
-                Prism.warn("Database connection error: ", e);
+                Prism.warn("数据库连接错误: ", e);
                 e.printStackTrace();
             }
         }
@@ -284,7 +284,7 @@ public class SqlIdMapQuery implements IdMapQuery {
                 SQLWarning warning = st.getWarnings();
 
                 while (warning != null) {
-                    Prism.warn("sql Warning: " + warning.getMessage());
+                    Prism.warn("SQL 警告: " + warning.getMessage());
                     warning = warning.getNextWarning();
                 }
 
@@ -293,14 +293,14 @@ public class SqlIdMapQuery implements IdMapQuery {
                     int autoInc = rs.getInt(1);
 
                     if (!success) {
-                        Prism.log("Failed id map: material=" + material + ", " + "state=" + state);
+                        Prism.log("ID map映射失败: material=" + material + ", " + "state=" + state);
                     }
 
                     return autoInc;
                 }
             }
         } catch (final SQLException e) {
-            Prism.warn("Database connection error: ", e);
+            Prism.warn("数据库连接失败: ", e);
             e.printStackTrace();
         }
 

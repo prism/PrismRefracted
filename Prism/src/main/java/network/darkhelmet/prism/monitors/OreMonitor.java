@@ -5,6 +5,7 @@ import network.darkhelmet.prism.actionlibs.ActionsQuery;
 import network.darkhelmet.prism.actionlibs.QueryParameters;
 import network.darkhelmet.prism.actionlibs.QueryResult;
 import network.darkhelmet.prism.utils.MiscUtils;
+import me.botsko.prism.PrismLocalization;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -31,12 +32,15 @@ public class OreMonitor {
     protected Block block;
     private int threshold = 1;
 
+    private final PrismLocalization prismLocalization;
+
     /**
      * Constructor.
      * @param plugin Prism
      */
     public OreMonitor(Prism plugin) {
         this.plugin = plugin;
+        prismLocalization = plugin.getPrismLocalization();
     }
 
     /**
@@ -67,8 +71,8 @@ public class OreMonitor {
 
                 // Create alert message
                 final String count = foundores.size() + (foundores.size() >= thresholdMax ? "+" : "");
-                final String msg = player.getName() + " found " + count + " "
-                        + getOreNiceName(block) + " " + getLightLevel(block) + "% light";
+                final String msg = player.getName() + " 发现了 " + count + " "
+                        + getOreNiceName(block) + " 光照强度 " + getLightLevel(block) + "%";
                 final TextComponent component =
                         Component.text().content(msg)
                                 .color(getOreColor(block))
@@ -145,7 +149,9 @@ public class OreMonitor {
      * @return String
      */
     private String getOreNiceName(Block block) {
-        return block.getType().toString().replace("_", " ").toLowerCase().replace("glowing", " ");
+        return prismLocalization.hasMaterialLocale(block.getType().name()) ?
+                prismLocalization.getMaterialLocale(block.getType().name()).replace("发光的", " ")
+                : block.getType().toString().replace("_", " ").toLowerCase().replace("glowing", " ");
     }
 
     /**

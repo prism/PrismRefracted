@@ -2,10 +2,10 @@
 
 
 ==========================
-Custom Database Connection
+自定义数据库连接
 ==========================
-Sometimes you want an entirely custom db connection.  As long as your chosen connector supports most of the modern MySQL style SQL commands it should work.  You can use "Hikari" to configure this.
-Adjust your configuration to show as follows
+有时, 您可能想要一个完全可自定义的数据库连接. 只要您选择的数据库连接器支持大部分现代 MySQL 风格的 SQL 指令, 它就应该可以工作. 您可以使用 "Hikari" 来配置它.
+您可以调整您的配置文件成如下所示
 
 .. code-block:: yaml
 
@@ -15,11 +15,11 @@ Adjust your configuration to show as follows
       prefix: prism_
       useNonStandardSql: true
 
-You will need to adjust the Hikari.properties file appropriately and provide the JDBC connector on the classpath.  Please see the `HikariCP project <https://github.com/brettwooldridge/HikariCP#configuration-knobs-baby>`_ for examples.  The table prefix and the use of non standard sql can still be chose here.
+您需要适当地调整 Hikari.properties 文件, 并提供 JDBC 连接器环境变量. 请参阅 `HikariCP 项目 <https://github.com/brettwooldridge/HikariCP#configuration-knobs-baby>`_ 来获取例子. 数据表前缀和是否使用非标准的SQL仍然在这里设置.
 
 .. code-block:: properties
 
-    #Prism Hikari Datasource Properties for advanced database Configuration
+    #Prism Hikari 连接数据源配置文件.
     #Sat Jan 02 21:47:38 AEST 2021
     initializationFailTimeout=10
     validationTimeout=5000
@@ -39,4 +39,4 @@ You will need to adjust the Hikari.properties file appropriately and provide the
     username=prism
     password=prism
 
-This is an example of hikari properties ....which replicates the mysql connection.
+这是一个 hikari 配置文件的示例 ....它仿造了 MySQL 连接.

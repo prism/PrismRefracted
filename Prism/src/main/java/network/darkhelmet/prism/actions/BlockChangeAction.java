@@ -89,8 +89,8 @@ public class BlockChangeAction extends BlockAction {
             action.setBlockData(replacedData);
             return action.placeBlock(player, parameters, isPreview, currentBlock, isDeferred);
         } else {
-            Prism.debug("Skipped Change for " + parameters.getProcessType().name() + " because current-> "
-                    + currentBlock.getType() + " != " + originalMaterial.name() + " <- what we think we will replace.");
+            Prism.debug("跳过 " + parameters.getProcessType().name() + " 的变化, 由于目前的-> "
+                    + currentBlock.getType() + " != " + originalMaterial.name() + " <- 我们现在想要替换的.");
             return new ChangeResultImpl(ChangeResultType.SKIPPED, null);
         }
     }

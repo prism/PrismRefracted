@@ -1,21 +1,29 @@
-Rollback
+回滚
 ==========
 
-Some expert users may be comfortable enough to rollback without a preview.
-Use `/prism rollback (params)`.
-Your changes will be applied immediately.
+.. tip::
 
-Rollback Wand
+  | ``/prism rollback (参数)``
+  | ``/prism 回滚 (参数)``
+
+如果您足够专业, 您可能不需要在预览后再执行回滚操作.
+执行此指令后会立即应用世界的变更.
+
+回滚魔棒
 ^^^^^^^^^^^^^
 
-Another wand type is a rollback wand.
-Like the inspector it's for use on a single block or empty space.
-Use `/prism wand rollback` and the wand will bind to your hand/tools.
+.. tip::
 
-Left-click a block to roll back its last action, or right-click a block face to rollback the block from that spot.
-Repeat the command to disable the wand.
+  | ``/prism wand rollback``
+  | ``/prism 魔棒 回滚``
 
-Useful for fixing minor griefs when you'd rather not worry about commands.
+回滚魔棒是另一种魔棒类型.
+就像是检查魔棒, 它是用于单个方块位置的, 并且与您设置的偏好所绑定.
 
-_Note: The Prism team reminds you that if you allow rollbacks, especially of items removed from chests or entity kills, be aware that staff with access to do so have the capability to do so repeatedly. There's no absolute way to ensure an item or entity hasn't already been rolled back but you shouldn't have a problem because only staff can perform rollbacks and staff are by definition trusted. However, you can disable item removal rollbacks in the config._
+左键单击一个方块可以回滚点击的方块处的上一行为. 右键单击方块六侧中的任何一侧可以回滚该方块邻边位置处的上一行为.
+重新输入一次该指令即可关闭魔棒.
+
+如果发生的问题很小并且您不想考虑指令参数, 这个魔棒很管用.
+
+*备注: 开发人员提醒您, 如果您给予回滚权限(给城管), 尤其是击杀实体和拿出容器内物品的权限, 一定要注意城管有权重复进行回滚操作, 以此刷取物品. 没有绝对的办法可以确保物品和实体不会被回滚, 但是您可能不会遇到这种问题, 因为给予城管回滚权限, 它们应该是得到了您的信任的. 不管如何, 您也可以在配置文件中禁用针对拿出物品的回滚.*
 

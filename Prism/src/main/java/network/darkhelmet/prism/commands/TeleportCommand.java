@@ -43,7 +43,7 @@ public class TeleportCommand implements SubHandler {
         }
         if (!plugin.cachedQueries.containsKey(keyName) && !call.getArg(1).contains("id:")) {
             Prism.messenger.sendMessage(call.getSender(), Prism.messenger.playerError(
-                    "There's no saved query to use results from. Maybe they expired? Try your lookup again."));
+                    "您没有被保存的查询. 也许它们过期了? 试试再查询一次."));
             return;
         }
 
@@ -56,13 +56,13 @@ public class TeleportCommand implements SubHandler {
         // Determine result index to tp to - either an id, or the next/previous
         // id
         long recordId;
-        if (ident.equals("next") || ident.equals("prev")) {
+        if (ident.equals("next") || ident.equals("prev") || ident.equals("下") || ident.equals("上")) {
             // Get stored results
             final QueryResult results = plugin.cachedQueries.get(keyName);
             recordId = results.getLastTeleportIndex();
             recordId = (recordId == 0 ? 1 : recordId);
             if (recordId > 0) {
-                if (ident.equals("next")) {
+                if (ident.equals("next") || ident.equals("下")) {
                     recordId++;
                 } else {
                     if (recordId > 1) {
@@ -73,13 +73,13 @@ public class TeleportCommand implements SubHandler {
         } else {
             if (!TypeUtils.isNumeric(ident)) {
                 Prism.messenger.sendMessage(call.getPlayer(), Prism.messenger
-                        .playerError("You must provide a numeric result number or record ID to teleport to."));
+                        .playerError("您必须提供一个结果编号数字或者记录ID来传送."));
                 return;
             }
             recordId = Integer.parseInt(ident);
             if (recordId <= 0) {
                 Prism.messenger.sendMessage(call.getPlayer(),
-                        Prism.messenger.playerError("Result number or record ID must be greater than zero."));
+                        Prism.messenger.playerError("结果编号或记录ID必须大于0."));
                 return;
             }
         }
@@ -98,7 +98,7 @@ public class TeleportCommand implements SubHandler {
             final QueryResult results = aq.lookup(params, call.getPlayer());
             if (results.getActionResults().isEmpty()) {
                 Prism.messenger.sendMessage(call.getPlayer(),
-                        Prism.messenger.playerError("No records exists with this ID."));
+                        Prism.messenger.playerError("此 ID 的记录不存在."));
                 return;
             }
 
@@ -112,7 +112,7 @@ public class TeleportCommand implements SubHandler {
 
             if (recordId > results.getActionResults().size()) {
                 Prism.messenger.sendMessage(call.getPlayer(), Prism.messenger.playerError(
-                        "No records exists at this index. Did you mean /pr tp id:" + recordId + " instead?"));
+                        "此索引的记录不存在. 您可能想使用的是 /pr tp id:" + recordId + " ?"));
                 return;
             }
 
@@ -132,7 +132,7 @@ public class TeleportCommand implements SubHandler {
             final World world = destinationAction.getLoc().getWorld();
             if (world == null) {
                 Prism.messenger.sendMessage(call.getPlayer(),
-                        Prism.messenger.playerError("Action record occurred in world we can't find anymore."));
+                        Prism.messenger.playerError("此行为记录于一个我们无法找到的世界中."));
                 return;
             }
             if (PaperLib.isPaper()) {
@@ -159,7 +159,7 @@ public class TeleportCommand implements SubHandler {
                                     Component.text(destinationAction.getTimeSince()).color(NamedTextColor.WHITE))));
         } else {
             Prism.messenger.sendMessage(player,
-                    Prism.messenger.playerError("Prism teleportation failed"));
+                    Prism.messenger.playerError("Prism 传送失败"));
         }
     }
 

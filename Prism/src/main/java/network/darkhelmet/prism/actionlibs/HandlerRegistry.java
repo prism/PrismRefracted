@@ -45,8 +45,8 @@ public class HandlerRegistry {
 
         final List<String> allowedPlugins = Prism.config.getStringList("prism.tracking.api.allowed-plugins");
         if (!allowedPlugins.contains(apiPlugin.getName())) {
-            throw new InvalidActionException("Registering action type not allowed. Plugin '" + apiPlugin.getName()
-                    + "' is not in list of allowed plugins.");
+            throw new InvalidActionException("有插件正尝试注册不允许的操作类型. 插件 '" + apiPlugin.getName()
+                    + "' 并未被列入在允许的插件列表中.");
         }
 
         final String[] names = handlerClass.getName().split("\\.");
@@ -66,7 +66,7 @@ public class HandlerRegistry {
         try {
             return handlerClazz.getDeclaredConstructor().newInstance();
         } catch (Exception e) {
-            throw new IllegalArgumentException("Failed to construct handler for " + handlerClazz.getSimpleName(), e);
+            throw new IllegalArgumentException("为 " + handlerClazz.getSimpleName() + " 构造处理函数时失败", e);
         }
     }
 

@@ -1,5 +1,7 @@
 package network.darkhelmet.prism.actions;
 
+import me.botsko.prism.Prism;
+import me.botsko.prism.PrismLocalization;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -7,9 +9,11 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 public class EntityTravelAction extends GenericAction {
     protected EntityTravelActionData actionData;
+    protected PrismLocalization prismLocalization;
 
     public EntityTravelAction() {
         actionData = new EntityTravelActionData();
+        prismLocalization = Prism.getInstance().getPrismLocalization();
     }
 
     /**
@@ -21,7 +25,8 @@ public class EntityTravelAction extends GenericAction {
             if (entity instanceof Player) {
                 setPlayer((Player) entity);
             } else {
-                setSourceName(entity.getType().name().toLowerCase());
+                setSourceName(prismLocalization.hasEntityLocale(entity.getType().name()) ?
+                        prismLocalization.getEntityLocale(entity.getType().name()) : entity.getType().name().toLowerCase());
             }
         }
     }
@@ -44,7 +49,37 @@ public class EntityTravelAction extends GenericAction {
      */
     public void setCause(TeleportCause cause) {
         if (cause != null) {
-            actionData.cause = cause.name().toLowerCase();
+            switch (cause) {
+                case NETHER_PORTAL:
+                    actionData.cause = "下界传送门";
+                    break;
+                case END_PORTAL:
+                    actionData.cause = "末地传送门";
+                    break;
+                case COMMAND:
+                    actionData.cause = "指令";
+                    break;
+                case PLUGIN:
+                    actionData.cause = "插件";
+                    break;
+                case UNKNOWN:
+                    actionData.cause = "未知";
+                    break;
+                case SPECTATE:
+                    actionData.cause = "观察者";
+                    break;
+                case END_GATEWAY:
+                    actionData.cause = "末地折跃门";
+                    break;
+                case ENDER_PEARL:
+                    actionData.cause = "末影珍珠";
+                    break;
+                case CHORUS_FRUIT:
+                    actionData.cause = "紫颂果";
+                    break;
+                default:
+                    actionData.cause = cause.name().toLowerCase();
+            }
         }
     }
 
@@ -81,10 +116,10 @@ public class EntityTravelAction extends GenericAction {
     @Override
     public String getNiceName() {
         if (actionData != null) {
-            final String cause = (actionData.cause == null ? "unknown" : actionData.cause.replace("_", " "));
-            return "using " + cause + " to " + actionData.x + " " + actionData.y + " " + actionData.z;
+            final String cause = (actionData.cause == null ? "未知方法" : actionData.cause.replace("_", " "));
+            return "通过 " + cause + " 传送到了 " + actionData.x + " " + actionData.y + " " + actionData.z;
         }
-        return "teleported somewhere";
+        return "传送到了某处";
     }
 
     public static class EntityTravelActionData {

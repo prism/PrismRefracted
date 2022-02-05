@@ -16,7 +16,7 @@ public class SinceParameter extends SimplePrismParameterHandler {
      * Time since parameter.
      */
     public SinceParameter() {
-        super("Since", Pattern.compile("[\\w]+"), "t", "since");
+        super("Since", Pattern.compile("[\\w秒分时天周]+"), "t", "since", "自从", "时长");
     }
 
     /**
@@ -24,7 +24,7 @@ public class SinceParameter extends SimplePrismParameterHandler {
      */
     @Override
     public void process(QueryParameters query, String alias, String input, CommandSender sender) {
-        if (input.equalsIgnoreCase("none")) {
+        if (input.equalsIgnoreCase("none") && input.equalsIgnoreCase("无")) {
             query.setIgnoreTime(true);
         } else {
             final Long date = DateUtil.translateTimeStringToDate(input);
@@ -32,7 +32,7 @@ public class SinceParameter extends SimplePrismParameterHandler {
                 query.setSinceTime(date);
             } else {
                 throw new IllegalArgumentException(
-                        "Date/time for 'since' parameter value not recognized. Try /pr ? for help");
+                        "无法识别 '自从(since)' 的日期/时长参数值. 请使用 /pr ? 来获取帮助.");
             }
         }
     }
@@ -53,7 +53,7 @@ public class SinceParameter extends SimplePrismParameterHandler {
 
             Long date = DateUtil.translateTimeStringToDate(config.getString("prism.queries.default-time-since"));
             if (date <= 0L) {
-                Prism.log("Error - date range configuration for prism.time-since is not valid");
+                Prism.log("错误 - 时长范围配置 prism.time-since 非法");
                 date = DateUtil.translateTimeStringToDate("3d");
             }
             query.setSinceTime(date);

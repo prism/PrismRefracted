@@ -1,47 +1,46 @@
-**Prism (Refracted)** is a change-tracking plugin for Bukkit-based servers. Supports rollbacks, restores, previews, 
-wands, and so much more. Tracking so good, the NSA stole our name.
+# 棱镜 - 中文汉化版本
 
-# TL;DR
+**Prism-Bukkit ( 棱镜 )** 是一个可以追踪 Minecraft 世界变化的 Bukkit 插件. 这些变化可以被查询, 回滚, 还原, 或被执行其它操作.
+我们也同样提供了大量的反熊工具.
 
-I, viveleroi, created Prism ten years ago and was amazed by the community response. With the bukkit/mojang project
-drama in 2014 and my waning interest in Minecraft, I moved to the Sponge project but eventually stopped all development.
+这是一个延续 @viveleroi 作品的项目, 并且由一些 GitHub 贡献者
+修复、增加了一些功能, 现在由 [AddstarMC][addstarmc] 维护.
 
-In 2016 I turned the project over to another team but long story short, as I saw the game and community mature, 
-and heard from so many long-time Prism users, I've decided to return to Prism.
+想要了解更多使用 Prism 的方法, [请查看维基][wiki].
 
-"Prism Refracted" is my official continuation of Prism. There's a lot of work I want to do
+## 支持
 
-## Support
+在 2016 年, Prism-Bukkit 因为 [Sponge 重写][sponge] 而被弃坑. 不久之后, [the AddstarMC team][addstarmc]
+分叉了这个项目, 用于他们自己的服务器并且从此之后一直在维护它. 伴随着 @viveleroi 的祝福,
+我们现在已发布此插件到 SpigotMC 并在 [M.O.S.S. Discord 服务器][moss] 上提供支持.
 
-Please be patient as I work to get this project where I want, establish documentation, build servers, etc. 
+**Prism 仅支持 Spigot/Paper 1.15+ - 我们不会再添加对旧版本的支持!**
 
-- [**Discord**][discord] - Please visit discord for help before opening issues.
+## 信息
 
-# Rough Roadmap
+*  [**MCBBS**][mcbbs]
 
-A lot of this code is nearing a decade old. Some things really can be better:
+*  [**维基**][wiki]
 
-- Convert command handling to ACF
-- Replace all database crud with a Storage approach like we did in Prism for Sponge. Allow mongoDB.
-- Fix non-standard SQL issues, re-evaluate efficiency stuff.
-- Improve how hikari configs are used.
-- Properly checkstyle and fix formatting to my tastes
-- Bring back Prism WebUI
-- Consider moving ore alerts, etc to a separate plugin
+*  [**bStats**](https://bstats.org/plugin/bukkit/Prism/4365)
 
-## License
+*  [**维基**(英文版)][wiki-en]
 
-Prism is licensed the under the Creative Commons
-Attribution-NonCommercial-ShareAlike 3.0 Unported. Please see `LICENSE` or [this website][license]
-for the full license.
+*  [**SpigotMC 页面**(英文版)][spigot]
+   
+*  [**Discord**(英文版)][moss]
 
-### Credits
+## 许可证
 
-- Originally made, and made again, for the `play.darkhelmet.network` server.
-- Recent stewardship by the [addstarmc][[addstarmc]] team.
-- Artwork by LegendarySoldier.
+这是 viveleroi 的 Prism 的一个分支, 并且在根据 Creative Commons Attribution-NonCommercial-ShareAlike
+3.0 Unported 提供知识产权许可. 请浏览 `LICENSE` 或 [此网站][license]
+来了解完整的许可证.
 
-
+[mcbbs]: https://www.mcbbs.net/thread-1230654-1-1.html
+[sponge]: https://github.com/prism/Prism
+[wiki]: https://github.com/Rothes/Prism-Bukkit/wiki/%E4%B8%BB%E9%A1%B5
+[wiki-en]: https://prism-bukkit.readthedocs.io
 [license]: http://creativecommons.org/licenses/by-nc-sa/3.0/us/
 [addstarmc]: https://github.com/AddstarMC
-[discord]: https://discord.gg/7FxZScH4EJ
+[moss]: https://discord.gg/V9hS3q7m
+[spigot]: https://www.spigotmc.org/resources/prism.75166/

@@ -14,7 +14,7 @@ public class DateUtil {
 
         long dateFrom = 0L;
 
-        final Pattern p = Pattern.compile("([0-9]+)(s|h|m|d|w)");
+        final Pattern p = Pattern.compile("([0-9]+)([s秒m分h时d天w周])");
         final Calendar cal = Calendar.getInstance();
 
         final String[] matches = TypeUtils.preg_match_all(p, argValue);
@@ -31,18 +31,23 @@ public class DateUtil {
 
                         switch (tfFormat) {
                             case "w":
+                            case "周":
                                 cal.add(Calendar.WEEK_OF_YEAR, -1 * tfValue);
                                 break;
                             case "d":
+                            case "天":
                                 cal.add(Calendar.DAY_OF_MONTH, -1 * tfValue);
                                 break;
                             case "h":
+                            case "时":
                                 cal.add(Calendar.HOUR, -1 * tfValue);
                                 break;
                             case "m":
+                            case "分":
                                 cal.add(Calendar.MINUTE, -1 * tfValue);
                                 break;
                             case "s":
+                            case "秒":
                                 cal.add(Calendar.SECOND, -1 * tfValue);
                                 break;
                             default:

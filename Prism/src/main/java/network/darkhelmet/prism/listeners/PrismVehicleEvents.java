@@ -3,6 +3,7 @@ package network.darkhelmet.prism.listeners;
 import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.actionlibs.ActionFactory;
 import network.darkhelmet.prism.actionlibs.RecordingQueue;
+import me.botsko.prism.PrismLocalization;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -23,6 +24,7 @@ import java.util.UUID;
 public class PrismVehicleEvents implements Listener {
 
     private final Prism plugin;
+    private final PrismLocalization prismLocalization;
 
     /**
      * Constructor.
@@ -31,6 +33,7 @@ public class PrismVehicleEvents implements Listener {
      */
     public PrismVehicleEvents(Prism plugin) {
         this.plugin = plugin;
+        prismLocalization = plugin.getPrismLocalization();
     }
 
     /**
@@ -126,7 +129,8 @@ public class PrismVehicleEvents implements Listener {
                 return;
             }
             RecordingQueue.addToQueue(ActionFactory.createVehicle(action, vehicle,
-                    entity.getType().name().toLowerCase()));
+                    prismLocalization.hasEntityLocale(entity.getType().name()) ?
+                            prismLocalization.getEntityLocale(entity.getType().name()) : entity.getType().name().toLowerCase()));
         }
     }
 }

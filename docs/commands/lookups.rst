@@ -1,80 +1,92 @@
-Lookups
+查询
 =======
 
 .. tip::
 
-  | /prism lookup <params> <flags>
-  | /pr l <params> <flags>
-  | /pr near
+  | ``/prism lookup <参数> <标志>``
+  | ``/pr l <参数> <标志>``
+  | ``/pr 查询 <参数> <标志>``
+  | ``/pr near``
+  | ``/pr 附近``
   |
 
 
-By default, Prism will begin tracking all sorts of events that happen in your worlds. Players making block changes, killing entities, transfers of items, and much more.
-Some of this data is purely informational, so you can find out who did something, and some of it is useful for rollbacks and restores.
+默认情况下, Prism 会查询您所有世界中的任何事件. 玩家导致的方块变化, 击杀实体, 放入拿出容器内的物品, 等等.
+其中的一些事件纯粹是让您了解信息, 知道是什么玩家做了什么事, 这对判断如何执行回滚和还原操作很有用.
 
-Searching the Database
+搜索数据库
 ----------------------
 
-The first use is to be able to find the information you need. Prism comes with three tools to find the data from in-game, each with a different focus.
+上述指令的前三个用法可以让您查询您想要的信息. Prism 也提供了三种游戏内的工具让您来查询数据, 每一种都有不同的侧重点.
 
-Lookup Command
+"查询"指令
 --------------
 
 .. tip::
 
-  | /prism lookup <params> <flags>
-  | /pr l <params> <flags>
+  | ``/prism lookup <参数> <标志>``
+  | ``/pr l <参数> <标志>``
+  | ``/pr 查询 <参数> <标志>``
 
 
-When the inspector and near commands aren't enough you have the power to query essentially any results from the database.
-Use ``/prism l`` (params) to do a search of information. See Understanding Parameters By using any arrangement of the parameters you can easily filter through records and find out exactly what you need.
-Lookup queries can be local to you, or even global if you so desire. Need to see only all item-pickup actions by player nasonfish within ten blocks? Or how about where player YeaItsMe last placed a chest in the entire server.
-It's almost limitless.
+当检查魔棒和"附近"指令不足以满足需求时, 您可以使用这个指令来从数据库中查询结果.
+使用 ``/prism l (参数)`` 来查询想要的信息. 请参阅维基中的参数页. 通过配合多种参数同时使用, 您可以轻而易举地筛选记录, 找出需要的东西.
+查询操作可以仅是在您的附近查询, 也可以是全局查询. 只需要限定参数即可. 通过添加参数可以限定行为, 玩家和半径等条件.
+例如, ``a:item-pickup p:nasonfish r:10`` 为十格方块半径内玩家 nasonfish 拾起掉落物的事件;
+``r:global p:YeaItsMe a:place b:chest`` 为玩家 YeaItsMe 在整个服务器内放置箱子的事件.
+您几乎可以无限制地查询出指定的记录.
 
 .. image:: ../_images/prism_standard_display.png
    :width: 600
-   :alt: Prism Standard Display.
+   :alt: Prism 标准查询结果显示.
 
-Inspector (Wand)
+检查魔棒
 ----------------
 .. tip::
 
-  | /prism i
+  | ``/prism wand inspect``
+  | ``/prism 魔棒 检查``
+  | ``/prism i``
+  | ``/prism 检查``
 
-Use to toggle what we call the "inspection" wand. Wands bind certain actions to your hand/tools. The inspection wand can be toggled with just ``/prism i`` or ``/prism wand i``. Left-click a block to see that exact block's history. Right-click on any side of the block to see the history for the space adjacent.
-Excellent for finding information about a single block, like a chest or ore finds.
-See the Wands page for more details.
+执行该指令会切换检查魔棒的开关状态. 魔棒会将一些特定的动作绑定到您的空手/工具上. 检查魔棒可以通过指令 ``/prism i`` 或者全称 ``/prism wand i`` ``/prism 魔棒 检查`` 来切换.
+左键单击一个方块可以查看点击的方块处的历史记录. 右键单击方块六侧中的任何一侧可以查看该方块邻边位置处的历史记录.
+此功能非常适合于查询对于单个方块的信息记录, 例如箱子或矿石.
+请参阅维基中的魔棒页来了解更多信息.
 
-Near
+附近
 ----
 
 .. tip::
 
-  | /pr near
+  | ``/pr near``
+  | ``/pr 附近``
 
-Use to do a quick query for all actions within a five block radius (configurable). It shows you all actions so you can quickly get a picture of what's happened.
-Excellent for an area with no specific/visible issues. For example you can't tell what was griefed or you need to see if anyone was here recently.
+此功能可以用来迅速简便地查询五个方块半径(可配置)内的所有行为. 它会显示所有的行为, 所以您可以马上想象出这个地方发生了什么事情.
+此功能非常适合没有确定或明显可见信息的问题. 例如可以用它来查询附近是什么被熊了, 或者谁来过这附近等等.
 
-Pagination
+页码(翻页)
 ----------
 .. tip::
 
-  | /pr pg [<number> | next | prev]
+  | ``/pr pg [<页码数> | prev | next]``
+  | ``/pr 页码 [<页码数> | 上 | 下]``
 
 
-Most times, a lookup or near query returns a lot of information. We break this into pages for easier navigating.
-After any lookup or near query, use ``/prism page [page #]`` to skip to different pages of results. It simply uses the data from your last search and will expire after five minutes.
-Also available are ``/pr page next`` and ``/pr page prev``.
+大多数情况下, "查询"和"附近"操作都会返回大量的结果. 我们会把它们分页来让这些结果易于浏览.
+在执行完毕任何一种查询操作后, 使用指令 ``/prism page [页码#]`` 可以跳转到不同的结果页码. 此指令只会使用您上次查询到的结果, 且会在查询的五分钟后过期.
+同样您也可以使用 ``/pr page next`` 和 ``/pr page prev`` 来切换到上下页, 也可点击消息中的按钮.
 
-Teleporting
+传送
 -----------
 
 .. tip::
 
-  | /pr tp <number>
-  | /pr tp next | prev
+  | ``/pr tp <索引>``
+  | ``/pr tp prev | next``
+  | ``/pr tp 上 | 下``
 
-When you perform a lookup, the results will include an index number with every action. If using global or extended views, you'll also see the record ID.
-Use ``/prism tp [index #]`` to teleport to a record's location or use ``/pr tp id:[id]`` to teleport to a specific database record.  Once teleported you may also use ``/pr tp (next|prev)`` to teleport to the next or previous index.
+当您执行完一次查询操作时, 每个结果消息的前面都会写上一个数字, 那就是这个记录在本次查询中的索引. 如果使用全局或扩展参数进行查询, 您可以看到这个记录的 ID.
+使用指令 ``/prism tp [索引#]`` 可以传送到一个记录的坐标, 或者使用 ``/pr tp id:[id]`` 可以根据记录 ID 来传送. 一次传送之后, 您可以使用 ``/pr tp (prev|next)`` 来传送到上一个或下一个索引的坐标处.
 
-*Note: We're working on a smarter teleport system that will accurately judge the safety of the area, and attempt a nearby spot. This is in development*
+*备注: 我们目前正在开发一个更只能的传送系统, 它能够准确地判断传送区域的安全性, 并尝试选择邻近的位置作为传送点. 它仍在开发当中*

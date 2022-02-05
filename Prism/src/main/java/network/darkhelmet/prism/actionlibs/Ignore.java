@@ -50,7 +50,7 @@ public class Ignore {
                 || plugin.getConfig().getBoolean("prism.tracking." + actionTypeName)) {
             return true;
         } else {
-            Prism.debug("Ignoring Action Type: " + actionTypeName);
+            Prism.debug("忽略行为类型: " + actionTypeName);
             return false;
         }
     }
@@ -83,7 +83,7 @@ public class Ignore {
         // Does the player have perms to ignore this action type?
         if (plugin.getConfig().getBoolean("prism.ignore.enable-perm-nodes")
                 && player.hasPermission("prism.ignore.tracking." + actionTypeName)) {
-            Prism.debug("Player has permission node to ignore " + actionTypeName);
+            Prism.debug("玩家拥有忽略 " + actionTypeName + " 的权限节点");
             return false;
         }
 
@@ -100,20 +100,20 @@ public class Ignore {
     public boolean event(Player player) {
 
         if (player == null) {
-            Prism.debug("Player is null will be ignored");
+            Prism.debug("null 玩家将被忽略");
             return false;
         }
 
         // Should we ignore this player?
         if (ignorePlayers != null && ignorePlayers.contains(player.getName()) != ignorePlayersWhiteList) {
-            Prism.debug("Player is being ignored, per config: " + player.getName());
+            Prism.debug("根据配置, 玩家将被忽略: " + player.getName());
             return false;
         }
 
         // Should we ignore this player for being in creative?
         if (ignoreCreative) {
             if (player.getGameMode().equals(GameMode.CREATIVE)) {
-                Prism.debug("Player is in creative mode, creative mode ignored: " + player.getName());
+                Prism.debug("玩家处于创造模式，创造模式将被忽略: " + player.getName());
                 return false;
             }
         }
@@ -143,7 +143,7 @@ public class Ignore {
 
         // Should we ignore this world?
         if (ignoreWorlds != null && ignoreWorlds.contains(world.getName()) != ignoreWorldsWhiteList) {
-            Prism.debug("World is being ignored, per config: " + world.getName());
+            Prism.debug("根据配置, 世界将被忽略: " + world.getName());
             return false;
         }
 

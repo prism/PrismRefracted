@@ -1,5 +1,7 @@
 package network.darkhelmet.prism.utils;
 
+import me.botsko.prism.Prism;
+import me.botsko.prism.PrismLocalization;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
@@ -21,6 +23,8 @@ import java.util.Objects;
 
 public class DeathUtils {
 
+    private static PrismLocalization prismLocalization = null;
+
     /**
      * Returns the name of what caused an entity to die.
      *
@@ -31,7 +35,7 @@ public class DeathUtils {
         EntityDamageEvent e = entity.getLastDamageCause();
 
         if (e == null) {
-            return "unknown";
+            return "未知";
         }
 
         // Determine the root cause
@@ -63,30 +67,30 @@ public class DeathUtils {
             if (killer instanceof Player) {
                 // Themself
                 if (killer.getName().equals(player.getName())) {
-                    return "suicide";
+                    return "自杀";
                 }
                 // translate bukkit events to nicer names
                 if ((damageCause.equals(DamageCause.ENTITY_ATTACK) || damageCause.equals(DamageCause.PROJECTILE))) {
-                    return "pvp";
+                    return "PVP";
                 }
             }
         }
 
         // Causes of death for either entities or players
         if (damageCause.equals(DamageCause.ENTITY_ATTACK)) {
-            return "mob";
+            return "生物";
         } else if (damageCause.equals(DamageCause.PROJECTILE)) {
-            return "skeleton";
+            return "骷髅";
         } else if (damageCause.equals(DamageCause.ENTITY_EXPLOSION)) {
-            return "creeper";
+            return "苦力怕";
         } else if (damageCause.equals(DamageCause.CONTACT)) {
-            return "cactus";
+            return "仙人掌";
         } else if (damageCause.equals(DamageCause.BLOCK_EXPLOSION)) {
-            return "tnt";
+            return "TNT";
         } else if (damageCause.equals(DamageCause.FIRE) || damageCause.equals(DamageCause.FIRE_TICK)) {
-            return "fire";
+            return "火";
         } else if (damageCause.equals(DamageCause.MAGIC)) {
-            return "potion";
+            return "魔法";
         }
         return damageCause.name().toLowerCase();
     }
@@ -108,7 +112,7 @@ public class DeathUtils {
             }
         }
 
-        if (cause.equals("mob")) {
+        if (cause.equals("生物")) {
 
             Entity killer = ((EntityDamageByEntityEvent) Objects.requireNonNull(
                     victim.getLastDamageCause())).getDamager();
@@ -122,22 +126,22 @@ public class DeathUtils {
             return entity.getName();
         } else if (entity instanceof Skeleton) {
             if (entity instanceof WitherSkeleton) {
-                return "witherskeleton";
+                return "凋零骷髅";
             } else {
-                return "skeleton";
+                return "骷髅";
             }
         } else if (entity instanceof Arrow) {
-            return "skeleton";
+            return "骷髅";
         } else if (entity instanceof Wolf) {
             Tameable wolf = (Wolf) entity;
             if (wolf.isTamed()) {
                 if (wolf.getOwner() instanceof Player || wolf.getOwner() instanceof OfflinePlayer) {
-                    return "pvpwolf";
+                    return "PVP狼";
                 } else {
-                    return "wolf";
+                    return "狼";
                 }
             } else {
-                return "wolf";
+                return "狼";
             }
         } else {
             return entity.getType().name().toLowerCase();
@@ -191,12 +195,21 @@ public class DeathUtils {
         String deathWeapon = "";
         if (entity.getKiller() != null) {
             ItemStack weapon = entity.getKiller().getInventory().getItemInMainHand();
-            deathWeapon = weapon.getType().toString().toLowerCase();
+            deathWeapon = prismLocalization() != null && prismLocalization().hasMaterialLocale(weapon.getType().name())?
+                    prismLocalization().getMaterialLocale(weapon.getType().name())
+                    : weapon.getType().toString().toLowerCase();
             deathWeapon = deathWeapon.replaceAll("_", " ");
             if (deathWeapon.equalsIgnoreCase("air")) {
-                deathWeapon = " hands";
+                deathWeapon = " 手";
             }
         }
         return deathWeapon;
+    }
+
+    private static PrismLocalization prismLocalization() {
+        if (prismLocalization == null) {
+            prismLocalization = Prism.getInstance().getPrismLocalization();
+        }
+        return prismLocalization;
     }
 }

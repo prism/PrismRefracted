@@ -1,17 +1,19 @@
-Settings
+设置
 ========
 
 .. tip::
 
-  /pr settings batchsize
+  | ``/pr settings batchsize (数值)``
+  | ``/pr 设置 批次大小 (数值)``
 
-Currently allows you to dynamically change the batch size to speed up or slow down processing.
+目前, 可以使用该指令来动态调节批次大小, 可以以此加快或者减慢记录数据的速度.
 
-Recorder
+记录器
 ========
 
 .. tip::
 
-  /pr recorder start | stop
+  | ``/pr recorder (start | cancel)``
+  | ``/pr 记录器 (开启 | 取消)``
 
-Starts and Stops the recorder.
+开启或者取消(关闭)记录器.

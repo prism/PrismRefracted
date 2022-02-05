@@ -2,6 +2,7 @@ package network.darkhelmet.prism.utils;
 
 import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.api.objects.MaterialState;
+import me.botsko.prism.PrismLocalization;
 import org.bukkit.Bukkit;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
@@ -30,6 +31,7 @@ public class ItemUtils {
 
     private static final EnumSet<Material> badWands = EnumSet.of(Material.WATER, Material.LAVA, Material.FIRE,
           Material.FLINT_AND_STEEL, Material.NETHER_PORTAL, Material.END_PORTAL);
+    private static PrismLocalization prismLocalization;
 
     public static boolean isBadWand(Material material) {
         return badWands.contains(material);
@@ -92,7 +94,7 @@ public class ItemUtils {
 
                         return stack;
                     } catch (NumberFormatException e) {
-                        Prism.debug(" Item could not have damage parsed. Data:" + smallString + " Error:"
+                        Prism.debug(" 无法解析物品 damage 值. 数据:" + smallString + " 错误:"
                               + e.getMessage());
                     }
                 }
@@ -433,7 +435,8 @@ public class ItemUtils {
      */
     public static String getItemFullNiceName(ItemStack item) {
 
-        StringBuilder itemName = new StringBuilder(item.getType().name().toLowerCase(Locale.ENGLISH)
+        StringBuilder itemName = new StringBuilder(prismLocalization().hasMaterialLocale(item.getType().name()) ?
+        prismLocalization().getMaterialLocale(item.getType().name()) : item.getType().name().toLowerCase(Locale.ENGLISH)
               .replace('_', ' '));
 
         ItemMeta meta = null;
@@ -446,16 +449,16 @@ public class ItemUtils {
         if (meta instanceof LeatherArmorMeta) {
             LeatherArmorMeta lam = (LeatherArmorMeta) meta;
             if (lam.getColor() != Bukkit.getItemFactory().getDefaultLeatherColor()) {
-                itemName.append(" dyed");
+                itemName.append(" 染色了");
             }
         } else if (meta instanceof SkullMeta) {
             SkullMeta skull = (SkullMeta) meta;
             if (skull.hasOwner()) {
-                itemName.append(Objects.requireNonNull(skull.getOwningPlayer()).getName()).append("'s ");
+                itemName.append(Objects.requireNonNull(skull.getOwningPlayer()).getName()).append("的 ");
             }
         } else if (meta instanceof BookMeta) {
             BookMeta book = (BookMeta) meta;
-            itemName.append(" '").append(book.getTitle()).append("' by ").append(book.getAuthor());
+            itemName.append(" '").append(book.getTitle()).append("' 作者 ").append(book.getAuthor());
         }
 
         if (meta instanceof EnchantmentStorageMeta) {
@@ -477,16 +480,16 @@ public class ItemUtils {
                 FireworkEffect effect = fireworkMeta.getEffect();
                 if (effect != null) {
                     if (!effect.getColors().isEmpty()) {
-                        itemName.append(" ").append(effect.getColors().size()).append(" colors");
+                        itemName.append(" ").append(effect.getColors().size()).append(" 颜色");
                     }
                     if (!effect.getFadeColors().isEmpty()) {
-                        itemName.append(" ").append(effect.getFadeColors().size()).append(" fade colors");
+                        itemName.append(" ").append(effect.getFadeColors().size()).append(" 淡化颜色");
                     }
                     if (effect.hasFlicker()) {
-                        itemName.append(" flickering");
+                        itemName.append(" 闪烁效果");
                     }
                     if (effect.hasTrail()) {
-                        itemName.append(" with trail");
+                        itemName.append(" 拖曳痕迹");
                     }
                 }
             }
@@ -496,7 +499,7 @@ public class ItemUtils {
         if (meta != null) {
             // TODO: API fail here, report and check later
             if (meta.hasDisplayName() && meta.getDisplayName().length() > 0) {
-                itemName.append(" named \"").append(meta.getDisplayName()).append("\"");
+                itemName.append(", 名称为 \"").append(meta.getDisplayName()).append("\"");
             }
         }
 
@@ -513,7 +516,7 @@ public class ItemUtils {
     private static void applyEnchantments(Map<Enchantment, Integer> enchants, StringBuilder itemName) {
         int i = 1;
         if (enchants.size() > 0) {
-            itemName.append(" with ");
+            itemName.append(", 附魔为 ");
             for (Map.Entry<Enchantment, Integer> ench : enchants.entrySet()) {
                 itemName.append(EnchantmentUtils.getClientSideEnchantmentName(ench.getKey(), ench.getValue()));
                 itemName.append(i < enchants.size() ? ", " : "");
@@ -566,5 +569,12 @@ public class ItemUtils {
         for (int i = 0; i < quantity; i++) {
             dropItem(location, is);
         }
+    }
+
+    private static PrismLocalization prismLocalization() {
+        if (prismLocalization == null) {
+            prismLocalization = Prism.getInstance().getPrismLocalization();
+        }
+        return prismLocalization;
     }
 }

@@ -1,34 +1,34 @@
-Preview
+预览
 =======
 
 .. tip::
 
-  /prism preview [rollback | restore | apply | cancel ] <params> <flags>
-  /pr pr
+  | ``/prism preview [rollback | restore | apply | cancel ] <参数> <标志>``
+  | ``/prism 预览 [回滚 | 还原 | 应用 | 取消 ] <参数> <标志>``
+  | ``/pr pr``
 
-Previewing a rollback or restore is **the safest way**.
-When you preview a rollback/restore, Prism queries the database with your given parameters, and shows those blocks changes/restorations to you only - it does not apply the rollback/restore to the world.
-Players around you won't see the preview, only you will.
+回滚或者还原前先进行预览是\ **最安全**\ 的办法.
+当您在预览一次回滚/还原操作时, Prism 会使用您给出的参数来查询数据库, 然后向您展示方块的变更 - 这个时候不会应用回滚/还原操作到世界上.
+周围的玩家不会看到这个预览, 只有您会看到.
 
-This allows you to see whether or not your rollback/restore will do what you intended - because if not you can cancel it without any impact on the real map.
+预览可以让您检查本次回滚/还原操作是不是会像您所计划的那样执行 - 如果不是, 您可以取消预览. 这不会对实际地图造成任何影响.
 
-Use `/prism preview (rollback/rb or restore/rs) (params)`.
+如果不是预期的结果, 使用 ``/prism preview cancel``.
+您每次只能有一个挂起的预览, 并且它会在一分钟之后过期.
+如果您忘记了挂机了预览或者退出了服务器, 它会自行取消.
 
-If not, use `/prism preview cancel`.
-You may only have one preview pending at a time, and they will expire after a minute.
-If you forget about them or logout, they will self-cancel.
-
-Apply a Preview
+应用预览
 ^^^^^^^^^^^^^^^
 
 .. tip::
 
-  /prism preview apply
+  | ``/prism preview apply``
+  | ``/prism 预览 应用``
 
-If the results look good and you wish to apply them to the map, use `/prism preview apply`.
-Applying a preview doesn't require the (params) again because Prism remembers what you had queried.
-When you apply a preview, it's done exactly the same way but as a real rollback/restore.
+如果结果一切正常, 您想要将它们应用到地图上的话, 使用 ``/prism preview apply``.
+应用预览的时候不需要再次指定参数, 因为 Prism 会记忆您的操作.
+当您应用预览的时候, 它会完全按照 回滚/还原 的真实操作来执行.
 
-**The Prism team recommends you make a habit of always using preview.**
+**我们十分建议您养成一个先预览再执行的习惯.**
 
-Note: Only block changes are supported in preview mode. Item/entity/etc rollbacks won't show in a preview, but will still be rolled back correctly when the preview is applied.
+*备注: 预览模式只支持方块变更. 物品/实体或者其他的回滚不会在预览里显示出来, 但应用预览的时候它们仍然会被正确地回滚.*

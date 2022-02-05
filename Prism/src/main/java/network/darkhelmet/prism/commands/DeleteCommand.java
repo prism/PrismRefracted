@@ -35,7 +35,7 @@ public class DeleteCommand extends AbstractCommand {
     public void handle(final CallInfo call) {
 
         // Allow for canceling tasks
-        if (call.getArgs().length > 1 && call.getArg(1).equals("cancel")) {
+        if (call.getArgs().length > 1 && (call.getArg(1).equals("cancel") || call.getArg(1).equals("取消"))) {
             if (plugin.getPurgeManager().deleteTask != null) {
                 plugin.getPurgeManager().deleteTask.cancel();
                 Prism.messenger.sendMessage(call.getSender(),
@@ -48,11 +48,11 @@ public class DeleteCommand extends AbstractCommand {
         }
 
         // Allow for wiping live queue
-        if (call.getArgs().length > 1 && call.getArg(1).equals("queue")) {
+        if (call.getArgs().length > 1 && (call.getArg(1).equals("queue") || call.getArg(1).equals("队列"))) {
             if (RecordingQueue.getQueue().size() > 0) {
-                Prism.log("User " + call.getSender().getName()
-                        + " wiped the live queue before it could be written to the database. "
-                        + RecordingQueue.getQueue().size() + " events lost.");
+                Prism.log("用户 " + call.getSender().getName()
+                        + " 在将实时队列写入数据库之前擦除了它们. "
+                        + RecordingQueue.getQueue().size() + " 个事件已丢失.");
                 RecordingQueue.getQueue().clear();
                 Prism.messenger.sendMessage(call.getSender(),
                         Prism.messenger.playerSuccess(Il8nHelper.getMessage("clear-queue")));
@@ -101,8 +101,7 @@ public class DeleteCommand extends AbstractCommand {
                 final long minId = extents[0];
                 final long maxId = extents[1];
                 Prism.log(
-                        "Beginning prism database purge cycle. Will be performed in batches so "
-                                + "we don't tie up the db...");
+                        "正在进行 Prism 周期数据库数据清理. 清理将分批进行, 因此我们不会占用数据库...");
                 deleteTask = plugin.getServer().getScheduler().runTaskAsynchronously(plugin,
                         new PurgeTask(plugin, paramList, purgeTickDelay, minId, maxId, callback));
             });

@@ -53,7 +53,7 @@ public class EntitySerializerFactory {
             return clazz.getConstructor().newInstance();
         } catch (Exception e) {
             e.printStackTrace();
-            throw new IllegalStateException("No default constructor found for " + clazz.getName());
+            throw new IllegalStateException("没有找到 " + clazz.getName() + " 的默认构造函数");
         }
     }
 }

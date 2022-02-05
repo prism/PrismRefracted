@@ -33,7 +33,7 @@ public class SqlSettingsQuery extends AbstractSettingsQuery implements SettingsQ
             s.executeUpdate();
 
         } catch (final SQLException e) {
-            Prism.debug("Database Error:" + e.getMessage());
+            Prism.debug("数据库错误:" + e.getMessage());
         }
     }
 
@@ -55,7 +55,7 @@ public class SqlSettingsQuery extends AbstractSettingsQuery implements SettingsQ
             s2.setString(2, value);
             s2.executeUpdate();
         } catch (final SQLException e) {
-            Prism.debug("Database Error:" + e.getMessage());
+            Prism.debug("数据库错误:" + e.getMessage());
         }
     }
 
@@ -81,7 +81,7 @@ public class SqlSettingsQuery extends AbstractSettingsQuery implements SettingsQ
             }
 
         } catch (final SQLException e) {
-            Prism.debug("Database Error:" + e.getMessage());
+            Prism.debug("数据库错误:" + e.getMessage());
         }
         return value;
     }

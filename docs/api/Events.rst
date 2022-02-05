@@ -1,8 +1,8 @@
 ##############
-Hooking Events
+挂钩到事件
 ##############
 
-Prism has 3 events that can be hooked to monitor Prism and its API
+Prism 有 5 个事件可以监听, 来监视 Prism 和其 API.
 
 PrismLoadedEvent
 ================
@@ -16,12 +16,12 @@ PrismLoadedEvent
     }
   }
 
-Hooking this event allows you to get a fully loaded api if you dont want your plugin to depend on Prism and load after it.
+如果您不想让您的插件依赖于 Prism、在它之后加载, 您可以选择监听这个事件, 也可以让您获得完整加载的 API.
 
 PrismUnloadEvent
 ================
 
-This event has no methods.  Hooking it can tell you when you can no longer use the Prism API
+这个事件没有任何方法. 监听这个事件可以让您知道何时 Prism API 不再可用.
 
 
 PrismRollbackEvent
@@ -52,7 +52,8 @@ PrismRollbackEvent
         }
     }
 
-Returns the Rollback events parameters and the player who called it and the BlockStateChanges that occurred.
+返回回滚事件的参数以及调用事件的玩家和发生的 BlockStateChanges.
+
 PrismExtinguishEvent
 ====================
 
@@ -72,7 +73,7 @@ PrismExtinguishEvent
         }
     }
 
-See above for methods.
+方法见上.
 
 
 PrismDrainEvent
@@ -95,5 +96,5 @@ PrismDrainEvent
         }
     }
 
-See above for methods.
+方法见上.
 

@@ -33,6 +33,31 @@ public class PandaSerializer extends EntitySerializer {
             } else {
                 niceName = mainGene;
             }
+
+            switch (niceName) {
+                case "lazy":
+                    niceName = "懒惰的";
+                    break;
+                case "worried":
+                    niceName = "发愁的";
+                    break;
+                case "playful":
+                    niceName = "顽皮的";
+                    break;
+                case "aggressive":
+                    niceName = "好斗的";
+                    break;
+                case "weak":
+                    niceName = "体弱的";
+                    break;
+                case "brown":
+                    niceName = "棕色的";
+                    break;
+                case "normal":
+                    niceName = "普通的";
+                    break;
+                default:
+            }
             sb.insert(start, MiscUtils.niceName(niceName)).insert(start + niceName.length(), ' ');
         }
     }

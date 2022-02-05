@@ -1,5 +1,10 @@
-View
+视图
 ====
 
-Use `/pr view chunk` to view a glow stone preview of the chunk edges.
-Repeat the command to disable.
+.. tip::
+
+  | ``/pr view chunk``
+  | ``/pr 视图 区块``
+
+此指令会向您展示一个萤石边框, 这是区块边界的预览.
+重新输入一次指令即可关闭该功能.

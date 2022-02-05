@@ -71,30 +71,31 @@ public class EntityUtils {
         String description = descriptionCache.get(source.getClass().getSimpleName());
 
         if (description == null) {
+            //TODO: Rothes - 校对翻译
             if (source instanceof org.bukkit.entity.Trident) {
-                description = "skewered";
+                description = "用三叉戟插了";
             } else if (source instanceof org.bukkit.entity.Arrow) {
-                description = "shot";
+                description = "用箭射了";
             } else if (source instanceof org.bukkit.entity.Egg) {
-                description = "became the very best of";
+                description = "用蛋砸了";
             } else if (source instanceof org.bukkit.entity.EnderPearl) {
-                description = "vwooped";
+                description = "用末影珍珠砸了";
             } else if (source instanceof org.bukkit.entity.SmallFireball) {
-                description = "ignited";
+                description = "用小火球点燃了";
             } else if (source instanceof org.bukkit.entity.Fireball) {
-                description = "exploded";
+                description = "用火球炸了";
             } else if (source instanceof org.bukkit.entity.FishHook) {
-                description = "hooked";
+                description = "用钓竿钩了";
             } else if (source instanceof org.bukkit.entity.ThrownPotion) {
-                description = "doused";
+                description = "用药水喷了";
             } else if (source instanceof org.bukkit.entity.LlamaSpit) {
-                description = "disrespected";
+                description = "吐唾沫给了";
             } else if (source instanceof org.bukkit.entity.ShulkerBullet) {
-                description = "ascended";
+                description = "追到了";
             } else if (source instanceof org.bukkit.entity.Snowball) {
-                description = "iced";
+                description = "用雪球砸了";
             } else if (source instanceof org.bukkit.entity.ThrownExpBottle) {
-                description = "taught";
+                description = "用附魔瓶砸了";
             } else {
                 description = "";
             }

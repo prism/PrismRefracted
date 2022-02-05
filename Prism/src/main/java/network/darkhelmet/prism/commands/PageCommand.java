@@ -42,7 +42,7 @@ public class PageCommand implements SubHandler {
         }
         if (!plugin.cachedQueries.containsKey(keyName)) {
             Prism.messenger.sendMessage(call.getSender(), Prism.messenger
-                    .playerError("There's no saved query to paginate. Maybe they expired? Try your lookup again."));
+                    .playerError("您没有被保存的查询可以来翻页. 也许它们过期了? 试试再查询一次."));
             return;
         }
 
@@ -52,7 +52,7 @@ public class PageCommand implements SubHandler {
         if (call.getArgs().length != 2) {
             Prism.getAudiences().sender(call.getSender())
                     .sendMessage(Identity.nil(),
-                          Prism.messenger.playerError("Please specify a page number. Like /prism page 2"));
+                          Prism.messenger.playerError("请指定一个页码. 例如 /prism page 2"));
             return;
         }
 
@@ -62,19 +62,19 @@ public class PageCommand implements SubHandler {
             page = Integer.parseInt(call.getArg(1));
         } else {
 
-            if (call.getArg(1).equals("next") || call.getArg(1).equals("n")) {
+            if (call.getArg(1).equals("next") || call.getArg(1).equals("n") || call.getArg(1).equals("下")) {
                 page = results.getPage() + 1;
-            } else if (call.getArg(1).equals("prev") || call.getArg(1).equals("p")) {
+            } else if (call.getArg(1).equals("prev") || call.getArg(1).equals("p") || call.getArg(1).equals("上")) {
                 if (results.getPage() <= 1) {
                     Prism.messenger.sendMessage(call.getSender(),
-                            Prism.messenger.playerError("There is no previous page."));
+                            Prism.messenger.playerError("没有上一页了."));
                     return;
                 }
                 page = results.getPage() - 1;
             } else {
                 Prism.messenger.sendMessage(call.getSender(), Prism.messenger
-                        .playerError("Page numbers need to actually be numbers, or next/prev."
-                                + " Like /prism page 2"));
+                        .playerError("页码数必须为一个数值, 或者 下(next)/上(prev)."
+                                + " 例如 /prism page 2"));
                 return;
             }
         }
@@ -82,7 +82,7 @@ public class PageCommand implements SubHandler {
         // No negatives
         if (page <= 0) {
             Prism.messenger.sendMessage(call.getSender(),
-                    Prism.messenger.playerError("Page must be greater than zero."));
+                    Prism.messenger.playerError("页码数必须大于0."));
             return;
         }
 
@@ -95,8 +95,8 @@ public class PageCommand implements SubHandler {
         // Results?
         if (results.getActionResults().isEmpty()) {
             Prism.messenger.sendMessage(call.getSender(), Prism.messenger
-                    .playerError("Nothing found." + ChatColor.GRAY
-                            + " Either you're missing something, or we are."));
+                    .playerError("没有找到任何数据." + ChatColor.GRAY
+                            + " 要么是您错漏了一些东西, 要么是我们."));
             return;
         }
 
@@ -106,8 +106,7 @@ public class PageCommand implements SubHandler {
         final List<Handler> paginated = results.getPaginatedActionResults();
         if (paginated == null || paginated.size() == 0) {
             Prism.messenger.sendMessage(call.getSender(),
-                    Prism.messenger.playerError("Pagination can't find anything. "
-                            + "Do you have the right page number?"));
+                    Prism.messenger.playerError("无法在此页码中找到任何东西. 请检查您是否输入了正确的页码."));
             return;
         }
 
