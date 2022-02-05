@@ -162,6 +162,8 @@ public class ActionMessage {
                 target = "熔岩";
             } else if (action.getName().equals("water-bucket")) {
                 target = "水";
+            } else if (action.getName().equals("powdersnow-bucket")) {
+                target = "细雪";
             }
         }
         return Component.text()

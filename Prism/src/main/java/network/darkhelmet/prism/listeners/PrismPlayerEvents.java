@@ -261,6 +261,10 @@ public class PrismPlayerEvents implements Listener {
                 cause = "lava-bucket";
                 newMat = Material.LAVA;
                 break;
+            case POWDER_SNOW_BUCKET:
+                cause = "powdersnow-bucket";
+                newMat = Material.POWDER_SNOW;
+                break;
             case TROPICAL_FISH_BUCKET:
             case SALMON_BUCKET:
             case PUFFERFISH_BUCKET:

@@ -193,6 +193,7 @@ public class PrismConfig extends ConfigBase {
         config.addDefault("prism.tracking.vehicle-place", true);
         config.addDefault("prism.tracking.water-break", true);
         config.addDefault("prism.tracking.water-bucket", true);
+        config.addDefault("prism.tracking.powdersnow-bucket", true);
         config.addDefault("prism.tracking.water-flow", false);
         config.addDefault("prism.tracking.world-edit", false);
         config.addDefault("prism.tracking.xp-pickup", false);
