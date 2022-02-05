@@ -43,7 +43,7 @@ public class Updater {
             }
             return jsonBuilder.toString();
         } catch (IOException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
         }
         return null;
     }
