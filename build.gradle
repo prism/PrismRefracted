@@ -1,0 +1,7 @@
+allprojects {
+    version("3.0.3-CN-1")
+}
+
+gradle.buildFinished {
+    project.buildDir.deleteDir()
+}
