@@ -173,7 +173,7 @@ public class ActionMessage {
         if (handler.getAggregateCount() > 1) {
             return Component.text("x" + handler.getAggregateCount() + " ");
         }
-        return Component.text(" ");
+        return Component.empty();
     }
 
     private TextComponent getTimeDiff() {
