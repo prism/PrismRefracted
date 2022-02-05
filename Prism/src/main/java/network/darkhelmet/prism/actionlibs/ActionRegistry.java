@@ -294,6 +294,8 @@ public class ActionRegistry {
                 BlockAction.class, Il8nHelper.getRawMessage("broke")));
         registerAction(new ActionTypeImpl("water-bucket", true, true, true,
                 BlockChangeAction.class, Il8nHelper.getRawMessage("poured")));
+        registerAction(new ActionTypeImpl("powdersnow-bucket", true, true, true,
+                BlockChangeAction.class, Il8nHelper.getRawMessage("poured")));
         registerAction(new ActionTypeImpl("water-flow", true, true, true,
                 BlockAction.class, Il8nHelper.getRawMessage("flowed-into")));
         registerAction(new ActionTypeImpl("world-edit", true, true, true,
