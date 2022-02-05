@@ -156,6 +156,8 @@ public class ActionMessage {
                 target = "lava ";
             } else if (action.getName().equals("water-bucket")) {
                 target = "water ";
+            } else if (action.getName().equals("powdersnow-bucket")) {
+            target = "powder snow ";
             }
         }
         return Component.text()
