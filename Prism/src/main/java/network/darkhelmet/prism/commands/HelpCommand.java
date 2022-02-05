@@ -66,14 +66,11 @@ public class HelpCommand implements SubHandler {
                                     .color(NamedTextColor.GOLD))
                         .append(Component.newline())
                         .append(
-                              Prism.messenger.playerSubduedHeaderMsg(Il8nHelper.getMessage("discord", ":")
-                                    .color(NamedTextColor.WHITE)
-                                    .append(Component.text(Il8nHelper.getRawMessage("discord-url")))))
-                        .append(Component.newline())
-                        .append(
-                              Prism.messenger.playerSubduedHeaderMsg(Il8nHelper.getMessage("wiki", ":")
-                                    .color(NamedTextColor.WHITE)
-                                    .append(Component.text(Il8nHelper.getRawMessage("wiki-url"))))));
+                                Component.text().content("Discord: ")
+                                        .append(Component.text("https://discord.gg/7FxZScH4EJ")
+                                                .color(NamedTextColor.WHITE))
+                                        .clickEvent(ClickEvent.openUrl("https://discord.gg/7FxZScH4EJ"))
+                                        .build()));
             return;
         }
         TextComponent component = Prism.messenger.playerHeaderMsg(
