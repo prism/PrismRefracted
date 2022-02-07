@@ -40,7 +40,7 @@ Prism 根据 Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported 
 ### 鸣谢
 
 - 最初的作者, 以及重制作者, 为了 `play.darkhelmet.network` 服务器.
-- 最近 [addstarmc][[addstarmc]] 团队的管理.
+- 最近 [addstarmc][addstarmc] 团队的管理.
 - LegendarySoldier 的美术.
 
 
