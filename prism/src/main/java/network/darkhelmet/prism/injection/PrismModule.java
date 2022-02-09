@@ -52,6 +52,7 @@ import network.darkhelmet.prism.api.storage.IStorageAdapter;
 import network.darkhelmet.prism.services.configuration.ConfigurationService;
 import network.darkhelmet.prism.services.expectations.ExpectationService;
 import network.darkhelmet.prism.services.filters.FilterService;
+import network.darkhelmet.prism.services.lookup.LookupService;
 import network.darkhelmet.prism.services.messages.MessageRenderer;
 import network.darkhelmet.prism.services.messages.MessageSender;
 import network.darkhelmet.prism.services.messages.MessageService;
@@ -196,6 +197,9 @@ public class PrismModule extends AbstractModule {
 
         // Service - Filters
         bind(FilterService.class).in(Singleton.class);
+
+        // Service - Lookup
+        bind(LookupService.class).in(Singleton.class);
 
         // Service - Modifications
         bind(IModificationQueueService.class).to(ModificationQueueService.class).in(Singleton.class);

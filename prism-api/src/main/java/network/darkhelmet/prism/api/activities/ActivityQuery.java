@@ -70,21 +70,39 @@ public record ActivityQuery(
      * @return A new builder
      */
     public Builder toBuilder() {
-        return new Builder()
+        Builder builder = new Builder()
             .lookup(isLookup())
             .grouped(grouped())
             .actionTypes(actionTypes())
-            .location(location())
-            .world(worldUuid())
             .maxVector(maxVector())
             .materials(materials())
             .entityTypes(entityTypes())
             .playerNames(playerNames())
-            .since(since())
-            .before(before())
             .offset(offset())
             .limit(limit())
             .sort(sort());
+
+        if (location() != null) {
+            builder.location(location());
+        }
+
+        if (worldUuid() != null) {
+            builder.world(worldUuid());
+        }
+
+        if (since() != null) {
+            builder.since(since());
+        }
+
+        if (since() != null) {
+            builder.since(since());
+        }
+
+        if (before() != null) {
+            builder.before(before());
+        }
+
+        return builder;
     }
 
     public static class Builder {

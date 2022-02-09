@@ -74,7 +74,7 @@ public class PageCommand extends BaseCommand {
      * @param sender The command sender
      * @param page The new page
      */
-    @SubCommand(value = "lookup", alias = {"l"})
+    @SubCommand(value = "page")
     public void onPage(CommandSender sender, Integer page) {
         Optional<ActivityQuery> optionalQuery = lookupService.lastQuery(sender);
         if (optionalQuery.isEmpty()) {

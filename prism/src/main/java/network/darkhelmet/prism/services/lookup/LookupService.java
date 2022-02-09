@@ -103,6 +103,8 @@ public class LookupService {
      * @param query The activity query
      */
     public void lookup(CommandSender sender, ActivityQuery query) {
+        queries.put(sender, query);
+
         Prism.newChain().async(() -> {
             try {
                 show(sender, storageAdapter.queryActivitiesAsInformation(query));
