@@ -22,10 +22,10 @@ package network.darkhelmet.prism.api.activities;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 
 import network.darkhelmet.prism.api.actions.types.IActionType;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -62,6 +62,29 @@ public record ActivityQuery(
      */
     public static Builder builder() {
         return new Builder();
+    }
+
+    /**
+     * Make a new builder from a basic query.
+     *
+     * @return A new builder
+     */
+    public Builder toBuilder() {
+        return new Builder()
+            .lookup(isLookup())
+            .grouped(grouped())
+            .actionTypes(actionTypes())
+            .location(location())
+            .world(worldUuid())
+            .maxVector(maxVector())
+            .materials(materials())
+            .entityTypes(entityTypes())
+            .playerNames(playerNames())
+            .since(since())
+            .before(before())
+            .offset(offset())
+            .limit(limit())
+            .sort(sort());
     }
 
     public static class Builder {
@@ -296,6 +319,17 @@ public record ActivityQuery(
          */
         public Builder playerByName(String playerName) {
             this.playerNames.add(playerName);
+            return this;
+        }
+
+        /**
+         * Add a list of player names.
+         *
+         * @param playerNames The player names.
+         * @return The builder
+         */
+        public Builder playerNames(Collection<String> playerNames) {
+            this.playerNames.addAll(playerNames);
             return this;
         }
 

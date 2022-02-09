@@ -26,27 +26,22 @@ import dev.triumphteam.cmd.core.BaseCommand;
 import dev.triumphteam.cmd.core.annotation.Command;
 import dev.triumphteam.cmd.core.annotation.SubCommand;
 
+import java.util.Optional;
+
 import network.darkhelmet.prism.api.activities.ActivityQuery;
-import network.darkhelmet.prism.api.storage.IStorageAdapter;
 import network.darkhelmet.prism.services.configuration.ConfigurationService;
 import network.darkhelmet.prism.services.lookup.LookupService;
-import network.darkhelmet.prism.utils.LocationUtils;
+import network.darkhelmet.prism.services.messages.MessageService;
+import network.darkhelmet.prism.services.translation.TranslationKey;
 
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
+import org.bukkit.command.CommandSender;
 
 @Command(value = "prism", alias = {"pr"})
-public class NearCommand extends BaseCommand {
+public class PageCommand extends BaseCommand {
     /**
      * The configuration service.
      */
     private final ConfigurationService configurationService;
-
-    /**
-     * The storage adapter.
-     */
-    private final IStorageAdapter storageAdapter;
 
     /**
      * The lookup service.
@@ -54,35 +49,47 @@ public class NearCommand extends BaseCommand {
     private final LookupService lookupService;
 
     /**
-     * Construct the near command.
+     * The message service.
+     */
+    private final MessageService messageService;
+
+    /**
+     * Construct the page command.
      *
-     * @param configurationService The configuration service
-     * @param storageAdapter The storage adapter
      * @param lookupService The lookup service
      */
     @Inject
-    public NearCommand(
+    public PageCommand(
             ConfigurationService configurationService,
-            IStorageAdapter storageAdapter,
-            LookupService lookupService) {
+            LookupService lookupService,
+            MessageService messageService) {
         this.configurationService = configurationService;
-        this.storageAdapter = storageAdapter;
         this.lookupService = lookupService;
+        this.messageService = messageService;
     }
 
     /**
-     * Run the near command. Searches for records nearby the player.
+     * Change pages of a recent lookup.
      *
-     * @param player The player
+     * @param sender The command sender
+     * @param page The new page
      */
-    @SubCommand("near")
-    public void onNear(final Player player) {
-        Location loc = player.getLocation();
-        Vector minVector = LocationUtils.getMinVector(loc, configurationService.prismConfig().nearRadius());
-        Vector maxVector = LocationUtils.getMaxVector(loc, configurationService.prismConfig().nearRadius());
+    @SubCommand(value = "lookup", alias = {"l"})
+    public void onPage(CommandSender sender, Integer page) {
+        Optional<ActivityQuery> optionalQuery = lookupService.lastQuery(sender);
+        if (optionalQuery.isEmpty()) {
+            messageService.error(sender, new TranslationKey("no-last-query"));
+            return;
+        }
 
-        final ActivityQuery query = ActivityQuery.builder().world(loc.getWorld().getUID())
-            .minVector(minVector).maxVector(maxVector).limit(configurationService.prismConfig().perPage()).build();
-        lookupService.lookup(player, query);
+        if (page < 1) {
+            messageService.error(sender, new TranslationKey("invalid-page"));
+            return;
+        }
+
+        int offset = configurationService.prismConfig().perPage() * (page - 1);
+
+        final ActivityQuery query = optionalQuery.get().toBuilder().offset(offset).build();
+        lookupService.lookup(sender, query);
     }
 }

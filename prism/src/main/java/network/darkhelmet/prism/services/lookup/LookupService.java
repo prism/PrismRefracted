@@ -18,9 +18,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package network.darkhelmet.prism.services.displays;
+package network.darkhelmet.prism.services.lookup;
 
 import com.google.inject.Inject;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
@@ -28,18 +32,27 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 
+import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.api.PaginatedResults;
+import network.darkhelmet.prism.api.activities.ActivityQuery;
 import network.darkhelmet.prism.api.activities.IActivity;
+import network.darkhelmet.prism.api.storage.IStorageAdapter;
 import network.darkhelmet.prism.services.messages.MessageService;
+import network.darkhelmet.prism.services.translation.TranslationKey;
 import network.darkhelmet.prism.services.translation.TranslationService;
 
 import org.bukkit.command.CommandSender;
 
-public class DisplayService {
+public class LookupService {
     /**
      * The message service.
      */
     private final MessageService messageService;
+
+    /**
+     * The storage adapter.
+     */
+    private final IStorageAdapter storageAdapter;
 
     /**
      * The translation service.
@@ -52,18 +65,55 @@ public class DisplayService {
     private final BukkitAudiences audiences;
 
     /**
+     * Cache recent queries.
+     */
+    private final Map<CommandSender, ActivityQuery> queries = new HashMap<>();
+
+    /**
      * Construct the display service.
      *
      * @param messageService The message service
      */
     @Inject
-    public DisplayService(
+    public LookupService(
             MessageService messageService,
+            IStorageAdapter storageAdapter,
             TranslationService translationService,
             BukkitAudiences audiences) {
         this.messageService = messageService;
+        this.storageAdapter = storageAdapter;
         this.translationService = translationService;
         this.audiences = audiences;
+    }
+
+    /**
+     * Get the last query for a command sender.
+     *
+     * @param sender The sender
+     * @return The last query, if any
+     */
+    public Optional<ActivityQuery> lastQuery(CommandSender sender) {
+        return Optional.ofNullable(queries.get(sender));
+    }
+
+    /**
+     * Performs an async storage query and displays the results to the command sender in a paginated chat view.
+     *
+     * @param sender The command sender
+     * @param query The activity query
+     */
+    public void lookup(CommandSender sender, ActivityQuery query) {
+        Prism.newChain().async(() -> {
+            try {
+                show(sender, storageAdapter.queryActivitiesAsInformation(query));
+
+                // Cache this senders most recent query
+                queries.put(sender, query);
+            } catch (Exception ex) {
+                messageService.error(sender, new TranslationKey("query-error"));
+                Prism.getInstance().handleException(ex);
+            }
+        }).execute();
     }
 
     /**
@@ -72,7 +122,7 @@ public class DisplayService {
      * @param sender The command sender
      * @param results The paginated results
      */
-    public void show(CommandSender sender, PaginatedResults<IActivity> results) {
+    private void show(CommandSender sender, PaginatedResults<IActivity> results) {
         messageService.paginationHeader(sender, results);
 
         if (results.isEmpty()) {
@@ -85,20 +135,24 @@ public class DisplayService {
             if (results.hasPrevPage() || results.hasNextPage()) {
                 Component prev = Component.empty();
                 if (results.hasPrevPage()) {
+                    String cmd = "/pr page " + (results.currentPage() - 1);
+
                     Component hover = Component.text(translationService.messageOf(sender, "page-prev-hover"));
                     String temp = translationService.messageOf(sender, "page-prev");
                     prev = MiniMessage.get().parse(temp)
                         .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, hover))
-                        .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/say test 1"));
+                        .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, cmd));
                 }
 
                 Component next = Component.empty();
                 if (results.hasNextPage()) {
+                    String cmd = "/pr page " + (results.currentPage() + 1);
+
                     Component hover = Component.text(translationService.messageOf(sender, "page-next-hover"));
                     String temp = translationService.messageOf(sender, "page-next");
                     next = MiniMessage.get().parse(temp)
                         .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, hover))
-                        .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/say test 2"));
+                        .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, cmd));
                 }
 
                 audiences.sender(sender).sendMessage(prev.append(next));

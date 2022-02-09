@@ -22,15 +22,12 @@ package network.darkhelmet.prism.services.wands;
 
 import com.google.inject.Inject;
 
-import network.darkhelmet.prism.Prism;
-import network.darkhelmet.prism.api.PaginatedResults;
 import network.darkhelmet.prism.api.activities.ActivityQuery;
-import network.darkhelmet.prism.api.activities.IActivity;
 import network.darkhelmet.prism.api.services.wands.IWand;
 import network.darkhelmet.prism.api.services.wands.WandMode;
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
 import network.darkhelmet.prism.services.configuration.ConfigurationService;
-import network.darkhelmet.prism.services.displays.DisplayService;
+import network.darkhelmet.prism.services.lookup.LookupService;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -47,9 +44,9 @@ public class InspectionWand implements IWand {
     private final IStorageAdapter storageAdapter;
 
     /**
-     * The display service.
+     * The lookup service.
      */
-    private final DisplayService displayService;
+    private final LookupService lookupService;
 
     /**
      * The owner.
@@ -61,16 +58,16 @@ public class InspectionWand implements IWand {
      *
      * @param configurationService The configuration service
      * @param storageAdapter The storage adapter
-     * @param displayService The display server
+     * @param lookupService The lookup server
      */
     @Inject
     public InspectionWand(
             ConfigurationService configurationService,
             IStorageAdapter storageAdapter,
-            DisplayService displayService) {
+            LookupService lookupService) {
         this.configurationService = configurationService;
         this.storageAdapter = storageAdapter;
-        this.displayService = displayService;
+        this.lookupService = lookupService;
     }
 
     @Override
@@ -88,14 +85,6 @@ public class InspectionWand implements IWand {
         final ActivityQuery query = ActivityQuery.builder()
             .location(location).limit(configurationService.prismConfig().perPage()).build();
 
-        Prism.newChain().async(() -> {
-            try {
-                PaginatedResults<IActivity> paginatedResults = storageAdapter.queryActivitiesAsInformation(query);
-
-                displayService.show(owner, paginatedResults);
-            } catch (Exception e) {
-                Prism.getInstance().handleException(e);
-            }
-        }).execute();
+        lookupService.lookup(owner, query);
     }
 }

@@ -32,11 +32,10 @@ import dev.triumphteam.cmd.core.annotation.Suggestion;
 
 import java.util.List;
 
-import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.api.activities.ActivityQuery;
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
 import network.darkhelmet.prism.services.configuration.ConfigurationService;
-import network.darkhelmet.prism.services.displays.DisplayService;
+import network.darkhelmet.prism.services.lookup.LookupService;
 import network.darkhelmet.prism.services.messages.MessageService;
 import network.darkhelmet.prism.services.query.QueryService;
 import network.darkhelmet.prism.services.translation.TranslationKey;
@@ -68,18 +67,18 @@ public class LookupCommand extends BaseCommand {
     private final IStorageAdapter storageAdapter;
 
     /**
-     * The display service.
+     * The lookup service.
      */
-    private final DisplayService displayService;
+    private final LookupService lookupService;
 
     /**
-     * Construct the near command.
+     * Construct the lookup command.
      *
      * @param configurationService The configuration service
      * @param queryService The query service
      * @param messageService The message service
      * @param storageAdapter The storage adapter
-     * @param displayService The display service
+     * @param lookupService The lookup service
      */
     @Inject
     public LookupCommand(
@@ -87,12 +86,12 @@ public class LookupCommand extends BaseCommand {
             QueryService queryService,
             MessageService messageService,
             IStorageAdapter storageAdapter,
-            DisplayService displayService) {
+            LookupService lookupService) {
         this.configurationService = configurationService;
         this.queryService = queryService;
         this.messageService = messageService;
         this.storageAdapter = storageAdapter;
-        this.displayService = displayService;
+        this.lookupService = lookupService;
     }
 
     /**
@@ -126,14 +125,7 @@ public class LookupCommand extends BaseCommand {
                 player.getLocation(), a, in, null, r, m, e, p, before, since);
 
             final ActivityQuery query = builder.limit(configurationService.prismConfig().perPage()).build();
-            Prism.newChain().async(() -> {
-                try {
-                    displayService.show(player, storageAdapter.queryActivitiesAsInformation(query));
-                } catch (Exception ex) {
-                    messageService.error(player, new TranslationKey("query-error"));
-                    Prism.getInstance().handleException(ex);
-                }
-            }).execute();
+            lookupService.lookup(player, query);
         } catch (IllegalArgumentException ex) {
             messageService.error(player, new TranslationKey(ex.getMessage()));
         }
