@@ -37,13 +37,21 @@ import network.darkhelmet.prism.api.PaginatedResults;
 import network.darkhelmet.prism.api.activities.ActivityQuery;
 import network.darkhelmet.prism.api.activities.IActivity;
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
+import network.darkhelmet.prism.services.configuration.ConfigurationService;
 import network.darkhelmet.prism.services.messages.MessageService;
 import network.darkhelmet.prism.services.translation.TranslationKey;
 import network.darkhelmet.prism.services.translation.TranslationService;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.scheduler.BukkitTask;
 
 public class LookupService {
+    /**
+     * The configuration service.
+     */
+    private final ConfigurationService configurationService;
+
     /**
      * The message service.
      */
@@ -70,16 +78,27 @@ public class LookupService {
     private final Map<CommandSender, ActivityQuery> queries = new HashMap<>();
 
     /**
-     * Construct the display service.
+     * Cache tasks for clearing expired queries.
+     */
+    private final Map<CommandSender, BukkitTask> tasks = new HashMap<>();
+
+    /**
+     * Construct the lookup service.
      *
+     * @param configurationService The configuration service
      * @param messageService The message service
+     * @param storageAdapter The storage adapter
+     * @param translationService The transation service
+     * @param audiences The audiences
      */
     @Inject
     public LookupService(
+            ConfigurationService configurationService,
             MessageService messageService,
             IStorageAdapter storageAdapter,
             TranslationService translationService,
             BukkitAudiences audiences) {
+        this.configurationService = configurationService;
         this.messageService = messageService;
         this.storageAdapter = storageAdapter;
         this.translationService = translationService;
@@ -103,14 +122,27 @@ public class LookupService {
      * @param query The activity query
      */
     public void lookup(CommandSender sender, ActivityQuery query) {
-        queries.put(sender, query);
+        // Cancel any expiration tasks
+        if (tasks.containsKey(sender)) {
+            tasks.remove(sender).cancel();
+        }
 
+        final long expireAfter = configurationService.prismConfig().lookupExpiration();
         Prism.newChain().async(() -> {
             try {
                 show(sender, storageAdapter.queryActivitiesAsInformation(query));
 
                 // Cache this senders most recent query
                 queries.put(sender, query);
+
+                // Forcefully invalidate old queries after a set time. Because it could be a long
+                // time between queries we can't rely on a guava cache.
+                BukkitTask task = Bukkit.getScheduler().runTaskLater(Prism.getInstance(), () -> {
+                    queries.remove(sender);
+                    tasks.remove(sender);
+                }, expireAfter);
+
+                tasks.put(sender, task);
             } catch (Exception ex) {
                 messageService.error(sender, new TranslationKey("query-error"));
                 Prism.getInstance().handleException(ex);

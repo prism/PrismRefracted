@@ -57,6 +57,13 @@ public class PrismConfiguration {
     @Comment("Limits how many results are shown \"per page\" when doing lookups.")
     private int perPage = 5;
 
+    @Comment("""
+            Lookup queries are cached so that they can be re-used or paginated.
+            This value (duration in ticks, default = 5 minutes) determines how
+            long they're held in memory before being discarded.
+            """)
+    private long lookupExpiration = 5 * 60 * 20;
+
     /**
      * Get the actions config.
      *
@@ -107,5 +114,14 @@ public class PrismConfiguration {
      */
     public int perPage() {
         return perPage;
+    }
+
+    /**
+     * Get the lookup expiration.
+     *
+     * @return The lookup expiration
+     */
+    public long lookupExpiration() {
+        return lookupExpiration;
     }
 }
