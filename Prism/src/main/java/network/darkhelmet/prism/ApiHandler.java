@@ -3,6 +3,7 @@ package network.darkhelmet.prism;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import network.darkhelmet.prism.bridge.PrismBlockEditHandler;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
@@ -17,13 +18,13 @@ public class ApiHandler {
     }
 
     static void hookWorldEdit() {
-        final Plugin we = Prism.getInstance().getServer().getPluginManager().getPlugin("WorldEdit");
+        final Plugin we = Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
         if (we != null) {
             worldEditPlugin = (WorldEditPlugin) we;
             enabledPlugins.add(we.getName());
             // Easier and foolproof way.
             try {
-                handler = new PrismBlockEditHandler();
+                handler = new PrismBlockEditHandler(Bukkit.getServer().getPluginManager().getPlugin("FastAsyncWorldEdit") != null);
                 WorldEdit.getInstance().getEventBus().register(handler);
                 Prism.log("WorldEdit found. Associated features enabled.");
             } catch (Throwable error) {
