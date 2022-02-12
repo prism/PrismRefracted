@@ -77,22 +77,38 @@ public class DeathUtils {
         }
 
         // Causes of death for either entities or players
-        if (damageCause.equals(DamageCause.ENTITY_ATTACK)) {
-            return "生物";
-        } else if (damageCause.equals(DamageCause.PROJECTILE)) {
-            return "骷髅";
-        } else if (damageCause.equals(DamageCause.ENTITY_EXPLOSION)) {
-            return "苦力怕";
-        } else if (damageCause.equals(DamageCause.CONTACT)) {
-            return "仙人掌";
-        } else if (damageCause.equals(DamageCause.BLOCK_EXPLOSION)) {
-            return "TNT";
-        } else if (damageCause.equals(DamageCause.FIRE) || damageCause.equals(DamageCause.FIRE_TICK)) {
-            return "火";
-        } else if (damageCause.equals(DamageCause.MAGIC)) {
-            return "魔法";
-        }
-        return damageCause.name().toLowerCase();
+        return switch (damageCause) {
+            case ENTITY_ATTACK -> "生物";
+            case PROJECTILE -> "骷髅";
+            case ENTITY_EXPLOSION -> "苦力怕";
+            case CONTACT -> "仙人掌";
+            case BLOCK_EXPLOSION -> "TNT";
+            case FIRE -> "火";
+            case FIRE_TICK -> "火焰刻";
+            case MAGIC -> "魔法";
+            case SUICIDE -> "自杀";
+            case FALL -> "摔落";
+            case LAVA -> "熔岩";
+            case VOID -> "虚空";
+            case CUSTOM -> "自定义";
+            case DRYOUT -> "脱水";
+            case FREEZE -> "冻死";
+            case POISON -> "中毒";
+            case THORNS -> "荆棘";
+            case WITHER -> "凋零";
+            case MELTING -> "雪人融化";
+            case CRAMMING -> "过度挤压";
+            case DROWNING -> "溺水";
+            case HOT_FLOOR -> "岩浆块";
+            case LIGHTNING -> "闪电";
+            case STARVATION -> "饿死";
+            case SUFFOCATION -> "卡方块里了";
+            case DRAGON_BREATH -> "龙息";
+            case FALLING_BLOCK -> "下落的方块";
+            case FLY_INTO_WALL -> "飞行时撞到墙上";
+            case ENTITY_SWEEP_ATTACK -> "横扫伤害";
+            default -> damageCause.name().toLowerCase();
+        };
     }
 
     /**
@@ -144,7 +160,9 @@ public class DeathUtils {
                 return "狼";
             }
         } else {
-            return entity.getType().name().toLowerCase();
+            return prismLocalization().hasEntityLocale(entity.getType().name()) ?
+                    prismLocalization().getEntityLocale(entity.getType().name()) :
+                    entity.getType().name().toLowerCase();
         }
     }
 
