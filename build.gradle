@@ -1,5 +1,5 @@
 allprojects {
-    version("3.0.4-CN-1")
+    version("3.0.4-CN-2")
 }
 
 gradle.buildFinished {
