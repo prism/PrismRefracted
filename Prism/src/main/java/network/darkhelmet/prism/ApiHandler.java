@@ -23,15 +23,15 @@ public class ApiHandler {
             // Easier and foolproof way.
             try {
                 WorldEdit.getInstance().getEventBus().register(new PrismBlockEditHandler());
-                Prism.log("WorldEdit found. Associated features enabled.");
+                Prism.log("发现 WorldEdit. 相关功能已启用.");
             } catch (Throwable error) {
-                Prism.log("Required WorldEdit version is 7.1.0 or greater!"
-                        + " Certain optional features of Prism disabled.");
+                Prism.log("需要 WorldEdit v7.1.0 或更高版本!"
+                        + " Prism 已禁用的相关可选功能.");
                 Prism.debug(error.getMessage());
             }
 
         } else {
-            Prism.log("WorldEdit not found. Certain optional features of Prism disabled.");
+            Prism.log("未发现 WorldEdit. Prism 已禁用的相关可选功能.");
         }
     }
 
@@ -43,12 +43,12 @@ public class ApiHandler {
         if (worldEditPlugin != null) {
             try {
                 WorldEdit.getInstance().getEventBus().unregister(new PrismBlockEditHandler());
-                Prism.log("WorldEdit unhooked");
+                Prism.log("已取消 WorldEdit 挂钩");
                 enabledPlugins.remove(worldEditPlugin.getName());
                 worldEditPlugin = null;
                 return true;
             } catch (Throwable error) {
-                Prism.log("We could not unhook worldEdit...was it enabled???");
+                Prism.log("我们无法取消 worldEdit 的挂钩... 它是否在启用状态中???");
                 Prism.debug(error.getMessage());
                 return false;
             }
