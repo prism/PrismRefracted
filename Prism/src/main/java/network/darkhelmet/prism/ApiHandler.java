@@ -10,6 +10,23 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class ApiHandler {
+
+    public enum WEType {
+        WORLDEDIT("WorldEdit"),
+        ASYNC_WORLDEDIT("AsyncWorldEdit"),
+        FAST_ASYNC_WORLDEDIT("FastAsyncWorldEdit");
+
+        private final String pluginId;
+
+        WEType(String pluginId) {
+            this.pluginId = pluginId;
+        }
+
+        public String getPluginId() {
+            return pluginId;
+        }
+    }
+
     private static final Collection<String> enabledPlugins = new ArrayList<>();
     public static WorldEditPlugin worldEditPlugin = null;
     private static PrismBlockEditHandler handler;
@@ -18,15 +35,24 @@ public class ApiHandler {
     }
 
     static void hookWorldEdit() {
+        WEType weType = null;
+        if (Bukkit.getServer().getPluginManager().getPlugin("FastAsyncWorldEdit") != null) {
+            weType = WEType.FAST_ASYNC_WORLDEDIT;
+        } else if (Bukkit.getServer().getPluginManager().getPlugin("AsyncWorldEdit") != null) {
+            weType = WEType.ASYNC_WORLDEDIT;
+        } else if (Bukkit.getServer().getPluginManager().getPlugin("WorldEdit") != null) {
+            weType = WEType.WORLDEDIT;
+        }
+
         final Plugin we = Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
         if (we != null) {
             worldEditPlugin = (WorldEditPlugin) we;
             enabledPlugins.add(we.getName());
             // Easier and foolproof way.
             try {
-                handler = new PrismBlockEditHandler(Bukkit.getServer().getPluginManager().getPlugin("FastAsyncWorldEdit") != null);
+                handler = new PrismBlockEditHandler(weType);
                 WorldEdit.getInstance().getEventBus().register(handler);
-                Prism.log("WorldEdit found. Associated features enabled.");
+                Prism.log(weType.pluginId + " found. Associated features enabled.");
             } catch (Throwable error) {
                 Prism.log("Required WorldEdit version is 7.1.0 or greater!"
                         + " Certain optional features of Prism disabled.");
