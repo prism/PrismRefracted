@@ -1,5 +1,7 @@
 package network.darkhelmet.prism.actions;
 
+import java.util.Objects;
+
 public class PlayerDeathAction extends GenericAction {
 
     private String cause;
@@ -49,7 +51,7 @@ public class PlayerDeathAction extends GenericAction {
         if (attacker != null && !attacker.isEmpty()) {
             name += attacker;
         }
-        if (cause != null && !cause.isEmpty()) {
+        if (!Objects.equals(attacker, cause) && cause != null && !cause.isEmpty()) {
             name += "(" + cause + ")";
         }
         return name;
