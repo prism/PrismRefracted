@@ -844,6 +844,7 @@ public class Prism extends JavaPlugin implements PrismApi {
 
         public PrismFileHandler(File file) throws IOException, SecurityException {
             super(file.toString());
+            setEncoding("UTF-8");
             setFormatter(new SimpleFormatter() {
                 @Override
                 public synchronized String format(LogRecord lr) {
