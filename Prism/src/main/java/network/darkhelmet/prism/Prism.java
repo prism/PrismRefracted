@@ -822,6 +822,7 @@ public class Prism extends JavaPlugin implements PrismApi {
         for (Handler handler : prismLog.getHandlers()) {
             handler.close();
         }
+        ApiHandler.disableWorldEditHook();
         super.onDisable();
     }
 
