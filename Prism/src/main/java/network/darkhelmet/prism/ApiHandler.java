@@ -11,6 +11,7 @@ import java.util.Collection;
 public class ApiHandler {
     private static final Collection<String> enabledPlugins = new ArrayList<>();
     public static WorldEditPlugin worldEditPlugin = null;
+    private static PrismBlockEditHandler handler;
 
     private ApiHandler() {
     }
@@ -22,7 +23,8 @@ public class ApiHandler {
             enabledPlugins.add(we.getName());
             // Easier and foolproof way.
             try {
-                WorldEdit.getInstance().getEventBus().register(new PrismBlockEditHandler());
+                handler = new PrismBlockEditHandler();
+                WorldEdit.getInstance().getEventBus().register(handler);
                 Prism.log("WorldEdit found. Associated features enabled.");
             } catch (Throwable error) {
                 Prism.log("Required WorldEdit version is 7.1.0 or greater!"
@@ -39,10 +41,10 @@ public class ApiHandler {
         return ApiHandler.enabledPlugins.contains(pluginName);
     }
     
-    private static boolean disableWorldEditHook() {
+    static boolean disableWorldEditHook() {
         if (worldEditPlugin != null) {
             try {
-                WorldEdit.getInstance().getEventBus().unregister(new PrismBlockEditHandler());
+                WorldEdit.getInstance().getEventBus().unregister(handler);
                 Prism.log("WorldEdit unhooked");
                 enabledPlugins.remove(worldEditPlugin.getName());
                 worldEditPlugin = null;
