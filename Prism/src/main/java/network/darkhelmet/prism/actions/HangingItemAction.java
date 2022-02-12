@@ -30,11 +30,9 @@ public class HangingItemAction extends GenericAction {
                 this.actionData.type = "栓绳";
             } else if (hanging instanceof ItemFrame) {
                 this.actionData.type = "物品展示框";
-            }
-            //TODO: Rothes - API版本
-            /* else if (hanging instanceof GlowItemFrame) {
+            } else if (hanging instanceof GlowItemFrame) {
                 this.actionData.type = "发光的物品展示框";
-            }*/ else {
+            } else {
                 this.actionData.type = hanging.getType().name().toLowerCase();
             }
             this.actionData.direction = hanging.getAttachedFace().name().toLowerCase();
