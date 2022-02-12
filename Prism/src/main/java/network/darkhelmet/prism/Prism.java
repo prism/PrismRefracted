@@ -400,7 +400,7 @@ public class Prism extends JavaPlugin implements PrismApi {
         log("§a=============================================================");
         log("§2 * 您正在使用第三方汉化版本的 Prism 插件!");
         log("§2 * 请不要使用本插件在英文版支持处/ GitHub 上反馈任何问题!");
-        log("§2 * 此汉化的 GitHub 为 https://github.com/Rothes/Prism-Bukkit");
+        log("§2 * 此汉化的 GitHub 为 https://github.com/Rothes/PrismRefracted");
         log("§a=============================================================");
         log("");
         loadConfig();        // Load configuration, or install if new
