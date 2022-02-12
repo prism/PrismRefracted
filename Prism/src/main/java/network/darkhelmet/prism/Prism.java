@@ -142,6 +142,7 @@ public class Prism extends JavaPlugin implements PrismApi {
     public BukkitTask recordingTask;
     public int totalRecordsAffected = 0;
     public long maxCycleTime = 0;
+
     /**
      * We store a basic index of hanging entities we anticipate will fall, so that
      * when they do fall we can attribute them to the player who broke the original
@@ -822,7 +823,16 @@ public class Prism extends JavaPlugin implements PrismApi {
         for (Handler handler : prismLog.getHandlers()) {
             handler.close();
         }
+        shutdownTasks();
         super.onDisable();
+    }
+
+    /**
+     * Shutdown tasks.
+     */
+    private void shutdownTasks() {
+        schedulePool.shutdown();
+        recordingMonitorTask.shutdown();
     }
 
     @Override
