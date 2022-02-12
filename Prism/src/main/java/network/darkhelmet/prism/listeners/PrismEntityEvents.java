@@ -379,7 +379,7 @@ public class PrismEntityEvents extends BaseListener {
             if (Prism.getIgnore().event("player-death", p)) {
                 final String cause = DeathUtils.getCauseNiceName(p);
                 String attacker = DeathUtils.getAttackerName(p);
-                if (attacker.equals("pvp狼")) {
+                if (attacker.equals("PVP狼")) {
                     final String owner = DeathUtils.getTameWolfOwner(event);
                     attacker = owner + "的狼";
                 }
