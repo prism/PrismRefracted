@@ -1,13 +1,12 @@
 package network.darkhelmet.prism.actions;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 
 public class BlockFallAction extends BlockChangeAction {
 
     private BlockFallActionData actionData;
 
-    public void setFromAndOld(Location from) {
+    public void setFrom(Location from) {
 
         // Build an object for the specific details of this action
         actionData = new BlockFallActionData();
@@ -21,12 +20,6 @@ public class BlockFallAction extends BlockChangeAction {
 
         } else {
             actionData.start = true;
-        }
-
-        if (getMaterial() == Material.AIR) {
-            setOldMaterial(getMaterial());
-        } else {
-            setOldMaterial(Material.AIR);
         }
 
     }
