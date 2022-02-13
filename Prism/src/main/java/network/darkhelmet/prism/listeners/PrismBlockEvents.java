@@ -43,7 +43,6 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.WeakHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
@@ -583,12 +582,12 @@ public class PrismBlockEvents extends BaseListener {
             // Start falling.
             fallingBlockOldLocation.put(event.getEntity(), event.getBlock().getLocation());
             RecordingQueue.addToQueue(ActionFactory.createBlockFall("block-fall", Material.AIR, null, event.getBlock().getLocation(),
-                    event.getBlock().getType().name().toLowerCase(Locale.ROOT)));
+                    Prism.getInstance().getPrismLocalization().getMaterialLocale(event.getBlock().getType().name())));
         } else {
             // Falling block lands.
 
             RecordingQueue.addToQueue(ActionFactory.createBlockFall("block-fall", event.getTo(), fallingBlockOldLocation.get(event.getEntity())
-                    , event.getBlock().getLocation(), event.getTo().name().toLowerCase(Locale.ROOT)));
+                    , event.getBlock().getLocation(), Prism.getInstance().getPrismLocalization().getMaterialLocale(event.getTo().name())));
         }
     }
 

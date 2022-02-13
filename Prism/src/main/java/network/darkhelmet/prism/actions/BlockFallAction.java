@@ -54,12 +54,12 @@ public class BlockFallAction extends BlockChangeAction {
 
     @Override
     public String getNiceName() {
-        String extraInfo = "unknown";
+        String extraInfo = "未知坐标";
         if (actionData != null) {
             if (actionData.start) {
-                extraInfo = "(starts to fall)";
+                extraInfo = "(开始坠落)";
             } else {
-                extraInfo = "from " + actionData.x + " " + actionData.y + " " + actionData.z;
+                extraInfo = "原坐标 " + actionData.x + " " + actionData.y + " " + actionData.z;
             }
         }
 
