@@ -57,7 +57,7 @@ public class PrismLocalization {
     }
 
     public String getMaterialLocale(String type) {
-        return materialLocalize.get(type);
+        return materialLocalize.getOrDefault(type, type);
     }
 
     public boolean hasEntityLocale(String type) {
@@ -65,7 +65,7 @@ public class PrismLocalization {
     }
 
     public String getEntityLocale(String type) {
-        return entityLocalize.get(type);
+        return entityLocalize.getOrDefault(type, type);
     }
 
     public boolean hasEffectLocale(String type) {
