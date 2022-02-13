@@ -72,7 +72,7 @@ public class ApiHandler {
         if (worldEditPlugin != null) {
             try {
                 WorldEdit.getInstance().getEventBus().unregister(handler);
-                Prism.log("WorldEdit unhooked");
+                Prism.log(weType.pluginId + " unhooked");
                 enabledPlugins.remove(worldEditPlugin.getName());
                 worldEditPlugin = null;
                 return true;
