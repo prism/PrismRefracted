@@ -18,6 +18,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.block.data.type.Chest;
 import org.bukkit.block.data.type.Chest.Type;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -35,12 +36,15 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.WeakHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -548,6 +552,31 @@ public class PrismBlockEvents extends BaseListener {
             }
             RecordingQueue.addToQueue(ActionFactory.createBlockShift("block-shift", block,
                     block.getRelative(facing).getLocation(), "Piston"));
+        }
+    }
+
+    private final WeakHashMap<Entity, Location> fallingBlockOldLocation = new WeakHashMap<>();
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
+    public void onBlockFall(final EntityChangeBlockEvent event) {
+        if (
+                event.isCancelled()
+                || !Prism.getIgnore().event("block-fall", event.getBlock())
+                || event.getEntityType() != EntityType.FALLING_BLOCK
+        ) {
+            return;
+        }
+
+        if (event.getTo() == Material.AIR) {
+            // Start falling.
+            fallingBlockOldLocation.put(event.getEntity(), event.getBlock().getLocation());
+            RecordingQueue.addToQueue(ActionFactory.createBlockFall("block-fall", Material.AIR, null, event.getBlock().getLocation(),
+                    event.getBlock().getType().name().toLowerCase(Locale.ROOT)));
+        } else {
+            // Falling block lands.
+
+            RecordingQueue.addToQueue(ActionFactory.createBlockFall("block-fall", event.getTo(), fallingBlockOldLocation.get(event.getEntity())
+                    , event.getBlock().getLocation(), event.getTo().name().toLowerCase(Locale.ROOT)));
         }
     }
 
