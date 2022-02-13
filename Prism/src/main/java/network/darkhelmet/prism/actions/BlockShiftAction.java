@@ -53,7 +53,7 @@ public class BlockShiftAction extends GenericAction {
             location = actionData.x + " " + actionData.y + " " + actionData.z;
         }
 
-        return Prism.getItems().getAlias(getMaterial(), getBlockData()) + " 坐标为 " + location;
+        return Prism.getItems().getAlias(getMaterial(), getBlockData()) + ", 原坐标为 " + location;
     }
 
     public static class BlockShiftActionData {
