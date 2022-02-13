@@ -2,6 +2,7 @@ package network.darkhelmet.prism.actionlibs;
 
 import network.darkhelmet.prism.actions.BlockAction;
 import network.darkhelmet.prism.actions.BlockChangeAction;
+import network.darkhelmet.prism.actions.BlockFallAction;
 import network.darkhelmet.prism.actions.BlockShiftAction;
 import network.darkhelmet.prism.actions.EntityAction;
 import network.darkhelmet.prism.actions.EntityTravelAction;
@@ -186,6 +187,23 @@ public class ActionFactory {
         a.setActionType(actionType);
         a.setBlock(from);
         a.setSourceName(nonPlayer);
+        a.setLoc(to);
+        return a;
+    }
+
+
+    /**
+     * BlockFallAction.
+     *
+     * @param actionType the action.
+     * @param from null if block starts to fall.
+     */
+    public static Handler createBlockFall(String actionType, Material material, Location from, Location to, String nonPlayer) {
+        final BlockFallAction a = new BlockFallAction();
+        a.setActionType(actionType);
+        a.setSourceName(nonPlayer);
+        a.setMaterial(material);
+        a.setFromAndOld(from);
         a.setLoc(to);
         return a;
     }
