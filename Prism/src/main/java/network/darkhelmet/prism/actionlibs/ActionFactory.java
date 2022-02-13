@@ -158,12 +158,13 @@ public class ActionFactory {
      * @param actionType the action.
      * @param from null if block starts to fall.
      */
-    public static Handler createBlockFall(String actionType, Material material, Location from, Location to, String nonPlayer) {
+    public static Handler createBlockFall(String actionType, Material material, Material oldMaterial, Location from, Location to, String nonPlayer) {
         final BlockFallAction a = new BlockFallAction();
         a.setActionType(actionType);
         a.setSourceName(nonPlayer);
         a.setMaterial(material);
-        a.setFromAndOld(from);
+        a.setOldMaterial(oldMaterial);
+        a.setFrom(from);
         a.setLoc(to);
         return a;
     }

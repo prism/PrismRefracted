@@ -570,13 +570,12 @@ public class PrismBlockEvents extends BaseListener {
         if (event.getTo() == Material.AIR) {
             // Start falling.
             fallingBlockOldLocation.put(event.getEntity(), event.getBlock().getLocation());
-            RecordingQueue.addToQueue(ActionFactory.createBlockFall("block-fall", Material.AIR, null, event.getBlock().getLocation(),
-                    event.getBlock().getType().name().toLowerCase(Locale.ROOT)));
+            RecordingQueue.addToQueue(ActionFactory.createBlockFall("block-fall", Material.AIR, event.getBlock().getType(),
+                    null, event.getBlock().getLocation(), event.getBlock().getType().name().toLowerCase(Locale.ROOT)));
         } else {
             // Falling block lands.
-
-            RecordingQueue.addToQueue(ActionFactory.createBlockFall("block-fall", event.getTo(), fallingBlockOldLocation.get(event.getEntity())
-                    , event.getBlock().getLocation(), event.getTo().name().toLowerCase(Locale.ROOT)));
+            RecordingQueue.addToQueue(ActionFactory.createBlockFall("block-fall", event.getTo(), Material.AIR,
+                    fallingBlockOldLocation.get(event.getEntity()), event.getBlock().getLocation(), event.getTo().name().toLowerCase(Locale.ROOT)));
         }
     }
 
