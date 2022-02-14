@@ -23,7 +23,7 @@ public class EntityParameter extends SimplePrismParameterHandler {
     }
 
     public EntityParameter() {
-        super("Entity", Pattern.compile("[~|!]?[\\w,]+"), "e", "实体");
+        super("Entity", Pattern.compile("[~|!]?(?:[\\s\\S]+)?"), "e", "实体");
     }
 
     @Override
