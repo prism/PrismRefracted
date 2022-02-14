@@ -18,6 +18,8 @@ public class PrismLocalization {
     private HashMap<String, String> materialLocalize = new HashMap<>();
     private HashMap<String, String> effectLocalize = new HashMap<>();
 
+    private HashMap<String, String> entityLocalizeRestore = new HashMap<>();
+
     public void initialize(Prism plugin) {
         YamlConfiguration translation = new YamlConfiguration();
         InputStream translationStream = plugin.getResource("languages/localisation.yml");
@@ -40,6 +42,7 @@ public class PrismLocalization {
             if (section != null) {
                 for (String key : section.getKeys(false)) {
                     entityLocalize.put(key, section.getString(key));
+                    entityLocalizeRestore.put(section.getString(key), key);
                 }
             }
 
@@ -67,6 +70,10 @@ public class PrismLocalization {
 
     public String getEntityLocale(String type) {
         return entityLocalize.getOrDefault(type, type.toLowerCase(Locale.ROOT));
+    }
+
+    public String restoreEntityLocale(String type) {
+        return entityLocalizeRestore.getOrDefault(type, type);
     }
 
     public boolean hasEffectLocale(String type) {

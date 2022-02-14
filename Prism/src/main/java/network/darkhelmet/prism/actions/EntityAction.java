@@ -26,7 +26,7 @@ public class EntityAction extends GenericAction {
     @Nullable
     public static EntityType getEntityType(String name) {
         try {
-            return EntityType.valueOf(name.toUpperCase());
+            return EntityType.valueOf(Prism.getInstance().getPrismLocalization().restoreEntityLocale(name.toUpperCase()));
         } catch (final IllegalArgumentException e) {
             // In pre-RC builds we logged the wrong name of entities, sometimes
             // the names
