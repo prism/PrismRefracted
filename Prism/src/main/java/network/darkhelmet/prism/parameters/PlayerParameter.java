@@ -16,7 +16,7 @@ public class PlayerParameter extends SimplePrismParameterHandler {
      * A parameter that handles a player.
      */
     public PlayerParameter() {
-        super("Player", Pattern.compile("[~|!]?[\\w,]+"), "p", "玩家");
+        super("Player", Pattern.compile("[~|!]?(?:[\\s\\S]+)?"), "p", "玩家");
     }
 
     /**
