@@ -30,12 +30,12 @@ public class ApiHandler {
     private static final Collection<String> enabledPlugins = new ArrayList<>();
     public static WorldEditPlugin worldEditPlugin = null;
     private static PrismBlockEditHandler handler;
+    private static WEType weType = null;
 
     private ApiHandler() {
     }
 
     static void hookWorldEdit() {
-        WEType weType = null;
         if (Bukkit.getServer().getPluginManager().getPlugin("FastAsyncWorldEdit") != null) {
             weType = WEType.FAST_ASYNC_WORLDEDIT;
         } else if (Bukkit.getServer().getPluginManager().getPlugin("AsyncWorldEdit") != null) {
@@ -72,7 +72,7 @@ public class ApiHandler {
         if (worldEditPlugin != null) {
             try {
                 WorldEdit.getInstance().getEventBus().unregister(handler);
-                Prism.log("已取消 WorldEdit 挂钩");
+                Prism.log("已取消 " + weType.pluginId + " 挂钩");
                 enabledPlugins.remove(worldEditPlugin.getName());
                 worldEditPlugin = null;
                 return true;
