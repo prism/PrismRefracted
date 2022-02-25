@@ -7,6 +7,7 @@ import org.bukkit.entity.EntityType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 public class EntityParameter extends SimplePrismParameterHandler {
@@ -15,8 +16,8 @@ public class EntityParameter extends SimplePrismParameterHandler {
     protected List<String> tabComplete(String alias, String partialParameter, CommandSender sender) {
         List<String> result = new ArrayList<>();
         for (EntityType ent : EntityType.values()) {
-            if (ent.name().startsWith(partialParameter)) {
-                result.add(ent.name());
+            if (ent.name().toLowerCase(Locale.ENGLISH).startsWith(partialParameter)) {
+                result.add(ent.name().toLowerCase(Locale.ENGLISH));
             }
         }
         return result;

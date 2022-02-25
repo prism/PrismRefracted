@@ -10,6 +10,7 @@ import org.bukkit.command.CommandSender;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 public class BlockParameter extends SimplePrismParameterHandler {
@@ -102,8 +103,8 @@ public class BlockParameter extends SimplePrismParameterHandler {
     protected List<String> tabComplete(String alias, String partialParameter, CommandSender sender) {
         List<String> result = new ArrayList<>();
         for (Material mat : Material.values()) {
-            if (mat.name().startsWith(partialParameter)) {
-                result.add(mat.name());
+            if (mat.name().toLowerCase(Locale.ENGLISH).startsWith(partialParameter)) {
+                result.add(mat.name().toLowerCase(Locale.ENGLISH));
             }
         }
         return result;
