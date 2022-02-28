@@ -30,6 +30,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import dev.triumphteam.cmd.core.argument.named.Arguments;
 import network.darkhelmet.prism.actions.ActionRegistry;
 import network.darkhelmet.prism.api.actions.types.IActionType;
 import network.darkhelmet.prism.api.activities.ActivityQuery;
@@ -59,6 +60,48 @@ public class QueryService {
 
     /**
      * Start a query builder from command-derived parameters.
+     *
+     * @param referenceLocation The reference location
+     * @param arguments The arguments
+     * @return The activity query builder
+     */
+    public ActivityQuery.Builder queryFromArguments(Location referenceLocation, Arguments arguments) {
+        List<String> actions = null;
+        String in = null;
+        String at = null;
+        Integer radius = null;
+        List<Material> materials = null;
+        List<EntityType> entityTypes = null;
+        List<String> playerNames = null;
+        String before = null;
+        String since = null;
+
+        if (arguments.get("r", Integer.class).isPresent()) {
+            radius = arguments.get("r", Integer.class).get();
+        }
+
+        if (arguments.get("in", String.class).isPresent()) {
+            in = arguments.get("in", String.class).get();
+        }
+
+        if (arguments.get("before", String.class).isPresent()) {
+            before = arguments.get("before", String.class).get();
+        }
+
+        if (arguments.get("since", String.class).isPresent()) {
+            since = arguments.get("since", String.class).get();
+        }
+
+        if (arguments.get("at", String.class).isPresent()) {
+            since = arguments.get("at", String.class).get();
+        }
+
+        return queryFromParameters(
+            referenceLocation, actions, in, at, radius, materials, entityTypes, playerNames, before, since);
+    }
+
+    /**
+     * Start a query builder from parameters.
      *
      * @param referenceLocation The reference location
      * @param actions The actions

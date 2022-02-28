@@ -28,6 +28,11 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 
 import dev.triumphteam.cmd.bukkit.BukkitCommandManager;
+import dev.triumphteam.cmd.core.annotation.ArgName;
+import dev.triumphteam.cmd.core.annotation.Split;
+import dev.triumphteam.cmd.core.annotation.Suggestion;
+import dev.triumphteam.cmd.core.argument.named.Argument;
+import dev.triumphteam.cmd.core.argument.named.ArgumentKey;
 import dev.triumphteam.cmd.core.suggestion.SuggestionKey;
 
 import java.util.ArrayList;
@@ -213,6 +218,19 @@ public class Prism extends JavaPlugin {
             // Register "in" parameter
             commandManager.registerSuggestion(SuggestionKey.of("ins"), (sender, context) ->
                 Arrays.asList("chunk", "world"));
+
+//            @Suggestion(value = "actions", strict = true) @ArgName("a") @Split(",") List<String> a,
+//            @Suggestion(value = "materials", strict = true) @ArgName("m") @Split(",") List<Material> m,
+//            @Suggestion(value = "entityTypes", strict = true) @ArgName("e") @Split(",") List<EntityType> e,
+//            @Suggestion(value = "players") @ArgName("p") @Split(",") List<String> p,
+
+            commandManager.registerNamedArguments(
+                ArgumentKey.of("params"),
+                Argument.forInt().name("r").build(),
+                Argument.forString().name("in").build(),
+                Argument.forString().name("since").build(),
+                Argument.forString().name("before").build()
+            );
 
             commandManager.registerCommand(injector.getInstance(AboutCommand.class));
             commandManager.registerCommand(injector.getInstance(LookupCommand.class));

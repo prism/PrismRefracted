@@ -23,14 +23,10 @@ package network.darkhelmet.prism.commands;
 import com.google.inject.Inject;
 
 import dev.triumphteam.cmd.core.BaseCommand;
-import dev.triumphteam.cmd.core.annotation.ArgName;
 import dev.triumphteam.cmd.core.annotation.Command;
 import dev.triumphteam.cmd.core.annotation.NamedArguments;
-import dev.triumphteam.cmd.core.annotation.Split;
 import dev.triumphteam.cmd.core.annotation.SubCommand;
-import dev.triumphteam.cmd.core.annotation.Suggestion;
-
-import java.util.List;
+import dev.triumphteam.cmd.core.argument.named.Arguments;
 
 import network.darkhelmet.prism.api.activities.ActivityQuery;
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
@@ -40,8 +36,6 @@ import network.darkhelmet.prism.services.messages.MessageService;
 import network.darkhelmet.prism.services.query.QueryService;
 import network.darkhelmet.prism.services.translation.TranslationKey;
 
-import org.bukkit.Material;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 @Command(value = "prism", alias = {"pr"})
@@ -98,31 +92,13 @@ public class LookupCommand extends BaseCommand {
      * Run a lookup.
      *
      * @param player The player
-     * @param a The actions/action families
-     * @param m The materials
-     * @param e The entity types
-     * @param p The players
-     * @param in The "ins"
-     * @param r The radius
-     * @param before The lower bound timestamp
-     * @param since The upper bound timestamp
+
      */
-    @NamedArguments
+    @NamedArguments("params")
     @SubCommand(value = "lookup", alias = {"l"})
-    public void onLookup(
-        final Player player,
-        @Suggestion(value = "actions", strict = true) @ArgName("a") @Split(",") List<String> a,
-        @Suggestion(value = "materials", strict = true) @ArgName("m") @Split(",") List<Material> m,
-        @Suggestion(value = "entityTypes", strict = true) @ArgName("e") @Split(",") List<EntityType> e,
-        @Suggestion(value = "players") @ArgName("p") @Split(",") List<String> p,
-        @Suggestion(value = "ins", strict = true) @ArgName("in") String in,
-        @ArgName("r") Integer r,
-        @ArgName("before") String before,
-        @ArgName("since") String since
-    ) {
+    public void onLookup(final Player player, Arguments arguments) {
         try {
-            ActivityQuery.Builder builder = queryService.queryFromParameters(
-                player.getLocation(), a, in, null, r, m, e, p, before, since);
+            ActivityQuery.Builder builder = queryService.queryFromArguments(player.getLocation(), arguments);
 
             final ActivityQuery query = builder.limit(configurationService.prismConfig().perPage()).build();
             lookupService.lookup(player, query);
