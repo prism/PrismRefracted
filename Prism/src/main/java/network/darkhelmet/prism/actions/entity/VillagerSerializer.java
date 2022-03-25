@@ -36,7 +36,9 @@ public class VillagerSerializer extends EntitySerializer {
         if (experience != -1) {
             villager.setVillagerExperience(experience);
         }
-        villager.setRecipes(recipes);
+        if (recipes != null) {
+            villager.setRecipes(recipes);
+        }
     }
 
     @Override
