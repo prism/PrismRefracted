@@ -33,9 +33,9 @@ public class MerchantSerializer extends EntitySerializer {
 
     @Override
     protected void deserializer(Entity entity) {
-        Merchant merchant = (Merchant) entity;
-        List<MerchantRecipe> bukkitRecipes = new ArrayList<>();
         if (recipeDataList != null) {
+            Merchant merchant = (Merchant) entity;
+            List<MerchantRecipe> bukkitRecipes = new ArrayList<>();
             for (RecipeData recipeData : recipeDataList) {
                 MerchantRecipe bukkit = new MerchantRecipe(ItemStack.deserialize(recipeData.result), recipeData.uses,
                         recipeData.maxUses, recipeData.experienceReward, recipeData.villagerExperience, recipeData.priceMultiplier);
@@ -46,8 +46,8 @@ public class MerchantSerializer extends EntitySerializer {
                 bukkit.setIngredients(deserializedIngredients);
                 bukkitRecipes.add(bukkit);
             }
+            merchant.setRecipes(bukkitRecipes);
         }
-        merchant.setRecipes(bukkitRecipes);
     }
 
     @SuppressWarnings("WeakerAccess")
