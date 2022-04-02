@@ -202,13 +202,16 @@ public class Preview implements Previewable {
                 return;
             }
 
+            int iterationCount = 0;
+            final int currentQueueOffset = blockChangesRead;
+
             Prism.messenger.sendActionBar(sender, progressComponent
-                    .replace("<percentage>", nf.format((totalChangesCount - worldChangeQueue.size()) / (float) totalChangesCount * 100))
+                    .replace("<percentage>", nf.format((isPreview ?
+                            (currentQueueOffset/ (float) worldChangeQueue.size() * 100) :
+                            ((totalChangesCount - worldChangeQueue.size()) / (float) totalChangesCount * 100))))
                     .replace("<elapsed>", ((System.nanoTime() - startTime) / 1000000000) + "s")
                     .build().color(NamedTextColor.GOLD));
 
-            int iterationCount = 0;
-            final int currentQueueOffset = blockChangesRead;
             if (currentQueueOffset < worldChangeQueue.size()) {
                 for (final Iterator<Handler> iterator = worldChangeQueue.listIterator(currentQueueOffset);
                       iterator.hasNext();) {
