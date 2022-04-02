@@ -1,5 +1,6 @@
 package network.darkhelmet.prism.actions.entity;
 
+import network.darkhelmet.prism.actions.data.ItemStackActionData;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Merchant;
@@ -7,7 +8,6 @@ import org.bukkit.inventory.MerchantRecipe;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class MerchantSerializer extends EntitySerializer {
     protected List<RecipeData> recipeDataList = null;
@@ -18,9 +18,10 @@ public class MerchantSerializer extends EntitySerializer {
         recipeDataList = new ArrayList<>();
         for (MerchantRecipe recipe : merchant.getRecipes()) {
             RecipeData recipeData = new RecipeData();
-            recipeData.result = recipe.getResult().serialize();
+            ItemStack result = recipe.getResult();
+            recipeData.result = ItemStackActionData.createData(result, result.getAmount(), result.getDurability(), result.getEnchantments());
             for (ItemStack ingredient : recipe.getIngredients()) {
-                recipeData.ingredients.add(ingredient.serialize());
+                recipeData.ingredients.add(ItemStackActionData.createData(ingredient, ingredient.getAmount(), ingredient.getDurability(), ingredient.getEnchantments()));
             }
             recipeData.uses = recipe.getUses();
             recipeData.maxUses = recipe.getMaxUses();
@@ -37,11 +38,11 @@ public class MerchantSerializer extends EntitySerializer {
             Merchant merchant = (Merchant) entity;
             List<MerchantRecipe> bukkitRecipes = new ArrayList<>();
             for (RecipeData recipeData : recipeDataList) {
-                MerchantRecipe bukkit = new MerchantRecipe(ItemStack.deserialize(recipeData.result), recipeData.uses,
+                MerchantRecipe bukkit = new MerchantRecipe(recipeData.result.toItem(), recipeData.uses,
                         recipeData.maxUses, recipeData.experienceReward, recipeData.villagerExperience, recipeData.priceMultiplier);
                 List<ItemStack> deserializedIngredients = new ArrayList<>();
-                for (Map<String, Object> ingredient : recipeData.ingredients) {
-                    deserializedIngredients.add(ItemStack.deserialize(ingredient));
+                for (ItemStackActionData ingredient : recipeData.ingredients) {
+                    deserializedIngredients.add(ingredient.toItem());
                 }
                 bukkit.setIngredients(deserializedIngredients);
                 bukkitRecipes.add(bukkit);
@@ -52,8 +53,8 @@ public class MerchantSerializer extends EntitySerializer {
 
     @SuppressWarnings("WeakerAccess")
     public static class RecipeData {
-        public Map<String, Object> result;
-        public List<Map<String, Object>> ingredients = new ArrayList<>();
+        public ItemStackActionData result;
+        public List<ItemStackActionData> ingredients = new ArrayList<>();
         public int uses;
         public int maxUses;
         public boolean experienceReward;
