@@ -45,7 +45,6 @@ public class Preview implements Previewable {
     private final PrismProcessType processType;
     private final HashMap<Entity, Integer> entitiesMoved = new HashMap<>();
     private final List<Handler> worldChangeQueue = Collections.synchronizedList(new LinkedList<>());
-    private final List<Handler> updateRollbackedList = new ArrayList<>();
     private boolean isPreview = false;
     private long startTime;
     private int totalChangesCount;
