@@ -189,7 +189,7 @@ public class Preview implements Previewable {
         nf.setMinimumFractionDigits(2);
         nf.setRoundingMode(RoundingMode.DOWN);
         ReplaceableTextComponent progressComponent = ReplaceableTextComponent.builder("applier-actionbar-applying")
-                .replace("<processType>", processType.name().toLowerCase() + (isPreview ? " preview" : ""));
+                .replace("<processType>", processType.getLocale() + (isPreview ? "预览" : ""));
 
         worldChangeQueueTaskId = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
 
@@ -309,7 +309,7 @@ public class Preview implements Previewable {
                 }
 
                 Prism.messenger.sendActionBar(sender, ReplaceableTextComponent.builder("applier-actionbar-finished")
-                        .replace("<processType>", processType.name().toLowerCase() + (isPreview? " preview": ""))
+                        .replace("<processType>", processType.getLocale() + (isPreview? "预览": ""))
                         .replace("<elapsed>", ((System.nanoTime() - startTime) / 1000000000f) + "s")
                         .build().color(NamedTextColor.GOLD));
             }
