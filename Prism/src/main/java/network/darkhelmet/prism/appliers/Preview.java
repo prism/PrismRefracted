@@ -25,6 +25,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+import java.math.RoundingMode;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -43,7 +45,10 @@ public class Preview implements Previewable {
     private final PrismProcessType processType;
     private final HashMap<Entity, Integer> entitiesMoved = new HashMap<>();
     private final List<Handler> worldChangeQueue = Collections.synchronizedList(new LinkedList<>());
+    private final List<Handler> updateRollbackedList = new ArrayList<>();
     private boolean isPreview = false;
+    private long startTime;
+    private int totalChangesCount;
     private int skippedBlockCount;
     private int changesAppliedCount;
     private int changesPlannedCount;
@@ -174,7 +179,16 @@ public class Preview implements Previewable {
 
     private void processWorldChanges() {
 
+        startTime = System.nanoTime();
         blockChangesRead = 0;
+        totalChangesCount = worldChangeQueue.size();
+
+        NumberFormat nf = NumberFormat.getNumberInstance();
+        nf.setMaximumFractionDigits(2);
+        nf.setMinimumFractionDigits(2);
+        nf.setRoundingMode(RoundingMode.DOWN);
+        ReplaceableTextComponent progressComponent = ReplaceableTextComponent.builder("applier-actionbar-applying")
+                .replace("<processType>", processType.name().toLowerCase() + (isPreview ? " preview" : ""));
 
         worldChangeQueueTaskId = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
 
@@ -187,6 +201,11 @@ public class Preview implements Previewable {
                         Prism.messenger.playerError(Il8nHelper.getMessage("preview-no-actions")));
                 return;
             }
+
+            Prism.messenger.sendActionBar(sender, progressComponent
+                    .replace("<percentage>", nf.format((totalChangesCount - worldChangeQueue.size()) / (float) totalChangesCount * 100))
+                    .replace("<elapsed>", ((System.nanoTime() - startTime) / 1000000000) + "s")
+                    .build().color(NamedTextColor.GOLD));
 
             int iterationCount = 0;
             final int currentQueueOffset = blockChangesRead;
@@ -274,6 +293,11 @@ public class Preview implements Previewable {
                 } else {
                     postProcess();
                 }
+
+                Prism.messenger.sendActionBar(sender, ReplaceableTextComponent.builder("applier-actionbar-finished")
+                        .replace("<processType>", processType.name().toLowerCase() + (isPreview? " preview": ""))
+                        .replace("<elapsed>", ((System.nanoTime() - startTime) / 1000000000f) + "s")
+                        .build().color(NamedTextColor.GOLD));
             }
         }, 2L, 2L);
     }
