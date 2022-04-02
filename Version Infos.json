@@ -1,19 +1,19 @@
 {
   "Version_Channels": {
     "Stable": {
-      "Latest_Version_Number": 6,
+      "Latest_Version_Number": 7,
       "Actions": [],
       "Log_Level": "Info",
       "Message": {
-        "zh-CN": "§bPrism 折射 中文版有新版本 (\"3.0.4-CN-4\") 了!\n§b请更新您的插件: https://www.mcbbs.net/thread-1301499-1-1.html"
+        "zh-CN": "§bPrism 折射 中文版有新版本 (\"3.0.4-CN-5\") 了!\n§b请更新您的插件: https://beta.mcbbs.net/resource/qcnedi83/"
       }
     },
     "Stable-1.16": {
-      "Latest_Version_Number": 6,
+      "Latest_Version_Number": 7,
       "Actions": [],
       "Log_Level": "Info",
       "Message": {
-        "zh-CN": "§bPrism 折射 中文版 for 1.16有新版本 (\"3.0.4-CN-4\") 了!\n§b请更新您的插件: https://www.mcbbs.net/thread-1301499-1-1.html"
+        "zh-CN": "§bPrism 折射 中文版 for 1.16有新版本 (\"3.0.4-CN-5\") 了!\n§b请更新您的插件: https://beta.mcbbs.net/resource/qcnedi83/"
       }
     }
   },
