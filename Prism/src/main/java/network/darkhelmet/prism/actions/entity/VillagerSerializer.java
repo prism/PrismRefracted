@@ -13,12 +13,12 @@ public class VillagerSerializer extends MerchantSerializer {
 
     @Override
     protected void serializer(Entity entity) {
-        super.serializer(entity);
         Villager villager = (Villager) entity;
         profession = villager.getProfession().name().toLowerCase();
         type = villager.getVillagerType().name().toLowerCase();
         level = villager.getVillagerLevel();
         experience = villager.getVillagerExperience();
+        super.serializer(entity);
     }
 
     @Override
