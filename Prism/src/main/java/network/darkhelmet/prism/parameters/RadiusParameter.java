@@ -117,7 +117,8 @@ public class RadiusParameter extends SimplePrismParameterHandler {
             if (player == null && /* Allow r:global in console */ !inputValue.equals("global")) {
                 throw new IllegalArgumentException(
                         "The radius parameter must be used by a player. "
-                                + "Use w:worldname if attempting to limit to a world.");
+                                + "Use w:worldname if attempting to limit to a world. "
+                                + "Or use r:global for the whole server.");
             }
 
             // User wants an area inside of a worldedit selection
