@@ -114,7 +114,7 @@ public class RadiusParameter extends SimplePrismParameterHandler {
         } else {
 
             // If neither sender or a named player found, die here
-            if (player == null) {
+            if (player == null && /* Allow r:global in console */ !inputValue.equals("global")) {
                 throw new IllegalArgumentException(
                         "The radius parameter must be used by a player. "
                                 + "Use w:worldname if attempting to limit to a world.");
@@ -175,12 +175,12 @@ public class RadiusParameter extends SimplePrismParameterHandler {
                 case "global":
                     // Do they have permission to override the global lookup radius
                     if (query.getProcessType().equals(PrismProcessType.LOOKUP)
-                            && !player.hasPermission("prism.override-max-lookup-radius")) {
+                            && !sender.hasPermission("prism.override-max-lookup-radius")) {
                         throw new IllegalArgumentException("You do not have permission to override the max radius.");
                     }
                     // Do they have permission to override the global applier radius
                     if (!query.getProcessType().equals(PrismProcessType.LOOKUP)
-                            && !player.hasPermission("prism.override-max-applier-radius")) {
+                            && !sender.hasPermission("prism.override-max-applier-radius")) {
                         throw new IllegalArgumentException("You do not have permission to override the max radius.");
                     }
                     // Either they have permission or player is null
