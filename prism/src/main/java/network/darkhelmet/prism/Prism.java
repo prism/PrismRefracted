@@ -216,17 +216,16 @@ public class Prism extends JavaPlugin {
             commandManager.registerSuggestion(SuggestionKey.of("ins"), (sender, context) ->
                 Arrays.asList("chunk", "world"));
 
-//            @Suggestion(value = "actions", strict = true) @ArgName("a") @Split(",") List<String> a,
-//            @Suggestion(value = "materials", strict = true) @ArgName("m") @Split(",") List<Material> m,
-//            @Suggestion(value = "entityTypes", strict = true) @ArgName("e") @Split(",") List<EntityType> e,
-//            @Suggestion(value = "players") @ArgName("p") @Split(",") List<String> p,
-
             commandManager.registerNamedArguments(
                 ArgumentKey.of("params"),
                 Argument.forInt().name("r").build(),
-                Argument.forString().name("in").build(),
+                Argument.forString().name("in").suggestion(SuggestionKey.of("ins")).build(),
                 Argument.forString().name("since").build(),
-                Argument.forString().name("before").build()
+                Argument.forString().name("before").build(),
+                Argument.listOf(String.class).name("a").suggestion(SuggestionKey.of("actions")).build(),
+                Argument.listOf(Material.class).name("m").suggestion(SuggestionKey.of("materials")).build(),
+                Argument.listOf(EntityType.class).name("e").suggestion(SuggestionKey.of("entityTypes")).build(),
+                Argument.listOf(String.class).name("p").suggestion(SuggestionKey.of("players")).build()
             );
 
             commandManager.registerCommand(injector.getInstance(AboutCommand.class));
