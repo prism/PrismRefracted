@@ -84,9 +84,9 @@ public class ActivityPlaceholderResolver implements IPlaceholderResolver<Command
 
         Component sign;
         if (value.action().type().resultType().equals(ActionResultType.REMOVES)) {
-            sign = MiniMessage.get().parse(translationService.messageOf(receiver, "sign-minus"));
+            sign = MiniMessage.miniMessage().deserialize(translationService.messageOf(receiver, "sign-minus"));
         } else {
-            sign = MiniMessage.get().parse(translationService.messageOf(receiver, "sign-plus"));
+            sign = MiniMessage.miniMessage().deserialize(translationService.messageOf(receiver, "sign-plus"));
         }
 
         return Map.of(placeholderName + "ActionPastTense",

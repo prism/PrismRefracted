@@ -24,13 +24,12 @@ import com.google.inject.Inject;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.Template;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.moonshine.message.IMessageRenderer;
 
 import network.darkhelmet.prism.services.translation.TranslationService;
@@ -61,13 +60,15 @@ public class MessageRenderer implements IMessageRenderer<CommandSender, String, 
         final Method method,
         final Type owner
     ) {
-        final List<Template> templates = new ArrayList<>();
-        templates.add(Template.of("prefix", translationService.messageOf(receiver, "prefix")));
+        TagResolver.Single headingTemplate = Placeholder.parsed("prefix",
+            translationService.messageOf(receiver, "prefix"));
 
+        TagResolver.Builder builder = TagResolver.builder();
+        builder.resolver(headingTemplate);
         for (final var entry : resolvedPlaceholders.entrySet()) {
-            templates.add(Template.of(entry.getKey(), entry.getValue()));
+            builder.resolver(Placeholder.component(entry.getKey(), entry.getValue()));
         }
 
-        return MiniMessage.get().parse(intermediateMessage, templates);
+        return MiniMessage.miniMessage().deserialize(intermediateMessage, builder.build());
     }
 }

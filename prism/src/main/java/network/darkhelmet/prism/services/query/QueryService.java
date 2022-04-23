@@ -22,6 +22,8 @@ package network.darkhelmet.prism.services.query;
 
 import com.google.inject.Inject;
 
+import dev.triumphteam.cmd.core.argument.named.Arguments;
+
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
@@ -30,7 +32,6 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import dev.triumphteam.cmd.core.argument.named.Arguments;
 import network.darkhelmet.prism.actions.ActionRegistry;
 import network.darkhelmet.prism.api.actions.types.IActionType;
 import network.darkhelmet.prism.api.activities.ActivityQuery;

@@ -173,7 +173,7 @@ public class LookupService {
 
                     Component hover = Component.text(translationService.messageOf(sender, "page-prev-hover"));
                     String temp = translationService.messageOf(sender, "page-prev");
-                    prev = MiniMessage.get().parse(temp)
+                    prev = MiniMessage.miniMessage().deserialize(temp)
                         .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, hover))
                         .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, cmd));
                 }
@@ -184,7 +184,7 @@ public class LookupService {
 
                     Component hover = Component.text(translationService.messageOf(sender, "page-next-hover"));
                     String temp = translationService.messageOf(sender, "page-next");
-                    next = MiniMessage.get().parse(temp)
+                    next = MiniMessage.miniMessage().deserialize(temp)
                         .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, hover))
                         .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, cmd));
                 }

@@ -28,9 +28,6 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 
 import dev.triumphteam.cmd.bukkit.BukkitCommandManager;
-import dev.triumphteam.cmd.core.annotation.ArgName;
-import dev.triumphteam.cmd.core.annotation.Split;
-import dev.triumphteam.cmd.core.annotation.Suggestion;
 import dev.triumphteam.cmd.core.argument.named.Argument;
 import dev.triumphteam.cmd.core.argument.named.ArgumentKey;
 import dev.triumphteam.cmd.core.suggestion.SuggestionKey;
