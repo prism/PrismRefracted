@@ -92,11 +92,11 @@ public class LookupCommand extends BaseCommand {
      * Run a lookup.
      *
      * @param player The player
-
+     * @param arguments The arguments
      */
     @NamedArguments("params")
     @SubCommand(value = "lookup", alias = {"l"})
-    public void onLookup(final Player player, Arguments arguments) {
+    public void onLookup(final Player player, final Arguments arguments) {
         try {
             ActivityQuery.Builder builder = queryService.queryFromArguments(player.getLocation(), arguments);
 

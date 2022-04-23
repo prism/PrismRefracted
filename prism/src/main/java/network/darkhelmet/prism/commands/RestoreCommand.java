@@ -24,7 +24,9 @@ import com.google.inject.Inject;
 
 import dev.triumphteam.cmd.core.BaseCommand;
 import dev.triumphteam.cmd.core.annotation.Command;
+import dev.triumphteam.cmd.core.annotation.NamedArguments;
 import dev.triumphteam.cmd.core.annotation.SubCommand;
+import dev.triumphteam.cmd.core.argument.named.Arguments;
 
 import java.util.List;
 
@@ -36,12 +38,10 @@ import network.darkhelmet.prism.api.services.modifications.IModificationQueueSer
 import network.darkhelmet.prism.api.storage.IStorageAdapter;
 import network.darkhelmet.prism.services.configuration.ConfigurationService;
 import network.darkhelmet.prism.services.messages.MessageService;
+import network.darkhelmet.prism.services.query.QueryService;
 import network.darkhelmet.prism.services.translation.TranslationKey;
-import network.darkhelmet.prism.utils.LocationUtils;
 
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 
 @Command(value = "prism", alias = {"pr"})
 public class RestoreCommand extends BaseCommand {
@@ -66,6 +66,11 @@ public class RestoreCommand extends BaseCommand {
     private final IModificationQueueService modificationQueueService;
 
     /**
+     * The query service.
+     */
+    private final QueryService queryService;
+
+    /**
      * Construct the near command.
      *
      * @param configurationService The configuration service
@@ -76,11 +81,13 @@ public class RestoreCommand extends BaseCommand {
             ConfigurationService configurationService,
             IStorageAdapter storageAdapter,
             MessageService messageService,
-            IModificationQueueService modificationQueueService) {
+            IModificationQueueService modificationQueueService,
+            QueryService queryService) {
         this.configurationService = configurationService;
         this.storageAdapter = storageAdapter;
         this.messageService = messageService;
         this.modificationQueueService = modificationQueueService;
+        this.queryService = queryService;
     }
 
     /**
@@ -88,8 +95,9 @@ public class RestoreCommand extends BaseCommand {
      *
      * @param player The player
      */
+    @NamedArguments("params")
     @SubCommand(value = "restore", alias = {"rs"})
-    public void onRestore(final Player player) {
+    public void onRestore(final Player player, final Arguments arguments) {
         // Ensure a queue is free
         if (!modificationQueueService.queueAvailable()) {
             messageService.error(player, new TranslationKey("queue-not-free"));
@@ -97,14 +105,7 @@ public class RestoreCommand extends BaseCommand {
             return;
         }
 
-        Location loc = player.getLocation();
-        int radius = configurationService.prismConfig().nearRadius();
-
-        Vector minVector = LocationUtils.getMinVector(loc, radius);
-        Vector maxVector = LocationUtils.getMaxVector(loc, radius);
-
-        final ActivityQuery query = ActivityQuery.builder()
-            .minVector(minVector).maxVector(maxVector).sort(ActivityQuery.Sort.ASCENDING).lookup(false).build();
+        final ActivityQuery query = queryService.queryFromArguments(player.getLocation(), arguments).build();
         Prism.newChain().asyncFirst(() -> {
             try {
                 return storageAdapter.queryActivitiesAsModification(query);
