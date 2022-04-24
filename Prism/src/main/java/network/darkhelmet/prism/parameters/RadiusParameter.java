@@ -114,10 +114,11 @@ public class RadiusParameter extends SimplePrismParameterHandler {
         } else {
 
             // If neither sender or a named player found, die here
-            if (player == null) {
+            if (player == null && /* Allow r:global in console */ !inputValue.equals("global")) {
                 throw new IllegalArgumentException(
                         "半径参数必须配合一个玩家使用. "
-                                + "如果想限制到一个世界内, 使用 w:世界名.");
+                                + "如果想限制到一个世界内, 使用 w:世界名."
+                                + "如果想应用到整个服务器, 使用 半径:全局(r:global).");
             }
 
             // User wants an area inside of a worldedit selection
@@ -178,12 +179,12 @@ public class RadiusParameter extends SimplePrismParameterHandler {
                 case "全局":
                     // Do they have permission to override the global lookup radius
                     if (query.getProcessType().equals(PrismProcessType.LOOKUP)
-                            && !player.hasPermission("prism.override-max-lookup-radius")) {
+                            && !sender.hasPermission("prism.override-max-lookup-radius")) {
                         throw new IllegalArgumentException("您没有权限覆写最大半径.");
                     }
                     // Do they have permission to override the global applier radius
                     if (!query.getProcessType().equals(PrismProcessType.LOOKUP)
-                            && !player.hasPermission("prism.override-max-applier-radius")) {
+                            && !sender.hasPermission("prism.override-max-applier-radius")) {
                         throw new IllegalArgumentException("您没有权限覆写最大半径.");
                     }
                     // Either they have permission or player is null
