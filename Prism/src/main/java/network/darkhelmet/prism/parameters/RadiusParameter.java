@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 public class RadiusParameter extends SimplePrismParameterHandler {
 
     public RadiusParameter() {
-        super("Radius", Pattern.compile("[\\w,:-]+"), "r", "半径");
+        super("Radius", Pattern.compile("[\\s\\S,:-]+"), "r", "半径");
     }
 
     @Override
@@ -114,10 +114,10 @@ public class RadiusParameter extends SimplePrismParameterHandler {
         } else {
 
             // If neither sender or a named player found, die here
-            if (player == null && /* Allow r:global in console */ !inputValue.equals("global")) {
+            if (player == null && /* Allow r:global in console */ !(inputValue.equals("global") || inputValue.equals("全局"))) {
                 throw new IllegalArgumentException(
                         "半径参数必须配合一个玩家使用. "
-                                + "如果想限制到一个世界内, 使用 w:世界名."
+                                + "如果想限制到一个世界内, 使用 w:世界名. "
                                 + "如果想应用到整个服务器, 使用 半径:全局(r:global).");
             }
 
