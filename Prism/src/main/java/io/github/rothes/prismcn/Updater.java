@@ -19,7 +19,7 @@ import java.util.Map;
 public class Updater {
 
     private final String VERSION_CHANNCEL = "Stable";
-    private final int VERSION_NUMBER = 7;
+    private final int VERSION_NUMBER = 8;
     private final HashMap<String, Integer> msgTimesMap = new HashMap<>();
 
     public void start() {
