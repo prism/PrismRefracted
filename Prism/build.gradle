@@ -80,3 +80,17 @@ runServer {
     // Your plugin's jar (or shadowJar if present) will be used automatically.
     minecraftVersion("1.18.1")
 }
+
+gradle.buildFinished {
+    deleteDirectory(new File(project.buildDir, "resources/"))
+}
+
+boolean deleteDirectory(File directoryToBeDeleted) {
+    File[] allContents = directoryToBeDeleted.listFiles();
+    if (allContents != null) {
+        for (File file : allContents) {
+            deleteDirectory(file);
+        }
+    }
+    return directoryToBeDeleted.delete();
+}
