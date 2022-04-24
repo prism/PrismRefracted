@@ -45,6 +45,7 @@ dependencies {
     implementation 'net.kyori:adventure-platform-bukkit:4.0.2-SNAPSHOT'
     implementation 'net.kyori:adventure-text-serializer-plain:4.9.3'
     implementation 'org.kitteh:paste-gg-api:1.0.0-SNAPSHOT'
+    implementation 'org.bstats:bstats-bukkit:3.0.0'
     implementation project(':Prism-Api')
 }
 
@@ -68,6 +69,7 @@ shadowJar {
     relocate 'com.zaxxer', 'network.darkhelmet.prism.zaxxer'
     relocate 'net.kyori', 'network.darkhelmet.prism.kyori'
     relocate 'org.kitteh', 'network.darkhelmet.prism.kitteh'
+    relocate 'org.bstats', 'io.github.rothes.prismcn.lib.org.bstats'
 
     minimize()
 }
