@@ -53,9 +53,9 @@ public class PaginatedResultsPlaceholderResolver
         Component totalPages = Component.text(value.totalPages());
         Component totalResults = Component.text(value.totalResults());
 
-        return Map.of(placeholderName + "PerPage", Either.left(ConclusionValue.conclusionValue(perPage)),
-                placeholderName + "TotalResults", Either.left(ConclusionValue.conclusionValue(totalResults)),
-                placeholderName + "CurrentPage", Either.left(ConclusionValue.conclusionValue(currentPage)),
-                placeholderName + "TotalPages", Either.left(ConclusionValue.conclusionValue(totalPages)));
+        return Map.of(placeholderName + "_per_page", Either.left(ConclusionValue.conclusionValue(perPage)),
+                placeholderName + "_total_results", Either.left(ConclusionValue.conclusionValue(totalResults)),
+                placeholderName + "_current_page", Either.left(ConclusionValue.conclusionValue(currentPage)),
+                placeholderName + "_total_pages", Either.left(ConclusionValue.conclusionValue(totalPages)));
     }
 }

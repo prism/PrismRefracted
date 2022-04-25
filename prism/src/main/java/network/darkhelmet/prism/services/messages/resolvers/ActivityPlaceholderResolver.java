@@ -89,14 +89,14 @@ public class ActivityPlaceholderResolver implements IPlaceholderResolver<Command
             sign = MiniMessage.miniMessage().deserialize(translationService.messageOf(receiver, "sign-plus"));
         }
 
-        return Map.of(placeholderName + "ActionPastTense",
+        return Map.of(placeholderName + "_action_past_tense",
                 Either.left(ConclusionValue.conclusionValue(actionPastTense)),
-                placeholderName + "ActionFamily", Either.left(ConclusionValue.conclusionValue(actionFamily)),
-                placeholderName + "Cause", Either.left(ConclusionValue.conclusionValue(cause)),
-                placeholderName + "Count", Either.left(ConclusionValue.conclusionValue(count)),
-                placeholderName + "Sign", Either.left(ConclusionValue.conclusionValue(sign)),
-                placeholderName + "Since", Either.left(ConclusionValue.conclusionValue(since)),
-                placeholderName + "Content", Either.left(ConclusionValue.conclusionValue(content)));
+                placeholderName + "_action_family", Either.left(ConclusionValue.conclusionValue(actionFamily)),
+                placeholderName + "_cause", Either.left(ConclusionValue.conclusionValue(cause)),
+                placeholderName + "_count", Either.left(ConclusionValue.conclusionValue(count)),
+                placeholderName + "_sign", Either.left(ConclusionValue.conclusionValue(sign)),
+                placeholderName + "_since", Either.left(ConclusionValue.conclusionValue(since)),
+                placeholderName + "_content", Either.left(ConclusionValue.conclusionValue(content)));
     }
 
     /**
