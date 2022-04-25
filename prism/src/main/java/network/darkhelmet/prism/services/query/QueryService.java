@@ -97,6 +97,22 @@ public class QueryService {
             since = arguments.get("at", String.class).get();
         }
 
+        if (arguments.getAsList("a", String.class).isPresent()) {
+            actions = arguments.getAsList("a", String.class).get();
+        }
+
+        if (arguments.getAsList("m", Material.class).isPresent()) {
+            materials = arguments.getAsList("m", Material.class).get();
+        }
+
+        if (arguments.getAsList("e", EntityType.class).isPresent()) {
+            entityTypes = arguments.getAsList("e", EntityType.class).get();
+        }
+
+        if (arguments.getAsList("p", String.class).isPresent()) {
+            playerNames = arguments.getAsList("p", String.class).get();
+        }
+
         return queryFromParameters(
             referenceLocation, actions, in, at, radius, materials, entityTypes, playerNames, before, since);
     }
