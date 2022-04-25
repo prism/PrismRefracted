@@ -55,7 +55,7 @@ dependencies {
     implementation 'dev.triumphteam:triumph-cmd-bukkit:2.0.0-SNAPSHOT'
     implementation 'co.aikar:idb-core:1.0.0-SNAPSHOT'
     implementation 'co.aikar:taskchain-bukkit:3.7.2'
-    implementation 'de.tr7zw:item-nbt-api-plugin:2.9.0'
+    implementation 'de.tr7zw:item-nbt-api-plugin:2.9.2'
     implementation project(':prism-api')
 }
 
@@ -87,5 +87,5 @@ runServer {
     // Configure the Minecraft version for our task.
     // This is the only required configuration besides applying the plugin.
     // Your plugin's jar (or shadowJar if present) will be used automatically.
-    minecraftVersion("1.18.1")
+    minecraftVersion("1.18.2")
 }
