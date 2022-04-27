@@ -54,8 +54,10 @@ public class DatabaseUpdater {
             if (checkColumnCN.call()) {
                 // Restore the change CN Edition made before for later official changes.
                 Settings.saveSetting("schema_ver", "" + 8);
+                Prism.log("已检测到中文版架构为 v2, 跳过更新.");
                 return 2;
             }
+            Prism.log("检测到您未使用过中文版, 将更新至中文版架构.");
         } catch (Exception e) {
             e.printStackTrace();
         }
