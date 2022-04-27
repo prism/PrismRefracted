@@ -1,10 +1,13 @@
 package network.darkhelmet.prism.database.sql;
 
+import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.database.PrismDataSource;
 import network.darkhelmet.prism.database.PrismDataSourceUpdater;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -106,19 +109,43 @@ public class SqlPrismDataSourceUpdater implements PrismDataSourceUpdater {
     }
 
     @Override
-    public void v8_to_v9() {
-        // Prepare query to be used
+    public void v1_to_v2_cn() {
         String query = "ALTER TABLE `" + prefix + "data` ADD COLUMN `rollbacked` boolean NOT NULL DEFAULT 0";
 
-        // Prepare database
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement st = conn.prepareStatement(query)
         ) {
-            // Add player index to speed up player lookups.
             st.executeUpdate(query);
         } catch (SQLException e) {
             dataSource.handleDataSourceException(e);
         }
     }
+
+    @Override
+    public Boolean hasCNColumn() {
+        String query = "SELECT * FROM `" + prefix + "data`";
+
+        try (
+                Connection conn = dataSource.getConnection();
+                PreparedStatement st = conn.prepareStatement(query);
+                ResultSet rs = st.executeQuery();
+        ) {
+            ResultSetMetaData metaData = rs.getMetaData();
+            int columnCount = metaData.getColumnCount();
+
+            String columnName = "rollbacked";
+            for (int i = 1; i <= columnCount; i++) {
+                Prism.log(metaData.getColumnName(i));
+                if (columnName.equals(metaData.getColumnName(i))) {
+                    return true;
+                }
+            }
+        } catch (SQLException e) {
+            dataSource.handleDataSourceException(e);
+            return false;
+        }
+        return false;
+    }
+
 }
