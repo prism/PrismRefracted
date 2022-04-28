@@ -842,6 +842,7 @@ public class Prism extends JavaPlugin implements PrismApi {
         }
         ApiHandler.disableWorldEditHook();
         shutdownTasks();
+        audiences.close();
         super.onDisable();
     }
 
