@@ -911,7 +911,7 @@ public class Prism extends JavaPlugin implements PrismApi {
         final DatabaseUpdater up = new DatabaseUpdater(this);
         up.restoreCNChanges();
         messenger.sendMessage(sender, messenger.playerHeaderMsg(Component.text("还原已完成. 正在关闭插件.")));
-        onDisable();
+        Bukkit.getPluginManager().disablePlugin(this);
     }
 
     public PrismCommands getCommands() {
