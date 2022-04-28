@@ -16,6 +16,7 @@ public class DatabaseUpdater {
     private final ArrayList<Runnable> updates = new ArrayList<>(currentDbSchemaVersion);
     private final ArrayList<Runnable> updatesCN = new ArrayList<>(currentDbSchemaVersion);
     private final Callable<Boolean> checkColumnCN;
+    private final Runnable restoreCNChanges;
 
     /**
      * The plugin.
@@ -35,6 +36,7 @@ public class DatabaseUpdater {
 
         updatesCN.add(prismDataSourceUpdater::v1_to_v2_cn);
         checkColumnCN = prismDataSourceUpdater::hasCNColumn;
+        restoreCNChanges = prismDataSourceUpdater::restoreCNChanges;
     }
 
     private int getClientDbSchemaVersion() {
@@ -104,5 +106,9 @@ public class DatabaseUpdater {
         // Save current version
         Settings.saveSetting("schema_cn_ver", "" + currentDbSchemaVersionCN);
         Prism.log("已完成更新检查: 中文版架构 v" + currentDbSchemaVersionCN);
+    }
+
+    void restoreCNChanges() {
+        restoreCNChanges.run();
     }
 }

@@ -109,6 +109,22 @@ public class SqlPrismDataSourceUpdater implements PrismDataSourceUpdater {
     }
 
     @Override
+    public void restoreCNChanges() {
+        dataSource.setPaused(true);
+        // v2 changes
+        String query = "ALTER TABLE `" + prefix + "data` DROP COLUMN `rollbacked`";
+
+        try (
+                Connection conn = dataSource.getConnection();
+                PreparedStatement st = conn.prepareStatement(query)
+        ) {
+            st.executeUpdate(query);
+        } catch (SQLException e) {
+            dataSource.handleDataSourceException(e);
+        }
+    }
+
+    @Override
     public void v1_to_v2_cn() {
         String query = "ALTER TABLE `" + prefix + "data` ADD COLUMN `rollbacked` boolean NOT NULL DEFAULT 0";
 

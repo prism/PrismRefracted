@@ -87,6 +87,7 @@ public class PrismCommands extends Executor {
         addSub(new String[]{"undo", "撤销"}, "prism.rollback").setHandler(new UndoCommand(prism));
         addSub(new String[]{"view", "v", "视图"}, "prism.view").setMinArgs(1).setHandler(new ViewCommand(prism));
         addSub(new String[]{"purge", "清理"}, "prism.purge").allowConsole().setHandler(new PurgeCommand(prism));
+        addSub(new String[]{"restorecnchanges"}, "prism.restorecnchanges").allowConsole().setHandler(new RestoreCNChangesCommand(prism));
     }
 
 }

@@ -16,6 +16,8 @@ public interface PrismDataSourceUpdater {
 
     void v7_to_v8();
 
+    void restoreCNChanges();
+
     void v1_to_v2_cn();
 
     Boolean hasCNColumn();
