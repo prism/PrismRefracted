@@ -1,6 +1,5 @@
 package network.darkhelmet.prism.database.sql;
 
-import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.database.PrismDataSource;
 import network.darkhelmet.prism.database.PrismDataSourceUpdater;
 
@@ -152,14 +151,12 @@ public class SqlPrismDataSourceUpdater implements PrismDataSourceUpdater {
 
             String columnName = "rollbacked";
             for (int i = 1; i <= columnCount; i++) {
-                Prism.log(metaData.getColumnName(i));
                 if (columnName.equals(metaData.getColumnName(i))) {
                     return true;
                 }
             }
         } catch (SQLException e) {
             dataSource.handleDataSourceException(e);
-            return false;
         }
         return false;
     }
