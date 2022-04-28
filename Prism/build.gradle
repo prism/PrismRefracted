@@ -56,7 +56,7 @@ jar {
 }
 
 shadowJar {
-    String fileName = "Prism v" + project.version + ".jar"
+    String fileName = "[1.17+] Prism v" + project.version + ".jar"
     archiveFileName.set(fileName)
     dependencies {
         exclude(dependency('org.checkerframework:.*'))
