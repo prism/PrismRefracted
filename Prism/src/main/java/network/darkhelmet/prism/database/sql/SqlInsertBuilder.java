@@ -71,6 +71,7 @@ public class SqlInsertBuilder extends QueryBuilder implements InsertQuery {
             if (generatedKeys.next()) {
                 id = generatedKeys.getLong(1);
             }
+            generatedKeys.close();
             if (a.hasExtraData()) {
                 String serialData = a.serialize();
                 if (serialData != null && !serialData.isEmpty()) {
