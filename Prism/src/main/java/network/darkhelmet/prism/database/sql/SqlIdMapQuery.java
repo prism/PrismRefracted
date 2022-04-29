@@ -298,6 +298,7 @@ public class SqlIdMapQuery implements IdMapQuery {
 
                     return autoInc;
                 }
+                rs.close();
             }
         } catch (final SQLException e) {
             Prism.warn("Database connection error: ", e);
