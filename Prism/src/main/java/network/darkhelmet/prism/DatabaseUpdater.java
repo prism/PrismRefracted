@@ -110,5 +110,6 @@ public class DatabaseUpdater {
 
     void restoreCNChanges() {
         restoreCNChanges.run();
+        Settings.saveSetting("schema_cn_ver", "1");
     }
 }
