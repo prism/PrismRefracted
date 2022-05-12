@@ -910,6 +910,7 @@ public class Prism extends JavaPlugin implements PrismApi {
     public void restoreCNChanges(CommandSender sender) {
         final DatabaseUpdater up = new DatabaseUpdater(this);
         up.restoreCNChanges();
+        getConfig().set("query.force-write-queue-on-shutdown", false);
         messenger.sendMessage(sender, messenger.playerHeaderMsg(Component.text("还原已完成. 正在关闭插件.")));
         Bukkit.getPluginManager().disablePlugin(this);
     }
