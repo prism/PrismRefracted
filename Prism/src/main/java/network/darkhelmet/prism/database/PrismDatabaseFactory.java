@@ -61,9 +61,9 @@ public class PrismDatabaseFactory {
     }
 
     private static void addDatabaseDefaults(ConfigurationSection section) {
-        section.addDefault("query.max-failures-before-wait", 5);
-        section.addDefault("query.actions-per-insert-batch", 300);
-        section.addDefault("query.force-write-queue-on-shutdown", true);
+        section.addDefault("prism.query.max-failures-before-wait", 3);
+        section.addDefault("prism.query.actions-per-insert-batch", 1000);
+        section.addDefault("prism.query.force-write-queue-on-shutdown", true);
     }
 
     /**
