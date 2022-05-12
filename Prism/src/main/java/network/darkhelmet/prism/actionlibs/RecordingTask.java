@@ -17,6 +17,10 @@ public class RecordingTask implements Runnable {
         actionsPerInsert = adjust;
     }
 
+    public static int getActionsPerInsert() {
+        return actionsPerInsert;
+    }
+
 
     /**
      * Create the task.

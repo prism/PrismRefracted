@@ -1,9 +1,11 @@
 package network.darkhelmet.prism.commands;
 
 import network.darkhelmet.prism.Il8nHelper;
+import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.actionlibs.RecordingTask;
 import network.darkhelmet.prism.commandlibs.CallInfo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SettingCommands extends AbstractCommand {
@@ -14,18 +16,31 @@ public class SettingCommands extends AbstractCommand {
                 case "batchsize":
                     int actions = Integer.parseInt(call.getArg(1));
                     RecordingTask.setActionsPerInsert(actions);
-                    //todo add some feedback
+                    Prism.messenger.sendMessage(call.getSender(),
+                            Prism.messenger.playerHeaderMsg(Il8nHelper.formatMessage("command-settings-batchsize-set", actions)));
                     return;
                 default:
-                    //todo add some feedback
+                    //todo add feedback
             }
         }
-        //todo add feedback
     }
 
     @Override
     public List<String> handleComplete(CallInfo call) {
-        return null;
+        List<String> result = new ArrayList<>();
+        SWITCH:
+        switch (call.getArgs().length) {
+            case 1:
+                result.add("batchsize");
+                break;
+            case 2:
+                switch (call.getArg(0).toLowerCase()) {
+                    case "batchsize":
+                        result.add(String.valueOf(RecordingTask.getActionsPerInsert()));
+                        break SWITCH;
+                }
+        }
+        return result;
     }
 
     @Override
