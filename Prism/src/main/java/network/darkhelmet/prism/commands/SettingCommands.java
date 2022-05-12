@@ -11,10 +11,10 @@ import java.util.List;
 public class SettingCommands extends AbstractCommand {
     @Override
     public void handle(CallInfo call) {
-        if (call.getArgs().length > 1) {
-            switch (call.getArg(0).toLowerCase()) {
+        if (call.getArgs().length > 2) {
+            switch (call.getArg(1).toLowerCase()) {
                 case "batchsize":
-                    int actions = Integer.parseInt(call.getArg(1));
+                    int actions = Integer.parseInt(call.getArg(2));
                     RecordingTask.setActionsPerInsert(actions);
                     Prism.messenger.sendMessage(call.getSender(),
                             Prism.messenger.playerHeaderMsg(Il8nHelper.formatMessage("command-settings-batchsize-set", actions)));
@@ -30,11 +30,11 @@ public class SettingCommands extends AbstractCommand {
         List<String> result = new ArrayList<>();
         SWITCH:
         switch (call.getArgs().length) {
-            case 1:
+            case 2:
                 result.add("batchsize");
                 break;
-            case 2:
-                switch (call.getArg(0).toLowerCase()) {
+            case 3:
+                switch (call.getArg(1).toLowerCase()) {
                     case "batchsize":
                         result.add(String.valueOf(RecordingTask.getActionsPerInsert()));
                         break SWITCH;
