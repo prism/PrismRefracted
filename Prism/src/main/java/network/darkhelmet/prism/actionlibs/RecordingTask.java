@@ -171,7 +171,7 @@ public class RecordingTask implements Runnable {
             return RecordingManager.failedDbConnectionCount * 20;
         }
 
-        int recorderTickDelay = plugin.getConfig().getInt("prism.queue-empty-tick-delay");
+        int recorderTickDelay = plugin.getConfig().getInt("prism.query.queue-empty-tick-delay");
         if (recorderTickDelay < 1) {
             recorderTickDelay = 3;
         }
