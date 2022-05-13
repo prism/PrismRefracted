@@ -4,6 +4,7 @@ import network.darkhelmet.prism.Il8nHelper;
 import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.actions.BlockAction;
 import network.darkhelmet.prism.actions.BlockChangeAction;
+import network.darkhelmet.prism.actions.BlockFallAction;
 import network.darkhelmet.prism.actions.BlockShiftAction;
 import network.darkhelmet.prism.actions.EntityAction;
 import network.darkhelmet.prism.actions.EntityTravelAction;
@@ -148,8 +149,8 @@ public class ActionRegistry {
                 ItemStackAction.class, Il8nHelper.getRawMessage("dispensed")));
         registerAction(new ActionTypeImpl("block-fade", false, true, true,
                 BlockChangeAction.class, Il8nHelper.getRawMessage("faded")));
-        registerAction(new ActionTypeImpl("block-fall", false, true, true,
-                BlockAction.class, Il8nHelper.getRawMessage("fell")));
+        registerAction(new ActionTypeImpl("block-fall", true, true, true,
+                BlockFallAction.class, Il8nHelper.getRawMessage("fell")));
         registerAction(new ActionTypeImpl("block-form", false, true, true,
                 BlockChangeAction.class, Il8nHelper.getRawMessage("formed")));
         registerAction(new ActionTypeImpl("block-place", true, true, true,
