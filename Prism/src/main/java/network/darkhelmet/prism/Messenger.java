@@ -10,6 +10,7 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Player;
 
 public class Messenger {
 
@@ -44,6 +45,18 @@ public class Messenger {
         } else {
             ((BukkitAudiences) audienceProvider).sender(sender).sendMessage(Identity.nil(),
                   message.colorIfAbsent(defaultColor));
+        }
+    }
+
+    /**
+     * Send an ActionBar message.
+     *
+     * @param sender  CommandSender
+     * @param message {@link Component}
+     */
+    public void sendActionBar(CommandSender sender, Component message) {
+        if (sender instanceof Player) {
+            ((BukkitAudiences) audienceProvider).sender(sender).sendActionBar(message.colorIfAbsent(defaultColor));
         }
     }
 
