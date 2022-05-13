@@ -753,7 +753,7 @@ public class Prism extends JavaPlugin implements PrismApi {
      * Schedule the RecorderTask async.
      */
     public void actionRecorderTask() {
-        int recorderTickDelay = getConfig().getInt("prism.queue-empty-tick-delay");
+        int recorderTickDelay = getConfig().getInt("prism.query.queue-empty-tick-delay");
         if (recorderTickDelay < 1) {
             recorderTickDelay = 3;
         }

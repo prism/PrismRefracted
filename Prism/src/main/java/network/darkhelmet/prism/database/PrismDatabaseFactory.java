@@ -61,9 +61,16 @@ public class PrismDatabaseFactory {
     }
 
     private static void addDatabaseDefaults(ConfigurationSection section) {
-        section.addDefault("prism.query.max-failures-before-wait", 3);
-        section.addDefault("prism.query.actions-per-insert-batch", 1000);
-        section.addDefault("prism.query.force-write-queue-on-shutdown", true);
+        upgradeEntry(section, "query.max-failures-before-wait", "prism.query.max-failures-before-wait", 3);
+        upgradeEntry(section, "query.actions-per-insert-batch", "prism.query.actions-per-insert-batch", 1000);
+        upgradeEntry(section, "query.force-write-queue-on-shutdown", "prism.query.force-write-queue-on-shutdown", true);
+        upgradeEntry(section, "prism.queue-empty-tick-delay", "prism.query.queue-empty-tick-delay", 3);
+    }
+
+    private static void upgradeEntry(ConfigurationSection section, String oldPath, String newPath, Object def) {
+        Object old = section.get(oldPath);
+        section.set(oldPath, null);
+        section.addDefault(newPath, old == null ? def : old);
     }
 
     /**

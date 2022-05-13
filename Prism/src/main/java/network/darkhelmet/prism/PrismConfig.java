@@ -275,9 +275,6 @@ public class PrismConfig extends ConfigBase {
         // Misc Alerts
         config.addDefault("prism.alerts.vanilla-xray.enabled", true);
 
-        // Internal
-        config.addDefault("prism.queue-empty-tick-delay", 3);
-
         // Copy defaults
         config.options().copyDefaults(true);
         // save the defaults/config
