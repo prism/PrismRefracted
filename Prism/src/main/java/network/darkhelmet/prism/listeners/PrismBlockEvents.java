@@ -264,8 +264,8 @@ public class PrismBlockEvents extends BaseListener {
         final BlockState s = event.getBlockReplacedState();
 
         // TODO: old and new appear flipped compared to other actions... check
-        RecordingQueue.addToQueue(ActionFactory.createBlockChange("block-place", block.getLocation(), s.getType(),
-                s.getBlockData(), block.getType(), block.getBlockData(), player));
+        RecordingQueue.addToQueue(ActionFactory.createBlockChange("block-place", s.getType(),
+                s.getBlockData(), block.getState(), player));
 
         // Pass to the placement alerter
         if (!player.hasPermission("prism.alerts.use.place.ignore") && !player.hasPermission("prism.alerts.ignore")) {
@@ -296,8 +296,8 @@ public class PrismBlockEvents extends BaseListener {
         final Block b = event.getBlock();
         final BlockState s = event.getNewState();
 
-        RecordingQueue.addToQueue(ActionFactory.createBlockChange(type, b.getLocation(), b.getType(), b.getBlockData(),
-                s.getType(), s.getBlockData(), "Environment"));
+        RecordingQueue.addToQueue(ActionFactory.createBlockChange(type, b.getType(), b.getBlockData(),
+                s, "Environment"));
     }
 
     /**
@@ -312,8 +312,8 @@ public class PrismBlockEvents extends BaseListener {
         final Block b = event.getBlock();
         final BlockState s = event.getNewState();
 
-        RecordingQueue.addToQueue(ActionFactory.createBlockChange("block-form", b.getLocation(), b.getType(),
-                b.getBlockData(), s.getType(), s.getBlockData(), "Environment"));
+        RecordingQueue.addToQueue(ActionFactory.createBlockChange("block-form", b.getType(),
+                b.getBlockData(), s, "Environment"));
     }
 
     /**
@@ -331,8 +331,8 @@ public class PrismBlockEvents extends BaseListener {
         }
         final BlockState s = event.getNewState();
 
-        RecordingQueue.addToQueue(ActionFactory.createBlockChange("block-fade", b.getLocation(), b.getType(),
-                b.getBlockData(), s.getType(), s.getBlockData(), "Environment"));
+        RecordingQueue.addToQueue(ActionFactory.createBlockChange("block-fade", b.getType(),
+                b.getBlockData(), s, "Environment"));
     }
 
     /**
