@@ -86,6 +86,7 @@ public class SqlSelectQueryBuilder extends QueryBuilder implements SelectQuery {
             columns.add("HEX(player_uuid) AS uuid");
         }
 
+        columns.add("rollbacked");
         if (shouldGroup) {
             columns.add("COUNT(*) counted");
         }
@@ -334,7 +335,7 @@ public class SqlSelectQueryBuilder extends QueryBuilder implements SelectQuery {
     protected String group() {
         if (shouldGroup) {
             return " GROUP BY " + tableNameData + ".action_id, " + tableNameData + ".player_id, " + tableNameData
-                    + ".block_id, ex.data, DATE(FROM_UNIXTIME(" + tableNameData + ".epoch))";
+                    + ".block_id, " + tableNameData  + ".rollbacked, ex.data, DATE(FROM_UNIXTIME(" + tableNameData + ".epoch))";
         }
         return "";
     }
@@ -647,10 +648,12 @@ public class SqlSelectQueryBuilder extends QueryBuilder implements SelectQuery {
                         // Not a valid uuid
                     }
 
+                    baseHandler.setRollbacked(rs.getBoolean(15));
+
                     // Set aggregate counts if a lookup
                     int aggregated = 0;
                     if (shouldGroup) {
-                        aggregated = rs.getInt(15);
+                        aggregated = rs.getInt(16);
                     }
                     baseHandler.setAggregateCount(aggregated);
 

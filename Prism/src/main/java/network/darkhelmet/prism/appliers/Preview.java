@@ -2,6 +2,7 @@ package network.darkhelmet.prism.appliers;
 
 import network.darkhelmet.prism.Il8nHelper;
 import network.darkhelmet.prism.Prism;
+import network.darkhelmet.prism.actionlibs.ActionsQuery;
 import network.darkhelmet.prism.actionlibs.QueryParameters;
 import network.darkhelmet.prism.actions.GenericAction;
 import network.darkhelmet.prism.api.BlockStateChange;
@@ -45,6 +46,7 @@ public class Preview implements Previewable {
     private final PrismProcessType processType;
     private final HashMap<Entity, Integer> entitiesMoved = new HashMap<>();
     private final List<Handler> worldChangeQueue = Collections.synchronizedList(new LinkedList<>());
+    private final List<Handler> updateRollbackedList = new ArrayList<>();
     private boolean isPreview = false;
     private long startTime;
     private int totalChangesCount;
@@ -238,9 +240,17 @@ public class Preview implements Previewable {
                         if (a instanceof GenericAction) {
                             GenericAction action = (GenericAction) a;
                             if (processType.equals(PrismProcessType.ROLLBACK)) {
+                                if (result.getType() == ChangeResultType.APPLIED) {
+                                    action.setRollbacked(true);
+                                    updateRollbackedList.add(action);
+                                }
                                 result = action.applyRollback(player, parameters, isPreview);
                             }
                             if (processType.equals(PrismProcessType.RESTORE)) {
+                                if (result.getType() == ChangeResultType.APPLIED) {
+                                    action.setRollbacked(false);
+                                    updateRollbackedList.add(action);
+                                }
                                 result = action.applyRestore(player, parameters, isPreview);
                             }
                             if (processType.equals(PrismProcessType.UNDO)) {
@@ -293,6 +303,8 @@ public class Preview implements Previewable {
                 if (isPreview) {
                     postProcessPreview();
                 } else {
+                    plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> new ActionsQuery(plugin).
+                            updateRollbacked(updateRollbackedList.toArray(new Handler[0])));
                     postProcess();
                 }
 
