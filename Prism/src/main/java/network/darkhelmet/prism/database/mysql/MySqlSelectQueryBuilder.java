@@ -38,7 +38,7 @@ public class MySqlSelectQueryBuilder extends SqlSelectQueryBuilder {
         columns.add("rollbacked");
         columns.add("data");
         columns.add("HEX(player_uuid)");
-
+        columns.add("rollbacked");
         if (shouldGroup) {
             columns.add("COUNT(*) counted");
         }

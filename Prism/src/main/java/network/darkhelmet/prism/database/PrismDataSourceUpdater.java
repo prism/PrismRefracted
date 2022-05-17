@@ -16,6 +16,8 @@ public interface PrismDataSourceUpdater {
 
     void v7_to_v8();
 
+    void v8_to_v9();
+
     void restoreCNChanges();
 
     void v1_to_v2_cn();

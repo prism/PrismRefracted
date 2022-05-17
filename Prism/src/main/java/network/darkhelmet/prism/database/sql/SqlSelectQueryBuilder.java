@@ -75,7 +75,6 @@ public class SqlSelectQueryBuilder extends QueryBuilder implements SelectQuery {
             columns.add("MIN(block_subid) block_subid");
             columns.add("MIN(old_block_id) old_block_id");
             columns.add("MIN(old_block_subid) old_block_subid");
-            columns.add("MAX(rollbacked) rollbacked");
             columns.add("MIN(data) data");
             columns.add("MIN(HEX(player_uuid)) AS uuid");
         } else {
@@ -83,11 +82,11 @@ public class SqlSelectQueryBuilder extends QueryBuilder implements SelectQuery {
             columns.add("block_subid");
             columns.add("old_block_id");
             columns.add("old_block_subid");
-            columns.add("rollbacked");
             columns.add("data");
             columns.add("HEX(player_uuid) AS uuid");
         }
 
+        columns.add("rollbacked");
         if (shouldGroup) {
             columns.add("COUNT(*) counted");
         }
@@ -336,7 +335,7 @@ public class SqlSelectQueryBuilder extends QueryBuilder implements SelectQuery {
     protected String group() {
         if (shouldGroup) {
             return " GROUP BY " + tableNameData + ".action_id, " + tableNameData + ".player_id, " + tableNameData
-                    + ".block_id, " + tableNameData + ".rollbacked, ex.data, DATE(FROM_UNIXTIME(" + tableNameData + ".epoch))";
+                    + ".block_id, " + tableNameData  + ".rollbacked, ex.data, DATE(FROM_UNIXTIME(" + tableNameData + ".epoch))";
         }
         return "";
     }
@@ -467,7 +466,7 @@ public class SqlSelectQueryBuilder extends QueryBuilder implements SelectQuery {
         final List<Handler> actions = new ArrayList<>();
         // Build conditions based off final args
         final String query = getQuery(parameters, shouldGroup);
-        eventTimer.recordTimedEvent("查询队列已开始");
+        eventTimer.recordTimedEvent("查询已开始");
 
         try (
                 Connection conn = Prism.getPrismDataSource().getDataSource().getConnection();
@@ -475,7 +474,7 @@ public class SqlSelectQueryBuilder extends QueryBuilder implements SelectQuery {
                 ResultSet rs = s.executeQuery()
         ) {
             RecordingManager.failedDbConnectionCount = 0;
-            eventTimer.recordTimedEvent("查询队列已返回, 正在构建结果");
+            eventTimer.recordTimedEvent("查询已返回, 正在构建结果");
             Map<Integer, String> worldsInverse = new HashMap<>();
             for (final Entry<String, Integer> entry : Prism.prismWorlds.entrySet()) {
                 worldsInverse.put(entry.getValue(), entry.getKey());
@@ -537,9 +536,7 @@ public class SqlSelectQueryBuilder extends QueryBuilder implements SelectQuery {
                     int oldBlockId = rs.getInt(11);
                     int oldBlockSubId = rs.getInt(12);
 
-                    baseHandler.setRollbacked(rs.getBoolean(13));
-
-                    String extraData = rs.getString(14);
+                    String extraData = rs.getString(13);
 
                     boolean validBlockId = false;
                     boolean validOldBlockId = false;
@@ -641,7 +638,7 @@ public class SqlSelectQueryBuilder extends QueryBuilder implements SelectQuery {
                     try {
                         // Calls UUID.fromString, must handle potential exceptions
                         OfflinePlayer offline = Bukkit.getOfflinePlayer(
-                                SqlPlayerIdentificationHelper.uuidFromDbString(rs.getString(15)));
+                                SqlPlayerIdentificationHelper.uuidFromDbString(rs.getString(14)));
 
                         // Fake player
                         if (offline.hasPlayedBefore()) {
@@ -651,10 +648,12 @@ public class SqlSelectQueryBuilder extends QueryBuilder implements SelectQuery {
                         // Not a valid uuid
                     }
 
+                    baseHandler.setRollbacked(rs.getBoolean(15));
+
                     // Set aggregate counts if a lookup
                     int aggregated = 0;
                     if (shouldGroup) {
-                        aggregated = rs.getInt(16);
+                        aggregated = rs.getInt(15);
                     }
                     baseHandler.setAggregateCount(aggregated);
 

@@ -111,6 +111,7 @@ public class SqlSelectProcessQuery extends SqlSelectQueryBuilder implements Sele
                 process.setZ(rs.getInt("z"));
                 process.setRollbacked(rs.getBoolean("rollbacked"));
                 process.deserialize(rs.getString("data"));
+                process.setRollbacked(rs.getBoolean("rollbacked"));
             }
         } catch (SQLException e) {
             dataSource.handleDataSourceException(e);
