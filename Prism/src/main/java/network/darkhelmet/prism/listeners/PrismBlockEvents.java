@@ -397,7 +397,7 @@ public class PrismBlockEvents extends BaseListener {
      * @param event PlayerInteractEvent
      */
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onBedEnter(PlayerInteractEvent event) {
+    public void onRespawnAnchorUse(PlayerInteractEvent event) {
         if (event.hasBlock() && event.getClickedBlock().getType() == Material.RESPAWN_ANCHOR) {
             anchorWeakCache.put(event.getClickedBlock().getLocation(), event.getPlayer());
         }
