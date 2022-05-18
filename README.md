@@ -1,6 +1,13 @@
 **Prism (Refracted)** is a change-tracking plugin for Bukkit-based servers. Supports rollbacks, restores, previews, 
 wands, and so much more. Tracking so good, the NSA stole our name.
 
+Download on [Spigot][spigot]
+
+# v3 vs v4
+
+v4 is a ground-up rewrite and is in progress now. I have no ETA for release but please feel free to contribute. Check
+out the v4 branch. v3 is the old Prism with improvements/maintenance work.
+
 # TL;DR
 
 I, viveleroi, created Prism ten years ago and was amazed by the community response. With the bukkit/mojang project
@@ -16,18 +23,6 @@ and heard from so many long-time Prism users, I've decided to return to Prism.
 Please be patient as I work to get this project where I want, establish documentation, build servers, etc. 
 
 - [**Discord**][discord] - Please visit discord for help before opening issues.
-
-# Rough Roadmap
-
-A lot of this code is nearing a decade old. Some things really can be better:
-
-- Convert command handling to ACF
-- Replace all database crud with a Storage approach like we did in Prism for Sponge. Allow mongoDB.
-- Fix non-standard SQL issues, re-evaluate efficiency stuff.
-- Improve how hikari configs are used.
-- Properly checkstyle and fix formatting to my tastes
-- Bring back Prism WebUI
-- Consider moving ore alerts, etc to a separate plugin
 
 ## License
 
@@ -45,3 +40,4 @@ for the full license.
 [license]: http://creativecommons.org/licenses/by-nc-sa/3.0/us/
 [addstarmc]: https://github.com/AddstarMC
 [discord]: https://discord.gg/7FxZScH4EJ
+[spigot]: https://www.spigotmc.org/resources/prism-refracted.99397/
