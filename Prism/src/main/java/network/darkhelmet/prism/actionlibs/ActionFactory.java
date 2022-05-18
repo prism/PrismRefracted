@@ -100,7 +100,7 @@ public class ActionFactory {
     }
 
     /**
-     * BlockChangeAction | WorldEditAction.
+     * PlayerBucketEmptyEvent | WorldEditAction.
      *
      * @param actionType the action
      * @param player     Offline Player
@@ -119,7 +119,44 @@ public class ActionFactory {
     }
 
     /**
+     * BlockPlaceEvent | EntityBlockFormEvent.
+     *
+     * @param actionType type
+     * @param oldMat     old
+     * @param oldData    old data
+     * @param newState   new state
+     * @param player     Offline Player
+     * @return Handler.
+     */
+    public static Handler createBlockChange(String actionType, Material oldMat, BlockData oldData,
+                                            BlockState newState, OfflinePlayer player) {
+        final BlockChangeAction a = new BlockChangeAction();
+        a.setActionType(actionType);
+        a.setBlock(newState);
+        a.setOldMaterial(oldMat);
+        a.setOldBlockData(oldData);
+        a.setPlayer(player);
+        return a;
+    }
+
+    /**
      * Handles Spread, Fade and Form events.
+     *
+     * @param actionType type
+     * @param oldMat     old
+     * @param oldData    old data
+     * @param newState   new state
+     * @param nonPlayer  nonplayer.
+     * @return Handler.
+     */
+    public static Handler createBlockChange(String actionType, Material oldMat, BlockData oldData,
+                                            BlockState newState, String nonPlayer) {
+        final Handler a = createBlockChange(actionType, oldMat, oldData, newState, (OfflinePlayer) null);
+        a.setSourceName(nonPlayer);
+        return a;
+    }
+
+    /**
      *
      * @param actionType type
      * @param loc        Location
