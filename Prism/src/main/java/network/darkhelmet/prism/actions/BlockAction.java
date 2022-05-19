@@ -177,8 +177,7 @@ public class BlockAction extends GenericAction {
             } else if (Tag.SIGNS.isTagged(getMaterial())) {
                 actionData = gson().fromJson(data, SignActionData.class);
             } else if (getMaterial() == COMMAND_BLOCK) {
-                actionData = new CommandActionData();
-                ((CommandActionData) actionData).command = data;
+                actionData = gson().fromJson(data, CommandActionData.class);
             } else if (getMaterial() == RESPAWN_ANCHOR) {
                 actionData = gson().fromJson(data, RespawnAnchorActionData.class);
             } else {
