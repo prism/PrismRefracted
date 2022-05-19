@@ -45,7 +45,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.bukkit.Material.*;
+import static org.bukkit.Material.AIR;
+import static org.bukkit.Material.CHEST;
+import static org.bukkit.Material.COMMAND_BLOCK;
+import static org.bukkit.Material.FARMLAND;
+import static org.bukkit.Material.FIRE;
+import static org.bukkit.Material.JUKEBOX;
+import static org.bukkit.Material.NETHER_PORTAL;
+import static org.bukkit.Material.OBSIDIAN;
+import static org.bukkit.Material.PLAYER_HEAD;
+import static org.bukkit.Material.PLAYER_WALL_HEAD;
+import static org.bukkit.Material.RESPAWN_ANCHOR;
+import static org.bukkit.Material.SPAWNER;
+import static org.bukkit.Material.TRAPPED_CHEST;
+import static org.bukkit.Material.WATER;
 
 
 public class BlockAction extends GenericAction {
