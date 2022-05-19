@@ -382,11 +382,9 @@ public class BlockAction extends GenericAction {
             if ((getMaterial() == PLAYER_HEAD || getMaterial() == PLAYER_WALL_HEAD)
                     && blockActionData instanceof SkullActionData) {
                 return handleSkulls(block, blockActionData, originalBlock);
-            }
-            if (Tag.BANNERS.isTagged(getMaterial()) && blockActionData instanceof BannerActionData) {
+            } else if (Tag.BANNERS.isTagged(getMaterial()) && blockActionData instanceof BannerActionData) {
                 return handleBanners(block, blockActionData, originalBlock);
-            }
-            if (getMaterial() == SPAWNER && blockActionData instanceof SpawnerActionData) {
+            } else if (getMaterial() == SPAWNER && blockActionData instanceof SpawnerActionData) {
 
                 final SpawnerActionData s = (SpawnerActionData) blockActionData;
 
@@ -394,17 +392,15 @@ public class BlockAction extends GenericAction {
                 ((CreatureSpawner) newState).setDelay(s.getDelay());
                 ((CreatureSpawner) newState).setSpawnedType(s.getEntityType());
 
-            }
-
-            if (getMaterial() == COMMAND_BLOCK
+            } else if (getMaterial() == COMMAND_BLOCK
                     && blockActionData instanceof CommandActionData) {
                 final CommandActionData c = (CommandActionData) blockActionData;
                 ((CommandBlock) newState).setCommand(c.command);
-            }
-            if (getMaterial() == RESPAWN_ANCHOR && blockActionData instanceof RespawnAnchorActionData) {
+            } else if (getMaterial() == RESPAWN_ANCHOR && blockActionData instanceof RespawnAnchorActionData) {
                 final RespawnAnchorActionData ra = (RespawnAnchorActionData) blockActionData;
                 ((RespawnAnchor) newState.getBlockData()).setCharges(ra.charges);
             }
+
             if (newState instanceof Nameable && blockActionData.customName != null
                     && !blockActionData.customName.equals("")) {
                 ((Nameable) newState).setCustomName(blockActionData.customName);
