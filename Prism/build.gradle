@@ -31,7 +31,8 @@ sourceCompatibility = targetCompatibility = JavaVersion.VERSION_17
 processResources {
     filter ReplaceTokens, tokens: [
             "apiversion": project.property("apiversion"),
-            "version"   : project.property("version")
+            "version"   : project.property("version"),
+            "versionId"   : project.property("versionId")
     ]
 }
 

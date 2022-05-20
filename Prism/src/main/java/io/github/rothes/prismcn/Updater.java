@@ -7,6 +7,7 @@ import net.kyori.adventure.text.Component;
 import network.darkhelmet.prism.Prism;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -25,7 +26,8 @@ import java.util.Map;
 public class Updater implements Listener {
 
     private final String VERSION_CHANNCEL = "Stable";
-    private final int VERSION_NUMBER = 12;
+    private final int VERSION_NUMBER = YamlConfiguration.loadConfiguration(new InputStreamReader(
+            Prism.getInstance().getResource("metadata.yml"), StandardCharsets.UTF_8)).getInt("versionId");
     private final HashMap<String, Integer> msgTimesMap = new HashMap<>();
     private final List<String> messages = new ArrayList<>();
 
