@@ -29,7 +29,7 @@ public class MySqlPrismDataSource extends SqlPrismDataSource {
         if (propFile.exists()) {
             Prism.log("正在根据 " + propFile.getName() + " 配置 Hikari");
             Prism.debug("此文件不会存储 jdbcURL, username 或 password - 默认下它们会从普通的 Prism "
-                    + "配置文件中加载.  但如果您明确地在 properties 配置文件 中设定了这些设置, "
+                    + "配置文件中加载. 但如果您明确地在 properties 配置文件 中设定了这些设置, "
                     + "普通的配置文件中的设置会被忽略.");
             dbConfig = new HikariConfig(propFile.getPath());
         } else {
@@ -92,7 +92,9 @@ public class MySqlPrismDataSource extends SqlPrismDataSource {
             dbConfig.setUsername(this.section.getString("username"));
             dbConfig.setPassword(this.section.getString("password"));
         }
-        dbConfig.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        if (dbConfig.getDriverClassName() == null) {
+            dbConfig.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        }
         dbConfig.addHealthCheckProperty("connectivityCheckTimeoutMs", "1000");
         dbConfig.addHealthCheckProperty("expected99thPercentileMs", "10");
         if (Prism.getInstance().monitoring) {

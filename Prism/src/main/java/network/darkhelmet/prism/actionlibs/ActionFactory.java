@@ -119,7 +119,7 @@ public class ActionFactory {
     }
 
     /**
-     * EntityBlockFormEvent.
+     * BlockPlaceEvent | EntityBlockFormEvent.
      *
      * @param actionType type
      * @param oldMat     old
@@ -140,27 +140,6 @@ public class ActionFactory {
     }
 
     /**
-     * BlockChangeAction.
-     *
-     * @param actionType type
-     * @param oldMat     old
-     * @param oldData    old data
-     * @param newBlock   new block
-     * @param player     Offline Player
-     * @return Handler.
-     */
-    public static Handler createBlockChange(String actionType, Material oldMat, BlockData oldData,
-                                            Block newBlock, OfflinePlayer player) {
-        final BlockChangeAction a = new BlockChangeAction();
-        a.setActionType(actionType);
-        a.setBlock(newBlock);
-        a.setOldMaterial(oldMat);
-        a.setOldBlockData(oldData);
-        a.setPlayer(player);
-        return a;
-    }
-
-    /**
      * Handles Spread, Fade and Form events.
      *
      * @param actionType type
@@ -173,6 +152,24 @@ public class ActionFactory {
     public static Handler createBlockChange(String actionType, Material oldMat, BlockData oldData,
                                             BlockState newState, String nonPlayer) {
         final Handler a = createBlockChange(actionType, oldMat, oldData, newState, (OfflinePlayer) null);
+        a.setSourceName(nonPlayer);
+        return a;
+    }
+
+    /**
+     *
+     * @param actionType type
+     * @param loc        Location
+     * @param oldMat     old
+     * @param oldData    old data
+     * @param newMat     new
+     * @param newData    new data
+     * @param nonPlayer  nonplayer.
+     * @return Handler.
+     */
+    public static Handler createBlockChange(String actionType, Location loc, Material oldMat, BlockData oldData,
+                                            Material newMat, BlockData newData, String nonPlayer) {
+        final Handler a = createBlockChange(actionType, loc, oldMat, oldData, newMat, newData, (OfflinePlayer) null);
         a.setSourceName(nonPlayer);
         return a;
     }
