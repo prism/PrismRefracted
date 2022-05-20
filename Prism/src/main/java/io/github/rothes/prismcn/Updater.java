@@ -3,9 +3,13 @@ package io.github.rothes.prismcn;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import net.kyori.adventure.text.Component;
 import network.darkhelmet.prism.Prism;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,17 +17,21 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class Updater {
+public class Updater implements Listener {
 
     private final String VERSION_CHANNCEL = "Stable";
     private final int VERSION_NUMBER = 12;
     private final HashMap<String, Integer> msgTimesMap = new HashMap<>();
+    private final List<String> messages = new ArrayList<>();
 
     public void start() {
         new Metrics(Prism.getInstance(), 15030);
+        Bukkit.getPluginManager().registerEvents(this, Prism.getInstance());
         Bukkit.getScheduler().runTaskTimerAsynchronously(Prism.getInstance(), () -> {
             try {
                 checkJson(getJson());
@@ -31,6 +39,18 @@ public class Updater {
 //                Prism.warn("§c无法正常解析版本信息 Json, 请更新您的插件至最新版本: " + e);
             }
         }, 0L, 72000L);
+    }
+
+    @EventHandler
+    public void playerJoin(PlayerJoinEvent e) {
+        Bukkit.getScheduler().runTaskAsynchronously(Prism.getInstance(), () -> {
+            if (e.getPlayer().hasPermission("prism.cnupdater.notify") || e.getPlayer().isOp()) {
+                for (String message : messages) {
+                    Prism.messenger.sendMessage(e.getPlayer(), Prism.messenger.playerHeaderMsg(Component.text(message)));
+                }
+
+            }
+        });
     }
 
     private String getJson() {
@@ -54,6 +74,8 @@ public class Updater {
         JsonElement element = new JsonParser().parse(json);
         JsonObject root = element.getAsJsonObject();
         JsonObject channels = root.getAsJsonObject("Version_Channels");
+
+        messages.clear();
         if (channels.has(VERSION_CHANNCEL)) {
             JsonObject channel = channels.getAsJsonObject(VERSION_CHANNCEL);
             if (channel.has("Message")
@@ -62,6 +84,8 @@ public class Updater {
             }
         } else {
             Prism.warn("§c您使用的插件处于一个未知的版本通道(\"" + VERSION_CHANNCEL + "\"). 请更新您的插件到最新版本.");
+            messages.add("§c您使用的插件处于一个未知的版本通道(\"" + VERSION_CHANNCEL + "\"). 请更新您的插件到最新版本.");
+            return;
         }
 
         for (Map.Entry<String, JsonElement> entry : root.getAsJsonObject("Version_Actions").entrySet()) {
@@ -88,6 +112,7 @@ public class Updater {
             String logLevel = json.has("Log_Level") ? json.get("Log_Level").getAsString() : "default maybe";
 
             for (String s : msg.split("\n")) {
+                messages.add(s);
                 switch (logLevel) {
                     case "Warn":
                         Prism.warn(s);
