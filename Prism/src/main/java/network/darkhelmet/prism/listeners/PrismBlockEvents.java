@@ -389,6 +389,14 @@ public class PrismBlockEvents extends BaseListener {
             RecordingQueue.addToQueue(ActionFactory.createBlock("respawnanchor-explode", event.getBlock().getState(), player));
             contructBlockEvent("respawnanchor-explode", source, affected);
             anchorWeakCache.invalidate(event.getBlock().getLocation());
+        } else {
+            if (!Prism.getIgnore().event("block-explode", event.getBlock())) {
+                return;
+            }
+            String source = "Explosion";
+            List<Block> affected = event.blockList();
+            RecordingQueue.addToQueue(ActionFactory.createBlock("block-explode", event.getBlock().getState(), source));
+            contructBlockEvent("block-explode", source, affected);
         }
     }
 
