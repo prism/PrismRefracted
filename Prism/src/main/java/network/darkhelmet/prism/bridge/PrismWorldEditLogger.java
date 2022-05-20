@@ -49,10 +49,10 @@ public class PrismWorldEditLogger extends AbstractDelegateExtent {
             } else {
                 String nonPlayer;
                 if (actor instanceof BukkitCommandSender) {
-                    nonPlayer = "Console";
+                    nonPlayer = "控制台";
                 } else if (actor instanceof BukkitBlockCommandSender) {
                     com.sk89q.worldedit.util.Location location = ((BukkitBlockCommandSender) actor).getBlockLocation();
-                    nonPlayer = "Command Block(" + location.getBlockX() + "," + location.getBlockY() + "," + location.getBlockZ() + ")";
+                    nonPlayer = "命令方块(" + location.getBlockX() + "," + location.getBlockY() + "," + location.getBlockZ() + ")";
                 } else {
                     nonPlayer = actor.getName();
                 }
