@@ -240,7 +240,7 @@ public class BlockAction extends GenericAction {
             name += " (" + ad.command + ")";
         } else if (blockActionData instanceof RespawnAnchorActionData) {
             RespawnAnchorActionData ad = (RespawnAnchorActionData) blockActionData;
-            name += " (" + ad.charges + " charge" + (ad.charges > 1 ? "s)" : ")");
+            name += " (" + ad.charges + " 能量等级" + ")";
         }
         if (blockActionData.customName != null && !blockActionData.customName.isEmpty()) {
             name += " (" + blockActionData.customName + ")";
