@@ -391,7 +391,7 @@ public class PrismBlockEvents extends BaseListener {
             if (!Prism.getIgnore().event("block-explode", event.getBlock())) {
                 return;
             }
-            String source = "Explosion";
+            String source = "爆炸";
             List<Block> affected = event.blockList();
             RecordingQueue.addToQueue(ActionFactory.createBlock("block-explode", event.getBlock().getState(), source));
             contructBlockEvent("block-explode", source, affected);
