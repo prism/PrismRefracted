@@ -27,7 +27,7 @@ public class QueueDrain {
         // Force queue to empty
         while (!RecordingQueue.getQueue().isEmpty()) {
 
-            Prism.log("正在开始排水批次...");
+            Prism.log("正在开始新一批次队列清空...");
             Prism.log("目前队列大小: " + RecordingQueue.getQueue().size());
 
             // run insert
@@ -35,13 +35,13 @@ public class QueueDrain {
                 recorderTask.insertActionsIntoDatabase();
             } catch (final Exception e) {
                 e.printStackTrace();
-                Prism.log("停止队列排水, 由于捕获到异常. 失去的队列条目: "
+                Prism.log("停止队列清空, 由于捕获到异常. 失去的队列条目: "
                         + RecordingQueue.getQueue().size());
                 break;
             }
 
             if (RecordingManager.failedDbConnectionCount > 0) {
-                Prism.log("停止队列排水, 由于检测到数据库错误. 失去的队列条目: "
+                Prism.log("停止队列清空, 由于检测到数据库错误. 失去的队列条目: "
                         + RecordingQueue.getQueue().size());
             }
         }
