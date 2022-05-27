@@ -24,6 +24,11 @@ public class QueueDrain {
 
         final RecordingTask recorderTask = new RecordingTask(plugin);
 
+        // Faster drain
+        RecordingTask.setActionsPerInsert(15000);
+        Prism.getInstance().getConfig().set("prism.query.max-failures-before-wait", 10);
+        Prism.getInstance().getConfig().set("prism.query.queue-empty-tick-delay", 0);
+
         // Force queue to empty
         while (!RecordingQueue.getQueue().isEmpty()) {
 
