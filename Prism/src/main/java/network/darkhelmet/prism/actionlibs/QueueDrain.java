@@ -35,6 +35,11 @@ public class QueueDrain {
             Prism.log("Starting drain batch...");
             Prism.log("Current queue size: " + RecordingQueue.getQueue().size());
 
+            if (Prism.getPrismDataSource().isPaused()) {
+                Prism.getPrismDataSource().setPaused(false);
+                Prism.log("Force unpaused the recorder for drain.");
+            }
+
             // run insert
             try {
                 recorderTask.insertActionsIntoDatabase();
