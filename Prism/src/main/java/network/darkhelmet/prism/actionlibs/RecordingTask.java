@@ -63,7 +63,7 @@ public class RecordingTask implements Runnable {
         if (!RecordingQueue.getQueue().isEmpty()) {
             if (Prism.getPrismDataSource().isPaused()) {
                 Prism.log(
-                        "Prism 数据库已暂停. 外部行为暂停了数据库处理..."
+                        "Prism 数据库已暂停. 外部行为暂停了数据库处理... "
                                 + "正在计划到下一次记录");
                 scheduleNextRecording();
                 return;
@@ -82,7 +82,10 @@ public class RecordingTask implements Runnable {
                     RecordingManager.failedDbConnectionCount++;
                     if (RecordingManager.failedDbConnectionCount > plugin.getConfig()
                             .getInt("prism.query.max-failures-before-wait")) {
-                        Prism.log("连接问题过多. 暂时放弃处理.");
+                        if (QueueDrain.isDraining()) {
+                            throw new RuntimeException("多次发生连接问题.");
+                        }
+                        Prism.log("多次发生连接问题. 暂时放弃处理.");
                         scheduleNextRecording();
                     }
                     Prism.debug("数据库连接仍在丢失中, 增加计数.");
@@ -172,7 +175,7 @@ public class RecordingTask implements Runnable {
         }
 
         int recorderTickDelay = plugin.getConfig().getInt("prism.query.queue-empty-tick-delay");
-        if (recorderTickDelay < 1) {
+        if (recorderTickDelay < 0) {
             recorderTickDelay = 3;
         }
         return recorderTickDelay;
