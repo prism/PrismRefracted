@@ -93,7 +93,12 @@ public class MySqlPrismDataSource extends SqlPrismDataSource {
             dbConfig.setPassword(this.section.getString("password"));
         }
         if (dbConfig.getDriverClassName() == null) {
-            dbConfig.setDriverClassName("com.mysql.cj.jdbc.Driver");
+            try {
+                dbConfig.setDriverClassName("com.mysql.cj.jdbc.Driver");
+            } catch (RuntimeException e) {
+                // Some servers still use Connector/J 5.1 API
+                dbConfig.setDriverClassName("com.mysql.jdbc.Driver");
+            }
         }
         dbConfig.addHealthCheckProperty("connectivityCheckTimeoutMs", "1000");
         dbConfig.addHealthCheckProperty("expected99thPercentileMs", "10");
