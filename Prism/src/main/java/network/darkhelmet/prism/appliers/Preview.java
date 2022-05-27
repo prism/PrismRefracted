@@ -193,7 +193,7 @@ public class Preview implements Previewable {
 
         worldChangeQueueTaskId = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
 
-            if (plugin.getConfig().getBoolean("prism.debug")) {
+            if (Prism.isDebug()) {
                 Prism.debug("世界更改队列大小: " + worldChangeQueue.size());
             }
 
@@ -393,7 +393,7 @@ public class Preview implements Previewable {
         plugin.eventTimer.recordTimedEvent("应用器功能已完成");
 
         // record timed events to log
-        if (plugin.getConfig().getBoolean("prism.debug")) {
+        if (Prism.isDebug()) {
             // Flush timed data
             plugin.eventTimer.printTimeRecord();
             Prism.debug("变化数: " + changesAppliedCount);
