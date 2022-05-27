@@ -172,7 +172,7 @@ public class RecordingTask implements Runnable {
         }
 
         int recorderTickDelay = plugin.getConfig().getInt("prism.query.queue-empty-tick-delay");
-        if (recorderTickDelay < 1) {
+        if (recorderTickDelay < 0) {
             recorderTickDelay = 3;
         }
         return recorderTickDelay;
