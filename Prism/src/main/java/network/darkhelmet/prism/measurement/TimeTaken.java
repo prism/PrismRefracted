@@ -3,7 +3,6 @@ package network.darkhelmet.prism.measurement;
 import network.darkhelmet.prism.Prism;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
@@ -58,10 +57,10 @@ public class TimeTaken {
                         diff = entry.getKey() - lastTime;
                         total += diff;
                     }
-                    Prism.debug(entry.getValue() + ": " + new BigDecimal(diff / 1_000_000f).toPlainString() + "s");
+                    Prism.debug(entry.getValue() + ": " + new BigDecimal(diff / 1_000_000_000f).toPlainString() + "s");
                     lastTime = entry.getKey();
                 }
-                Prism.debug("Total time: " + new BigDecimal(total / 1_000_000f).toPlainString() + "s");
+                Prism.debug("Total time: " + new BigDecimal(total / 1_000_000_000f).toPlainString() + "s");
             }
         }
         plugin.eventTimer.resetEventList();
