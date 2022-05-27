@@ -4,7 +4,13 @@ import network.darkhelmet.prism.Prism;
 
 public class QueueDrain {
 
+    private static boolean draining = false;
+
     private final Prism plugin;
+
+    public static boolean isDraining() {
+        return draining;
+    }
 
     /**
      * Creat a drain.
@@ -21,6 +27,9 @@ public class QueueDrain {
     public void forceDrainQueue() {
 
         Prism.log("Forcing recorder queue to run a new batch before shutdown...");
+
+        draining = true;
+        RecordingManager.failedDbConnectionCount = 0;
 
         final RecordingTask recorderTask = new RecordingTask(plugin);
 

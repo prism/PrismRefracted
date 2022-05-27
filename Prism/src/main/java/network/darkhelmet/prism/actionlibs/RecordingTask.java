@@ -82,6 +82,9 @@ public class RecordingTask implements Runnable {
                     RecordingManager.failedDbConnectionCount++;
                     if (RecordingManager.failedDbConnectionCount > plugin.getConfig()
                             .getInt("prism.query.max-failures-before-wait")) {
+                        if (QueueDrain.isDraining()) {
+                            throw new RuntimeException("Too many problems connecting.");
+                        }
                         Prism.log("Too many problems connecting. Giving up for a bit.");
                         scheduleNextRecording();
                     }
