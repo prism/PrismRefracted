@@ -1,5 +1,5 @@
 allprojects {
-    version("3.3.0-CN-b1")
+    version("3.3.0-CN-b2")
     plugins.apply(VersionIdPlugin.class)
 }
 
@@ -10,6 +10,6 @@ gradle.buildFinished {
 class VersionIdPlugin implements Plugin<Project> {
     @Override
     void apply(Project project) {
-        project.ext.versionId = 13.toString()
+        project.ext.versionId = 14.toString()
     }
 }
