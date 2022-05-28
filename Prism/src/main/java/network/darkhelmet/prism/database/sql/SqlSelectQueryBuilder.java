@@ -563,8 +563,8 @@ public class SqlSelectQueryBuilder extends QueryBuilder implements SelectQuery {
                                 newData = Bukkit.createBlockData(item.getType());
                             } catch (IllegalArgumentException e) {
                                 // This exception occurs, for example, with "ItemStack{DIAMOND_LEGGINGS x 1}"
-                                Prism.debug("记录 #" + rowId + " 发生了 IllegalArgumentException"
-                                        + " 正在为 " + item.toString() + " 调用 createBlockData");
+                                Prism.debug("记录 #" + rowId + " 发生了 IllegalArgumentException "
+                                        + ", 在为 " + item.toString() + " 调用 createBlockData 时.");
                                 newData = null;
                             }
 
