@@ -2,7 +2,7 @@ package network.darkhelmet.prism.measurement;
 
 import network.darkhelmet.prism.Prism;
 
-import java.util.Calendar;
+import java.math.BigDecimal;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
@@ -21,15 +21,6 @@ public class TimeTaken {
     }
 
     /**
-     * Get the timestamp.
-     * @return long
-     */
-    protected long getTimestamp() {
-        final Calendar lCDateTime = Calendar.getInstance();
-        return lCDateTime.getTimeInMillis();
-    }
-
-    /**
      * Get the event.
      * @param eventname String
      */
@@ -37,7 +28,7 @@ public class TimeTaken {
         if (!Prism.isDebug()) {
             return;
         }
-        eventsTimed.put(getTimestamp(), eventname);
+        eventsTimed.put(System.nanoTime(), eventname);
     }
 
     protected void resetEventList() {
@@ -59,17 +50,17 @@ public class TimeTaken {
             if (timers.size() > 0) {
                 long lastTime = 0;
                 long total = 0;
-                Prism.debug("-- 上次行为的计时信息: --");
+                Prism.debug("-- 上个操作的计时信息: --");
                 for (final Entry<Long, String> entry : timers.entrySet()) {
                     long diff = 0;
                     if (lastTime > 0) {
                         diff = entry.getKey() - lastTime;
                         total += diff;
                     }
-                    Prism.debug(entry.getValue() + " " + diff + "ms");
+                    Prism.debug(entry.getValue() + ": " + new BigDecimal(diff / 1_000_000_000f).toPlainString() + "s");
                     lastTime = entry.getKey();
                 }
-                Prism.debug("总计时长: " + total + "ms");
+                Prism.debug("总计时长: " + new BigDecimal(total / 1_000_000_000f).toPlainString() + "s");
             }
         }
         plugin.eventTimer.resetEventList();

@@ -12,7 +12,7 @@ public class InternalAffairs implements Runnable {
     private final Prism plugin;
 
     public InternalAffairs(Prism plugin) {
-        Prism.debug("[内部状况] 正保持监视观察者.");
+        Prism.debug("[内部状况] 正在持续监视记录器.");
         this.plugin = plugin;
     }
 
@@ -32,7 +32,7 @@ public class InternalAffairs implements Runnable {
             }
         }
 
-        Prism.log("[内部状况] 记录器目前*不在*活动中... 正在检查数据库");
+        Prism.log("[内部状况] 记录器目前*不在*活动中. 正在检查数据库...");
 
         // is db connection valid?
         try (Connection conn = Prism.getPrismDataSource().getConnection()) {
@@ -42,7 +42,7 @@ public class InternalAffairs implements Runnable {
                 Prism.log("[内部状况] 连接池返回了一个已关闭的连接.");
             } else if (conn.isValid(5)) {
                 Prism.log("[内部状况] 连接池返回了有效的连接!");
-                Prism.log("[内部状况] 正在重启计划的记录器任务");
+                Prism.log("[内部状况] 正在重启记录器计划任务.");
                 plugin.actionRecorderTask();
             }
         } catch (final SQLException e) {
