@@ -191,9 +191,7 @@ public class Preview implements Previewable {
 
         worldChangeQueueTaskId = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
 
-            if (Prism.isDebug()) {
-                Prism.debug("World change queue size: " + worldChangeQueue.size());
-            }
+            Prism.debug("World change queue size: " + worldChangeQueue.size());
 
             if (worldChangeQueue.isEmpty()) {
                 Prism.messenger.sendMessage(sender,
