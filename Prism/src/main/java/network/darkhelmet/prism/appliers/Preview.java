@@ -191,9 +191,7 @@ public class Preview implements Previewable {
 
         worldChangeQueueTaskId = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
 
-            if (plugin.getConfig().getBoolean("prism.debug")) {
-                Prism.debug("World change queue size: " + worldChangeQueue.size());
-            }
+            Prism.debug("World change queue size: " + worldChangeQueue.size());
 
             if (worldChangeQueue.isEmpty()) {
                 Prism.messenger.sendMessage(sender,
@@ -377,7 +375,7 @@ public class Preview implements Previewable {
         plugin.eventTimer.recordTimedEvent("applier function complete");
 
         // record timed events to log
-        if (plugin.getConfig().getBoolean("prism.debug")) {
+        if (Prism.isDebug()) {
             // Flush timed data
             plugin.eventTimer.printTimeRecord();
             Prism.debug("Changes: " + changesAppliedCount);
