@@ -5,7 +5,7 @@
       "Actions": [],
       "Log_Level": "Info",
       "Message": {
-        "zh-CN": "§bPrism 折射 中文版有新版本 (\"3.3.0-CN-b2\") 了!\n§b请更新您的插件: https://beta.mcbbs.net/resource/qcnedi83/"
+        "zh-CN": "§bPrism 折射 中文版有新版本 (\"3.3.0-CN-b2\") 了!\n§b请更新您的插件: https://beta.mcbbs.net/resource/servermod/qcnedi83/"
       }
     },
     "Stable-1.16": {
@@ -13,7 +13,7 @@
       "Actions": [],
       "Log_Level": "Info",
       "Message": {
-        "zh-CN": "§bPrism 折射 中文版 1.16 有新版本 (\"3.3.0-CN-b2\") 了!\n§b请更新您的插件: https://beta.mcbbs.net/resource/qcnedi83/"
+        "zh-CN": "§bPrism 折射 中文版 1.16 有新版本 (\"3.3.0-CN-b2\") 了!\n§b请更新您的插件: https://beta.mcbbs.net/resource/servermod/qcnedi83/"
       }
     }
   },
@@ -22,14 +22,14 @@
       "Log_Level": "Warn",
       "Actions": ["Prohibit"],
       "Message": {
-        "zh-CN": "§c§n§l你的版本严重落后! 请立即更新至最新版本, 否则会影响到你安装之后的更新!\n§c§n§l请更新您的插件: https://beta.mcbbs.net/resource/qcnedi83/\n§c§n§l你的版本严重落后! 请立即更新至最新版本, 否则会影响到你安装之后的更新!\n§c§n§l请更新您的插件: https://beta.mcbbs.net/resource/qcnedi83/\n§c§n§l你的版本严重落后! 请立即更新至最新版本, 否则会影响到你安装之后的更新!\n§c§n§l请更新您的插件: https://beta.mcbbs.net/resource/qcnedi83/\n§c§n§l你的版本严重落后! 请立即更新至最新版本, 否则会影响到你安装之后的更新!\n§c§n§l请更新您的插件: https://beta.mcbbs.net/resource/qcnedi83/\n§c§n§l更新至最新版本后, 你方可正常使用插件!"
+        "zh-CN": "§c§n§l你的版本严重落后! 请立即更新至最新版本, 否则会影响到你安装之后的更新!\n§c§n§l请更新您的插件: https://beta.mcbbs.net/resource/servermod/qcnedi83/\n§c§n§l你的版本严重落后! 请立即更新至最新版本, 否则会影响到你安装之后的更新!\n§c§n§l请更新您的插件: https://beta.mcbbs.net/resource/servermod/qcnedi83/\n§c§n§l你的版本严重落后! 请立即更新至最新版本, 否则会影响到你安装之后的更新!\n§c§n§l请更新您的插件: https://beta.mcbbs.net/resource/servermod/qcnedi83/\n§c§n§l你的版本严重落后! 请立即更新至最新版本, 否则会影响到你安装之后的更新!\n§c§n§l请更新您的插件: https://beta.mcbbs.net/resource/servermod/qcnedi83/\n§c§n§l更新至最新版本后, 你方可正常使用插件!"
       }
     },
     "0-13": {
       "Log_Level": "Warn",
       "Actions": [],
       "Message": {
-        "zh-CN": "§c§n§l你的版本有重要的记录安全隐患! 部分行为无法正常记录!\n§c§n§l请更新您的插件: https://beta.mcbbs.net/resource/qcnedi83/"
+        "zh-CN": "§c§n§l你的版本有重要的记录安全隐患! 部分行为无法正常记录!\n§c§n§l请更新您的插件: https://beta.mcbbs.net/resource/servermod/qcnedi83/"
       }
     },
     "0-233": {
