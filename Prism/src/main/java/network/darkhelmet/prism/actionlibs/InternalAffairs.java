@@ -12,7 +12,7 @@ public class InternalAffairs implements Runnable {
     private final Prism plugin;
 
     public InternalAffairs(Prism plugin) {
-        Prism.debug("[InternalAffairs] Keeping watch over the watchers.");
+        Prism.debug("[InternalAffairs] Keeping watch over the recorder.");
         this.plugin = plugin;
     }
 
@@ -32,7 +32,7 @@ public class InternalAffairs implements Runnable {
             }
         }
 
-        Prism.log("[InternalAffairs] Recorder is NOT active... checking database");
+        Prism.log("[InternalAffairs] Recorder is NOT active. checking database...");
 
         // is db connection valid?
         try (Connection conn = Prism.getPrismDataSource().getConnection()) {
@@ -42,7 +42,7 @@ public class InternalAffairs implements Runnable {
                 Prism.log("[InternalAffairs] Pool returned an already closed connection.");
             } else if (conn.isValid(5)) {
                 Prism.log("[InternalAffairs] Pool returned valid connection!");
-                Prism.log("[InternalAffairs] Restarting scheduled recorder tasks");
+                Prism.log("[InternalAffairs] Restarting scheduled recorder tasks.");
                 plugin.actionRecorderTask();
             }
         } catch (final SQLException e) {
