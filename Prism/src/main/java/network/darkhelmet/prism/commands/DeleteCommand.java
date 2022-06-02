@@ -84,7 +84,7 @@ public class DeleteCommand extends AbstractCommand {
                     .playerHeaderMsg(Il8nHelper.getMessage("start-purge")));
             plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
                 int purgeTickDelay = plugin.getConfig().getInt("prism.purge.batch-tick-delay");
-                if (purgeTickDelay < 1) {
+                if (purgeTickDelay < 0) {
                     purgeTickDelay = 20;
                 }
 
