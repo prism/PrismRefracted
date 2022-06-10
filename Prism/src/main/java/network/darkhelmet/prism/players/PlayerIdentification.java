@@ -40,7 +40,7 @@ public class PlayerIdentification {
         PrismPlayer prismPlayer = getPrismPlayer(playerName);
         if (prismPlayer != null) {
             // prismPlayer = comparePlayerToCache( player, prismPlayer );
-            Prism.debug("已加载玩家 " + prismPlayer.getName() + ", ID: " + prismPlayer.getId() + " 到缓存.");
+            // Prism.debug("已加载玩家 " + prismPlayer.getName() + ", ID: " + prismPlayer.getId() + " 到缓存.");
             // Prism.prismPlayers.put( player.getUniqueId(), prismPlayer );
             return prismPlayer;
         }

@@ -31,6 +31,9 @@ public class QueueDrain {
         draining = true;
         RecordingManager.failedDbConnectionCount = 0;
 
+        draining = true;
+        RecordingManager.failedDbConnectionCount = 0;
+
         final RecordingTask recorderTask = new RecordingTask(plugin);
 
         // Faster drain
@@ -43,6 +46,11 @@ public class QueueDrain {
 
             Prism.log("正在开始新一批次队列清空...");
             Prism.log("目前队列大小: " + RecordingQueue.getQueue().size());
+
+            if (Prism.getPrismDataSource().isPaused()) {
+                Prism.getPrismDataSource().setPaused(false);
+                Prism.log("Force unpaused the recorder for drain.");
+            }
 
             if (Prism.getPrismDataSource().isPaused()) {
                 Prism.getPrismDataSource().setPaused(false);
