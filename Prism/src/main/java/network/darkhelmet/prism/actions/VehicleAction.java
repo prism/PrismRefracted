@@ -57,7 +57,7 @@ public class VehicleAction extends GenericAction {
      */
     @Override
     public String getNiceName() {
-        return actionData.vehicleName;
+        return (actionData.woodType != null ? actionData.woodType.toLowerCase() + " " : "") + actionData.vehicleName;
     }
 
     @Override
