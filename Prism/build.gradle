@@ -43,9 +43,9 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation 'io.papermc:paperlib:1.0.3'
     implementation 'com.zaxxer:HikariCP:4.0.3'
-    implementation 'net.kyori:adventure-api:4.9.3'
+    implementation 'net.kyori:adventure-api:4.11.0'
     implementation 'net.kyori:adventure-platform-bukkit:4.1.0'
-    implementation 'net.kyori:adventure-text-serializer-plain:4.9.3'
+    implementation 'net.kyori:adventure-text-serializer-plain:4.11.0'
     implementation 'org.kitteh:paste-gg-api:1.0.0-SNAPSHOT'
     implementation 'org.bstats:bstats-bukkit:3.0.0'
     implementation project(':Prism-Api')
@@ -58,7 +58,7 @@ jar {
 }
 
 shadowJar {
-    String fileName = "[1.17+] Prism v" + project.version + ".jar"
+    String fileName = "[1.19+] Prism v" + project.version + ".jar"
     archiveFileName.set(fileName)
     dependencies {
         exclude(dependency('org.checkerframework:.*'))
