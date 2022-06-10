@@ -45,7 +45,7 @@ public class MaterialTag implements Tag<Material> {
     public static final MaterialTag HYPHAE = new MaterialTag("_HYPHAE",MatchMode.SUFFIX);
     public static final MaterialTag SKULLS = new MaterialTag(WALL_SKULLS).append(FLOOR_SKULLS);
     public static final MaterialTag ALL_PLANTS = new MaterialTag(PLANTS).append(TALL_PLANTS);
-    public static final Tag<Material> BOATS = new MaterialTag(Tag.ITEMS_BOATS);
+    public static final Tag<Material> BOATS = new MaterialTag(Tag.ITEMS_BOATS, Tag.ITEMS_CHEST_BOATS);
     public static final Tag<Material> SPAWN_EGGS = new MaterialTag("_SPAWN_EGG", MatchMode.SUFFIX);
     public static final MaterialTag ALL_BANNERS = new MaterialTag(Tag.BANNERS);
     public static final MaterialTag BANNERS = new MaterialTag(ALL_BANNERS).exclude("_WALL_", MatchMode.CONTAINS);
