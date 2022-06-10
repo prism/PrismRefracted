@@ -8,7 +8,7 @@ import network.darkhelmet.prism.commandlibs.SubHandler;
 import network.darkhelmet.prism.database.PrismDataSource;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -61,7 +61,7 @@ public class DebugCommand implements SubHandler {
             out = removePatterns("username: (.*)",out,"**username**");
             return removePatterns("password: (.*)",out,"**password**");
         } catch (IOException e) {
-            return ExceptionUtils.getFullStackTrace(e);
+            return ExceptionUtils.getStackTrace(e);
         }
 
     }

@@ -6,7 +6,9 @@ import network.darkhelmet.prism.actionlibs.RecordingQueue;
 import io.github.rothes.prismcn.PrismLocalization;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.ChestBoat;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
@@ -17,6 +19,7 @@ import org.bukkit.event.vehicle.VehicleCreateEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 import java.util.UUID;
@@ -49,6 +52,11 @@ public class PrismVehicleEvents implements Listener {
 
         final String coord_key = loc.getBlockX() + ":" + loc.getBlockY() + ":" + loc.getBlockZ();
         String value = plugin.preplannedVehiclePlacement.get(coord_key);
+        if (value == null) {
+            // Not direct put needs y + 1
+            final String coord_key_1 = loc.getBlockX() + ":" + (loc.getBlockY() + 1) + ":" + loc.getBlockZ();
+            value = plugin.preplannedVehiclePlacement.get(coord_key_1);
+        }
         UUID uuid = null;
         try {
             uuid = UUID.fromString(value);
@@ -62,6 +70,8 @@ public class PrismVehicleEvents implements Listener {
                 return;
             }
             RecordingQueue.addToQueue(ActionFactory.createVehicle("vehicle-place", vehicle, player));
+        } else {
+            RecordingQueue.addToQueue(ActionFactory.createVehicle("vehicle-place", vehicle, "unknown"));
         }
     }
 
@@ -86,6 +96,17 @@ public class PrismVehicleEvents implements Listener {
                 Entity passenger = passengers.get(0);
                 handlePlayerAction(passenger, vehicle, "vehicle-break");
             }
+        }
+
+        if (vehicle instanceof ChestBoat) {
+            ChestBoat chestBoat = (ChestBoat) vehicle;
+            for (final ItemStack item : chestBoat.getInventory().getContents()) {
+                if (item != null && item.getType() != Material.AIR) {
+                    RecordingQueue.addToQueue(ActionFactory.createItemStack("item-drop", item, item.getAmount(), -1,
+                            null, vehicle.getLocation(), "chest boat"));
+                }
+            }
+
         }
     }
 
