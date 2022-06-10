@@ -5,7 +5,9 @@ import network.darkhelmet.prism.actionlibs.ActionFactory;
 import network.darkhelmet.prism.actionlibs.RecordingQueue;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.ChestBoat;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
@@ -16,6 +18,7 @@ import org.bukkit.event.vehicle.VehicleCreateEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 import java.util.UUID;
@@ -83,6 +86,17 @@ public class PrismVehicleEvents implements Listener {
                 Entity passenger = passengers.get(0);
                 handlePlayerAction(passenger, vehicle, "vehicle-break");
             }
+        }
+
+        if (vehicle instanceof ChestBoat) {
+            ChestBoat chestBoat = (ChestBoat) vehicle;
+            for (final ItemStack item : chestBoat.getInventory().getContents()) {
+                if (item != null && item.getType() != Material.AIR) {
+                    RecordingQueue.addToQueue(ActionFactory.createItemStack("item-drop", item, item.getAmount(), -1,
+                            null, vehicle.getLocation(), "chest boat"));
+                }
+            }
+
         }
     }
 

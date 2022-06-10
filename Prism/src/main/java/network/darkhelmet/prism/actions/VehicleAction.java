@@ -5,6 +5,7 @@ import network.darkhelmet.prism.api.ChangeResultType;
 import network.darkhelmet.prism.api.PrismParameters;
 import network.darkhelmet.prism.appliers.ChangeResultImpl;
 import org.bukkit.entity.Boat;
+import org.bukkit.entity.ChestBoat;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
@@ -34,6 +35,8 @@ public class VehicleAction extends GenericAction {
             vehicleName = "tnt minecart";
         } else if (vehicle instanceof StorageMinecart) {
             vehicleName = "storage minecart";
+        } else if (vehicle instanceof ChestBoat) {
+            vehicleName = "chest boat";
         } else {
             vehicleName = vehicle.getType().name().toLowerCase();
         }
@@ -92,6 +95,9 @@ public class VehicleAction extends GenericAction {
                 break;
             case "boat":
                 vehicle = getWorld().spawn(getLoc(), Boat.class);
+                break;
+            case "chest boat":
+                vehicle = getWorld().spawn(getLoc(), ChestBoat.class);
                 break;
             default:
                 //null
