@@ -4,6 +4,8 @@ import network.darkhelmet.prism.api.ChangeResult;
 import network.darkhelmet.prism.api.ChangeResultType;
 import network.darkhelmet.prism.api.PrismParameters;
 import network.darkhelmet.prism.appliers.ChangeResultImpl;
+import org.apache.commons.lang3.EnumUtils;
+import org.bukkit.TreeSpecies;
 import org.bukkit.entity.Boat;
 import org.bukkit.entity.ChestBoat;
 import org.bukkit.entity.Entity;
@@ -17,7 +19,8 @@ import org.bukkit.entity.minecart.SpawnerMinecart;
 import org.bukkit.entity.minecart.StorageMinecart;
 
 public class VehicleAction extends GenericAction {
-    private String vehicleName;
+
+    private VehicleActionData actionData;
 
     /**
      * Set the vehicle.
@@ -25,20 +28,27 @@ public class VehicleAction extends GenericAction {
      */
     public void setVehicle(Entity vehicle) {
 
+        actionData = new VehicleActionData();
         if (vehicle instanceof PoweredMinecart) {
-            vehicleName = "powered minecart";
+            actionData.vehicleName = "powered minecart";
         } else if (vehicle instanceof HopperMinecart) {
-            vehicleName = "minecart hopper";
+            actionData.vehicleName = "minecart hopper";
         } else if (vehicle instanceof SpawnerMinecart) {
-            vehicleName = "spawner minecart";
+            actionData.vehicleName = "spawner minecart";
         } else if (vehicle instanceof ExplosiveMinecart) {
-            vehicleName = "tnt minecart";
+            actionData.vehicleName = "tnt minecart";
         } else if (vehicle instanceof StorageMinecart) {
-            vehicleName = "storage minecart";
+            actionData.vehicleName = "storage minecart";
         } else if (vehicle instanceof ChestBoat) {
-            vehicleName = "chest boat";
+            actionData.vehicleName = "chest boat";
         } else {
-            vehicleName = vehicle.getType().name().toLowerCase();
+            actionData.vehicleName = vehicle.getType().name().toLowerCase();
+        }
+
+        if (vehicle instanceof Boat) {
+            Boat boat = (Boat) vehicle;
+            TreeSpecies woodType = boat.getWoodType();
+            actionData.woodType = woodType.name();
         }
     }
 
@@ -47,22 +57,28 @@ public class VehicleAction extends GenericAction {
      */
     @Override
     public String getNiceName() {
-        return vehicleName;
+        return actionData.vehicleName;
     }
 
     @Override
     public boolean hasExtraData() {
-        return vehicleName != null;
+        return true;
     }
 
     @Override
     public String serialize() {
-        return vehicleName;
+        return gson().toJson(actionData);
     }
 
     @Override
     public void deserialize(String data) {
-        vehicleName = data;
+        if (data.startsWith("{")) {
+            actionData = gson().fromJson(data, VehicleActionData.class);
+        } else {
+            // Old version support
+            actionData = new VehicleActionData();
+            actionData.vehicleName = data;
+        }
     }
 
     /**
@@ -71,7 +87,7 @@ public class VehicleAction extends GenericAction {
     @Override
     public ChangeResult applyRollback(Player player, PrismParameters parameters, boolean isPreview) {
         Entity vehicle = null;
-        switch (vehicleName) {
+        switch (actionData.vehicleName) {
             case "command block minecart":
                 vehicle = getWorld().spawn(getLoc(), CommandMinecart.class);
                 break;
@@ -102,9 +118,20 @@ public class VehicleAction extends GenericAction {
             default:
                 //null
         }
-        if (vehicle != null) {
-            return new ChangeResultImpl(ChangeResultType.APPLIED, null);
+        if (vehicle == null) {
+            return new ChangeResultImpl(ChangeResultType.SKIPPED, null);
         }
-        return new ChangeResultImpl(ChangeResultType.SKIPPED, null);
+
+        if (vehicle instanceof Boat && actionData != null) {
+            Boat boat = (Boat) vehicle;
+            boat.setWoodType(EnumUtils.getEnum(TreeSpecies.class, actionData.woodType, TreeSpecies.GENERIC));
+        }
+
+        return new ChangeResultImpl(ChangeResultType.APPLIED, null);
+    }
+
+    public static class VehicleActionData {
+        String vehicleName;
+        String woodType;
     }
 }
