@@ -4,7 +4,7 @@ import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.database.IdMapQuery;
 import network.darkhelmet.prism.database.PrismDataSource;
 import network.darkhelmet.prism.utils.IntPair;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
