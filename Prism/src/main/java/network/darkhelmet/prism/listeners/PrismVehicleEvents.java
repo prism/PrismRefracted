@@ -49,6 +49,11 @@ public class PrismVehicleEvents implements Listener {
 
         final String coord_key = loc.getBlockX() + ":" + loc.getBlockY() + ":" + loc.getBlockZ();
         String value = plugin.preplannedVehiclePlacement.get(coord_key);
+        if (value == null) {
+            // Not direct put needs y + 1
+            final String coord_key_1 = loc.getBlockX() + ":" + (loc.getBlockY() + 1) + ":" + loc.getBlockZ();
+            value = plugin.preplannedVehiclePlacement.get(coord_key_1);
+        }
         UUID uuid = null;
         try {
             uuid = UUID.fromString(value);
@@ -62,6 +67,8 @@ public class PrismVehicleEvents implements Listener {
                 return;
             }
             RecordingQueue.addToQueue(ActionFactory.createVehicle("vehicle-place", vehicle, player));
+        } else {
+            RecordingQueue.addToQueue(ActionFactory.createVehicle("vehicle-place", vehicle, "unknown"));
         }
     }
 
