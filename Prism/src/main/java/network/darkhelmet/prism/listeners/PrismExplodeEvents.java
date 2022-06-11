@@ -199,13 +199,14 @@ public class PrismExplodeEvents implements Listener {
 
         Location blockCorner = entity.getLocation().clone().subtract(0.5, 0, 0.5);
         Location nearby = null;
+        Location self = null;
         for (Object key : weakCache.asMap().keySet()) {
             if (key instanceof Location) {
                 Location loc = (Location) key;
                 if (loc.getWorld().equals(blockCorner.getWorld())) {
                     if (loc.distance(blockCorner) < 0.5) {
-                        addCache(entity, key, null, null);
-                        return;
+                        // Self is mostly tnt, useless.
+                        self = loc;
                     } else if (loc.distance(blockCorner) < 1.5) {
                         // Can be redstone or something nearby
                         nearby = loc;
@@ -215,6 +216,10 @@ public class PrismExplodeEvents implements Listener {
         }
         if (nearby != null) {
             addCache(entity, nearby, null, null);
+            return;
+        }
+        if (self != null) {
+            addCache(entity, self, null, null);
         }
     }
     @EventHandler(priority = EventPriority.MONITOR)
