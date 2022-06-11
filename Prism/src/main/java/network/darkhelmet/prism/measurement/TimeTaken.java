@@ -2,7 +2,7 @@ package network.darkhelmet.prism.measurement;
 
 import network.darkhelmet.prism.Prism;
 
-import java.util.Calendar;
+import java.math.BigDecimal;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
@@ -21,23 +21,14 @@ public class TimeTaken {
     }
 
     /**
-     * Get the timestamp.
-     * @return long
-     */
-    protected long getTimestamp() {
-        final Calendar lCDateTime = Calendar.getInstance();
-        return lCDateTime.getTimeInMillis();
-    }
-
-    /**
      * Get the event.
      * @param eventname String
      */
     public void recordTimedEvent(String eventname) {
-        if (!plugin.getConfig().getBoolean("prism.debug")) {
+        if (!Prism.isDebug()) {
             return;
         }
-        eventsTimed.put(getTimestamp(), eventname);
+        eventsTimed.put(System.nanoTime(), eventname);
     }
 
     protected void resetEventList() {
@@ -54,7 +45,7 @@ public class TimeTaken {
     public void printTimeRecord() {
 
         // record timed events to log
-        if (plugin.getConfig().getBoolean("prism.debug")) {
+        if (Prism.isDebug()) {
             final TreeMap<Long, String> timers = plugin.eventTimer.getEventsTimedList();
             if (timers.size() > 0) {
                 long lastTime = 0;
@@ -66,10 +57,10 @@ public class TimeTaken {
                         diff = entry.getKey() - lastTime;
                         total += diff;
                     }
-                    Prism.debug(entry.getValue() + " " + diff + "ms");
+                    Prism.debug(entry.getValue() + ": " + new BigDecimal(diff / 1_000_000_000f).toPlainString() + "s");
                     lastTime = entry.getKey();
                 }
-                Prism.debug("Total time: " + total + "ms");
+                Prism.debug("Total time: " + new BigDecimal(total / 1_000_000_000f).toPlainString() + "s");
             }
         }
         plugin.eventTimer.resetEventList();
