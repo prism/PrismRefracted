@@ -67,7 +67,11 @@ public class PrismVehicleEvents implements Listener {
                 return;
             }
             RecordingQueue.addToQueue(ActionFactory.createVehicle("vehicle-place", vehicle, player));
+
         } else {
+            if (!Prism.getIgnore().event("vehicle-place", loc.getWorld(), "unknown")) {
+                return;
+            }
             RecordingQueue.addToQueue(ActionFactory.createVehicle("vehicle-place", vehicle, "unknown"));
         }
     }
