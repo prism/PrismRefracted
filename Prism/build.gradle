@@ -61,6 +61,7 @@ shadowJar {
         exclude(dependency('org.slf4j:.*'))
         exclude(dependency('org.intellij:.*'))
         exclude(dependency('org.jetbrains:.*'))
+        exclude(dependency('com.google.code.gson:.*'))
     }
 
     relocate 'io.papermc.lib', 'network.darkhelmet.prism.paperlib'
