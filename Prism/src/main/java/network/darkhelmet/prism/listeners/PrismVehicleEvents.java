@@ -100,7 +100,7 @@ public class PrismVehicleEvents implements Listener {
             for (final ItemStack item : chestBoat.getInventory().getContents()) {
                 if (item != null && item.getType() != Material.AIR) {
                     RecordingQueue.addToQueue(ActionFactory.createItemStack("item-drop", item, item.getAmount(), -1,
-                            null, vehicle.getLocation(), "chest boat"));
+                            null, vehicle.getLocation(), chestBoat.getWoodType() + " chest boat"));
                 }
             }
 
