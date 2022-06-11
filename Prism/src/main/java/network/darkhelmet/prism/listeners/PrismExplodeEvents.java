@@ -518,7 +518,7 @@ public class PrismExplodeEvents implements Listener {
     public static class Cause {
 
         @NotNull final String action;
-        @NotNull final String actor;
+        @Nullable final String actor;
         @Nullable final Material blockType;
 
         Cause(String action, String actor, Material blockType) {
