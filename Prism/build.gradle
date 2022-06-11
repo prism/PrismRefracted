@@ -65,12 +65,14 @@ shadowJar {
         exclude(dependency('org.slf4j:.*'))
         exclude(dependency('org.intellij:.*'))
         exclude(dependency('org.jetbrains:.*'))
+        exclude(dependency('com.google.code.gson:.*'))
     }
 
     relocate 'io.papermc.lib', 'network.darkhelmet.prism.paperlib'
     relocate 'com.zaxxer', 'network.darkhelmet.prism.zaxxer'
     relocate 'net.kyori', 'network.darkhelmet.prism.kyori'
     relocate 'org.kitteh', 'network.darkhelmet.prism.kitteh'
+    relocate 'org.apache', 'network.darkhelmet.prism.apache'
     relocate 'org.bstats', 'io.github.rothes.prismcn.lib.org.bstats'
 
     minimize()
@@ -84,15 +86,16 @@ runServer {
 }
 
 gradle.buildFinished {
+    // Clean Gradle resources cache
     deleteDirectory(new File(project.buildDir, "resources/"))
 }
 
-boolean deleteDirectory(File directoryToBeDeleted) {
-    File[] allContents = directoryToBeDeleted.listFiles();
-    if (allContents != null) {
-        for (File file : allContents) {
+boolean deleteDirectory(File directory) {
+    File[] contents = directory.listFiles();
+    if (contents != null) {
+        for (File file : contents) {
             deleteDirectory(file);
         }
     }
-    return directoryToBeDeleted.delete();
+    return directory.delete();
 }

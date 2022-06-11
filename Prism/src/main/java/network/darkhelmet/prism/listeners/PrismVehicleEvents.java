@@ -70,8 +70,12 @@ public class PrismVehicleEvents implements Listener {
                 return;
             }
             RecordingQueue.addToQueue(ActionFactory.createVehicle("vehicle-place", vehicle, player));
+
         } else {
-            RecordingQueue.addToQueue(ActionFactory.createVehicle("vehicle-place", vehicle, "unknown"));
+            if (!Prism.getIgnore().event("vehicle-place", loc.getWorld(), "未知")) {
+                return;
+            }
+            RecordingQueue.addToQueue(ActionFactory.createVehicle("vehicle-place", vehicle, "未知"));
         }
     }
 
@@ -102,8 +106,33 @@ public class PrismVehicleEvents implements Listener {
             ChestBoat chestBoat = (ChestBoat) vehicle;
             for (final ItemStack item : chestBoat.getInventory().getContents()) {
                 if (item != null && item.getType() != Material.AIR) {
-                    RecordingQueue.addToQueue(ActionFactory.createItemStack("item-drop", item, item.getAmount(), -1,
-                            null, vehicle.getLocation(), "chest boat"));
+                    String woodType;
+                    switch (chestBoat.getWoodType()) {
+                        case GENERIC:
+                            woodType = "橡木";
+                            break;
+                        case REDWOOD:
+                            woodType = "红树木";
+                            break;
+                        case BIRCH:
+                            woodType = "白桦木";
+                            break;
+                        case JUNGLE:
+                            woodType = "从林木";
+                            break;
+                        case ACACIA:
+                            woodType = "金合欢木";
+                            break;
+                        case DARK_OAK:
+                            woodType = "深色橡木";
+                            break;
+                        default:
+                            woodType = chestBoat.getWoodType().name().toLowerCase() + " ";
+                            break;
+                    }
+                    RecordingQueue.addToQueue(ActionFactory.createItemStack("item-drop", item,
+                            item.getAmount(), -1, null, vehicle.getLocation(),
+                            woodType + "运输船"));
                 }
             }
 
