@@ -1,15 +1,7 @@
 allprojects {
-    version("3.3.0-CN-b2")
-    plugins.apply(VersionIdPlugin.class)
+    version("3.4.0-CN-b1")
 }
 
 gradle.buildFinished {
     project.buildDir.deleteDir()
-}
-
-class VersionIdPlugin implements Plugin<Project> {
-    @Override
-    void apply(Project project) {
-        project.ext.versionId = 14.toString()
-    }
 }

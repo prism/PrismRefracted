@@ -1,19 +1,27 @@
 {
   "Version_Channels": {
     "Stable": {
-      "Latest_Version_Number": 14,
+      "Latest_Version_Number": 15,
       "Actions": [],
       "Log_Level": "Info",
       "Message": {
-        "zh-CN": "§bPrism 折射 中文版有新版本 (\"3.3.0-CN-b2\") 了!\n§b请更新您的插件: https://beta.mcbbs.net/resource/servermod/qcnedi83/"
+        "zh-CN": "§bPrism 折射 中文版有新版本 (\"3.4.0-CN-b1\") 了!\n§b请更新您的插件: https://beta.mcbbs.net/resource/servermod/qcnedi83"
+      }
+    },
+    "Stable--1.17-1.18": {
+      "Latest_Version_Number": 15,
+      "Actions": [],
+      "Log_Level": "Info",
+      "Message": {
+        "zh-CN": "§bPrism 折射 中文版 1.17-1.18 有新版本 (\"3.4.0-CN-b1\") 了!\n§b请更新您的插件: https://beta.mcbbs.net/resource/servermod/qcnedi83"
       }
     },
     "Stable-1.16": {
-      "Latest_Version_Number": 14,
+      "Latest_Version_Number": 15,
       "Actions": [],
       "Log_Level": "Info",
       "Message": {
-        "zh-CN": "§bPrism 折射 中文版 1.16 有新版本 (\"3.3.0-CN-b2\") 了!\n§b请更新您的插件: https://beta.mcbbs.net/resource/servermod/qcnedi83/"
+        "zh-CN": "§bPrism 折射 中文版 1.16 有新版本 (\"3.4.0-CN-b1\") 了!\n§b请更新您的插件: https://beta.mcbbs.net/resource/servermod/qcnedi83"
       }
     }
   },
