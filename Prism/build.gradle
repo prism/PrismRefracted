@@ -79,3 +79,18 @@ runServer {
     // Your plugin's jar (or shadowJar if present) will be used automatically.
     minecraftVersion("1.19")
 }
+
+gradle.buildFinished {
+    // Clean Gradle resources cache
+    deleteDirectory(new File(project.buildDir, "resources/"))
+}
+
+boolean deleteDirectory(File directory) {
+    File[] contents = directory.listFiles();
+    if (contents != null) {
+        for (File file : contents) {
+            deleteDirectory(file);
+        }
+    }
+    return directory.delete();
+}
