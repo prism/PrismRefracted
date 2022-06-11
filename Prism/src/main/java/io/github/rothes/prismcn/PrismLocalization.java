@@ -61,7 +61,7 @@ public class PrismLocalization {
     }
 
     public String getMaterialLocale(String type) {
-        return materialLocalize.getOrDefault(type, type.toLowerCase(Locale.ROOT));
+        return materialLocalize.getOrDefault(type, type.toLowerCase(Locale.ROOT).replace("_", " "));
     }
 
     public boolean hasEntityLocale(String type) {
@@ -69,7 +69,7 @@ public class PrismLocalization {
     }
 
     public String getEntityLocale(String type) {
-        return entityLocalize.getOrDefault(type, type.toLowerCase(Locale.ROOT));
+        return entityLocalize.getOrDefault(type, type.toLowerCase(Locale.ROOT).replace("_", " "));
     }
 
     public String restoreEntityLocale(String type) {

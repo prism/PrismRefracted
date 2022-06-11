@@ -30,6 +30,7 @@ import org.bukkit.entity.Wither;
 import org.bukkit.entity.minecart.PoweredMinecart;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.EntityBlockFormEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityBreakDoorEvent;
@@ -38,7 +39,6 @@ import org.bukkit.event.entity.EntityDamageByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.EntityUnleashEvent;
 import org.bukkit.event.entity.PlayerLeashEntityEvent;
@@ -65,16 +65,18 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.UUID;
 
-public class PrismEntityEvents extends BaseListener {
+public class PrismEntityEvents implements Listener {
+
+    private final Prism plugin;
 
     private final PrismLocalization prismLocalization;
 
     /**
      * Constructor.
-     * @param plugin Plugin
+     * @param plugin Prism
      */
     public PrismEntityEvents(Prism plugin) {
-        super(plugin);
+        this.plugin = plugin;
         prismLocalization = plugin.getPrismLocalization();
     }
 
@@ -985,82 +987,5 @@ public class PrismEntityEvents extends BaseListener {
             RecordingQueue.addToQueue(ActionFactory.createBlockChange("entity-form", block.getType(),
                     block.getBlockData(), newState, entity));
         }
-    }
-
-    /**
-     * EntityExplodeEvent.
-     * @param event EntityExplodeEvent
-     */
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onEntityExplodeChangeBlock(final EntityExplodeEvent event) {
-
-        if (event.blockList().isEmpty()) {
-            return;
-        }
-        String name;
-        String action = "entity-explode";
-        if (event.getEntity() != null) {
-            if (event.getEntity() instanceof Creeper) {
-                if (!Prism.getIgnore().event("creeper-explode", event.getEntity().getWorld())) {
-                    return;
-                }
-                action = "creeper-explode";
-                name = "苦力怕";
-            } else if (event.getEntity() instanceof TNTPrimed) {
-                if (!Prism.getIgnore().event("tnt-explode", event.getEntity().getWorld())) {
-                    return;
-                }
-                action = "tnt-explode";
-                Entity source = ((TNTPrimed) event.getEntity()).getSource();
-                name = followTntTrail(source);
-            } else if (event.getEntity() instanceof EnderDragon) {
-                if (!Prism.getIgnore().event("dragon-eat", event.getEntity().getWorld())) {
-                    return;
-                }
-                action = "dragon-eat";
-                name = "末影龙";
-            } else {
-                if (!Prism.getIgnore().event("entity-explode", event.getLocation().getWorld())) {
-                    return;
-                }
-                try {
-                    name = event.getEntity().getType().name().toLowerCase().replace("_", " ");
-                    name = name.length() > 15 ? name.substring(0, 15) : name; // I
-                } catch (final NullPointerException e) {
-                    name = "未知";
-                }
-            }
-        } else {
-            if (!Prism.getIgnore().event("entity-explode", event.getLocation().getWorld())) {
-                return;
-            }
-            name = "魔法";
-        }
-        contructBlockEvent(action,name,event.blockList());
-    }
-
-    private String followTntTrail(Entity initial) {
-        int counter = 10000000;
-
-        while (initial != null) {
-            if (initial instanceof Player) {
-                return initial.getName();
-            } else if (initial instanceof TNTPrimed) {
-                initial = (((TNTPrimed) initial).getSource());
-                if (counter < 0 && initial != null) {
-                    Location last = initial.getLocation();
-                    plugin.getLogger().warning("连锁TNT已超过一百万, 不会继续跟踪!");
-                    plugin.getLogger().warning("最后一个TNT在 " + last.getX() + ", " + last.getY() + ". "
-                            + last.getZ() + " 世界为 " + last.getWorld());
-                    return "TNT";
-                }
-                counter--;
-            } else {
-                return prismLocalization.hasEntityLocale(initial.getType().name()) ?
-                        prismLocalization.getEntityLocale(initial.getType().name()) : initial.getType().name();
-            }
-        }
-
-        return "TNT";
     }
 }
