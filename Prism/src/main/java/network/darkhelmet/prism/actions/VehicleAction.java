@@ -5,7 +5,6 @@ import network.darkhelmet.prism.api.ChangeResultType;
 import network.darkhelmet.prism.api.PrismParameters;
 import network.darkhelmet.prism.appliers.ChangeResultImpl;
 import network.darkhelmet.prism.utils.MiscUtils;
-import org.apache.commons.lang3.EnumUtils;
 import org.bukkit.TreeSpecies;
 import org.bukkit.entity.Boat;
 import org.bukkit.entity.ChestBoat;
