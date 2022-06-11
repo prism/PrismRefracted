@@ -4,6 +4,7 @@ import network.darkhelmet.prism.api.ChangeResult;
 import network.darkhelmet.prism.api.ChangeResultType;
 import network.darkhelmet.prism.api.PrismParameters;
 import network.darkhelmet.prism.appliers.ChangeResultImpl;
+import network.darkhelmet.prism.utils.MiscUtils;
 import org.apache.commons.lang3.EnumUtils;
 import org.bukkit.TreeSpecies;
 import org.bukkit.entity.Boat;
@@ -124,7 +125,7 @@ public class VehicleAction extends GenericAction {
 
         if (vehicle instanceof Boat && actionData != null) {
             Boat boat = (Boat) vehicle;
-            boat.setWoodType(EnumUtils.getEnum(TreeSpecies.class, actionData.woodType, TreeSpecies.GENERIC));
+            boat.setWoodType(MiscUtils.getEnum(actionData.woodType, TreeSpecies.GENERIC));
         }
 
         return new ChangeResultImpl(ChangeResultType.APPLIED, null);
