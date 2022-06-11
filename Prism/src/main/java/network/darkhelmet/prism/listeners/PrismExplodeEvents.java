@@ -431,7 +431,7 @@ public class PrismExplodeEvents implements Listener {
             if (entity == null) {
                 entityName = "魔法";
             } else {
-                entityName = entity.getName().toLowerCase(Locale.ROOT);
+                entityName = CNLocalization.getEntityLocale(entity.getType());
             }
         }
 
