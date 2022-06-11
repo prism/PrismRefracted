@@ -1,5 +1,6 @@
 package network.darkhelmet.prism.listeners;
 
+import io.github.rothes.prismcn.CNLocalization;
 import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.actionlibs.ActionFactory;
 import network.darkhelmet.prism.actionlibs.RecordingQueue;
@@ -111,9 +112,7 @@ public class PrismWorldEvents implements Listener {
             RecordingQueue.addToQueue(ActionFactory.createPortal(type, newBlock, oldBlock, (Player) event.getEntity()));
         } else {
             RecordingQueue.addToQueue(ActionFactory.createPortal(type, newBlock, oldBlock
-                    , Prism.getInstance().getPrismLocalization().hasEntityLocale(e.getType().name()) ?
-                            Prism.getInstance().getPrismLocalization().getEntityLocale(e.getType().name())
-                            : e.getName().toLowerCase()));
+                    , CNLocalization.getEntityLocale(e.getType())));
         }
     }
 }

@@ -2,7 +2,7 @@ package network.darkhelmet.prism.utils;
 
 import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.api.objects.MaterialState;
-import io.github.rothes.prismcn.PrismLocalization;
+import io.github.rothes.prismcn.CNLocalization;
 import org.bukkit.Bukkit;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
@@ -21,7 +21,6 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionEffect;
 
 import java.util.EnumSet;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -31,7 +30,6 @@ public class ItemUtils {
 
     private static final EnumSet<Material> badWands = EnumSet.of(Material.WATER, Material.LAVA, Material.FIRE,
           Material.FLINT_AND_STEEL, Material.NETHER_PORTAL, Material.END_PORTAL);
-    private static PrismLocalization prismLocalization;
 
     public static boolean isBadWand(Material material) {
         return badWands.contains(material);
@@ -435,9 +433,7 @@ public class ItemUtils {
      */
     public static String getItemFullNiceName(ItemStack item) {
 
-        StringBuilder itemName = new StringBuilder(prismLocalization().hasMaterialLocale(item.getType().name()) ?
-        prismLocalization().getMaterialLocale(item.getType().name()) : item.getType().name().toLowerCase(Locale.ENGLISH)
-              .replace('_', ' '));
+        StringBuilder itemName = new StringBuilder(CNLocalization.getMaterialLocale(item.getType()));
 
         ItemMeta meta = null;
 
@@ -571,10 +567,4 @@ public class ItemUtils {
         }
     }
 
-    private static PrismLocalization prismLocalization() {
-        if (prismLocalization == null) {
-            prismLocalization = Prism.getInstance().getPrismLocalization();
-        }
-        return prismLocalization;
-    }
 }

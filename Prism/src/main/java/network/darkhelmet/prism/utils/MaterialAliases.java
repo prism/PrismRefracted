@@ -5,7 +5,7 @@ import network.darkhelmet.prism.api.objects.MaterialState;
 import network.darkhelmet.prism.database.IdMapQuery;
 import network.darkhelmet.prism.database.sql.SqlIdMapQuery;
 import network.darkhelmet.prism.utils.block.Utilities;
-import io.github.rothes.prismcn.PrismLocalization;
+import io.github.rothes.prismcn.CNLocalization;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
@@ -33,8 +33,6 @@ public class MaterialAliases {
     private final Map<Material, Set<IntPair>> allIdsCache = new HashMap<>();
 
     private final HashMap<String, String> itemAliases = new HashMap<>();
-
-    private final PrismLocalization prismLocalization;
 
     /**
      * Load the yml file and save config to hashmap.
@@ -72,8 +70,6 @@ public class MaterialAliases {
         } else {
             Prism.warn("错误: 物品库无法加载内部物品别名表.");
         }
-
-        prismLocalization = Prism.getInstance().getPrismLocalization();
     }
 
     public void initAllMaterials() {
@@ -326,8 +322,7 @@ public class MaterialAliases {
             itemName = itemAliases.get(key);
         }
         if (itemName == null) {
-            itemName = prismLocalization.hasMaterialLocale(material.name())?
-                    prismLocalization.getMaterialLocale(material.name()) : material.name().toLowerCase().replace("_", " ");
+            itemName = CNLocalization.getMaterialLocale(material);
         }
         return itemName;
     }

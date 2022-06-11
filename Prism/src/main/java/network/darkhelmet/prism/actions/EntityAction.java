@@ -1,6 +1,7 @@
 package network.darkhelmet.prism.actions;
 
 import com.google.gson.JsonObject;
+import io.github.rothes.prismcn.CNLocalization;
 import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.actions.entity.EntitySerializer;
 import network.darkhelmet.prism.actions.entity.EntitySerializerFactory;
@@ -26,7 +27,7 @@ public class EntityAction extends GenericAction {
     @Nullable
     public static EntityType getEntityType(String name) {
         try {
-            return EntityType.valueOf(Prism.getInstance().getPrismLocalization().restoreEntityLocale(name.toUpperCase()));
+            return EntityType.valueOf(CNLocalization.restoreEntityLocale(name.toUpperCase()));
         } catch (final IllegalArgumentException e) {
             // In pre-RC builds we logged the wrong name of entities, sometimes
             // the names

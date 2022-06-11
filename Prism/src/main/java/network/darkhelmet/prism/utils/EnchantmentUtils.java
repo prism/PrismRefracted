@@ -1,5 +1,6 @@
 package network.darkhelmet.prism.utils;
 
+import io.github.rothes.prismcn.CNLocalization;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
@@ -92,87 +93,7 @@ public class EnchantmentUtils {
      */
     public static String getClientSideEnchantmentName(Enchantment enchantment, int level) {
 
-        String enchantName;
-
-        if (enchantment.equals(Enchantment.PROTECTION_ENVIRONMENTAL)) {
-            enchantName = "保护";
-        } else if (enchantment.equals(Enchantment.PROTECTION_FIRE)) {
-            enchantName = "火焰保护";
-        } else if (enchantment.equals(Enchantment.PROTECTION_FALL)) {
-            enchantName = "摔落保护";
-        } else if (enchantment.equals(Enchantment.PROTECTION_EXPLOSIONS)) {
-            enchantName = "爆炸保护";
-        } else if (enchantment.equals(Enchantment.PROTECTION_PROJECTILE)) {
-            enchantName = "弹射物保护";
-        } else if (enchantment.equals(Enchantment.OXYGEN)) {
-            enchantName = "水下呼吸";
-        } else if (enchantment.equals(Enchantment.WATER_WORKER)) {
-            enchantName = "水下速掘";
-        } else if (enchantment.equals(Enchantment.THORNS)) {
-            enchantName = "荆棘";
-        } else if (enchantment.equals(Enchantment.DEPTH_STRIDER)) {
-            enchantName = "深海探索者";
-        } else if (enchantment.equals(Enchantment.FROST_WALKER)) {
-            enchantName = "冰霜行者";
-        } else if (enchantment.equals(Enchantment.BINDING_CURSE)) {
-            enchantName = "绑定诅咒";
-        } else if (enchantment.equals(Enchantment.DAMAGE_ALL)) {
-            enchantName = "锋利";
-        } else if (enchantment.equals(Enchantment.DAMAGE_UNDEAD)) {
-            enchantName = "亡灵杀手";
-        } else if (enchantment.equals(Enchantment.DAMAGE_ARTHROPODS)) {
-            enchantName = "节肢杀手";
-        } else if (enchantment.equals(Enchantment.KNOCKBACK)) {
-            enchantName = "击退";
-        } else if (enchantment.equals(Enchantment.FIRE_ASPECT)) {
-            enchantName = "火焰附加";
-        } else if (enchantment.equals(Enchantment.LOOT_BONUS_MOBS)) {
-            enchantName = "掠夺";
-        } else if (enchantment.equals(Enchantment.SWEEPING_EDGE)) {
-            enchantName = "横扫之刃";
-        } else if (enchantment.equals(Enchantment.DIG_SPEED)) {
-            enchantName = "效率";
-        } else if (enchantment.equals(Enchantment.SILK_TOUCH)) {
-            enchantName = "精准采集";
-        } else if (enchantment.equals(Enchantment.DURABILITY)) {
-            enchantName = "耐久";
-        } else if (enchantment.equals(Enchantment.LOOT_BONUS_BLOCKS)) {
-            enchantName = "时运";
-        } else if (enchantment.equals(Enchantment.ARROW_DAMAGE)) {
-            enchantName = "力量";
-        } else if (enchantment.equals(Enchantment.ARROW_KNOCKBACK)) {
-            enchantName = "冲击";
-        } else if (enchantment.equals(Enchantment.ARROW_FIRE)) {
-            enchantName = "火矢";
-        } else if (enchantment.equals(Enchantment.ARROW_INFINITE)) {
-            enchantName = "无限";
-        } else if (enchantment.equals(Enchantment.LUCK)) {
-            enchantName = "海之眷顾";
-        } else if (enchantment.equals(Enchantment.LURE)) {
-            enchantName = "饵钓";
-        } else if (enchantment.equals(Enchantment.LOYALTY)) {
-            enchantName = "忠诚";
-        } else if (enchantment.equals(Enchantment.IMPALING)) {
-            enchantName = "穿刺";
-        } else if (enchantment.equals(Enchantment.RIPTIDE)) {
-            enchantName = "激流";
-        } else if (enchantment.equals(Enchantment.CHANNELING)) {
-            enchantName = "引雷";
-        } else if (enchantment.equals(Enchantment.MULTISHOT)) {
-            enchantName = "多重射击";
-        } else if (enchantment.equals(Enchantment.QUICK_CHARGE)) {
-            enchantName = "快速装填";
-        } else if (enchantment.equals(Enchantment.PIERCING)) {
-            enchantName = "穿透";
-        } else if (enchantment.equals(Enchantment.MENDING)) {
-            enchantName = "经验修补";
-        } else if (enchantment.equals(Enchantment.VANISHING_CURSE)) {
-            enchantName = "消失诅咒";
-        } else if (enchantment.equals(Enchantment.SOUL_SPEED)) {
-            enchantName = "灵魂疾行";
-        } else {
-            enchantName = enchantment.getKey().getKey().toLowerCase().replace("_", " ");
-        }
+        String enchantName = CNLocalization.getEnchantmentLocale(enchantment);
         switch (level) {
             case 1:
                 enchantName += " I";

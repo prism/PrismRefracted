@@ -1,7 +1,6 @@
 package network.darkhelmet.prism.utils;
 
-import network.darkhelmet.prism.Prism;
-import io.github.rothes.prismcn.PrismLocalization;
+import io.github.rothes.prismcn.CNLocalization;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
@@ -22,8 +21,6 @@ import org.bukkit.projectiles.ProjectileSource;
 import java.util.Objects;
 
 public class DeathUtils {
-
-    private static PrismLocalization prismLocalization = null;
 
     /**
      * Returns the name of what caused an entity to die.
@@ -160,9 +157,7 @@ public class DeathUtils {
                 return "狼";
             }
         } else {
-            return prismLocalization().hasEntityLocale(entity.getType().name()) ?
-                    prismLocalization().getEntityLocale(entity.getType().name()) :
-                    entity.getType().name().toLowerCase();
+            return CNLocalization.getEntityLocale(entity.getType());
         }
     }
 
@@ -213,10 +208,7 @@ public class DeathUtils {
         String deathWeapon = "";
         if (entity.getKiller() != null) {
             ItemStack weapon = entity.getKiller().getInventory().getItemInMainHand();
-            deathWeapon = prismLocalization() != null && prismLocalization().hasMaterialLocale(weapon.getType().name())?
-                    prismLocalization().getMaterialLocale(weapon.getType().name())
-                    : weapon.getType().toString().toLowerCase();
-            deathWeapon = deathWeapon.replaceAll("_", " ");
+            deathWeapon = CNLocalization.getMaterialLocale(weapon.getType());
             if (deathWeapon.equalsIgnoreCase("air")) {
                 deathWeapon = " 手";
             }
@@ -224,10 +216,4 @@ public class DeathUtils {
         return deathWeapon;
     }
 
-    private static PrismLocalization prismLocalization() {
-        if (prismLocalization == null) {
-            prismLocalization = Prism.getInstance().getPrismLocalization();
-        }
-        return prismLocalization;
-    }
 }

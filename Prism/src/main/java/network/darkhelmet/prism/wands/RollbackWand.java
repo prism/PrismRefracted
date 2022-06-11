@@ -1,5 +1,6 @@
 package network.darkhelmet.prism.wands;
 
+import io.github.rothes.prismcn.CNLocalization;
 import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.actionlibs.QueryParameters;
 import network.darkhelmet.prism.actionlibs.QueryResult;
@@ -52,9 +53,7 @@ public class RollbackWand extends QueryWandBase {
             rb.apply();
         } else {
             final String space_name = (block.getType().equals(Material.AIR) ? "空方块"
-                    : prismLocalization.hasMaterialLocale(block.getType().name())?
-                    prismLocalization.getMaterialLocale(block.getType().name())
-                    : block.getType().toString().replaceAll("_", " ").toLowerCase()
+                    : CNLocalization.getMaterialLocale(block.getType())
                     + (block.getType().toString().endsWith("BLOCK") ? "" : " 方块"));
             Prism.messenger.sendMessage(player,
                     Prism.messenger.playerError("没有在这个 " + space_name + " 处查找到任何历史数据."));

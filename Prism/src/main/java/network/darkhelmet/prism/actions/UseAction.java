@@ -1,20 +1,13 @@
 package network.darkhelmet.prism.actions;
 
-import network.darkhelmet.prism.Prism;
-import io.github.rothes.prismcn.PrismLocalization;
+import io.github.rothes.prismcn.CNLocalization;
 import org.bukkit.Material;
 
 import java.util.EnumMap;
-import java.util.Locale;
 
 public class UseAction extends GenericAction {
 
     private static final EnumMap<Material, String> names = new EnumMap<>(Material.class);
-    private final PrismLocalization prismLocalization;
-
-    public UseAction() {
-        prismLocalization = Prism.getInstance().getPrismLocalization();
-    }
 
     static {
         names.put(Material.FLINT_AND_STEEL, "tnt");
@@ -27,17 +20,17 @@ public class UseAction extends GenericAction {
     public String getNiceName() {
         Material material = getMaterial();
 
-        if (prismLocalization.hasMaterialLocale(material.name())) {
-            return prismLocalization.getMaterialLocale(material.name());
-        }
+        return CNLocalization.getMaterialLocale(material);
 
-        String customName = names.get(material);
+        // Removed in Chinese Edition
 
-        if (customName == null) {
-            return material.name().toLowerCase(Locale.ENGLISH);
-        }
-
-        return customName;
+//        String customName = names.get(material);
+//
+//        if (customName == null) {
+//            return material.name().toLowerCase(Locale.ENGLISH);
+//        }
+//
+//        return customName;
     }
 
     @Override

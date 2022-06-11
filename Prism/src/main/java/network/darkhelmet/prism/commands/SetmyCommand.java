@@ -7,7 +7,7 @@ import network.darkhelmet.prism.settings.Settings;
 import network.darkhelmet.prism.text.ReplaceableTextComponent;
 import network.darkhelmet.prism.utils.ItemUtils;
 import network.darkhelmet.prism.wands.Wand;
-import io.github.rothes.prismcn.PrismLocalization;
+import io.github.rothes.prismcn.CNLocalization;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import org.bukkit.Material;
@@ -126,9 +126,7 @@ public class SetmyCommand extends AbstractCommand {
                     }
                 }
 
-                PrismLocalization prismLocalization = Prism.getInstance().getPrismLocalization();
-                String localization = prismLocalization.hasMaterialLocale(setWand.name()) ?
-                        prismLocalization.getMaterialLocale(setWand.name()) : wandString;
+                String localization = CNLocalization.getMaterialLocale(setWand);
                 if (ItemUtils.isBadWand(setWand)) {
                     Prism.messenger.sendMessage(call.getPlayer(),
                             Prism.messenger.playerError(ReplaceableTextComponent.builder("wand-bad")

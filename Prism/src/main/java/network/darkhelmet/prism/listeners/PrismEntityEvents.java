@@ -8,7 +8,7 @@ import network.darkhelmet.prism.utils.InventoryUtils;
 import network.darkhelmet.prism.utils.MaterialTag;
 import network.darkhelmet.prism.utils.MiscUtils;
 import network.darkhelmet.prism.utils.WandUtils;
-import io.github.rothes.prismcn.PrismLocalization;
+import io.github.rothes.prismcn.CNLocalization;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -66,15 +66,12 @@ public class PrismEntityEvents implements Listener {
 
     private final Prism plugin;
 
-    private final PrismLocalization prismLocalization;
-
     /**
      * Constructor.
      * @param plugin Prism
      */
     public PrismEntityEvents(Prism plugin) {
         this.plugin = plugin;
-        prismLocalization = plugin.getPrismLocalization();
     }
 
     /**
@@ -126,8 +123,7 @@ public class PrismEntityEvents implements Listener {
         if (!(entity instanceof Player)) {
             // Log item drops
             if (Prism.getIgnore().event("item-drop", entity.getWorld())) {
-                String name = prismLocalization.hasEntityLocale(entity.getType().name()) ?
-                        prismLocalization.getEntityLocale(entity.getType().name()) : entity.getType().name().toLowerCase();
+                String name = CNLocalization.getEntityLocale(entity.getType());
 
                 // Inventory
                 if (entity instanceof InventoryHolder) {
@@ -690,8 +686,7 @@ public class PrismEntityEvents implements Listener {
             return;
         }
         RecordingQueue.addToQueue(ActionFactory.createBlock("entity-break", event.getBlock(),
-                prismLocalization.hasEntityLocale(event.getEntityType().name()) ?
-                        prismLocalization.getEntityLocale(event.getEntityType().name()) : event.getEntityType().name().toLowerCase()));
+                CNLocalization.getEntityLocale(event.getEntityType())));
     }
 
     /**
@@ -773,8 +768,7 @@ public class PrismEntityEvents implements Listener {
         final Collection<PotionEffect> potion = event.getPotion().getEffects();
         String name = "";
         for (final PotionEffect eff : potion) {
-            name = prismLocalization.hasEffectLocale(eff.getType().getName()) ?
-                    prismLocalization.getEffectLocale(eff.getType().getName()) : eff.getType().getName().toLowerCase();
+            name = CNLocalization.getEffectLocale(eff.getType());
         }
 
         RecordingQueue.addToQueue(ActionFactory.createPlayer("potion-splash", player, name));
@@ -890,8 +884,7 @@ public class PrismEntityEvents implements Listener {
         if (!Prism.getIgnore().event("hangingitem-break", event.getEntity().getWorld())) {
             return;
         }
-        String breakingName = (remover == null) ? "NULL" : prismLocalization.hasEntityLocale(remover.getType().name()) ?
-                prismLocalization.getEntityLocale(remover.getType().name()) : remover.getType().name().toLowerCase();
+        String breakingName = (remover == null) ? "NULL" : CNLocalization.getEntityLocale(remover.getType());
         if (player != null) {
             RecordingQueue.addToQueue(ActionFactory.createHangingItem("hangingitem-break", event.getEntity(), player));
         } else {
@@ -979,8 +972,7 @@ public class PrismEntityEvents implements Listener {
             RecordingQueue.addToQueue(ActionFactory.createBlockChange("entity-form", block.getType(),
                     block.getBlockData(), newState, player));
         } else {
-            final String entity = prismLocalization.hasEntityLocale(event.getEntity().getType().name()) ?
-                    prismLocalization.getEntityLocale(event.getEntity().getType().name()) : event.getEntity().getType().name().toLowerCase();
+            final String entity = CNLocalization.getEntityLocale(event.getEntity().getType());
             RecordingQueue.addToQueue(ActionFactory.createBlockChange("entity-form", block.getType(),
                     block.getBlockData(), newState, entity));
         }

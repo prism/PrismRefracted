@@ -5,7 +5,7 @@ import network.darkhelmet.prism.actionlibs.ActionsQuery;
 import network.darkhelmet.prism.actionlibs.QueryParameters;
 import network.darkhelmet.prism.actionlibs.QueryResult;
 import network.darkhelmet.prism.utils.MiscUtils;
-import io.github.rothes.prismcn.PrismLocalization;
+import io.github.rothes.prismcn.CNLocalization;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -32,15 +32,12 @@ public class OreMonitor {
     protected Block block;
     private int threshold = 1;
 
-    private final PrismLocalization prismLocalization;
-
     /**
      * Constructor.
      * @param plugin Prism
      */
     public OreMonitor(Prism plugin) {
         this.plugin = plugin;
-        prismLocalization = plugin.getPrismLocalization();
     }
 
     /**
@@ -149,9 +146,9 @@ public class OreMonitor {
      * @return String
      */
     private String getOreNiceName(Block block) {
-        return prismLocalization.hasMaterialLocale(block.getType().name()) ?
-                prismLocalization.getMaterialLocale(block.getType().name()).replace("发光的", " ")
-                : block.getType().toString().replace("_", " ").toLowerCase().replace("glowing", " ");
+        return CNLocalization.getMaterialLocale(block.getType())
+                .replace("发光的", "")
+                .replace("glowing", " ");
     }
 
     /**

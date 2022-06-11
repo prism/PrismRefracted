@@ -2,7 +2,7 @@ package network.darkhelmet.prism.listeners;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import io.github.rothes.prismcn.PrismLocalization;
+import io.github.rothes.prismcn.CNLocalization;
 import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.actionlibs.ActionFactory;
 import network.darkhelmet.prism.actionlibs.RecordingQueue;
@@ -56,7 +56,6 @@ import java.util.concurrent.TimeUnit;
 public class PrismExplodeEvents implements Listener {
 
     private final Prism plugin;
-    private final PrismLocalization prismLocalization;
 
     /**
      * Constructor.
@@ -64,7 +63,6 @@ public class PrismExplodeEvents implements Listener {
      */
     public PrismExplodeEvents(Prism plugin) {
         this.plugin = plugin;
-        prismLocalization = Prism.getInstance().getPrismLocalization();
     }
 
     private final Cache<Object, List<Cause>> weakCache = CacheBuilder
@@ -156,7 +154,7 @@ public class PrismExplodeEvents implements Listener {
     public void onProjectileLaunch(ProjectileLaunchEvent e) {
         Projectile entity = e.getEntity();
         ProjectileSource shooter = entity.getShooter();
-        String projName = prismLocalization.getEntityLocale(entity.getType().name());
+        String projName = CNLocalization.getEntityLocale(entity.getType());
         if (shooter == null) {
             // Nullable
             addCache(shooter, "射击" + projName, null);
@@ -169,18 +167,18 @@ public class PrismExplodeEvents implements Listener {
                 LivingEntity target = ((Mob) shooter).getTarget();
                 if (target != null) {
                     // Ghast or something, attacking player or others.
-                    addCache(shooter, "与" + prismLocalization.getEntityLocale(((Mob) shooter).getType().name()) + "战斗时射击" + projName,
-                            (target instanceof Player) ? target.getName() : prismLocalization.getEntityLocale(target.getType().name()));
+                    addCache(shooter, "与" + CNLocalization.getEntityLocale(((Mob) shooter).getType()) + "战斗时射击" + projName,
+                            (target instanceof Player) ? target.getName() : CNLocalization.getEntityLocale(target.getType()));
                     return;
                 }
             }
             // Mostly players.
             addCache(shooter, "射击" + projName,
-                    (shooter instanceof Player) ? ((Entity) shooter).getName() : prismLocalization.getEntityLocale(((Entity) shooter).getType().name()));
+                    (shooter instanceof Player) ? ((Entity) shooter).getName() : CNLocalization.getEntityLocale(((Entity) shooter).getType()));
 
         } else if (shooter instanceof BlockProjectileSource) {
             // Like dispenser with fireball.....
-            addCache(shooter, "射击" + projName, prismLocalization.getMaterialLocale(((BlockProjectileSource) shooter).getBlock().getType().name()));
+            addCache(shooter, "射击" + projName, CNLocalization.getMaterialLocale(((BlockProjectileSource) shooter).getBlock().getType()));
         } else {
             // If not listed here...
             addCache(shooter, "射击" + projName, shooter.getClass().getName());
@@ -230,7 +228,7 @@ public class PrismExplodeEvents implements Listener {
     public void onBlockPlace(BlockPlaceEvent event) {
         Block block = event.getBlock();
         addCache(block.getLocation(),
-                "放置" + prismLocalization.getMaterialLocale(block.getType().name()),
+                "放置" + CNLocalization.getMaterialLocale(block.getType()),
                 event.getPlayer().getName());
     }
 
@@ -341,7 +339,7 @@ public class PrismExplodeEvents implements Listener {
             blockName = null;
             niceName = getNiceFullName(null, causes);
         } else {
-            blockName = prismLocalization.getMaterialLocale(blockType.name());
+            blockName = CNLocalization.getMaterialLocale(blockType);
             niceName = getNiceFullName(blockName, causes);
         }
         contructExplodeEvent(action, niceName, e.blockList(), location, blockName);
@@ -442,7 +440,7 @@ public class PrismExplodeEvents implements Listener {
             EntityDamageEvent lastDamageCause = entity.getLastDamageCause();
             if (lastDamageCause instanceof EntityDamageByEntityEvent) {
                 Entity damager = ((EntityDamageByEntityEvent) lastDamageCause).getDamager();
-                addCache(entity, "战斗", (damager instanceof Player) ? damager.getName() : prismLocalization.getEntityLocale(damager.getType().name()));
+                addCache(entity, "战斗", (damager instanceof Player) ? damager.getName() : CNLocalization.getEntityLocale(damager.getType()));
                 causes = getCache(entity);
             }
         }

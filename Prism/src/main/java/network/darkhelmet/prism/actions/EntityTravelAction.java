@@ -1,7 +1,6 @@
 package network.darkhelmet.prism.actions;
 
-import network.darkhelmet.prism.Prism;
-import io.github.rothes.prismcn.PrismLocalization;
+import io.github.rothes.prismcn.CNLocalization;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -9,11 +8,9 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 public class EntityTravelAction extends GenericAction {
     protected EntityTravelActionData actionData;
-    protected PrismLocalization prismLocalization;
 
     public EntityTravelAction() {
         actionData = new EntityTravelActionData();
-        prismLocalization = Prism.getInstance().getPrismLocalization();
     }
 
     /**
@@ -25,8 +22,7 @@ public class EntityTravelAction extends GenericAction {
             if (entity instanceof Player) {
                 setPlayer((Player) entity);
             } else {
-                setSourceName(prismLocalization.hasEntityLocale(entity.getType().name()) ?
-                        prismLocalization.getEntityLocale(entity.getType().name()) : entity.getType().name().toLowerCase());
+                setSourceName(CNLocalization.getEntityLocale(entity.getType()));
             }
         }
     }

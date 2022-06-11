@@ -1,10 +1,9 @@
 package network.darkhelmet.prism.actions.entity;
 
 import com.google.gson.annotations.SerializedName;
-import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.utils.EntityUtils;
 import network.darkhelmet.prism.utils.MiscUtils;
-import io.github.rothes.prismcn.PrismLocalization;
+import io.github.rothes.prismcn.CNLocalization;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Ageable;
 import org.bukkit.entity.Entity;
@@ -51,9 +50,7 @@ public class EntitySerializer {
      * @param entity Entity.
      */
     public final void serialize(Entity entity) {
-        PrismLocalization prismLocalization = Prism.getInstance().getPrismLocalization();
-        entityName = prismLocalization.hasEntityLocale(entity.getType().name()) ?
-                prismLocalization.getEntityLocale(entity.getType().name()) : entity.getType().name().toLowerCase();
+        entityName = CNLocalization.getEntityLocale(entity.getType());
 
         // Get custom name
         customName = entity.getCustomName();

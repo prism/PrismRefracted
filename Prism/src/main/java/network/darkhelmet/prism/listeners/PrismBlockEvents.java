@@ -1,5 +1,6 @@
 package network.darkhelmet.prism.listeners;
 
+import io.github.rothes.prismcn.CNLocalization;
 import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.actionlibs.ActionFactory;
 import network.darkhelmet.prism.actionlibs.RecordingQueue;
@@ -550,13 +551,13 @@ public class PrismBlockEvents implements Listener {
             fallingBlockOldLocation.put(event.getEntity(), event.getBlock().getLocation());
             RecordingQueue.addToQueue(ActionFactory.createBlockFall("block-fall", Material.AIR, event.getBlock().getType(),
                     null, event.getBlock().getLocation(),
-                    Prism.getInstance().getPrismLocalization().getMaterialLocale(event.getBlock().getType().name())));
+                    CNLocalization.getMaterialLocale(event.getBlock().getType())));
         } else {
             // Falling block lands.
 
             RecordingQueue.addToQueue(ActionFactory.createBlockFall("block-fall", event.getTo(), Material.AIR,
                     fallingBlockOldLocation.get(event.getEntity()), event.getBlock().getLocation(),
-                    Prism.getInstance().getPrismLocalization().getMaterialLocale(event.getTo().name())));
+                    CNLocalization.getMaterialLocale(event.getTo())));
         }
     }
 

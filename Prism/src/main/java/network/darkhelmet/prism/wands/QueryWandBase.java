@@ -6,7 +6,6 @@ import network.darkhelmet.prism.actionlibs.QueryParameters;
 import network.darkhelmet.prism.actionlibs.QueryResult;
 import network.darkhelmet.prism.api.actions.PrismProcessType;
 import network.darkhelmet.prism.commandlibs.PreprocessArgs;
-import io.github.rothes.prismcn.PrismLocalization;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
@@ -17,8 +16,6 @@ import org.bukkit.entity.Player;
  * saved in the Wand for every time they use it until it is disabled.
  */
 public abstract class QueryWandBase extends WandBase {
-
-    protected final PrismLocalization prismLocalization;
 
     /**
      * Keep an instance of {@link Prism Prism} to use.
@@ -36,7 +33,6 @@ public abstract class QueryWandBase extends WandBase {
      */
     public QueryWandBase(Prism plugin) {
         parameters = new QueryParameters();
-        prismLocalization = plugin.getPrismLocalization();
         this.plugin = plugin;
     }
 

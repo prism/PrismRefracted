@@ -12,7 +12,7 @@ import network.darkhelmet.prism.utils.EntityUtils;
 import network.darkhelmet.prism.utils.MaterialTag;
 import network.darkhelmet.prism.utils.TypeUtils;
 import network.darkhelmet.prism.utils.block.Utilities;
-import io.github.rothes.prismcn.PrismLocalization;
+import io.github.rothes.prismcn.CNLocalization;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Nameable;
@@ -64,12 +64,6 @@ import static org.bukkit.Material.WATER;
 
 
 public class BlockAction extends GenericAction {
-
-    private PrismLocalization prismLocalization;
-
-    public BlockAction() {
-        prismLocalization = Prism.getInstance().getPrismLocalization();
-    }
 
     private BlockActionData actionData;
 
@@ -222,8 +216,7 @@ public class BlockAction extends GenericAction {
                 name += ad.owner + " ";
             } else if (blockActionData instanceof SpawnerActionData) {
                 final SpawnerActionData ad = (SpawnerActionData) blockActionData;
-                name += prismLocalization.hasEntityLocale(ad.entityType.toUpperCase(Locale.ROOT)) ?
-                        prismLocalization.getEntityLocale(ad.entityType.toUpperCase(Locale.ROOT)) : ad.entityType;
+                name += CNLocalization.getEntityLocale(ad.entityType.toUpperCase(Locale.ROOT));
             }
         }
         name += Prism.getItems().getAlias(getMaterial(), getBlockData());

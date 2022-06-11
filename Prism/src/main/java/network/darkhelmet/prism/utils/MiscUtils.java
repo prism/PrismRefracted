@@ -5,7 +5,7 @@ import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.actionlibs.ActionMessage;
 import network.darkhelmet.prism.actionlibs.QueryResult;
 import network.darkhelmet.prism.api.actions.PrismProcessType;
-import io.github.rothes.prismcn.PrismLocalization;
+import io.github.rothes.prismcn.CNLocalization;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -31,8 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MiscUtils {
-
-    private static PrismLocalization prismLocalization;
 
     /**
      * Placing this here so it's easier to share the logic.
@@ -250,8 +248,7 @@ public class MiscUtils {
         if (entity.getType() == EntityType.PLAYER) {
             return entity.getName();
         }
-        return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, prismLocalization().hasEntityLocale(entity.getType().name()) ?
-                prismLocalization().getEntityLocale(entity.getType().name()) : entity.getType().name());
+        return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, CNLocalization.getEntityLocale(entity.getType()));
     }
 
     /**
@@ -301,13 +298,6 @@ public class MiscUtils {
                 .append(getPreviousButton())
                 .append(divider)
                 .append(getNextButton()).build();
-    }
-
-    private static PrismLocalization prismLocalization() {
-        if (prismLocalization == null) {
-            prismLocalization = Prism.getInstance().getPrismLocalization();
-        }
-        return prismLocalization;
     }
 
 }
