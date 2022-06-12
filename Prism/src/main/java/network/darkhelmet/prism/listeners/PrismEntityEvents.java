@@ -323,7 +323,6 @@ public class PrismEntityEvents extends BaseListener {
             return;
         }
         ItemStack itemStack = entity.getItemStack();
-        System.out.println(drops.itemStacks);
         if (drops.itemStacks.contains(itemStack)) {
             if (drops.sourceName != null) {
                 RecordingQueue.addToQueue(ActionFactory.createItemStack("item-drop", itemStack, itemStack.getAmount(), -1, null,

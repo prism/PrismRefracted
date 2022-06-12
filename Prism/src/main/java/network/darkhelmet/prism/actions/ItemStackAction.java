@@ -14,6 +14,7 @@ import network.darkhelmet.prism.utils.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Jukebox;
@@ -196,6 +197,12 @@ public class ItemStackAction extends GenericAction {
 
             final Block block = getWorld().getBlockAt(getLoc());
             Inventory inventory = null;
+
+            // Entity death drops. Just remove the drops.
+            if (getUuid() == null || getActionType().getName().equals("item-drop")) {
+                removeItemEntity();
+                return new ChangeResultImpl(ChangeResultType.APPLIED, null);
+            }
 
             // Item drop/pickup from player inventories
             if (getActionType().getName().equals("item-drop") || getActionType().getName().equals("item-pickup")) {
@@ -385,23 +392,7 @@ public class ItemStackAction extends GenericAction {
 
                     // Item was added to the inv, we need to remove the entity
                     if (added && (n.equals("item-drop") || n.equals("item-pickup"))) {
-                        if (!removeFromCache(getId())) {
-                            // Not cached, search nearby for it.
-                            for (final Entity entity : getLoc().getWorld().getNearbyEntities(getLoc(), 10, 10, 10)) {
-                                if (entity instanceof Item) {
-                                    final ItemStack stack = ((Item) entity).getItemStack();
-                                    if (stack.isSimilar(getItem())) {
-                                        // Remove the event's number of items from
-                                        // the stack
-                                        stack.setAmount(stack.getAmount() - getItem().getAmount());
-                                        if (stack.getAmount() == 0) {
-                                            entity.remove();
-                                        }
-                                        break;
-                                    }
-                                }
-                            }
-                        }
+                        removeItemEntity();
                     }
                 }
 
@@ -470,5 +461,25 @@ public class ItemStackAction extends GenericAction {
             }
         }
         return new ChangeResultImpl(result, null);
+    }
+
+    private void removeItemEntity() {
+        if (!removeFromCache(getId())) {
+            // Not cached, search nearby for it.
+            for (final Entity entity : getLoc().getWorld().getNearbyEntities(getLoc(), 10, 10, 10)) {
+                if (entity instanceof Item) {
+                    final ItemStack stack = ((Item) entity).getItemStack();
+                    if (stack.isSimilar(getItem())) {
+                        // Remove the event's number of items from
+                        // the stack
+                        stack.setAmount(stack.getAmount() - getItem().getAmount());
+                        if (stack.getAmount() == 0) {
+                            entity.remove();
+                        }
+                        break;
+                    }
+                }
+            }
+        }
     }
 }
