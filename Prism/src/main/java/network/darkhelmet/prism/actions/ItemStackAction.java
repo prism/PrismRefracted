@@ -357,6 +357,17 @@ public class ItemStackAction extends GenericAction {
                                 inventory.setItem(iSlot, item);
                             }
                         }
+                        if (added && (n.equals("item-insert") || n.equals("item-remove"))) {
+                            final Player onlinePlayer = Bukkit.getServer().getPlayer(getUuid());
+                            if (onlinePlayer != null) {
+                                Inventory playerInventory = onlinePlayer.getInventory();
+                                final HashMap<Integer, ItemStack> leftovers = InventoryUtils.removeItemFromInventory(playerInventory,
+                                        getItem());
+                                if (leftovers.size() > 0) {
+                                    Prism.debug("There are leftovers when roll-backing player inventory, action " + n);
+                                }
+                            }
+                        }
                     }
                     // If that failed we'll attempt to put it anywhere
                     if (!added) {
@@ -423,6 +434,17 @@ public class ItemStackAction extends GenericAction {
                                 result = ChangeResultType.APPLIED;
                                 removed = true;
                                 inventory.setItem(iSlot, amount > 0 ? item : null);
+                            }
+                        }
+                        if (removed && (n.equals("item-insert") || n.equals("item-remove"))) {
+                            final Player onlinePlayer = Bukkit.getServer().getPlayer(getUuid());
+                            if (onlinePlayer != null) {
+                                Inventory playerInventory = onlinePlayer.getInventory();
+                                final HashMap<Integer, ItemStack> leftovers = InventoryUtils.addItemToInventory(playerInventory,
+                                        getItem());
+                                if (leftovers.size() > 0) {
+                                    Prism.debug("There are leftovers when roll-backing player inventory, action " + n);
+                                }
                             }
                         }
                     }
