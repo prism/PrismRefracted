@@ -46,12 +46,14 @@ public class ItemStackAction extends GenericAction {
         dropCache.put(dataId, item);
     }
 
-    public static Item getCache(Long dataId) {
+    public static boolean removeFromCache(Long dataId) {
         Item item = dropCache.getIfPresent(dataId);
         if (item != null) {
             dropCache.invalidate(dataId);
+            item.remove();
+            return true;
         }
-        return item;
+        return false;
     }
 
     protected ItemStack item;
@@ -372,12 +374,9 @@ public class ItemStackAction extends GenericAction {
 
                     // Item was added to the inv, we need to remove the entity
                     if (added && (n.equals("item-drop") || n.equals("item-pickup"))) {
-                        Item cache = getCache(getId());
-                        if (cache != null) {
-                            cache.remove();
-                        } else {
-                            final Entity[] entities = getLoc().getChunk().getEntities();
-                            for (final Entity entity : entities) {
+                        if (!removeFromCache(getId())) {
+                            // Not cached, search nearby for it.
+                            for (final Entity entity : getLoc().getWorld().getNearbyEntities(getLoc(), 10, 10, 10)) {
                                 if (entity instanceof Item) {
                                     final ItemStack stack = ((Item) entity).getItemStack();
                                     if (stack.isSimilar(getItem())) {
