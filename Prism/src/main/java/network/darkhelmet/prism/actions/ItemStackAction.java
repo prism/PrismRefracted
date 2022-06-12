@@ -410,7 +410,7 @@ public class ItemStackAction extends GenericAction {
                     if (iSlot >= 0) {
 
                         if (iSlot >= inventory.getContents().length) {
-                            inventory.addItem(getItem());
+                            inventory.remove(getItem());
                         } else {
                             final ItemStack currentSlotItem = inventory.getItem(iSlot);
                             ItemStack item = getItem().clone();
@@ -427,6 +427,21 @@ public class ItemStackAction extends GenericAction {
                             }
                         }
                     }
+
+                    // If that failed we'll attempt to remove it anywhere
+                    if (!removed) {
+                        // TODO: Skip is actually "partially applied"
+                        final HashMap<Integer, ItemStack> leftovers = InventoryUtils.removeItemFromInventory(inventory,
+                                getItem());
+                        if (leftovers.size() > 0) {
+                            Prism.debug("Skipping removing items because there are leftovers");
+                            result = ChangeResultType.SKIPPED;
+                        } else {
+                            result = ChangeResultType.APPLIED;
+                            removed = true;
+                        }
+                    }
+
                     if (removed && (n.equals("item-drop") || n.equals("item-pickup"))) {
                         ItemUtils.dropItem(getLoc(), getItem());
                     }
