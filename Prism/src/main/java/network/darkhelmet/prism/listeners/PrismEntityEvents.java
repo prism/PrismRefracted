@@ -1,5 +1,7 @@
 package network.darkhelmet.prism.listeners;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.actionlibs.ActionFactory;
 import network.darkhelmet.prism.actionlibs.RecordingQueue;
@@ -11,6 +13,7 @@ import network.darkhelmet.prism.utils.WandUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.ArmorStand;
@@ -20,6 +23,7 @@ import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Hanging;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -59,12 +63,20 @@ import org.bukkit.projectiles.BlockProjectileSource;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class PrismEntityEvents extends BaseListener {
+
+    private static final Cache<Location, DropItems> dropCache = CacheBuilder
+            .newBuilder()
+            .expireAfterWrite(30, TimeUnit.SECONDS)
+            .build();
 
     /**
      * Constructor.
@@ -124,6 +136,7 @@ public class PrismEntityEvents extends BaseListener {
             // Log item drops
             if (Prism.getIgnore().event("item-drop", entity.getWorld())) {
                 String name = entity.getType().name().toLowerCase();
+                List<ItemStack> drops = new ArrayList<>();
 
                 // Inventory
                 if (entity instanceof InventoryHolder) {
@@ -131,8 +144,7 @@ public class PrismEntityEvents extends BaseListener {
 
                     for (final ItemStack i : holder.getInventory().getContents()) {
                         if (checkNotNullorAir(i)) {
-                            RecordingQueue.addToQueue(ActionFactory.createItemStack("item-drop", i, i.getAmount(), -1,
-                                    null, entity.getLocation(), name));
+                            drops.add(i);
                         }
                     }
                 }
@@ -142,8 +154,7 @@ public class PrismEntityEvents extends BaseListener {
                 if (equipment != null) {
                     for (final ItemStack i : equipment.getArmorContents()) {
                         if (checkNotNullorAir(i)) {
-                            RecordingQueue.addToQueue(ActionFactory.createItemStack("item-drop", i, i.getAmount(), -1,
-                                    null, entity.getLocation(), name));
+                            drops.add(i);
                         }
                     }
                 }
@@ -152,14 +163,14 @@ public class PrismEntityEvents extends BaseListener {
                 ItemStack off = entity.getEquipment().getItemInOffHand();
 
                 if (checkNotNullorAir(main)) {
-                    RecordingQueue.addToQueue(ActionFactory.createItemStack("item-drop", main, main.getAmount(), -1,
-                            null, entity.getLocation(), name));
+                    drops.add(main);
                 }
 
                 if (checkNotNullorAir(off)) {
-                    RecordingQueue.addToQueue(ActionFactory.createItemStack("item-drop", off, off.getAmount(), -1,
-                            null, entity.getLocation(), name));
+                    drops.add(off);
                 }
+
+                dropCache.put(event.getEntity().getLocation(), new DropItems(drops, name));
 
             }
 
@@ -297,10 +308,7 @@ public class PrismEntityEvents extends BaseListener {
             // Log item drops
             if (Prism.getIgnore().event("item-drop", p)) {
                 if (!event.getDrops().isEmpty()) {
-                    for (final ItemStack i : event.getDrops()) {
-                        RecordingQueue.addToQueue(ActionFactory.createItemStack("item-drop", i, i.getAmount(), -1, null,
-                                p.getLocation(), p));
-                    }
+                    dropCache.put(p.getLocation(), new DropItems(event.getDrops(), p));
                 }
             }
         }
@@ -312,6 +320,32 @@ public class PrismEntityEvents extends BaseListener {
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onCreatureSpawn(final CreatureSpawnEvent event) {
+        // For getting Item correctly removed in rollback.
+        if (event.getSpawnReason() != CreatureSpawnEvent.SpawnReason.CUSTOM) {
+            return;
+        }
+        Entity entity = event.getEntity();
+        if (!(entity instanceof Item)) {
+            return;
+        }
+
+        DropItems drops = dropCache.getIfPresent(event.getLocation());
+        if (drops == null) {
+            return;
+        }
+        Item itemEntity = (Item) entity;
+        ItemStack itemStack = itemEntity.getItemStack();
+        if (drops.itemStacks.contains(itemStack)) {
+            if (drops.sourceName != null) {
+                RecordingQueue.addToQueue(ActionFactory.createItemStack("item-drop", itemStack, itemStack.getAmount(), -1, null,
+                        event.getLocation(), drops.sourceName));
+            } else {
+                RecordingQueue.addToQueue(ActionFactory.createItemStack("item-drop", itemStack, itemStack.getAmount(), -1, null,
+                        event.getLocation(), drops.player));
+            }
+        }
+
+        // Event tracking.
         if (!Prism.getIgnore().event("entity-spawn", event.getEntity().getWorld())) {
             return;
         }
@@ -839,5 +873,31 @@ public class PrismEntityEvents extends BaseListener {
         }
 
         return "tnt";
+    }
+
+    public static class DropItems {
+
+        final List<ItemStack> itemStacks;
+        final OfflinePlayer player;
+        final String sourceName;
+
+        public DropItems(List<ItemStack> itemStacks, String sourceName) {
+            this.itemStacks = itemStacks;
+            this.player = null;
+            this.sourceName = sourceName;
+        }
+
+        public DropItems(List<ItemStack> itemStacks, OfflinePlayer player) {
+            this.itemStacks = itemStacks;
+            this.player = player;
+            this.sourceName = null;
+        }
+
+        public DropItems(List<ItemStack> itemStacks, OfflinePlayer player, String sourceName) {
+            this.itemStacks = itemStacks;
+            this.player = player;
+            this.sourceName = sourceName;
+        }
+
     }
 }

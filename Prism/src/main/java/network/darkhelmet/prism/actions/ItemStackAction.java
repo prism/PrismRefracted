@@ -1,5 +1,7 @@
 package network.darkhelmet.prism.actions;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.actions.data.ItemStackActionData;
 import network.darkhelmet.prism.api.ChangeResult;
@@ -30,15 +32,44 @@ import org.bukkit.inventory.ItemStack;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class ItemStackAction extends GenericAction {
 
+    private static final Cache<Long, Item> dropCache = CacheBuilder
+            .newBuilder()
+            .softValues()
+            .expireAfterWrite(3, TimeUnit.DAYS) // LONGGGGGGGGGGGGGGGGGGGGGG
+            .build();
+
+    public static void addCache(Long dataId, Item item) {
+        dropCache.put(dataId, item);
+    }
+
+    public static Item getCache(Long dataId) {
+        Item item = dropCache.getIfPresent(dataId);
+        if (item != null) {
+            dropCache.invalidate(dataId);
+        }
+        return item;
+    }
+
     protected ItemStack item;
     private ItemStackActionData actionData;
+    private Item dropEntity;
+
     /**
      * Holds durability if no actionData yet exists.
      */
     private short tempDurability = -1;
+
+    public Item getItemEntity() {
+        return dropEntity;
+    }
+
+    public void setItemEntity(Item dropEntity) {
+        this.dropEntity = dropEntity;
+    }
 
     @Override
     public boolean hasExtraData() {
@@ -341,18 +372,23 @@ public class ItemStackAction extends GenericAction {
 
                     // Item was added to the inv, we need to remove the entity
                     if (added && (n.equals("item-drop") || n.equals("item-pickup"))) {
-                        final Entity[] entities = getLoc().getChunk().getEntities();
-                        for (final Entity entity : entities) {
-                            if (entity instanceof Item) {
-                                final ItemStack stack = ((Item) entity).getItemStack();
-                                if (stack.isSimilar(getItem())) {
-                                    // Remove the event's number of items from
-                                    // the stack
-                                    stack.setAmount(stack.getAmount() - getItem().getAmount());
-                                    if (stack.getAmount() == 0) {
-                                        entity.remove();
+                        Item cache = getCache(getId());
+                        if (cache != null) {
+                            cache.remove();
+                        } else {
+                            final Entity[] entities = getLoc().getChunk().getEntities();
+                            for (final Entity entity : entities) {
+                                if (entity instanceof Item) {
+                                    final ItemStack stack = ((Item) entity).getItemStack();
+                                    if (stack.isSimilar(getItem())) {
+                                        // Remove the event's number of items from
+                                        // the stack
+                                        stack.setAmount(stack.getAmount() - getItem().getAmount());
+                                        if (stack.getAmount() == 0) {
+                                            entity.remove();
+                                        }
+                                        break;
                                     }
-                                    break;
                                 }
                             }
                         }
