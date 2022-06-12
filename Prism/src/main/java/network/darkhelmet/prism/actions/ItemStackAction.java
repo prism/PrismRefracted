@@ -420,7 +420,7 @@ public class ItemStackAction extends GenericAction {
                     if (iSlot >= 0) {
 
                         if (iSlot >= inventory.getContents().length) {
-                            inventory.remove(getItem());
+                            inventory.removeItem(getItem());
                         } else {
                             final ItemStack currentSlotItem = inventory.getItem(iSlot);
                             ItemStack item = getItem().clone();
