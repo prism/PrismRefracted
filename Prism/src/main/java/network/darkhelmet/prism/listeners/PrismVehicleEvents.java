@@ -3,6 +3,7 @@ package network.darkhelmet.prism.listeners;
 import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.actionlibs.ActionFactory;
 import network.darkhelmet.prism.actionlibs.RecordingQueue;
+import network.darkhelmet.prism.utils.EntityUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -105,7 +106,7 @@ public class PrismVehicleEvents implements Listener {
                 if (item != null && item.getType() != Material.AIR) {
                     RecordingQueue.addToQueue(ActionFactory.createItemStack("item-drop", item,
                             item.getAmount(), -1, null, vehicle.getLocation(),
-                            chestBoat.getWoodType().name().toLowerCase() + " chest boat"));
+                            EntityUtils.treeSpeciesToName(chestBoat.getWoodType()) + " chest boat"));
                 }
             }
 
