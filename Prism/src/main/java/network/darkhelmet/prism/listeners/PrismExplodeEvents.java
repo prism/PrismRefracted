@@ -155,7 +155,6 @@ public class PrismExplodeEvents implements Listener {
         String projName = entity.getName().toLowerCase(Locale.ROOT).replace("_", " ");
         if (shooter == null) {
             // Nullable
-            addCache(shooter, "shooting " + projName, null);
             addCache(entity, "shooting " + projName, null);
             return;
         }
