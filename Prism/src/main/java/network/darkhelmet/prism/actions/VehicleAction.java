@@ -122,7 +122,7 @@ public class VehicleAction extends GenericAction {
             return new ChangeResultImpl(ChangeResultType.SKIPPED, null);
         }
 
-        if (vehicle instanceof Boat && actionData != null) {
+        if (vehicle instanceof Boat && actionData.woodType != null) {
             Boat boat = (Boat) vehicle;
             boat.setWoodType(MiscUtils.getEnum(actionData.woodType, TreeSpecies.GENERIC));
         }
