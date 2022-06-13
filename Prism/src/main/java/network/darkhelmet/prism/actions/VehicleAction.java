@@ -64,6 +64,10 @@ public class VehicleAction extends GenericAction {
      */
     @Override
     public String getNiceName() {
+        if (actionData.woodType == null) {
+            return actionData.vehicleName;
+        }
+
         String woodType;
         switch (actionData.woodType) {
             case "GENERIC":
