@@ -67,7 +67,11 @@ public class PrismVehicleEvents implements Listener {
                 return;
             }
             RecordingQueue.addToQueue(ActionFactory.createVehicle("vehicle-place", vehicle, player));
+
         } else {
+            if (!Prism.getIgnore().event("vehicle-place", loc.getWorld(), "unknown")) {
+                return;
+            }
             RecordingQueue.addToQueue(ActionFactory.createVehicle("vehicle-place", vehicle, "unknown"));
         }
     }
@@ -99,8 +103,9 @@ public class PrismVehicleEvents implements Listener {
             ChestBoat chestBoat = (ChestBoat) vehicle;
             for (final ItemStack item : chestBoat.getInventory().getContents()) {
                 if (item != null && item.getType() != Material.AIR) {
-                    RecordingQueue.addToQueue(ActionFactory.createItemStack("item-drop", item, item.getAmount(), -1,
-                            null, vehicle.getLocation(), "chest boat"));
+                    RecordingQueue.addToQueue(ActionFactory.createItemStack("item-drop", item,
+                            item.getAmount(), -1, null, vehicle.getLocation(),
+                            chestBoat.getWoodType().name().toLowerCase() + " chest boat"));
                 }
             }
 
