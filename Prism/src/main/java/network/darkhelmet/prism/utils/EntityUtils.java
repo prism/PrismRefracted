@@ -169,7 +169,7 @@ public class EntityUtils {
             case GENERIC:
                 return "oak";
             case REDWOOD:
-                return "mangrove";
+                return "spruce";
             case BIRCH:
                 return "birch";
             case JUNGLE:
@@ -187,7 +187,7 @@ public class EntityUtils {
         switch (ts) {
             case "oak":
                 return TreeSpecies.GENERIC;
-            case "mangrove":
+            case "spruce":
                 return TreeSpecies.REDWOOD;
             case "birch":
                 return TreeSpecies.BIRCH;
