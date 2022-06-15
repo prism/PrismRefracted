@@ -4,8 +4,7 @@ import network.darkhelmet.prism.api.ChangeResult;
 import network.darkhelmet.prism.api.ChangeResultType;
 import network.darkhelmet.prism.api.PrismParameters;
 import network.darkhelmet.prism.appliers.ChangeResultImpl;
-import network.darkhelmet.prism.utils.MiscUtils;
-import org.bukkit.TreeSpecies;
+import network.darkhelmet.prism.utils.EntityUtils;
 import org.bukkit.entity.Boat;
 import org.bukkit.entity.ChestBoat;
 import org.bukkit.entity.Entity;
@@ -53,9 +52,7 @@ public class VehicleAction extends GenericAction {
         }
 
         if (vehicle instanceof Boat) {
-            Boat boat = (Boat) vehicle;
-            TreeSpecies woodType = boat.getWoodType();
-            actionData.woodType = woodType.name();
+            actionData.woodType = EntityUtils.treeSpeciesToName(((Boat) vehicle).getWoodType());
         }
     }
 
@@ -64,35 +61,7 @@ public class VehicleAction extends GenericAction {
      */
     @Override
     public String getNiceName() {
-        if (actionData.woodType == null) {
-            return actionData.vehicleName;
-        }
-
-        String woodType;
-        switch (actionData.woodType) {
-            case "GENERIC":
-                woodType = "橡木";
-                break;
-            case "REDWOOD":
-                woodType = "红树木";
-                break;
-            case "BIRCH":
-                woodType = "白桦木";
-                break;
-            case "JUNGLE":
-                woodType = "从林木";
-                break;
-            case "ACACIA":
-                woodType = "金合欢木";
-                break;
-            case "DARK_OAK":
-                woodType = "深色橡木";
-                break;
-            default:
-                woodType = actionData.woodType.toLowerCase() + " ";
-                break;
-        }
-        return woodType + actionData.vehicleName;
+        return (actionData.woodType != null ? actionData.woodType + " " : "") + actionData.vehicleName;
     }
 
     @Override
@@ -157,9 +126,8 @@ public class VehicleAction extends GenericAction {
             return new ChangeResultImpl(ChangeResultType.SKIPPED, null);
         }
 
-        if (vehicle instanceof Boat && actionData != null) {
-            Boat boat = (Boat) vehicle;
-            boat.setWoodType(MiscUtils.getEnum(actionData.woodType, TreeSpecies.GENERIC));
+        if (vehicle instanceof Boat && actionData.woodType != null) {
+            ((Boat) vehicle).setWoodType(EntityUtils.nameToTreeSpecies(actionData.woodType));
         }
 
         return new ChangeResultImpl(ChangeResultType.APPLIED, null);

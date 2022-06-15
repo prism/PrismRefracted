@@ -230,8 +230,13 @@ public class SqlSelectQueryBuilder extends QueryBuilder implements SelectQuery {
                 Set<IntPair> allIds = Prism.getItems().materialToAllIds(m);
 
                 StringBuilder blockIds = new StringBuilder("(");
-                for (IntPair pair : allIds) {
-                    blockIds.append(pair.first).append(',');
+                if (allIds.isEmpty()) {
+                    // Not has been logged already, use an impossible id.
+                    blockIds.append(0);
+                } else {
+                    for (IntPair pair : allIds) {
+                        blockIds.append(pair.first).append(',');
+                    }
                 }
 
                 String in = blockIds.append(')').toString().replace(",)", ")");

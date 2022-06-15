@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.TreeSpecies;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ExperienceOrb;
@@ -162,5 +163,49 @@ public class EntityUtils {
     public static boolean playerMayPassThrough(Material m) {
         // Close enough, pray you don't land in a portal
         return m.isTransparent();
+    }
+
+    public static String treeSpeciesToName(TreeSpecies ts) {
+        switch (ts) {
+            case GENERIC:
+                return "橡木";
+            case REDWOOD:
+                return "云杉木";
+            case BIRCH:
+                return "白桦木";
+            case JUNGLE:
+                return "从林木";
+            case ACACIA:
+                return "金合欢木";
+            case DARK_OAK:
+                return "深色橡木";
+            default:
+                return ts.name().toLowerCase().replace("_", " ");
+        }
+    }
+
+    public static TreeSpecies nameToTreeSpecies(String ts) {
+        switch (ts) {
+            case "oak":
+            case "橡木":
+                return TreeSpecies.GENERIC;
+            case "spruce":
+            case "云杉木":
+                return TreeSpecies.REDWOOD;
+            case "birch":
+            case "白桦木":
+                return TreeSpecies.BIRCH;
+            case "jungle":
+            case "从林木":
+                return TreeSpecies.JUNGLE;
+            case "acacia":
+            case "金合欢木":
+                return TreeSpecies.ACACIA;
+            case "dark oak":
+            case "深色橡木":
+                return TreeSpecies.DARK_OAK;
+            default:
+                return MiscUtils.getEnum(ts.toUpperCase().replace(" ", "_"), TreeSpecies.GENERIC);
+        }
     }
 }

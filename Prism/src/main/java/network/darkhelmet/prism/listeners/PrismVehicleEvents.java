@@ -4,6 +4,7 @@ import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.actionlibs.ActionFactory;
 import network.darkhelmet.prism.actionlibs.RecordingQueue;
 import io.github.rothes.prismcn.CNLocalization;
+import network.darkhelmet.prism.utils.EntityUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -104,33 +105,9 @@ public class PrismVehicleEvents implements Listener {
             ChestBoat chestBoat = (ChestBoat) vehicle;
             for (final ItemStack item : chestBoat.getInventory().getContents()) {
                 if (item != null && item.getType() != Material.AIR) {
-                    String woodType;
-                    switch (chestBoat.getWoodType()) {
-                        case GENERIC:
-                            woodType = "橡木";
-                            break;
-                        case REDWOOD:
-                            woodType = "红树木";
-                            break;
-                        case BIRCH:
-                            woodType = "白桦木";
-                            break;
-                        case JUNGLE:
-                            woodType = "从林木";
-                            break;
-                        case ACACIA:
-                            woodType = "金合欢木";
-                            break;
-                        case DARK_OAK:
-                            woodType = "深色橡木";
-                            break;
-                        default:
-                            woodType = chestBoat.getWoodType().name().toLowerCase() + " ";
-                            break;
-                    }
                     RecordingQueue.addToQueue(ActionFactory.createItemStack("item-drop", item,
                             item.getAmount(), -1, null, vehicle.getLocation(),
-                            woodType + "运输船"));
+                            EntityUtils.treeSpeciesToName(chestBoat.getWoodType()) + "运输船"));
                 }
             }
 
