@@ -15,6 +15,8 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Locale;
+
 public class EntityAction extends GenericAction {
 
     private EntitySerializer serializer;
@@ -27,11 +29,12 @@ public class EntityAction extends GenericAction {
     @Nullable
     public static EntityType getEntityType(String name) {
         try {
-            return EntityType.valueOf(CNLocalization.restoreEntityLocale(name.toUpperCase()));
+            return EntityType.valueOf(CNLocalization.restoreEntityLocale(name.toUpperCase(Locale.ROOT)));
         } catch (final IllegalArgumentException e) {
             // In pre-RC builds we logged the wrong name of entities, sometimes
             // the names
             // don't match the enum.
+            Prism.debug("无法获取 EntityType, 传参为 " + name + ", 英文为 " + CNLocalization.restoreEntityLocale(name.toUpperCase(Locale.ROOT)));
         }
         return null;
     }
