@@ -46,9 +46,11 @@ public class CNLocalization {
             JsonElement element = object.get("entity.minecraft." + value.getKey().getKey());
             if (element == null) {
                 Prism.warn("缺少本地化语言: EntityType = " + value.name());
-                entityLocalize.put(value, value.name().toLowerCase().replace("_", ""));
+                entityLocalize.put(value, value.name().toLowerCase().replace("_", " "));
+                entityLocalizeRestore.put(value.name().toLowerCase().replace("_", " "), value.name());
             } else {
                 entityLocalize.put(value, element.getAsString());
+                entityLocalizeRestore.put(element.getAsString(), value.name());
             }
         }
 
@@ -109,10 +111,9 @@ public class CNLocalization {
                     }
                     if (element == null) {
                         Prism.warn("缺少本地化语言: Material = " + value.name());
-                        materialLocalize.put(value, value.name().toLowerCase().replace("_", ""));
+                        materialLocalize.put(value, value.name().toLowerCase().replace("_", " "));
                     } else {
                         materialLocalize.put(value, element.getAsString());
-                        entityLocalizeRestore.put(element.getAsString(), value.name());
                     }
                     break;
             }
@@ -121,7 +122,7 @@ public class CNLocalization {
             JsonElement element = object.get("effect.minecraft." + value.getKey().getKey());
             if (element == null) {
                 Prism.warn("缺少本地化语言: PotionEffectType = " + value.getKey().getKey());
-                effectLocalize.put(value, value.getKey().getKey().toLowerCase().replace("_", ""));
+                effectLocalize.put(value, value.getKey().getKey().toLowerCase().replace("_", " "));
             } else {
                 effectLocalize.put(value, element.getAsString());
             }
@@ -130,7 +131,7 @@ public class CNLocalization {
             JsonElement element = object.get("enchantment.minecraft." + value.getKey().getKey());
             if (element == null) {
                 Prism.warn("缺少本地化语言: Enchantment = " + value.getKey().getKey());
-                enchantmentLocalize.put(value, value.getKey().getKey().toLowerCase().replace("_", ""));
+                enchantmentLocalize.put(value, value.getKey().getKey().toLowerCase().replace("_", " "));
             } else {
                 enchantmentLocalize.put(value, element.getAsString());
             }
