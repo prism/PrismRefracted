@@ -312,29 +312,41 @@ public class PrismExplodeEvents implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onBlockExplode(BlockExplodeEvent e) {
-        Location location = e.getBlock().getLocation();
-        List<Cause> causes = getCache(e.getBlock());
+        Block block = e.getBlock();
+        Location location = block.getLocation();
+        boolean blockTrack = true;
+        List<Cause> causes = getCache(block);
         if (causes == null) {
+            blockTrack = false;
             causes = getCache(location);
         }
         final String action;
 
-        final Material blockType = causes.get(0).blockType;
-        if (MaterialTag.BEDS.isTagged(blockType)) {
-            if (!Prism.getIgnore().event("bed-explode", e.getBlock())) {
+        final Material blockType;
+        if (causes == null) {
+            if (!Prism.getIgnore().event("block-explode", block)) {
                 return;
             }
-            action = "bed-explode";
-        } else if (blockType == Material.RESPAWN_ANCHOR) {
-            if (!Prism.getIgnore().event("respawnanchor-explode", e.getBlock())) {
-                return;
-            }
-            action = "respawnanchor-explode";
-        } else {
-            if (!Prism.getIgnore().event("block-explode", e.getBlock())) {
-                return;
-            }
+            blockType = null;
             action = "block-explode";
+        } else {
+            blockType = causes.get(0).blockType;
+            if (MaterialTag.BEDS.isTagged(blockType)) {
+                if (!Prism.getIgnore().event("bed-explode", block)) {
+                    return;
+                }
+                action = "bed-explode";
+            } else if (blockType == Material.RESPAWN_ANCHOR) {
+                if (!Prism.getIgnore().event("respawnanchor-explode", block)) {
+                    return;
+                }
+                action = "respawnanchor-explode";
+            } else {
+                if (!Prism.getIgnore().event("block-explode", block)) {
+                    return;
+                }
+                action = "block-explode";
+            }
         }
 
         final String blockName;
@@ -346,7 +358,7 @@ public class PrismExplodeEvents implements Listener {
             blockName = CNLocalization.getMaterialLocale(blockType);
             niceName = getNiceFullName(blockName, causes);
         }
-        contructExplodeEvent(action, niceName, e.blockList(), location, blockName);
+        contructExplodeEvent(action, niceName, e.blockList(), blockTrack ? block : location, blockName);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
