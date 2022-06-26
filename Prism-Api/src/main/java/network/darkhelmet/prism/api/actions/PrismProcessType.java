@@ -9,7 +9,7 @@ public enum PrismProcessType {
     UNDO("撤销"),
     DELETE("删除");
 
-    private String localization;
+    private final String localization;
 
     PrismProcessType(String localization) {
         this.localization = localization;
