@@ -38,7 +38,7 @@ public class PrismApplierCallback implements ApplierCallback {
                 builder.append(Il8nHelper.formatMessage("applier-rollback-start", result.getChangesApplied()));
                 if (result.getChangesSkipped() > 0) {
                     builder.append(Component.text(" "));
-                    builder.append(Il8nHelper.formatMessage("applier-changes-skipped", result.getChangesSkipped()));
+                    builder.append(Il8nHelper.formatMessage("applier-changes-skipped", result.getChangesSkipped(), result.getStateSkipped()));
                 }
                 if (result.getChangesApplied() > 0) {
                     builder.append(Component.text(" "));
@@ -49,7 +49,7 @@ public class PrismApplierCallback implements ApplierCallback {
                 builder.append(Il8nHelper.formatMessage("applier-rollback-preview-start", result.getChangesPlanned()));
                 if (result.getChangesSkipped() > 0) {
                     builder.append(Component.text(" "));
-                    builder.append(Il8nHelper.formatMessage("applier-changes-skipped", result.getChangesSkipped()));
+                    builder.append(Il8nHelper.formatMessage("applier-changes-skipped", result.getChangesSkipped(), result.getStateSkipped()));
                 }
                 if (result.getChangesPlanned() > 0) {
                     builder.append(Component.text(" "));
@@ -69,7 +69,7 @@ public class PrismApplierCallback implements ApplierCallback {
                 builder.append(Il8nHelper.formatMessage("applier-restore-start", result.getChangesApplied()));
                 if (result.getChangesSkipped() > 0) {
                     builder.append(Component.text(" "));
-                    builder.append(Il8nHelper.formatMessage("applier-changes-skipped", result.getChangesSkipped()));
+                    builder.append(Il8nHelper.formatMessage("applier-changes-skipped", result.getChangesSkipped(), result.getStateSkipped()));
                 }
                 if (result.getChangesApplied() > 0) {
                     builder.append(Component.text(" "));
@@ -81,7 +81,7 @@ public class PrismApplierCallback implements ApplierCallback {
                 // Build the results message
                 builder.append(Il8nHelper.formatMessage("applier-restore-preview-start", result.getChangesPlanned()));
                 if (result.getChangesSkipped() > 0) {
-                    builder.append(Il8nHelper.formatMessage("applier-changes-skipped", result.getChangesSkipped()));
+                    builder.append(Il8nHelper.formatMessage("applier-changes-skipped", result.getChangesSkipped(), result.getStateSkipped()));
                 }
                 if (result.getChangesPlanned() > 0) {
                     builder.append(Component.text(" "));
