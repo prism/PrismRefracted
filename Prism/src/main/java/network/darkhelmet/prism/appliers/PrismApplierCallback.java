@@ -53,7 +53,7 @@ public class PrismApplierCallback implements ApplierCallback {
                 }
                 if (result.getChangesPlanned() > 0) {
                     builder.append(Component.text(" "));
-                    builder.append(Il8nHelper.formatMessage("applier-preview-done", result.getChangesSkipped()));
+                    builder.append(Il8nHelper.getMessage("applier-preview-done"));
                 }
                 // Let me know there's no need to cancel/apply
                 if (result.getChangesPlanned() == 0) {
@@ -85,7 +85,7 @@ public class PrismApplierCallback implements ApplierCallback {
                 }
                 if (result.getChangesPlanned() > 0) {
                     builder.append(Component.text(" "));
-                    builder.append(Il8nHelper.formatMessage("applier-preview-done", result.getChangesSkipped()));
+                    builder.append(Il8nHelper.getMessage("applier-preview-done"));
                 }
                 // Let me know there's no need to cancel/apply
                 if (result.getChangesPlanned() == 0) {
