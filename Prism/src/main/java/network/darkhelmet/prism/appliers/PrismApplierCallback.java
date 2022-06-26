@@ -65,6 +65,7 @@ public class PrismApplierCallback implements ApplierCallback {
                 }
                 // Let me know there's no need to cancel/apply
                 if (result.getChangesPlanned() == 0) {
+                    builder.append(Component.text(" "));
                     builder.append(Il8nHelper.getMessage("preview-no-actions"));
                 }
             }
@@ -106,6 +107,7 @@ public class PrismApplierCallback implements ApplierCallback {
                 }
                 // Let me know there's no need to cancel/apply
                 if (result.getChangesPlanned() == 0) {
+                    builder.append(Component.text(" "));
                     builder.append(Il8nHelper.getMessage("preview-no-actions"));
                 }
             }
