@@ -39,6 +39,10 @@ public class PrismApplierCallback implements ApplierCallback {
                 if (result.getChangesSkipped() > 0) {
                     builder.append(Component.text(" "));
                     builder.append(Il8nHelper.formatMessage("applier-changes-skipped", result.getChangesSkipped()));
+                    if (result.getStateSkipped() > 0) {
+                        builder.append(Component.text(" "));
+                        builder.append(Il8nHelper.formatMessage("applier-changes-skipped-by-state", result.getStateSkipped()));
+                    }
                 }
                 if (result.getChangesApplied() > 0) {
                     builder.append(Component.text(" "));
@@ -50,10 +54,14 @@ public class PrismApplierCallback implements ApplierCallback {
                 if (result.getChangesSkipped() > 0) {
                     builder.append(Component.text(" "));
                     builder.append(Il8nHelper.formatMessage("applier-changes-skipped", result.getChangesSkipped()));
+                    if (result.getStateSkipped() > 0) {
+                        builder.append(Component.text(" "));
+                        builder.append(Il8nHelper.formatMessage("applier-changes-skipped-by-state", result.getStateSkipped()));
+                    }
                 }
                 if (result.getChangesPlanned() > 0) {
                     builder.append(Component.text(" "));
-                    builder.append(Il8nHelper.formatMessage("applier-preview-done", result.getChangesSkipped()));
+                    builder.append(Il8nHelper.getMessage("applier-preview-done"));
                 }
                 // Let me know there's no need to cancel/apply
                 if (result.getChangesPlanned() == 0) {
@@ -70,6 +78,10 @@ public class PrismApplierCallback implements ApplierCallback {
                 if (result.getChangesSkipped() > 0) {
                     builder.append(Component.text(" "));
                     builder.append(Il8nHelper.formatMessage("applier-changes-skipped", result.getChangesSkipped()));
+                    if (result.getStateSkipped() > 0) {
+                        builder.append(Component.text(" "));
+                        builder.append(Il8nHelper.formatMessage("applier-changes-skipped-by-state", result.getStateSkipped()));
+                    }
                 }
                 if (result.getChangesApplied() > 0) {
                     builder.append(Component.text(" "));
@@ -81,11 +93,16 @@ public class PrismApplierCallback implements ApplierCallback {
                 // Build the results message
                 builder.append(Il8nHelper.formatMessage("applier-restore-preview-start", result.getChangesPlanned()));
                 if (result.getChangesSkipped() > 0) {
+                    builder.append(Component.text(" "));
                     builder.append(Il8nHelper.formatMessage("applier-changes-skipped", result.getChangesSkipped()));
+                    if (result.getStateSkipped() > 0) {
+                        builder.append(Component.text(" "));
+                        builder.append(Il8nHelper.formatMessage("applier-changes-skipped-by-state", result.getStateSkipped()));
+                    }
                 }
                 if (result.getChangesPlanned() > 0) {
                     builder.append(Component.text(" "));
-                    builder.append(Il8nHelper.formatMessage("applier-preview-done", result.getChangesSkipped()));
+                    builder.append(Il8nHelper.getMessage("applier-preview-done"));
                 }
                 // Let me know there's no need to cancel/apply
                 if (result.getChangesPlanned() == 0) {
