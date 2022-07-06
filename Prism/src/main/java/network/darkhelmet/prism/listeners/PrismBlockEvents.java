@@ -284,6 +284,14 @@ public class PrismBlockEvents extends BaseListener {
     public void onBlockFertilizeEvent(BlockFertilizeEvent event) {
         Player player = event.getPlayer();
         Block block = event.getBlock();
+        List<BlockState> blocks = event.getBlocks();
+
+        if (blocks.size() > 0 && Prism.getIgnore().event("block-fertilize", blocks.get(0).getWorld())) {
+            for (BlockState newState : blocks) {
+                Block oldBlock = newState.getBlock();
+                RecordingQueue.addToQueue(ActionFactory.createBlockChange("block-fertilize", oldBlock.getType(), oldBlock.getBlockData(), newState, player));
+            }
+        }
 
         if (Prism.getIgnore().event("bonemeal-use", block)) {
             RecordingQueue.addToQueue(ActionFactory.createBonemealUse(block, player));

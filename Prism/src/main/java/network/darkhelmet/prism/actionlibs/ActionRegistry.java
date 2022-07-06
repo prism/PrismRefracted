@@ -162,6 +162,8 @@ public class ActionRegistry {
                 BlockChangeAction.class, Il8nHelper.getRawMessage("grew")));
         registerAction(new ActionTypeImpl("block-use", false, false, false,
                 BlockAction.class, Il8nHelper.getRawMessage("used")));
+        registerAction(new ActionTypeImpl("block-fertilize", true, true, true,
+                BlockChangeAction.class, Il8nHelper.getRawMessage("fertilized")));
         registerAction(new ActionTypeImpl("bonemeal-use", false, false, false,
                 BonemealUseAction.class, Il8nHelper.getRawMessage("used-bonemeal")));
         registerAction(new ActionTypeImpl("bucket-fill", false, false, false,
