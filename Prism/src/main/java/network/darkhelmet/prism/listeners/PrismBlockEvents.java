@@ -28,6 +28,7 @@ import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockFadeEvent;
+import org.bukkit.event.block.BlockFertilizeEvent;
 import org.bukkit.event.block.BlockFormEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
@@ -276,6 +277,16 @@ public class PrismBlockEvents extends BaseListener {
         // Pass to the placement alerter
         if (!player.hasPermission("prism.alerts.use.place.ignore") && !player.hasPermission("prism.alerts.ignore")) {
             plugin.useMonitor.alertOnBlockPlacement(player, block, "prism.alerts.use.place");
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onBlockFertilizeEvent(BlockFertilizeEvent event) {
+        Player player = event.getPlayer();
+        Block block = event.getBlock();
+
+        if (Prism.getIgnore().event("bonemeal-use", block)) {
+            RecordingQueue.addToQueue(ActionFactory.createBonemealUse(block, player));
         }
     }
 
