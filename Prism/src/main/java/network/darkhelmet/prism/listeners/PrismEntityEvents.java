@@ -25,6 +25,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.TNTPrimed;
+import org.bukkit.entity.ThrownPotion;
 import org.bukkit.entity.Wither;
 import org.bukkit.entity.minecart.PoweredMinecart;
 import org.bukkit.event.EventHandler;
@@ -40,6 +41,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.EntityUnleashEvent;
+import org.bukkit.event.entity.LingeringPotionSplashEvent;
 import org.bukkit.event.entity.PlayerLeashEntityEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
@@ -54,6 +56,8 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.projectiles.BlockProjectileSource;
 import org.bukkit.projectiles.ProjectileSource;
@@ -536,8 +540,20 @@ public class PrismEntityEvents extends BaseListener {
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPotionSplashEvent(final PotionSplashEvent event) {
+        logPotionThrowEvent(event.getEntity(), "potion-splash");
+    }
 
-        final ProjectileSource source = event.getPotion().getShooter();
+    /**
+     * PotionSplashEvent.
+     * @param event PotionSplashEvent.
+     */
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onLingeringPotionSplashEvent(final LingeringPotionSplashEvent event) {
+        logPotionThrowEvent(event.getEntity(), "potion-lingering");
+    }
+
+    private void logPotionThrowEvent(final ThrownPotion thrownPotion, final String actionType) {
+        final ProjectileSource source = thrownPotion.getShooter();
 
         // Ignore from non-players for the time being
         if (!(source instanceof Player)) {
@@ -546,20 +562,19 @@ public class PrismEntityEvents extends BaseListener {
 
         final Player player = (Player) source;
 
-        if (!Prism.getIgnore().event("potion-splash", player)) {
+        if (!Prism.getIgnore().event(actionType, player)) {
             return;
         }
 
         // What type?
         // Right now this won't support anything with multiple effects
-        final Collection<PotionEffect> potion = event.getPotion().getEffects();
+        final Collection<PotionEffect> potion = thrownPotion.getEffects();
         String name = "";
         for (final PotionEffect eff : potion) {
             name = eff.getType().getName().toLowerCase();
         }
 
-        RecordingQueue.addToQueue(ActionFactory.createPlayer("potion-splash", player, name));
-
+        RecordingQueue.addToQueue(ActionFactory.createPlayer(actionType, player, name));
     }
 
     /**

@@ -261,6 +261,8 @@ public class ActionRegistry {
                 PortalCreateAction.class, "created portal"));
         registerAction(new ActionTypeImpl("potion-splash", false, false, false,
                 PlayerAction.class, Il8nHelper.getRawMessage("potion-throw")));
+        registerAction(new ActionTypeImpl("potion-lingering", false, false, false,
+                PlayerAction.class, Il8nHelper.getRawMessage("potion-throw")));
         registerAction(new ActionTypeImpl("prism-drain", false, true, true,
                 PrismRollbackAction.class, Il8nHelper.getRawMessage("drained")));
         registerAction(new ActionTypeImpl("prism-extinguish", false, true, true,
