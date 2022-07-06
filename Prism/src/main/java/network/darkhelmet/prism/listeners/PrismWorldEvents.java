@@ -7,15 +7,19 @@ import network.darkhelmet.prism.utils.block.Utilities;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockFertilizeEvent;
 import org.bukkit.event.world.PortalCreateEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.event.world.WorldLoadEvent;
+
+import java.util.List;
 
 public class PrismWorldEvents implements Listener {
 
@@ -36,12 +40,34 @@ public class PrismWorldEvents implements Listener {
         for (final BlockState block : event.getBlocks()) {
             if (Utilities.isGrowableStructure(block.getType())) {
                 if (event.getPlayer() != null) {
-                    // Process by PrismBlockEvents#onBlockFertilizeEvent
+                    // Process by #onBlockFertilizeEvent below
                     return;
                 } else {
                     RecordingQueue.addToQueue(ActionFactory.createGrow(type, block, "Environment"));
                 }
             }
+        }
+    }
+
+    /**
+     * Handle BlockFertilizeEvent.
+     * @param event BlockFertilizeEvent.
+     */
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onBlockFertilizeEvent(BlockFertilizeEvent event) {
+        Player player = event.getPlayer();
+        Block block = event.getBlock();
+        List<BlockState> blocks = event.getBlocks();
+
+        if (blocks.size() > 0 && Prism.getIgnore().event("block-fertilize", blocks.get(0).getWorld())) {
+            for (BlockState newState : blocks) {
+                Block oldBlock = newState.getBlock();
+                RecordingQueue.addToQueue(ActionFactory.createBlockChange("block-fertilize", oldBlock.getType(), oldBlock.getBlockData(), newState, player));
+            }
+        }
+
+        if (Prism.getIgnore().event("bonemeal-use", block)) {
+            RecordingQueue.addToQueue(ActionFactory.createBonemealUse(block, player));
         }
     }
 
