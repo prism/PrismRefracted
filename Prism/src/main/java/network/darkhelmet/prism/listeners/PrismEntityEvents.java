@@ -572,7 +572,13 @@ public class PrismEntityEvents extends BaseListener {
             name.append(eff.getType().getName().toLowerCase()).append(", ");
         }
 
-        name.delete(name.length() - 1, name.length());
+        // No effect, may be water, awkward or something.
+        if (name.length() == 0) {
+            PotionMeta potionMeta = (PotionMeta) thrownPotion.getItem().getItemMeta();
+            name = new StringBuilder(potionMeta.getBasePotionData().getType().name().toLowerCase());
+        } else {
+            name.setLength(name.length() - 2);
+        }
 
         RecordingQueue.addToQueue(ActionFactory.createPlayer(actionType, player, name.toString()));
     }
