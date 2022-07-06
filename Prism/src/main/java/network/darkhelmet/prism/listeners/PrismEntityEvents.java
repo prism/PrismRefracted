@@ -544,8 +544,8 @@ public class PrismEntityEvents extends BaseListener {
     }
 
     /**
-     * PotionSplashEvent.
-     * @param event PotionSplashEvent.
+     * LingeringPotionSplashEvent.
+     * @param event LingeringPotionSplashEvent.
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onLingeringPotionSplashEvent(final LingeringPotionSplashEvent event) {
