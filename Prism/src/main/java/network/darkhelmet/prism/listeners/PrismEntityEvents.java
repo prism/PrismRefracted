@@ -565,16 +565,16 @@ public class PrismEntityEvents extends BaseListener {
         if (!Prism.getIgnore().event(actionType, player)) {
             return;
         }
-
         // What type?
-        // Right now this won't support anything with multiple effects
         final Collection<PotionEffect> potion = thrownPotion.getEffects();
-        String name = "";
+        StringBuilder name = new StringBuilder();
         for (final PotionEffect eff : potion) {
-            name = eff.getType().getName().toLowerCase();
+            name.append(eff.getType().getName().toLowerCase()).append(", ");
         }
 
-        RecordingQueue.addToQueue(ActionFactory.createPlayer(actionType, player, name));
+        name.delete(name.length() - 1, name.length());
+
+        RecordingQueue.addToQueue(ActionFactory.createPlayer(actionType, player, name.toString()));
     }
 
     /**
