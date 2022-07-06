@@ -120,7 +120,7 @@ public class ActionFactory {
     }
 
     /**
-     * BlockPlaceEvent | EntityBlockFormEvent.
+     * BlockPlaceEvent | EntityBlockFormEvent | BlockFertilizeEvent.
      *
      * @param actionType type
      * @param oldMat     old

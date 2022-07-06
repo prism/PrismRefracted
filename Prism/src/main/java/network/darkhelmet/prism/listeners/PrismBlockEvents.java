@@ -280,6 +280,10 @@ public class PrismBlockEvents extends BaseListener {
         }
     }
 
+    /**
+     * Handle BlockFertilizeEvent.
+     * @param event BlockFertilizeEvent.
+     */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockFertilizeEvent(BlockFertilizeEvent event) {
         Player player = event.getPlayer();
