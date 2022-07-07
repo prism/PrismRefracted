@@ -4,8 +4,7 @@ import network.darkhelmet.prism.api.ChangeResult;
 import network.darkhelmet.prism.api.ChangeResultType;
 import network.darkhelmet.prism.api.PrismParameters;
 import network.darkhelmet.prism.appliers.ChangeResultImpl;
-import org.apache.commons.lang3.EnumUtils;
-import org.bukkit.TreeSpecies;
+import network.darkhelmet.prism.utils.EntityUtils;
 import org.bukkit.entity.Boat;
 import org.bukkit.entity.ChestBoat;
 import org.bukkit.entity.Entity;
@@ -46,9 +45,7 @@ public class VehicleAction extends GenericAction {
         }
 
         if (vehicle instanceof Boat) {
-            Boat boat = (Boat) vehicle;
-            TreeSpecies woodType = boat.getWoodType();
-            actionData.woodType = woodType.name();
+            actionData.woodType = EntityUtils.treeSpeciesToName(((Boat) vehicle).getWoodType());
         }
     }
 
@@ -57,7 +54,7 @@ public class VehicleAction extends GenericAction {
      */
     @Override
     public String getNiceName() {
-        return (actionData.woodType != null ? actionData.woodType.toLowerCase() + " " : "") + actionData.vehicleName;
+        return (actionData.woodType != null ? actionData.woodType + " " : "") + actionData.vehicleName;
     }
 
     @Override
@@ -122,9 +119,8 @@ public class VehicleAction extends GenericAction {
             return new ChangeResultImpl(ChangeResultType.SKIPPED, null);
         }
 
-        if (vehicle instanceof Boat && actionData != null) {
-            Boat boat = (Boat) vehicle;
-            boat.setWoodType(EnumUtils.getEnum(TreeSpecies.class, actionData.woodType, TreeSpecies.GENERIC));
+        if (vehicle instanceof Boat && actionData.woodType != null) {
+            ((Boat) vehicle).setWoodType(EntityUtils.nameToTreeSpecies(actionData.woodType));
         }
 
         return new ChangeResultImpl(ChangeResultType.APPLIED, null);

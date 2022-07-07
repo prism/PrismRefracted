@@ -43,7 +43,7 @@ dependencies {
     implementation 'io.papermc:paperlib:1.0.3'
     implementation 'com.zaxxer:HikariCP:4.0.3'
     implementation 'net.kyori:adventure-api:4.11.0'
-    implementation 'net.kyori:adventure-platform-bukkit:4.1.0'
+    implementation 'net.kyori:adventure-platform-bukkit:4.1.1'
     implementation 'net.kyori:adventure-text-serializer-plain:4.11.0'
     implementation 'org.kitteh:paste-gg-api:1.0.0-SNAPSHOT'
     implementation project(':Prism-Api')
@@ -61,12 +61,14 @@ shadowJar {
         exclude(dependency('org.slf4j:.*'))
         exclude(dependency('org.intellij:.*'))
         exclude(dependency('org.jetbrains:.*'))
+        exclude(dependency('com.google.code.gson:.*'))
     }
 
     relocate 'io.papermc.lib', 'network.darkhelmet.prism.paperlib'
     relocate 'com.zaxxer', 'network.darkhelmet.prism.zaxxer'
     relocate 'net.kyori', 'network.darkhelmet.prism.kyori'
     relocate 'org.kitteh', 'network.darkhelmet.prism.kitteh'
+    relocate 'org.apache', 'network.darkhelmet.prism.apache'
 
     minimize()
 }
@@ -76,4 +78,19 @@ runServer {
     // This is the only required configuration besides applying the plugin.
     // Your plugin's jar (or shadowJar if present) will be used automatically.
     minecraftVersion("1.19")
+}
+
+gradle.buildFinished {
+    // Clean Gradle resources cache
+    deleteDirectory(new File(project.buildDir, "resources/"))
+}
+
+boolean deleteDirectory(File directory) {
+    File[] contents = directory.listFiles();
+    if (contents != null) {
+        for (File file : contents) {
+            deleteDirectory(file);
+        }
+    }
+    return directory.delete();
 }
