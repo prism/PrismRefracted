@@ -566,7 +566,7 @@ public class PrismEntityEvents extends BaseListener {
         }
         // What type?
         final Collection<PotionEffect> potion = thrownPotion.getEffects();
-        StringBuilder name = new StringBuilder();
+        final StringBuilder name = new StringBuilder();
         for (final PotionEffect eff : potion) {
             name.append(eff.getType().getName().toLowerCase()).append(", ");
         }
@@ -574,7 +574,7 @@ public class PrismEntityEvents extends BaseListener {
         // No effect, may be water, awkward or something.
         if (name.length() == 0) {
             PotionMeta potionMeta = (PotionMeta) thrownPotion.getItem().getItemMeta();
-            name = new StringBuilder(potionMeta.getBasePotionData().getType().name().toLowerCase());
+            name.append(potionMeta.getBasePotionData().getType().name().toLowerCase());
         } else {
             name.setLength(name.length() - 2);
         }
