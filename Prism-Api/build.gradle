@@ -1,4 +1,7 @@
-apply plugin: 'java'
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
 
 repositories {
     mavenLocal()
@@ -8,11 +11,30 @@ repositories {
     maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
 }
 
-group = "network.darkhelmet"
+group = project.property("group")
 version = project.property("version")
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_17
 
 dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.17-R0.1-SNAPSHOT'
-    compileOnly 'org.jetbrains:annotations:21.0.1'
+    compileOnly 'org.jetbrains:annotations:23.0.0'
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = project.property("group")
+            artifactId = 'Prism-Api'
+            version = project.property("version")
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            def releasesRepoUrl = "https://nexus.darkhelmet.network/repository/maven-releases/"
+            def snapshotsRepoUrl = "https://nexus.darkhelmet.network/repository/maven-snapshots/"
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            credentials(PasswordCredentials)
+        }
+    }
 }
