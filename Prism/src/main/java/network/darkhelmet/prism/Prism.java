@@ -142,6 +142,7 @@ public class Prism extends JavaPlugin implements PrismApi {
     public BukkitTask recordingTask;
     public int totalRecordsAffected = 0;
     public long maxCycleTime = 0;
+    private byte serverMajorVersion;
 
     /**
      * We store a basic index of hanging entities we anticipate will fall, so that
@@ -374,6 +375,10 @@ public class Prism extends JavaPlugin implements PrismApi {
         return schedulePool;
     }
 
+    public byte getServerMajorVersion() {
+        return serverMajorVersion;
+    }
+
     /**
      * Enables the plugin and activates our player listeners.
      */
@@ -386,6 +391,7 @@ public class Prism extends JavaPlugin implements PrismApi {
         audiences = BukkitAudiences.create(this);
         messenger = new Messenger(pluginName, Prism.getAudiences());
         log("Initializing Prism " + pluginVersion + ". by viveleroi");
+        serverMajorVersion = Byte.parseByte(Bukkit.getServer().getBukkitVersion().split("\\.")[1].split("-")[0]);
         loadConfig();        // Load configuration, or install if new
         isPaper = PaperLib.isPaper();
         if (isPaper) {
