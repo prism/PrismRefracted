@@ -412,8 +412,11 @@ public class Prism extends JavaPlugin implements PrismApi {
         } else {
             pasteKey = null;
         }
-        final List<String> worldNames = getServer().getWorlds().stream()
-                .map(World::getName).collect(Collectors.toList());
+
+        final List<String> worldNames = new ArrayList<>();
+        for (World world : getServer().getWorlds()) {
+            worldNames.add(world.getName());
+        }
 
         final String[] playerNames = Bukkit.getServer().getOnlinePlayers().stream()
                 .map(Player::getName).toArray(String[]::new);
