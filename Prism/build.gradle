@@ -26,7 +26,7 @@ repositories {
 
 group = project.property("group")
 version = project.property("version")
-sourceCompatibility = targetCompatibility = JavaVersion.VERSION_16
+sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 
 processResources {
     filter ReplaceTokens, tokens: [
