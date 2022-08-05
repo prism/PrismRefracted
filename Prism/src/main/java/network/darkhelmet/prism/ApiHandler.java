@@ -1,7 +1,9 @@
 package network.darkhelmet.prism;
 
+import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
+import com.sk89q.worldedit.event.extent.EditSessionEvent;
 import network.darkhelmet.prism.bridge.PrismBlockEditHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
@@ -12,18 +14,24 @@ import java.util.Collection;
 public class ApiHandler {
 
     public enum WEType {
-        WORLDEDIT("WorldEdit"),
-        ASYNC_WORLDEDIT("AsyncWorldEdit"),
-        FAST_ASYNC_WORLDEDIT("FastAsyncWorldEdit");
+        WORLDEDIT("WorldEdit", EditSession.Stage.BEFORE_REORDER),
+        ASYNC_WORLDEDIT("AsyncWorldEdit", EditSession.Stage.BEFORE_REORDER),
+        FAST_ASYNC_WORLDEDIT("FastAsyncWorldEdit", EditSession.Stage.BEFORE_HISTORY);
 
         private final String pluginId;
+        private final EditSession.Stage logState;
 
-        WEType(String pluginId) {
+        WEType(String pluginId, EditSession.Stage logState) {
             this.pluginId = pluginId;
+            this.logState = logState;
         }
 
         public String getPluginId() {
             return pluginId;
+        }
+
+        public boolean shouldLog(EditSessionEvent event) {
+            return event.getStage() == logState;
         }
     }
 
