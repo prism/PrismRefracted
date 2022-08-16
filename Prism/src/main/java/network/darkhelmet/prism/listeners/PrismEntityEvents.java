@@ -729,7 +729,6 @@ public class PrismEntityEvents extends BaseListener {
                 }
 
                 BlockState state = event.getBlock().getState();
-                state.setBlockData(event.getBlockData());
                 RecordingQueue.addToQueue(ActionFactory.createBlock("enderman-pickup", state, entity));
             }
         } else if (to == Material.AIR && event.getEntity() instanceof Wither) {
