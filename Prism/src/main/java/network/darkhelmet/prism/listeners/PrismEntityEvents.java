@@ -446,7 +446,7 @@ public class PrismEntityEvents extends BaseListener {
             }
 
             // Frame is empty but an item is held
-            if (frame.getItem().getType().equals(Material.AIR) && hand != null) {
+            if (frame.getItem().getType().equals(Material.AIR) && checkNotNullorAir(hand)) {
                 if (Prism.getIgnore().event("item-insert", p)) {
                     RecordingQueue.addToQueue(
                             ActionFactory.createItemFrame("item-insert", hand, 1, frame.getAttachedFace(),
@@ -455,7 +455,7 @@ public class PrismEntityEvents extends BaseListener {
             }
         }
 
-        if (hand != null) {
+        if (checkNotNullorAir(hand)) {
             // if they're holding coal (or charcoal, a subitem) and they click a
             // powered minecart
             if (hand.getType() == Material.COAL && e instanceof PoweredMinecart) {
