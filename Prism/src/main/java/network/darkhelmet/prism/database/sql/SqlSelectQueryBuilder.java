@@ -471,7 +471,7 @@ public class SqlSelectQueryBuilder extends QueryBuilder implements SelectQuery {
         // Build conditions based off final args
         final String query = getQuery(parameters, shouldGroup);
         eventTimer.recordTimedEvent("query started");
-        System.out.println(query);
+
         try (
                 Connection conn = Prism.getPrismDataSource().getDataSource().getConnection();
                 PreparedStatement s = conn.prepareStatement(query);
