@@ -600,6 +600,20 @@ public class ActionFactory {
     }
 
     /**
+     * BonemealUseAction.
+     *
+     * @param block      the block acted on
+     * @param nonPlayer     nonplayer
+     */
+    public static Handler createBonemealUse(Block block, String nonPlayer) {
+        final BonemealUseAction a = new BonemealUseAction();
+        a.setActionType("bonemeal-use");
+        a.setBlock(block);
+        a.setSourceName(nonPlayer);
+        return a;
+    }
+
+    /**
      * VehicleAction.
      *
      * @param actionType the action

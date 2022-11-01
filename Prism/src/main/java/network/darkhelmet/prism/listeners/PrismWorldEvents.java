@@ -62,12 +62,20 @@ public class PrismWorldEvents implements Listener {
         if (blocks.size() > 0 && Prism.getIgnore().event("block-fertilize", blocks.get(0).getWorld())) {
             for (BlockState newState : blocks) {
                 Block oldBlock = newState.getBlock();
-                RecordingQueue.addToQueue(ActionFactory.createBlockChange("block-fertilize", oldBlock.getType(), oldBlock.getBlockData(), newState, player));
+                if (player != null) {
+                    RecordingQueue.addToQueue(ActionFactory.createBlockChange("block-fertilize", oldBlock.getType(), oldBlock.getBlockData(), newState, player));
+                } else {
+                    RecordingQueue.addToQueue(ActionFactory.createBlockChange("block-fertilize", oldBlock.getType(), oldBlock.getBlockData(), newState, "Dispenser"));
+                }
             }
         }
 
         if (Prism.getIgnore().event("bonemeal-use", block)) {
-            RecordingQueue.addToQueue(ActionFactory.createBonemealUse(block, player));
+            if (player != null) {
+                RecordingQueue.addToQueue(ActionFactory.createBonemealUse(block, player));
+            } else {
+                RecordingQueue.addToQueue(ActionFactory.createBonemealUse(block, "Dispenser"));
+            }
         }
     }
 
