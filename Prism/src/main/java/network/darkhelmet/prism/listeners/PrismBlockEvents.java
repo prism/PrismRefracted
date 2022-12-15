@@ -235,11 +235,10 @@ public class PrismBlockEvents extends BaseListener {
         logBlockRelationshipsForBlock(player, block);
 
         // if obsidian, log portal blocks
-        if (block.getType().equals(Material.OBSIDIAN)) {
-            final ArrayList<Block> blocks = Utilities.findConnectedBlocksOfType(Material.NETHER_PORTAL, block, null);
-            if (!blocks.isEmpty()) {
-                // Only log 1 portal break, we don't need all 8
-                RecordingQueue.addToQueue(ActionFactory.createBlock("block-break", blocks.get(0), player));
+        if (block.getType() == Material.OBSIDIAN) {
+            Block portal = Utilities.findFirstSurroundingBlockOfType(block, Material.NETHER_PORTAL, Utilities.CARDINAL_Y_FACES);
+            if (portal != null) {
+                RecordingQueue.addToQueue(ActionFactory.createBlock("block-break", portal, player));
             }
         }
 
