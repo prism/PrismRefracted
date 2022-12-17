@@ -323,7 +323,7 @@ public class Utilities {
     }
 
     /**
-     * Searches for detachable blocks on the four acceptable sides of a block.
+     * Searches for detachable blocks on the top of a block.
      *
      * @param block Block
      * @return ArrayList of Blocks
@@ -337,11 +337,27 @@ public class Utilities {
             detachingBlocks.add(blockToCheck);
             if (blockToCheck.getType().equals(Material.CACTUS) || blockToCheck.getType().equals(Material.SUGAR_CANE)) {
                 // For cactus and sugar cane, we can even have blocks above
-                ArrayList<Block> additionalBlocks = findTopFaceAttachedBlocks(blockToCheck);
-                if (!additionalBlocks.isEmpty()) {
-                    detachingBlocks.addAll(additionalBlocks);
-                }
+                detachingBlocks.addAll(findTopFaceAttachedBlocks(blockToCheck));
             }
+        }
+
+        return detachingBlocks;
+
+    }
+
+    /**
+     * Searches for detachable blocks on the bottom of a block.
+     *
+     * @param block Block
+     * @return ArrayList of Blocks
+     */
+    public static ArrayList<Block> findBottomFaceAttachedBlocks(final Block block) {
+        ArrayList<Block> detachingBlocks = new ArrayList<>();
+
+        // Find any block below this block that will detach
+        Block blockToCheck = block.getRelative(BlockFace.DOWN);
+        if (Utilities.isBottomFaceDetachableMaterial(blockToCheck.getType())) {
+            detachingBlocks.add(blockToCheck);
         }
 
         return detachingBlocks;
@@ -357,6 +373,17 @@ public class Utilities {
     @SuppressWarnings("WeakerAccess")
     public static boolean isTopFaceDetachableMaterial(Material m) {
         return  TabLibraryHelper.fallsOffTop.isTagged(m);
+    }
+
+    /**
+     * Determine whether or not a block is going to detach from the top of a block.
+     *
+     * @param m the material to check for detaching
+     * @return boolean - whether a block with a given material will detach from the top of a block.
+     **/
+    @SuppressWarnings("WeakerAccess")
+    public static boolean isBottomFaceDetachableMaterial(Material m) {
+        return  TabLibraryHelper.fallsOffBottom.isTagged(m);
     }
 
     /**
