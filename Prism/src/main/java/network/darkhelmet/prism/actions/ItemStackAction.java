@@ -86,10 +86,8 @@ public class ItemStackAction extends GenericAction {
         }
 
         // Set basics
-        actionData = ItemStackActionData.createData(item, quantity, tempDurability, tempEnchantments);
-        if (tempDurability >= 0) {
-            tempDurability = -1;
-        }
+        actionData = ItemStackActionData.createData(item, quantity,
+                tempDurability >= 0 ? tempDurability : (short) ItemUtils.getItemDamage(item), tempEnchantments);
         setMaterial(item.getType());
     }
 
