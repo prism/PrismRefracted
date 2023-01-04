@@ -9,11 +9,15 @@ import org.bukkit.DyeColor;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.ShulkerBox;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
+import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.FireworkEffectMeta;
@@ -52,6 +56,7 @@ public class ItemStackActionData {
     public String potionType;
     public boolean potionExtended;
     public boolean potionUpgraded;
+    public Map<Integer, ItemStackActionData> shulkerBoxInv;
 
     public static ItemStackActionData createData(ItemStack item, int quantity, short durability, Map<Enchantment, Integer> enchantments) {
 
@@ -135,6 +140,21 @@ public class ItemStackActionData {
             patterns.forEach(
                     pattern -> stringyPatterns.put(pattern.getPattern().getIdentifier(), pattern.getColor().name()));
             actionData.bannerMeta = stringyPatterns;
+        }
+        if (meta instanceof BlockStateMeta) {
+            BlockState blockState = ((BlockStateMeta) meta).getBlockState();
+            if (blockState instanceof ShulkerBox) {
+                Inventory inventory = ((ShulkerBox) blockState).getInventory();
+                ItemStack[] contents = inventory.getContents();
+                actionData.shulkerBoxInv = new HashMap<>();
+                for (int i = 0; i < 27; i++) {
+                    ItemStack invItem = contents[i];
+                    if (invItem == null) {
+                        continue;
+                    }
+                    actionData.shulkerBoxInv.put(i, createData(invItem, invItem.getAmount(), (short) ItemUtils.getItemDamage(invItem), invItem.getEnchantments()));
+                }
+            }
         }
         return actionData;
     }
@@ -264,6 +284,18 @@ public class ItemStackActionData {
                 }
             });
             ((BannerMeta) meta).setPatterns(patterns);
+        }
+        if (meta instanceof BlockStateMeta) {
+            BlockState blockState = ((BlockStateMeta) meta).getBlockState();
+            if (blockState instanceof ShulkerBox
+                    // For older version
+                    && shulkerBoxInv != null) {
+                Inventory inventory = ((ShulkerBox) blockState).getInventory();
+                for (Map.Entry<Integer, ItemStackActionData> entry : shulkerBoxInv.entrySet()) {
+                    inventory.setItem(entry.getKey(), entry.getValue().toItem());
+                }
+                ((BlockStateMeta) meta).setBlockState(blockState);
+            }
         }
 
         if (name != null) {
