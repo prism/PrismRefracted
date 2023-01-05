@@ -256,7 +256,7 @@ public class Preview implements Previewable {
                                     continue;
                                 }
                                 result = action.applyRollback(player, parameters, isPreview);
-                                if (result.getType() == ChangeResultType.APPLIED) {
+                                if (!isPreview && result.getType() == ChangeResultType.APPLIED) {
                                     action.setRollbacked(true);
                                     updateRollbackedList.add(action);
                                 }
@@ -272,7 +272,7 @@ public class Preview implements Previewable {
                                     continue;
                                 }
                                 result = action.applyRestore(player, parameters, isPreview);
-                                if (result.getType() == ChangeResultType.APPLIED) {
+                                if (!isPreview && result.getType() == ChangeResultType.APPLIED) {
                                     action.setRollbacked(false);
                                     updateRollbackedList.add(action);
                                 }
