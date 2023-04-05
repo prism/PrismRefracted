@@ -29,7 +29,8 @@ public class BlockTeleportAction extends BlockChangeAction {
             setMaterial(Material.AIR);
         } else {
             setOtherLoc(from.getLocation());
-            setOldMaterial(Material.AIR);
+            setOldMaterial(to.getType());
+            setOldBlockData(to.getBlockData());
 
             setLoc(to.getLocation());
             setMaterial(from.getType());
