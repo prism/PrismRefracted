@@ -791,7 +791,6 @@ public class Prism extends JavaPlugin implements PrismApi {
                   && (p.hasPermission("prism.alerts") || (alertPerm != null && p.hasPermission(alertPerm)))) {
                 TextComponent prefix = Il8nHelper.getMessage("alert-prefix")
                             .color(NamedTextColor.RED)
-                            .append(Component.text(" "))
                             .append(msg);
                 audiences.player(p).sendMessage(Identity.nil(), prefix);
             }
