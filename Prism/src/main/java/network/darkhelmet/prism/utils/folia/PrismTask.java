@@ -32,7 +32,7 @@ public class PrismTask {
         if (FOLIA) {
             ((ScheduledTask) task).cancel();
         } else {
-            if (taskId != -1) {
+            if (task != null) {
                 ((BukkitTask) task).cancel();
             } else {
                 Bukkit.getScheduler().cancelTask(taskId);
@@ -41,7 +41,7 @@ public class PrismTask {
     }
 
     public boolean isCancelled() {
-        if (taskId != -1) {
+        if (task == null) {
             throw new IllegalStateException("Task is created by id");
         }
         if (FOLIA) {
@@ -52,7 +52,7 @@ public class PrismTask {
     }
 
     public boolean isActive() {
-        if (taskId != -1) {
+        if (task == null) {
             throw new IllegalStateException("Task is created by id");
         }
         if (FOLIA) {
