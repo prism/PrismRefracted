@@ -1,5 +1,6 @@
 package network.darkhelmet.prism.appliers;
 
+import net.kyori.adventure.text.Component;
 import network.darkhelmet.prism.Il8nHelper;
 import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.actionlibs.QueryParameters;
@@ -36,6 +37,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class Preview implements Previewable {
 
@@ -195,21 +197,24 @@ public class Preview implements Previewable {
         nf.setMaximumFractionDigits(2);
         nf.setMinimumFractionDigits(2);
         nf.setRoundingMode(RoundingMode.DOWN);
-        ReplaceableTextComponent progressComponent = ReplaceableTextComponent.builder("applier-actionbar-applying")
-                .replace("<processType>", processType.name().toLowerCase() + (isPreview ? " preview" : ""));
+
+        Component progressComponent = ReplaceableTextComponent.builder("applier-actionbar-applying")
+                .replace("<processType>", processType.name().toLowerCase() + (isPreview ? " preview" : "")).build();
+        Pattern percentage = Pattern.compile("<percentage>");
+        Pattern elapsed = Pattern.compile("<elapsed>");
 
         // TODO: FOLIA TEST
         worldChangeQueueTask = PrismScheduler.scheduleSyncRepeatingTask(() -> {
 
+            Prism.messenger.sendActionBar(sender, progressComponent
+                    .replaceText(percentage, builder -> Component.text(nf.format((isPreview ?
+                            (blockChangesRead / (float) worldChangeQueue.size() * 100) :
+                            ((totalChangesCount - worldChangeQueue.size()) / (float) totalChangesCount * 100)))))
+                    .replaceText(elapsed, builder -> Component.text(((System.nanoTime() - startTime) / 1000000000) + "s"))
+                    .color(NamedTextColor.GOLD));
+
             int iterationCount = 0;
             final int currentQueueOffset = blockChangesRead;
-
-            Prism.messenger.sendActionBar(sender, progressComponent
-                    .replace("<percentage>", nf.format((isPreview ?
-                            (currentQueueOffset/ (float) worldChangeQueue.size() * 100) :
-                            ((totalChangesCount - worldChangeQueue.size()) / (float) totalChangesCount * 100))))
-                    .replace("<elapsed>", ((System.nanoTime() - startTime) / 1000000000) + "s")
-                    .build().color(NamedTextColor.GOLD));
 
             if (currentQueueOffset < worldChangeQueue.size()) {
                 for (final Iterator<Handler> iterator = worldChangeQueue.listIterator(currentQueueOffset);
