@@ -14,6 +14,8 @@ import network.darkhelmet.prism.events.EventHelper;
 import network.darkhelmet.prism.events.PrismRollBackEvent;
 import network.darkhelmet.prism.text.ReplaceableTextComponent;
 import network.darkhelmet.prism.utils.EntityUtils;
+import network.darkhelmet.prism.utils.folia.PrismScheduler;
+import network.darkhelmet.prism.utils.folia.PrismTask;
 import network.darkhelmet.prism.wands.RollbackWand;
 import network.darkhelmet.prism.wands.Wand;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -52,7 +54,7 @@ public class Preview implements Previewable {
     private int changesAppliedCount;
     private int changesPlannedCount;
     private int blockChangesRead = 0;
-    private int worldChangeQueueTaskId;
+    private PrismTask worldChangeQueueTask;
     private ApplierCallback callback;
 
     /**
@@ -181,6 +183,13 @@ public class Preview implements Previewable {
         startTime = System.nanoTime();
         blockChangesRead = 0;
         totalChangesCount = worldChangeQueue.size();
+        Prism.debug("World change queue size: " + totalChangesCount);
+
+        if (worldChangeQueue.isEmpty()) {
+            Prism.messenger.sendMessage(sender,
+                    Prism.messenger.playerError(Il8nHelper.getMessage("preview-no-actions")));
+            return;
+        }
 
         NumberFormat nf = NumberFormat.getNumberInstance();
         nf.setMaximumFractionDigits(2);
@@ -189,15 +198,8 @@ public class Preview implements Previewable {
         ReplaceableTextComponent progressComponent = ReplaceableTextComponent.builder("applier-actionbar-applying")
                 .replace("<processType>", processType.name().toLowerCase() + (isPreview ? " preview" : ""));
 
-        worldChangeQueueTaskId = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
-
-            Prism.debug("World change queue size: " + worldChangeQueue.size());
-
-            if (worldChangeQueue.isEmpty()) {
-                Prism.messenger.sendMessage(sender,
-                        Prism.messenger.playerError(Il8nHelper.getMessage("preview-no-actions")));
-                return;
-            }
+        // TODO: FOLIA TEST
+        worldChangeQueueTask = PrismScheduler.scheduleSyncRepeatingTask(() -> {
 
             int iterationCount = 0;
             final int currentQueueOffset = blockChangesRead;
@@ -287,7 +289,7 @@ public class Preview implements Previewable {
 
             // The task for this action is done being used
             if (worldChangeQueue.isEmpty() || blockChangesRead >= worldChangeQueue.size()) {
-                plugin.getServer().getScheduler().cancelTask(worldChangeQueueTaskId);
+                worldChangeQueueTask.cancel();
                 if (isPreview) {
                     postProcessPreview();
                 } else {
@@ -299,7 +301,7 @@ public class Preview implements Previewable {
                         .replace("<elapsed>", ((System.nanoTime() - startTime) / 1000000000f) + "s")
                         .build().color(NamedTextColor.GOLD));
             }
-        }, 2L, 2L);
+        }, worldChangeQueue.get(0).getLoc(), 2L, 2L);
     }
 
     private void postProcessPreview() {
@@ -323,14 +325,15 @@ public class Preview implements Previewable {
 
     private void moveEntitiesToSafety() {
         if (parameters.getWorld() != null && player != null) {
-            final List<Entity> entities = player.getNearbyEntities(parameters.getRadius(), parameters.getRadius(),
-                  parameters.getRadius());
+            // TODO: Folia - may throw `IllegalStateException: Cannot getEntities asynchronously` if large radius; Waiting for API
+            final List<Entity> entities = player.getNearbyEntities(
+                    parameters.getRadius(), parameters.getRadius(), parameters.getRadius());
             entities.add(player);
             for (final Entity entity : entities) {
                 if (entity instanceof LivingEntity) {
                     int add = 0;
                     if (EntityUtils.inCube(parameters.getPlayerLocation(), parameters.getRadius(),
-                          entity.getLocation())) {
+                            entity.getLocation())) {
                         final Location l = entity.getLocation();
                         while (!EntityUtils.playerMayPassThrough(l.getBlock().getType())) {
                             add++;
@@ -341,11 +344,12 @@ public class Preview implements Previewable {
                         }
                         if (add > 0) {
                             entitiesMoved.put(entity, add);
-                            entity.teleport(l);
+                            EntityUtils.teleportEntity((LivingEntity) entity, l);
                         }
                     }
                 }
             }
+
         }
     }
 

@@ -50,6 +50,8 @@ import network.darkhelmet.prism.players.PrismPlayer;
 import network.darkhelmet.prism.purge.PurgeManager;
 import network.darkhelmet.prism.utils.MaterialAliases;
 import network.darkhelmet.prism.utils.TypeUtils;
+import network.darkhelmet.prism.utils.folia.PrismTask;
+import network.darkhelmet.prism.utils.folia.PrismScheduler;
 import network.darkhelmet.prism.wands.Wand;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
@@ -71,7 +73,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -99,6 +100,7 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("removal")
 public class Prism extends JavaPlugin implements PrismApi {
 
     public static final ConcurrentHashMap<String, Wand> playersWithActiveTools = new ConcurrentHashMap<>();
@@ -112,6 +114,7 @@ public class Prism extends JavaPlugin implements PrismApi {
     public static Messenger messenger;
     public static FileConfiguration config;
     public static boolean isPaper = true;
+    public static boolean isFolia = false;
     private static Logger prismLog;
     private static List<Material> illegalBlocks;
     private static List<EntityType> illegalEntities;
@@ -124,7 +127,7 @@ public class Prism extends JavaPlugin implements PrismApi {
     private static Ignore ignore;
     private static Prism instance;
     private static boolean debug = false;
-    private static BukkitTask debugWatcher;
+    private static PrismTask debugWatcher;
     private static BukkitAudiences audiences;
     public final ConcurrentHashMap<String, PreviewSession> playerActivePreviews = new ConcurrentHashMap<>();
     public final ConcurrentHashMap<String, ArrayList<Block>> playerActiveViews = new ConcurrentHashMap<>();
@@ -139,7 +142,7 @@ public class Prism extends JavaPlugin implements PrismApi {
     public UseMonitor useMonitor;
     public TimeTaken eventTimer;
     public QueueStats queueStats;
-    public BukkitTask recordingTask;
+    public PrismTask recordingTask;
     public int totalRecordsAffected = 0;
     public long maxCycleTime = 0;
     private byte serverMajorVersion;
@@ -178,7 +181,7 @@ public class Prism extends JavaPlugin implements PrismApi {
     public static void setDebug(boolean debug) {
         Prism.debug = debug;
         if (debug && (debugWatcher == null || debugWatcher.isCancelled())) {
-            debugWatcher = Bukkit.getScheduler().runTaskTimerAsynchronously(Prism.getInstance(), () -> {
+            debugWatcher = PrismScheduler.runTaskTimerAsynchronously(() -> {
                 for (Player p : Bukkit.getOnlinePlayers()) {
                     if (p.hasPermission("prism.debug")) {
                         p.sendMessage("ALERT : Prism has debug mode enabled - "
@@ -401,6 +404,13 @@ public class Prism extends JavaPlugin implements PrismApi {
                 Prism.log("Paper not detected - Optional Paper Events will NOT be enabled.");
             }
         }
+        try {
+            Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
+            isFolia = true;
+            Prism.log("Folia detected. It's not fully tested now, so be careful.");
+        } catch (ClassNotFoundException e) {
+            isFolia = false;
+        }
         checkPluginDependencies();
         if (getConfig().getBoolean("prism.paste.enable")) {
             pasteKey = Prism.config.getString("prism.paste.api-key", "API KEY");
@@ -422,21 +432,21 @@ public class Prism extends JavaPlugin implements PrismApi {
                 .map(Player::getName).toArray(String[]::new);
 
         // init db async then call back to complete enable.
-        final BukkitTask updating = Bukkit.getScheduler().runTaskTimerAsynchronously(instance, () -> {
+        final PrismTask updating = PrismScheduler.runTaskTimerAsynchronously(() -> {
             if (!isEnabled()) {
                 warn("Prism is loading and updating the database; logging is NOT enabled");
 
             }
         }, 100, 200);
 
-        Bukkit.getScheduler().runTaskAsynchronously(instance, () -> {
+        PrismScheduler.runTaskAsynchronously(() -> {
             prismDataSource = PrismDatabaseFactory.createDataSource(config);
             Connection testConnection;
             if (prismDataSource != null) {
                 testConnection = prismDataSource.getConnection();
                 if (testConnection == null) {
                     notifyDisabled();
-                    Bukkit.getScheduler().runTask(instance, () -> instance.enableFailedDatabase());
+                    PrismScheduler.runTask(() -> instance.enableFailedDatabase());
                     updating.cancel();
                     return;
                 }
@@ -447,7 +457,7 @@ public class Prism extends JavaPlugin implements PrismApi {
                 }
             } else {
                 notifyDisabled();
-                Bukkit.getScheduler().runTask(instance, () -> instance.enableFailedDatabase());
+                PrismScheduler.runTask(() -> instance.enableFailedDatabase());
                 updating.cancel();
                 return;
             }
@@ -472,7 +482,7 @@ public class Prism extends JavaPlugin implements PrismApi {
             // Apply any updates
             final DatabaseUpdater up = new DatabaseUpdater(this);
             up.applyUpdates();
-            Bukkit.getScheduler().runTask(instance, () -> instance.enabled());
+            PrismScheduler.runTask(() -> instance.enabled());
             updating.cancel();
         });
     }
@@ -604,8 +614,7 @@ public class Prism extends JavaPlugin implements PrismApi {
             }
 
             items.initMaterials(Material.AIR);
-            Bukkit.getScheduler().runTaskAsynchronously(instance,
-                    () -> Bukkit.getPluginManager().callEvent(EventHelper.createLoadEvent(Prism.getInstance())));
+            PrismScheduler.runTaskAsynchronously(() -> Bukkit.getPluginManager().callEvent(EventHelper.createLoadEvent(Prism.getInstance())));
         }
     }
 
@@ -688,7 +697,7 @@ public class Prism extends JavaPlugin implements PrismApi {
      */
     @SuppressWarnings("WeakerAccess")
     public void endExpiredQueryCaches() {
-        getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
+        PrismScheduler.scheduleSyncRepeatingTask(() -> {
             final java.util.Date date = new java.util.Date();
             for (final Entry<String, QueryResult> query : cachedQueries.entrySet()) {
                 final QueryResult result = query.getValue();
@@ -705,7 +714,7 @@ public class Prism extends JavaPlugin implements PrismApi {
      */
     @SuppressWarnings("WeakerAccess")
     public void endExpiredPreviews() {
-        getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
+        PrismScheduler.scheduleSyncRepeatingTask(() -> {
             final java.util.Date date = new java.util.Date();
             for (final Entry<String, PreviewSession> query : playerActivePreviews.entrySet()) {
                 final PreviewSession result = query.getValue();
@@ -728,7 +737,7 @@ public class Prism extends JavaPlugin implements PrismApi {
      * Remove expired locations.
      */
     public void removeExpiredLocations() {
-        getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
+        PrismScheduler.scheduleSyncRepeatingTask(() -> {
             final java.util.Date date = new java.util.Date();
             // Remove locations logged over five minute ago.
             for (final Entry<Location, Long> entry : alertedBlocks.entrySet()) {
@@ -749,8 +758,7 @@ public class Prism extends JavaPlugin implements PrismApi {
             recorderTickDelay = 3;
         }
         // we schedule it once, it will reschedule itself
-        recordingTask = getServer().getScheduler().runTaskLaterAsynchronously(this, new RecordingTask(this),
-                recorderTickDelay);
+        recordingTask = PrismScheduler.runTaskLaterAsynchronously(new RecordingTask(this), recorderTickDelay);
     }
 
     /**
@@ -823,7 +831,7 @@ public class Prism extends JavaPlugin implements PrismApi {
             drainer.forceDrainQueue();
         }
 
-        Bukkit.getScheduler().cancelTasks(this);
+        PrismScheduler.cancelTasks();
         // Close prismDataSource connections when plugin disables
         if (prismDataSource != null) {
             prismDataSource.dispose();
@@ -854,7 +862,7 @@ public class Prism extends JavaPlugin implements PrismApi {
     @Override
     public Future<Result> performLookup(PrismParameters parameters, CommandSender sender) {
         CompletableFuture<Result> resultCompletableFuture = new CompletableFuture<>();
-        Bukkit.getScheduler().runTaskAsynchronously(instance, () -> {
+        PrismScheduler.runTaskAsynchronously(() -> {
             Result result = new ActionsQuery(Prism.getInstance()).lookup(parameters, sender);
             resultCompletableFuture.complete(result);
         });

@@ -1,5 +1,7 @@
 package network.darkhelmet.prism.utils;
 
+import io.papermc.lib.PaperLib;
+import network.darkhelmet.prism.Prism;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -9,12 +11,14 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 public class EntityUtils {
 
@@ -61,6 +65,26 @@ public class EntityUtils {
         }
 
         return null;
+    }
+
+    /**
+     * Teleport the entity to location on Bukkit/Folia.
+     *
+     * @param entity    LivingEntity
+     * @param location  The location to teleport
+     */
+    public static boolean teleportEntity(LivingEntity entity, Location location) {
+        try {
+            if (Prism.isFolia) {
+                return entity.teleportAsync(location).get();
+            } else if (Prism.isPaper) {
+                return PaperLib.teleportAsync(entity, location).get();
+            } else {
+                return entity.teleport(location);
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

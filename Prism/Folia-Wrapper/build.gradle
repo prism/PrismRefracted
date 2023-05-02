@@ -1,0 +1,38 @@
+// Wrap the folia-api for dependencies on Java17-less projects.
+// Build this module first, to create the library we need.
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
+
+plugins {
+    id "com.github.johnrengelman.shadow"
+}
+
+apply plugin: 'java'
+apply plugin: 'java-library'
+
+group = project.property("group")
+version = project.property("version")
+sourceCompatibility = targetCompatibility = JavaVersion.VERSION_17
+
+repositories {
+    mavenCentral()
+
+    maven { url = 'https://repo.papermc.io/repository/maven-public/' }
+}
+
+dependencies {
+    api 'dev.folia:folia-api:1.19.4-R0.1-SNAPSHOT'
+}
+
+shadowJar {
+    archiveFileName = 'folia-wrapper.jar'
+}
+
+gradle.buildFinished {
+    // Move the file to somewhere allows to access.
+    File target = new File(getParent().projectDir.path + '/libs/folia-wrapper.jar')
+    target.mkdirs()
+    target.createNewFile()
+    Files.copy(new File(buildDir.path + '/libs/folia-wrapper.jar').toPath(), target.toPath(),
+            StandardCopyOption.REPLACE_EXISTING)
+}

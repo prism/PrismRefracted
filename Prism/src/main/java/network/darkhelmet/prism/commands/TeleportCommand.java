@@ -1,6 +1,5 @@
 package network.darkhelmet.prism.commands;
 
-import io.papermc.lib.PaperLib;
 import network.darkhelmet.prism.Il8nHelper;
 import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.actionlibs.ActionsQuery;
@@ -9,6 +8,7 @@ import network.darkhelmet.prism.actionlibs.QueryResult;
 import network.darkhelmet.prism.api.actions.Handler;
 import network.darkhelmet.prism.commandlibs.CallInfo;
 import network.darkhelmet.prism.commandlibs.SubHandler;
+import network.darkhelmet.prism.utils.EntityUtils;
 import network.darkhelmet.prism.utils.TypeUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -135,14 +135,8 @@ public class TeleportCommand implements SubHandler {
                         Prism.messenger.playerError("Action record occurred in world we can't find anymore."));
                 return;
             }
-            if (PaperLib.isPaper()) {
-                PaperLib.teleportAsync(call.getPlayer(), destinationAction.getLoc())
-                        .thenAccept(
-                              success -> sendTeleportCompleteMessage(success, call.getPlayer(), destinationAction));
-            } else {
-                sendTeleportCompleteMessage(call.getPlayer().teleport(destinationAction.getLoc()), call.getPlayer(),
-                        destinationAction);
-            }
+            sendTeleportCompleteMessage(EntityUtils.teleportEntity(call.getPlayer(), destinationAction.getLoc()),
+                    call.getPlayer(), destinationAction);
         }
     }
 
