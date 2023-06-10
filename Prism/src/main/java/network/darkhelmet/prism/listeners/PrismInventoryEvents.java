@@ -9,7 +9,6 @@ import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.ChiseledBookshelf;
 import org.bukkit.block.Lectern;
 import org.bukkit.block.data.Directional;
@@ -34,9 +33,7 @@ import org.bukkit.inventory.ChiseledBookshelfInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.LecternInventory;
 import org.bukkit.inventory.SmithingInventory;
-import org.bukkit.material.FlowerPot;
 import org.bukkit.util.Vector;
 
 import java.util.List;
@@ -178,6 +175,25 @@ public class PrismInventoryEvents implements Listener {
                             0, null, clickedBlock.getLocation(), player));
                 }
             }
+        } else if (Tag.FLOWER_POTS.isTagged(clickedBlock.getType())) {
+            // Only main hand. Offhand doesn't work here.
+            ItemStack hand = player.getInventory().getItemInMainHand();
+
+            // If null, the flower in hand can't fill the pot.
+            Material changeTo = Material.matchMaterial("POTTED_" + hand.getType().name());
+            if (clickedBlock.getType() == Material.FLOWER_POT) {
+                if (changeTo == null) {
+                    // The player is not going to fill the pot.
+                    return;
+                }
+            } else {
+                if (changeTo != null) {
+                    // The player is holding a flower, can't take the flower in the pot.
+                    return;
+                }
+                changeTo = Material.FLOWER_POT;
+            }
+            RecordingQueue.addToQueue(ActionFactory.createFlowerPotChange(clickedBlock, changeTo, player));
         }
     }
 

@@ -6,6 +6,7 @@ import network.darkhelmet.prism.actions.BlockFallAction;
 import network.darkhelmet.prism.actions.BlockShiftAction;
 import network.darkhelmet.prism.actions.EntityAction;
 import network.darkhelmet.prism.actions.EntityTravelAction;
+import network.darkhelmet.prism.actions.FlowerPotChangeAction;
 import network.darkhelmet.prism.actions.GrowAction;
 import network.darkhelmet.prism.actions.HangingItemAction;
 import network.darkhelmet.prism.actions.ItemStackAction;
@@ -171,6 +172,20 @@ public class ActionFactory {
                                             Material newMat, BlockData newData, String nonPlayer) {
         final Handler a = createBlockChange(actionType, loc, oldMat, oldData, newMat, newData, (OfflinePlayer) null);
         a.setSourceName(nonPlayer);
+        return a;
+    }
+
+    /**
+     * PlayerInteractEvent.
+     *
+     */
+    public static Handler createFlowerPotChange(Block oldBlock, Material newMat, OfflinePlayer player) {
+        final FlowerPotChangeAction a = new FlowerPotChangeAction();
+        a.setActionType("flowerpot-change");
+        a.setLoc(oldBlock.getLocation());
+        a.setOldMaterial(oldBlock.getType());
+        a.setMaterial(newMat);
+        a.setPlayer(player);
         return a;
     }
 

@@ -287,6 +287,7 @@ public class BlockAction extends GenericAction {
         // (essentially liquid/air).
 
         final boolean cancelIfBadPlace = !getActionType().requiresHandler(BlockChangeAction.class)
+                && !getActionType().requiresHandler(FlowerPotChangeAction.class)
                 && !getActionType().requiresHandler(PrismRollbackAction.class) && !parameters.hasFlag(Flag.OVERWRITE);
 
         if (cancelIfBadPlace && !Utilities.isAcceptableForBlockPlace(block.getType())) {

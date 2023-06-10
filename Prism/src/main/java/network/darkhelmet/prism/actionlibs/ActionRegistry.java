@@ -8,6 +8,7 @@ import network.darkhelmet.prism.actions.BlockFallAction;
 import network.darkhelmet.prism.actions.BlockShiftAction;
 import network.darkhelmet.prism.actions.EntityAction;
 import network.darkhelmet.prism.actions.EntityTravelAction;
+import network.darkhelmet.prism.actions.FlowerPotChangeAction;
 import network.darkhelmet.prism.actions.GrowAction;
 import network.darkhelmet.prism.actions.HangingItemAction;
 import network.darkhelmet.prism.actions.ItemStackAction;
@@ -211,6 +212,8 @@ public class ActionRegistry {
                 BlockChangeAction.class, Il8nHelper.getRawMessage("spread")));
         registerAction(new ActionTypeImpl("firework-launch", false, false, false,
                 ItemStackAction.class, Il8nHelper.getRawMessage("launched")));
+        registerAction(new ActionTypeImpl("flowerpot-change", false, true, true,
+                FlowerPotChangeAction.class, Il8nHelper.getRawMessage("changed-flower")));
         registerAction(new ActionTypeImpl("hangingitem-break", false, true, true,
                 HangingItemAction.class, Il8nHelper.getRawMessage("broke")));
         registerAction(new ActionTypeImpl("hangingitem-place", true, true, true,
