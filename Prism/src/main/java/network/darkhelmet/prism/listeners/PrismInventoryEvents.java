@@ -6,11 +6,17 @@ import network.darkhelmet.prism.actionlibs.RecordingQueue;
 import network.darkhelmet.prism.api.actions.Handler;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Tag;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.ChiseledBookshelf;
+import org.bukkit.block.data.Directional;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -18,9 +24,12 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemBreakEvent;
+import org.bukkit.inventory.ChiseledBookshelfInventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
 import java.util.List;
 import java.util.Map;
@@ -47,6 +56,112 @@ public class PrismInventoryEvents implements Listener {
         this.trackingRemove = !Prism.getIgnore().event(REMOVE);
         this.trackingBreaks = Prism.getIgnore().event(BREAK);
 
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onPlayerInteract(final PlayerInteractEvent event) {
+        if (notTrackingInsertAndRemove()) {
+            return;
+        }
+        Action action = event.getAction();
+        if (action != Action.RIGHT_CLICK_BLOCK) {
+            return;
+        }
+        Block clickedBlock = event.getClickedBlock();
+        if (Prism.getInstance().getServerMajorVersion() >= 20 && clickedBlock.getType() == Material.CHISELED_BOOKSHELF) {
+            if (event.getBlockFace() != ((Directional) clickedBlock.getBlockData()).getFacing()) {
+                // The player is not clicking the intractable face
+                return;
+            }
+            Player player = event.getPlayer();
+            // Get the slot the player interacted
+            Vector eye = player.getEyeLocation().toVector();
+            // TODO: May not accurate if player is changing the direction *quickly* while interacting
+            Vector direction = player.getEyeLocation().getDirection();
+            Vector block = clickedBlock.getLocation().toVector();
+            if (event.getBlockFace() == BlockFace.EAST || event.getBlockFace() == BlockFace.SOUTH) {
+                block.add(event.getBlockFace().getDirection());
+            }
+            double distance;
+            switch (event.getBlockFace()) {
+                case EAST:
+                case WEST:
+                    distance = (block.getX() - eye.getX()) / direction.getX();
+                    break;
+                case NORTH:
+                case SOUTH:
+                    distance = (block.getZ() - eye.getZ()) / direction.getZ();
+                    break;
+                default:
+                    // Not possible for inserting/removing
+                    return;
+            }
+            Vector clickedLoc = eye.add(direction.normalize().multiply(distance));
+            double pos = -1;
+            switch (event.getBlockFace()) {
+                case EAST:
+                    pos = Math.abs(clickedLoc.getZ() % 1);
+                    if (clickedLoc.getZ() > 0)
+                        pos = 1 - pos;
+                    break;
+                case WEST:
+                    pos = 1 - Math.abs(clickedLoc.getZ() % 1);
+                    if (clickedLoc.getZ() > 0)
+                        pos = 1 - pos;
+                    break;
+                case NORTH:
+                    pos = Math.abs(clickedLoc.getX() % 1);
+                    if (clickedLoc.getX() > 0)
+                        pos = 1 - pos;
+                    break;
+                case SOUTH:
+                    pos = 1 - Math.abs(clickedLoc.getX() % 1);
+                    if (clickedLoc.getX() > 0)
+                        pos = 1 - pos;
+                    break;
+            }
+            int slot;
+            if (pos < 0.375F)
+                slot = 0;
+            else if (pos < 0.6875F)
+                slot = 1;
+            else
+                slot = 2;
+
+            pos = clickedLoc.getY() % 1;
+            if (pos < 0.5F)
+                slot += 3;
+            // Get slot end
+
+            // Process the inventory
+            ChiseledBookshelf state = (ChiseledBookshelf) clickedBlock.getState();
+            ChiseledBookshelfInventory inventory = state.getInventory();
+            ItemStack item = inventory.getItem(slot);
+
+            ItemStack hand = event.getItem();
+            if (player.isSneaking() && isActuallyHoldingBook(player)) {
+                // Not exchanging the items
+                return;
+            }
+            if (item == null) {
+                if (hand != null && Tag.ITEMS_BOOKSHELF_BOOKS.isTagged(hand.getType())) {
+                    RecordingQueue.addToQueue(ActionFactory.createItemStack(INSERT, hand, 1,
+                            slot, null, clickedBlock.getLocation(), player));
+                }
+            } else {
+                RecordingQueue.addToQueue(ActionFactory.createItemStack(REMOVE, item, 1,
+                        slot, null, clickedBlock.getLocation(), player));
+            }
+        }
+    }
+
+    private boolean isActuallyHoldingBook(Player player) {
+        ItemStack item = player.getInventory().getItemInMainHand();
+        if (Tag.ITEMS_BOOKSHELF_BOOKS.isTagged(item.getType())) {
+            return true;
+        }
+        item = player.getInventory().getItemInOffHand();
+        return Tag.ITEMS_BOOKSHELF_BOOKS.isTagged(item.getType());
     }
 
     /**
