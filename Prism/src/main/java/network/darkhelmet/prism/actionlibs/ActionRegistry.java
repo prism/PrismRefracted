@@ -213,7 +213,7 @@ public class ActionRegistry {
         registerAction(new ActionTypeImpl("firework-launch", false, false, false,
                 ItemStackAction.class, Il8nHelper.getRawMessage("launched")));
         registerAction(new ActionTypeImpl("flowerpot-change", false, true, true,
-                FlowerPotChangeAction.class, Il8nHelper.getRawMessage("changed-flower")));
+                FlowerPotChangeAction.class, Il8nHelper.getRawMessage("flowerpot-changed")));
         registerAction(new ActionTypeImpl("hangingitem-break", false, true, true,
                 HangingItemAction.class, Il8nHelper.getRawMessage("broke")));
         registerAction(new ActionTypeImpl("hangingitem-place", true, true, true,
