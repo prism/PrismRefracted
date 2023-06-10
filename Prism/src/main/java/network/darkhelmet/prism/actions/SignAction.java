@@ -118,10 +118,13 @@ public class SignAction extends GenericAction {
     @Override
     public String getNiceName() {
         String name = getMaterial().name().toLowerCase().replace('_', ' ') + " (";
-        if (actionData.lines != null && actionData.lines.length > 0) {
-            name += TypeUtils.join(actionData.lines, ", ");
-        } else {
-            name += "no text";
+        if (actionData.lines != null) {
+            String join = TypeUtils.join(actionData.lines, ", ");
+            if (join.isEmpty()) {
+                name += "no text";
+            } else {
+                name += join;
+            }
         }
         name += ") at " + (actionData.frontSide ? "front" : "back");
         return name;
