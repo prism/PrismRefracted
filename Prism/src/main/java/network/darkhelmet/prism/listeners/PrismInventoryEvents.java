@@ -9,7 +9,9 @@ import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.ChiseledBookshelf;
+import org.bukkit.block.Lectern;
 import org.bukkit.block.data.Directional;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -27,10 +29,14 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemBreakEvent;
+import org.bukkit.event.player.PlayerTakeLecternBookEvent;
 import org.bukkit.inventory.ChiseledBookshelfInventory;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.LecternInventory;
 import org.bukkit.inventory.SmithingInventory;
+import org.bukkit.material.FlowerPot;
 import org.bukkit.util.Vector;
 
 import java.util.List;
@@ -61,6 +67,14 @@ public class PrismInventoryEvents implements Listener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onPlayerTakeLecternBook(final PlayerTakeLecternBookEvent event) {
+        if (trackingRemove) {
+            RecordingQueue.addToQueue(ActionFactory.createItemStack(REMOVE, event.getBook(), 1,
+                    0, null, event.getLectern().getLocation(), event.getPlayer()));
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerInteract(final PlayerInteractEvent event) {
         if (notTrackingInsertAndRemove()) {
             return;
@@ -70,12 +84,12 @@ public class PrismInventoryEvents implements Listener {
             return;
         }
         Block clickedBlock = event.getClickedBlock();
+        Player player = event.getPlayer();
         if (Prism.getInstance().getServerMajorVersion() >= 20 && clickedBlock.getType() == Material.CHISELED_BOOKSHELF) {
             if (event.getBlockFace() != ((Directional) clickedBlock.getBlockData()).getFacing()) {
                 // The player is not clicking the intractable face
                 return;
             }
-            Player player = event.getPlayer();
             // Get the slot the player interacted
             Vector eye = player.getEyeLocation().toVector();
             // TODO: May not accurate if player is changing the direction *quickly* while interacting
@@ -153,6 +167,16 @@ public class PrismInventoryEvents implements Listener {
             } else {
                 RecordingQueue.addToQueue(ActionFactory.createItemStack(REMOVE, item, 1,
                         slot, null, clickedBlock.getLocation(), player));
+            }
+        } else if (clickedBlock.getType() == Material.LECTERN) {
+            Inventory inventory = ((Lectern) clickedBlock.getState()).getInventory();
+            if (inventory.isEmpty()) {
+                // Ensure there's no book on it.
+                ItemStack hand = event.getItem();
+                if (hand != null && (hand.getType() == Material.WRITABLE_BOOK || hand.getType() == Material.WRITTEN_BOOK)) {
+                    RecordingQueue.addToQueue(ActionFactory.createItemStack(INSERT, hand, 1,
+                            0, null, clickedBlock.getLocation(), player));
+                }
             }
         }
     }
