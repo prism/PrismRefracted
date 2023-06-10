@@ -57,8 +57,8 @@ public class PrismInventoryEvents implements Listener {
      */
     public PrismInventoryEvents(Prism plugin) {
         this.plugin = plugin;
-        this.trackingInsert = !Prism.getIgnore().event(INSERT);
-        this.trackingRemove = !Prism.getIgnore().event(REMOVE);
+        this.trackingInsert = Prism.getIgnore().event(INSERT);
+        this.trackingRemove = Prism.getIgnore().event(REMOVE);
         this.trackingBreaks = Prism.getIgnore().event(BREAK);
 
     }
