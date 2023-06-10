@@ -560,11 +560,11 @@ public class ActionFactory {
      * @param block      the block acted on
      * @param player     the acting player
      */
-    public static Handler createSign(String actionType, Block block, String[] lines, OfflinePlayer player) {
+    public static Handler createSign(String actionType, Block block, String[] lines, boolean isFront, OfflinePlayer player) {
         final SignAction a = new SignAction();
         a.setActionType(actionType);
         a.setPlayer(player);
-        a.setBlock(block, lines);
+        a.setBlock(block, lines, isFront);
         return a;
     }
 

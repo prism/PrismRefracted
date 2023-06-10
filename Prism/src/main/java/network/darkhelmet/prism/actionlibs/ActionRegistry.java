@@ -271,7 +271,7 @@ public class ActionRegistry {
                 PrismRollbackAction.class, Il8nHelper.getRawMessage("rolled-back")));
         registerAction(new ActionTypeImpl("sheep-eat", false, false, false,
                 BlockAction.class, Il8nHelper.getRawMessage("ate")));
-        registerAction(new ActionTypeImpl("sign-change", false, false, true,
+        registerAction(new ActionTypeImpl("sign-change", false, true, true,
                 SignAction.class, Il8nHelper.getRawMessage("wrote")));
         registerAction(new ActionTypeImpl("spawnegg-use", false, false, false,
                 UseAction.class, Il8nHelper.getRawMessage("used")));
