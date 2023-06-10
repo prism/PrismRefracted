@@ -1,5 +1,6 @@
 package network.darkhelmet.prism.actions.data;
 
+import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.api.objects.MaterialState;
 import network.darkhelmet.prism.utils.EntityUtils;
 import network.darkhelmet.prism.utils.ItemUtils;
@@ -10,10 +11,12 @@ import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.ChiseledBookshelf;
 import org.bukkit.block.ShulkerBox;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ChiseledBookshelfInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
@@ -57,6 +60,7 @@ public class ItemStackActionData {
     public boolean potionExtended;
     public boolean potionUpgraded;
     public Map<Integer, ItemStackActionData> shulkerBoxInv;
+    public Map<Integer, ItemStackActionData> chiseledBookshelfInv;
 
     public static ItemStackActionData createData(ItemStack item, int quantity, short durability, Map<Enchantment, Integer> enchantments) {
 
@@ -153,6 +157,17 @@ public class ItemStackActionData {
                         continue;
                     }
                     actionData.shulkerBoxInv.put(i, createData(invItem, invItem.getAmount(), (short) ItemUtils.getItemDamage(invItem), invItem.getEnchantments()));
+                }
+            } else if (Prism.getInstance().getServerMajorVersion() >= 20 && blockState instanceof ChiseledBookshelf) {
+                Inventory inventory = ((ChiseledBookshelf) blockState).getInventory();
+                ItemStack[] contents = inventory.getContents();
+                actionData.chiseledBookshelfInv = new HashMap<>();
+                for (int i = 0; i < 6; i++) {
+                    ItemStack invItem = contents[i];
+                    if (invItem == null) {
+                        continue;
+                    }
+                    actionData.chiseledBookshelfInv.put(i, createData(invItem, invItem.getAmount(), (short) ItemUtils.getItemDamage(invItem), invItem.getEnchantments()));
                 }
             }
         }
@@ -294,8 +309,14 @@ public class ItemStackActionData {
                 for (Map.Entry<Integer, ItemStackActionData> entry : shulkerBoxInv.entrySet()) {
                     inventory.setItem(entry.getKey(), entry.getValue().toItem());
                 }
-                ((BlockStateMeta) meta).setBlockState(blockState);
+            } else if (Prism.getInstance().getServerMajorVersion() >= 20 && blockState instanceof ChiseledBookshelf
+                    && chiseledBookshelfInv != null) {
+                ChiseledBookshelfInventory inventory = ((ChiseledBookshelf) blockState).getSnapshotInventory();
+                for (Map.Entry<Integer, ItemStackActionData> entry : chiseledBookshelfInv.entrySet()) {
+                    inventory.setItem(entry.getKey(), entry.getValue().toItem());
+                }
             }
+            ((BlockStateMeta) meta).setBlockState(blockState);
         }
 
         if (name != null) {
