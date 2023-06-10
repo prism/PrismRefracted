@@ -19,6 +19,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
@@ -29,6 +30,7 @@ import org.bukkit.event.player.PlayerItemBreakEvent;
 import org.bukkit.inventory.ChiseledBookshelfInventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.SmithingInventory;
 import org.bukkit.util.Vector;
 
 import java.util.List;
@@ -300,6 +302,30 @@ public class PrismInventoryEvents implements Listener {
         if (slot < 0) {
             return;
         }
+
+        // Store some info
+        final Player player = (Player) event.getWhoClicked();
+        // Check if Smithing Inventory
+        if (Prism.getInstance().getServerMajorVersion() >= 20 && event.getInventory() instanceof SmithingInventory) {
+            if (event.getSlotType() == InventoryType.SlotType.RESULT) {
+                if (!Prism.getIgnore().event("upgrade-gear", player)) {
+                    return;
+                }
+                final ItemStack item = event.getCurrentItem();
+                if (item.getType() == Material.AIR) {
+                    // Not upgraded
+                    return;
+                }
+                if (event.getAction() == InventoryAction.HOTBAR_MOVE_AND_READD) {
+                    // Forbidden action
+                    return;
+                }
+                RecordingQueue.addToQueue(
+                        ActionFactory.createItemStack("upgrade-gear", item, 1, -1, null, player.getLocation(), player));
+            }
+            return;
+        }
+
         Location containerLoc = event.getInventory().getLocation(); //this is the top Inventory
         // Virtual inventory or something (enderchest?)
         if (containerLoc == null) {
@@ -309,8 +335,6 @@ public class PrismInventoryEvents implements Listener {
         if (notTrackingInsertAndRemove()) {
             return;
         }
-        // Store some info
-        final Player player = (Player) event.getWhoClicked();
 
         // Ignore all item move events where players modify their own inventory
         if (event.getInventory().getHolder() instanceof Player) {

@@ -171,6 +171,8 @@ public class ActionRegistry {
                 BlockAction.class, Il8nHelper.getRawMessage("accessed")));
         registerAction(new ActionTypeImpl("craft-item", false, false, false,
                 ItemStackAction.class, Il8nHelper.getRawMessage("crafted")));
+        registerAction(new ActionTypeImpl("upgrade-gear", false, false, false,
+                ItemStackAction.class, Il8nHelper.getRawMessage("upgraded")));
         registerAction(new ActionTypeImpl("creeper-explode", false, true, true,
                 BlockAction.class, Il8nHelper.getRawMessage("blew-up")));
         registerAction(new ActionTypeImpl("crop-trample", false, true, true,
