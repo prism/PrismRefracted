@@ -16,50 +16,43 @@ import org.bukkit.block.sign.SignSide;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class SignColorAction extends GenericAction {
+public class SignGlowAction extends GenericAction {
 
     private static final boolean POST_20 = Prism.getInstance().getServerMajorVersion() >= 20;
-    protected SignColorActionData actionData;
+    protected SignGlowActionData actionData;
 
-    public void setBlock(Block block, DyeColor color, boolean isFront) {
+    public void setBlock(Block block, boolean makeGlow, boolean isFront) {
 
         // Build an object for the specific details of this action
-        actionData = new SignColorActionData();
+        actionData = new SignGlowActionData();
 
         if (block != null) {
             setMaterial(block.getType());
             setLoc(block.getLocation());
         }
-        actionData.newColor = color;
-
+        actionData.makeGlow = makeGlow;
         actionData.frontSide = isFront;
-        Sign blockState = (Sign) block.getState();
-        if (POST_20) {
-            actionData.oldColor = blockState.getSide(isFront ? Side.FRONT : Side.BACK).getColor();
-        } else {
-            actionData.oldColor = blockState.getColor();
-        }
     }
 
     @Override
     public ChangeResult applyRollback(Player player, PrismParameters parameters, boolean isPreview) {
-        ChangeResult changeResult = setSignColor(actionData.oldColor);
+        ChangeResult changeResult = setSignGlow(!actionData.makeGlow);
         if (changeResult.getType() == ChangeResultType.APPLIED) {
-            placeDyeItem(true);
+            placeInkItem(true);
         }
         return changeResult;
     }
 
     @Override
     public ChangeResult applyRestore(Player player, PrismParameters parameters, boolean isPreview) {
-        ChangeResult changeResult = setSignColor(actionData.newColor);
+        ChangeResult changeResult = setSignGlow(actionData.makeGlow);
         if (changeResult.getType() == ChangeResultType.APPLIED) {
-            placeDyeItem(false);
+            placeInkItem(false);
         }
         return changeResult;
     }
 
-    private ChangeResult setSignColor(DyeColor color) {
+    private ChangeResult setSignGlow(boolean glow) {
         final Block block = getWorld().getBlockAt(getLoc());
 
         // Ensure a sign exists there (and no other block)
@@ -73,9 +66,9 @@ public class SignColorAction extends GenericAction {
                 final Sign sign = (Sign) block.getState();
                 if (POST_20) {
                     SignSide side = sign.getSide(actionData.frontSide ? Side.FRONT : Side.BACK);
-                    side.setColor(color);
+                    side.setGlowingText(glow);
                 } else {
-                    sign.setColor(color);
+                    sign.setGlowingText(glow);
                 }
                 sign.update(true, false);
                 return new ChangeResultImpl(ChangeResultType.APPLIED, null);
@@ -84,16 +77,16 @@ public class SignColorAction extends GenericAction {
         return new ChangeResultImpl(ChangeResultType.SKIPPED, null);
     }
 
-    private void placeDyeItem(boolean rollback) {
+    private void placeInkItem(boolean rollback) {
         Player player = Bukkit.getPlayer(getUuid());
         if (player == null) {
             return;
         }
-        ItemStack dye = new ItemStack(Material.valueOf(actionData.newColor.name() + "_DYE"));
+        ItemStack item = new ItemStack(actionData.makeGlow ? Material.GLOW_INK_SAC : Material.INK_SAC);
         if (rollback) {
-            player.getInventory().addItem(dye);
+            player.getInventory().addItem(item);
         } else {
-            player.getInventory().removeItem(dye);
+            player.getInventory().removeItem(item);
         }
     }
 
@@ -109,21 +102,19 @@ public class SignColorAction extends GenericAction {
 
     @Override
     public void deserialize(String data) {
-        actionData = gson().fromJson(data, SignColorActionData.class);
+        actionData = gson().fromJson(data, SignGlowActionData.class);
     }
 
     @Override
     public String getNiceName() {
         return getMaterial().name().toLowerCase().replace('_', ' ')
-                + " from " + actionData.oldColor.name().toLowerCase().replace('_', ' ')
-                + " to "  + actionData.newColor.name().toLowerCase().replace('_', ' ')
+                + (actionData.makeGlow ? "" : " (cancelled)")
                 + " at " + (actionData.frontSide ? "front" : "back");
     }
 
-    public class SignColorActionData {
+    public class SignGlowActionData {
         public boolean frontSide;
-        public DyeColor oldColor;
-        public DyeColor newColor;
+        public boolean makeGlow;
     }
 
 }

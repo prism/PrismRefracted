@@ -37,7 +37,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.SmithingInventory;
-import org.bukkit.material.Dye;
 import org.bukkit.util.Vector;
 
 import java.util.List;
@@ -246,7 +245,22 @@ public class PrismInventoryEvents implements Listener {
                 }
                 if (dyeColor != signColor) {
                     RecordingQueue.addToQueue(
-                            ActionFactory.createSignColor(clickedBlock, dyeColor, front, event.getPlayer()));
+                            ActionFactory.createSignDye(clickedBlock, dyeColor, front, event.getPlayer()));
+                }
+            } else if (Prism.getInstance().getServerMajorVersion() >= 17 && handMat.endsWith("INK_SAC")) {
+                if (!Prism.getIgnore().event("sign-glow", event.getPlayer())) {
+                    return;
+                }
+                boolean makeGlow = hand.getType() == Material.GLOW_INK_SAC;
+                boolean signGlow;
+                if (Prism.getInstance().getServerMajorVersion() >= 20) {
+                    signGlow = sign.getSide(front ? Side.FRONT : Side.BACK).isGlowingText();
+                } else {
+                    signGlow = sign.isGlowingText();
+                }
+                if (makeGlow != signGlow) {
+                    RecordingQueue.addToQueue(
+                            ActionFactory.createSignGlow(clickedBlock, makeGlow, front, event.getPlayer()));
                 }
             }
         }

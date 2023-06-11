@@ -2,25 +2,7 @@ package network.darkhelmet.prism.actionlibs;
 
 import network.darkhelmet.prism.Il8nHelper;
 import network.darkhelmet.prism.Prism;
-import network.darkhelmet.prism.actions.BlockAction;
-import network.darkhelmet.prism.actions.BlockChangeAction;
-import network.darkhelmet.prism.actions.BlockFallAction;
-import network.darkhelmet.prism.actions.BlockShiftAction;
-import network.darkhelmet.prism.actions.EntityAction;
-import network.darkhelmet.prism.actions.EntityTravelAction;
-import network.darkhelmet.prism.actions.FlowerPotChangeAction;
-import network.darkhelmet.prism.actions.GrowAction;
-import network.darkhelmet.prism.actions.HangingItemAction;
-import network.darkhelmet.prism.actions.ItemStackAction;
-import network.darkhelmet.prism.actions.PlayerAction;
-import network.darkhelmet.prism.actions.PlayerDeathAction;
-import network.darkhelmet.prism.actions.PortalCreateAction;
-import network.darkhelmet.prism.actions.PrismProcessAction;
-import network.darkhelmet.prism.actions.PrismRollbackAction;
-import network.darkhelmet.prism.actions.SignChangeAction;
-import network.darkhelmet.prism.actions.SignColorAction;
-import network.darkhelmet.prism.actions.UseAction;
-import network.darkhelmet.prism.actions.VehicleAction;
+import network.darkhelmet.prism.actions.*;
 import network.darkhelmet.prism.exceptions.InvalidActionException;
 import network.darkhelmet.prism.utils.TypeUtils;
 import org.bukkit.plugin.Plugin;
@@ -280,7 +262,9 @@ public class ActionRegistry {
         registerAction(new ActionTypeImpl("sign-change", false, true, true,
                 SignChangeAction.class, Il8nHelper.getRawMessage("wrote")));
         registerAction(new ActionTypeImpl("sign-dye", false, true, true,
-                SignColorAction.class, Il8nHelper.getRawMessage("sign-dyed")));
+                SignDyeAction.class, Il8nHelper.getRawMessage("sign-dyed")));
+        registerAction(new ActionTypeImpl("sign-glow", false, true, true,
+                SignGlowAction.class, Il8nHelper.getRawMessage("sign-glowed")));
         registerAction(new ActionTypeImpl("spawnegg-use", false, false, false,
                 UseAction.class, Il8nHelper.getRawMessage("used")));
         registerAction(new ActionTypeImpl("tnt-explode", false, true, true,
