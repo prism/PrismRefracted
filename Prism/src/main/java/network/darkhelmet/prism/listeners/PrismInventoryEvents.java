@@ -13,8 +13,11 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.ChiseledBookshelf;
 import org.bukkit.block.Lectern;
 import org.bukkit.block.Sign;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
+import org.bukkit.block.data.Rotatable;
 import org.bukkit.block.sign.Side;
+import org.bukkit.craftbukkit.v1_20_R1.block.impl.CraftFloorSign;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -37,8 +40,11 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.SmithingInventory;
+import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
+import org.bukkit.util.VoxelShape;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -197,7 +203,8 @@ public class PrismInventoryEvents implements Listener {
                 changeTo = Material.FLOWER_POT;
             }
             RecordingQueue.addToQueue(ActionFactory.createFlowerPotChange(clickedBlock, changeTo, player));
-        } else if (Tag.ALL_SIGNS.isTagged(clickedBlock.getType())) {
+        } else if (Tag.SIGNS.isTagged(clickedBlock.getType())
+                || Prism.getInstance().getServerMajorVersion() >= 20 && Tag.ALL_SIGNS.isTagged(clickedBlock.getType())) {
             Sign sign = (Sign) clickedBlock.getState();
             if (player.isSneaking()) {
                 return;
@@ -209,21 +216,40 @@ public class PrismInventoryEvents implements Listener {
             // Get the player clicked side
             boolean front = true;
             if (Prism.getInstance().getServerMajorVersion() >= 20) {
-                switch (((Directional) clickedBlock.getBlockData()).getFacing()) {
-                    case EAST:
-                        // Compare the player location and sign center location, like what Mojang does.
-                        front = player.getLocation().getX() > clickedBlock.getLocation().getBlockX() + 0.0625;
-                        break;
-                    case SOUTH:
-                        front = player.getLocation().getZ() > clickedBlock.getLocation().getBlockZ() + 0.0625;
-                        break;
-                    case WEST:
-                        front = player.getLocation().getX() < clickedBlock.getLocation().getBlockX() + 1 - 0.0625;
-                        break;
-                    case NORTH:
-                        front = player.getLocation().getZ() < clickedBlock.getLocation().getBlockZ() + 1 - 0.0625;
-                        break;
+                BlockData blockData = clickedBlock.getBlockData();
+                BlockFace facing;
+                if (blockData instanceof Directional) {
+                    facing = ((Directional) blockData).getFacing();
+                } else {
+                    facing = ((Rotatable) blockData).getRotation();
                 }
+                Vector signCenter = clickedBlock.getLocation().toVector();
+                if (Tag.WALL_SIGNS.isTagged(sign.getType())) {
+                    switch (facing) {
+                        case EAST:
+                            signCenter.setX(signCenter.getX() + 0.0625);
+                            break;
+                        case SOUTH:
+                            signCenter.setZ(signCenter.getZ() + 0.0625);
+                            break;
+                        case WEST:
+                            signCenter.setX(signCenter.getX() + 1 - 0.0625);
+                            break;
+                        case NORTH:
+                            signCenter.setZ(signCenter.getZ() + 1 - 0.0625);
+                            break;
+                        default:
+                            throw new AssertionError();
+                    }
+                } else {
+                    signCenter.setX(signCenter.getX() + 0.5);
+                    signCenter.setY(signCenter.getY() + 0.5);
+                    signCenter.setZ(signCenter.getZ() + 0.5);
+                }
+
+                Vector playerDirection = new Vector(player.getLocation().getX() - signCenter.getX(), 0, player.getLocation().getZ() - signCenter.getZ());
+                float angle = facing.getDirection().angle(playerDirection);
+                front = angle <= 1.5707963267948966;
             }
             // Get side end
             if (handMat.endsWith("_DYE")) {
