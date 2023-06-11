@@ -18,7 +18,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Objects;
 
-public class SignAction extends GenericAction {
+public class SignChangeAction extends GenericAction {
 
     private static final boolean POST_20 = Prism.getInstance().getServerMajorVersion() >= 20;
 

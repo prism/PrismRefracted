@@ -15,11 +15,13 @@ import network.darkhelmet.prism.actions.PlayerDeathAction;
 import network.darkhelmet.prism.actions.PortalCreateAction;
 import network.darkhelmet.prism.actions.PrismProcessAction;
 import network.darkhelmet.prism.actions.PrismRollbackAction;
-import network.darkhelmet.prism.actions.SignAction;
+import network.darkhelmet.prism.actions.SignChangeAction;
+import network.darkhelmet.prism.actions.SignColorAction;
 import network.darkhelmet.prism.actions.UseAction;
 import network.darkhelmet.prism.actions.VehicleAction;
 import network.darkhelmet.prism.api.actions.Handler;
 import network.darkhelmet.prism.api.actions.PrismProcessType;
+import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -569,17 +571,31 @@ public class ActionFactory {
     }
 
     /**
-     * SignAction.
+     * SignChangeAction.
      *
      * @param actionType the action
      * @param block      the block acted on
      * @param player     the acting player
      */
-    public static Handler createSign(String actionType, Block block, String[] lines, boolean isFront, OfflinePlayer player) {
-        final SignAction a = new SignAction();
+    public static Handler createSignChange(String actionType, Block block, String[] lines, boolean isFront, OfflinePlayer player) {
+        final SignChangeAction a = new SignChangeAction();
         a.setActionType(actionType);
         a.setPlayer(player);
         a.setBlock(block, lines, isFront);
+        return a;
+    }
+
+    /**
+     * SignChangeAction.
+     *
+     * @param block      the block acted on
+     * @param player     the acting player
+     */
+    public static Handler createSignColor(Block block, DyeColor color, boolean isFront, OfflinePlayer player) {
+        final SignColorAction a = new SignColorAction();
+        a.setActionType("sign-dye");
+        a.setPlayer(player);
+        a.setBlock(block, color, isFront);
         return a;
     }
 
