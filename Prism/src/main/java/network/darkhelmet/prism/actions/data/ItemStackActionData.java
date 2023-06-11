@@ -261,7 +261,10 @@ public class ItemStackActionData {
             final BookMeta bookMeta = (BookMeta) meta;
             bookMeta.setAuthor(by);
             bookMeta.setTitle(title);
-            bookMeta.setPages(content);
+            if (content != null) {
+                // May be null if a writable book has not been opened
+                bookMeta.setPages(content);
+            }
             item.setItemMeta(bookMeta);
         } else if (meta instanceof PotionMeta) {
             final PotionType potionType = PotionType.valueOf(this.potionType.toUpperCase());
