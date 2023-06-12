@@ -1,5 +1,7 @@
 package network.darkhelmet.prism.actions.data;
 
+import com.google.gson.JsonParseException;
+import net.md_5.bungee.chat.ComponentSerializer;
 import network.darkhelmet.prism.api.objects.MaterialState;
 import network.darkhelmet.prism.utils.EntityUtils;
 import network.darkhelmet.prism.utils.ItemUtils;
@@ -35,6 +37,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class ItemStackActionData {
     public int amt;
@@ -45,6 +48,7 @@ public class ItemStackActionData {
     public String[] enchs;
     public String by;
     public String title;
+    public BookMeta.Generation generation;
     public String[] lore;
     public String[] content;
     public String slot = "-1";
@@ -100,7 +104,8 @@ public class ItemStackActionData {
             final BookMeta bookMeta = (BookMeta) meta;
             actionData.by = bookMeta.getAuthor();
             actionData.title = bookMeta.getTitle();
-            actionData.content = bookMeta.getPages().toArray(new String[0]);
+            actionData.content = bookMeta.spigot().getPages().stream().map(ComponentSerializer::toString).toArray(String[]::new);
+            actionData.generation = bookMeta.getGeneration();
         }
 
         // Lore
@@ -261,9 +266,15 @@ public class ItemStackActionData {
             final BookMeta bookMeta = (BookMeta) meta;
             bookMeta.setAuthor(by);
             bookMeta.setTitle(title);
+            bookMeta.setGeneration(generation);
             if (content != null) {
                 // May be null if a writable book has not been opened
-                bookMeta.setPages(content);
+                try {
+                    bookMeta.spigot().setPages(Arrays.stream(content).map(ComponentSerializer::parse).collect(Collectors.toList()));
+                } catch (JsonParseException ex) {
+                    // Old Prism version saves plain text
+                    bookMeta.setPages(content);
+                }
             }
             item.setItemMeta(bookMeta);
         } else if (meta instanceof PotionMeta) {
