@@ -111,6 +111,7 @@ public class Prism extends JavaPlugin implements PrismApi {
     private static String baseUrl = "https://prism-bukkit.readthedocs.io/en/latest/";
     public static Messenger messenger;
     public static FileConfiguration config;
+    public static boolean isSpigot = true;
     public static boolean isPaper = true;
     private static Logger prismLog;
     private static List<Material> illegalBlocks;
@@ -393,6 +394,7 @@ public class Prism extends JavaPlugin implements PrismApi {
         log("Initializing Prism " + pluginVersion + ". by viveleroi");
         serverMajorVersion = Byte.parseByte(Bukkit.getServer().getBukkitVersion().split("\\.")[1].split("-")[0]);
         loadConfig();        // Load configuration, or install if new
+        isSpigot = PaperLib.isSpigot();
         isPaper = PaperLib.isPaper();
         if (isPaper) {
             Prism.log("Optional Paper Events will be enabled.");

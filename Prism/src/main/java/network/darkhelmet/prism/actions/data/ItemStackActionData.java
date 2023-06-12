@@ -2,6 +2,7 @@ package network.darkhelmet.prism.actions.data;
 
 import com.google.gson.JsonParseException;
 import net.md_5.bungee.chat.ComponentSerializer;
+import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.api.objects.MaterialState;
 import network.darkhelmet.prism.utils.EntityUtils;
 import network.darkhelmet.prism.utils.ItemUtils;
@@ -104,8 +105,12 @@ public class ItemStackActionData {
             final BookMeta bookMeta = (BookMeta) meta;
             actionData.by = bookMeta.getAuthor();
             actionData.title = bookMeta.getTitle();
-            actionData.content = bookMeta.spigot().getPages().stream().map(ComponentSerializer::toString).toArray(String[]::new);
             actionData.generation = bookMeta.getGeneration();
+            if (Prism.isSpigot) {
+                actionData.content = bookMeta.spigot().getPages().stream().map(ComponentSerializer::toString).toArray(String[]::new);
+            } else {
+                actionData.content = bookMeta.getPages().toArray(new String[0]);
+            }
         }
 
         // Lore
@@ -269,10 +274,14 @@ public class ItemStackActionData {
             bookMeta.setGeneration(generation);
             if (content != null) {
                 // May be null if a writable book has not been opened
-                try {
-                    bookMeta.spigot().setPages(Arrays.stream(content).map(ComponentSerializer::parse).collect(Collectors.toList()));
-                } catch (JsonParseException ex) {
-                    // Old Prism version saves plain text
+                if (Prism.isSpigot) {
+                    try {
+                        bookMeta.spigot().setPages(Arrays.stream(content).map(ComponentSerializer::parse).collect(Collectors.toList()));
+                    } catch (JsonParseException ex) {
+                        // Old Prism version saves plain text
+                        bookMeta.setPages(content);
+                    }
+                } else {
                     bookMeta.setPages(content);
                 }
             }
