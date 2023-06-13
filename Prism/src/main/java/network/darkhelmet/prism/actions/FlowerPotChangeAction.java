@@ -13,7 +13,7 @@ public class FlowerPotChangeAction extends BlockChangeAction {
     @Override
     public ChangeResult applyRollback(Player player, PrismParameters parameters, boolean isPreview) {
         ChangeResult changeResult = super.applyRollback(player, parameters, isPreview);
-        if (changeResult.getType() == ChangeResultType.APPLIED) {
+        if (changeResult.getType() == ChangeResultType.APPLIED && !isPreview) {
             placeFlowerItem(getMaterial(), getOldMaterial());
         }
         return changeResult;
@@ -22,7 +22,7 @@ public class FlowerPotChangeAction extends BlockChangeAction {
     @Override
     public ChangeResult applyRestore(Player player, PrismParameters parameters, boolean isPreview) {
         ChangeResult changeResult = super.applyRollback(player, parameters, isPreview);
-        if (changeResult.getType() == ChangeResultType.APPLIED) {
+        if (changeResult.getType() == ChangeResultType.APPLIED && !isPreview) {
             placeFlowerItem(getOldMaterial(), getMaterial());
         }
         return changeResult;
