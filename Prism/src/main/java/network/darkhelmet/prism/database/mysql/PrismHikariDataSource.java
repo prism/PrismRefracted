@@ -35,6 +35,8 @@ public class PrismHikariDataSource extends SqlPrismDataSource {
             dbConfig.setJdbcUrl(jdbcUrl);
             dbConfig.setUsername("username");
             dbConfig.setPassword("password");
+            dbConfig.setMinimumIdle(2);
+            dbConfig.setMaximumPoolSize(10);
             HikariHelper.createPropertiesFile(propFile, dbConfig, false);
         }
     }
@@ -57,6 +59,9 @@ public class PrismHikariDataSource extends SqlPrismDataSource {
             return this;
         } catch (HikariPool.PoolInitializationException e) {
             Prism.warn("Hikari Pool did not Initialize: " + e.getMessage());
+            database = null;
+        } catch (IllegalArgumentException e) {
+            Prism.warn("Hikari Pool did not Initialize: " + e);
             database = null;
         }
         return this;
