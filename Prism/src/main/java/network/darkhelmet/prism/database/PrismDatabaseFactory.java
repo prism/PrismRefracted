@@ -102,7 +102,7 @@ public class PrismDatabaseFactory {
                 Prism.warn("ERROR: This version of Prism no longer supports Derby. Please use Hikari.");
                 break;
             default:
-                Prism.warn("ERROR: Prism doesn't have a rule for " + dataSource + " datasource. Please use MySQL or Hikari.");
+                Prism.warn("ERROR: Prism doesn't have a rule for " + dataSource + " datasource type. Please use MySQL or Hikari.");
                 break;
         }
         return database;
@@ -117,8 +117,7 @@ public class PrismDatabaseFactory {
         if (configuration == null) {
             return null;
         }
-        String dataSource = configuration.getString("datasource.type").toUpperCase(Locale.ROOT);
-        switch (dataSource) {
+        switch (configuration.getString("datasource.type").toUpperCase(Locale.ROOT)) {
             case "MYSQL":
             case "HIKARI":
                 return new SqlPrismDataSourceUpdater(database);
