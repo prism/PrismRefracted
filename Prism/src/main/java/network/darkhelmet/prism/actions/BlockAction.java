@@ -205,7 +205,11 @@ public class BlockAction extends GenericAction {
         }
     }
 
-    private BlockActionData getActionData() {
+    protected void setActionData(BlockActionData actionData) {
+        this.actionData = actionData;
+    }
+
+    protected BlockActionData getActionData() {
         return actionData;
     }
 
