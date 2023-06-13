@@ -36,6 +36,7 @@ import org.bukkit.block.data.Waterlogged;
 import org.bukkit.block.data.type.Bed;
 import org.bukkit.block.data.type.Bed.Part;
 import org.bukkit.block.sign.Side;
+import org.bukkit.block.sign.SignSide;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -132,8 +133,14 @@ public class BlockAction extends GenericAction {
                     final SignActionData signActionData = new SignActionData();
                     final Sign sign = (Sign) state;
                     signActionData.lines = sign.getLines();
+                    signActionData.color = sign.getColor();
+                    if (Prism.getInstance().getServerMajorVersion() >= 17)
+                        signActionData.glowing = sign.isGlowingText();
                     if (POST_20) {
-                        signActionData.backLines = sign.getSide(Side.BACK).getLines();
+                        SignSide backSide = sign.getSide(Side.BACK);
+                        signActionData.backLines = backSide.getLines();
+                        signActionData.backColor = backSide.getColor();
+                        signActionData.backGlowing = backSide.isGlowingText();
                     }
                     actionData = signActionData;
                 }
@@ -430,8 +437,7 @@ public class BlockAction extends GenericAction {
                     && !blockActionData.customName.equals("")) {
                 ((Nameable) newState).setCustomName(blockActionData.customName);
             }
-            if (parameters.getProcessType() == PrismProcessType.ROLLBACK
-                    && Tag.SIGNS.isTagged(getMaterial())
+            if ((Tag.SIGNS.isTagged(getMaterial()) || (POST_20 && Tag.ALL_SIGNS.isTagged(getMaterial())))
                     && blockActionData instanceof SignActionData) {
 
                 final SignActionData s = (SignActionData) blockActionData;
@@ -442,15 +448,25 @@ public class BlockAction extends GenericAction {
                 // cannot be cast to org.bukkit.block.Sign
                 // https://snowy-evening.com/botsko/prism/455/
                 if (newState instanceof Sign) {
+                    Sign signState = (Sign) newState;
                     if (s.lines != null) {
                         for (int i = 0; i < s.lines.length; ++i) {
-                            ((Sign) newState).setLine(i, s.lines[i]);
+                            signState.setLine(i, s.lines[i]);
                         }
                     }
+                    if (s.color != null) {
+                        signState.setColor(s.color);
+                    }
+                    if (Prism.getInstance().getServerMajorVersion() >= 17) {
+                        signState.setGlowingText(s.glowing);
+                    }
                     if (POST_20 && s.backLines != null) {
+                        SignSide signSide = signState.getSide(Side.BACK);
                         for (int i = 0; i < s.backLines.length; ++i) {
-                            ((Sign) newState).getSide(Side.BACK).setLine(i, s.backLines[i]);
+                            signSide.setLine(i, s.backLines[i]);
                         }
+                        signSide.setColor(s.backColor);
+                        signSide.setGlowingText(s.backGlowing);
                     }
                 }
             }
@@ -672,7 +688,11 @@ public class BlockAction extends GenericAction {
      */
     public static class SignActionData extends BlockActionData {
         String[] lines;
+        DyeColor color;
+        boolean glowing;
         String[] backLines;
+        DyeColor backColor;
+        boolean backGlowing;
     }
 
     public static class BannerActionData extends RotatableActionData {
