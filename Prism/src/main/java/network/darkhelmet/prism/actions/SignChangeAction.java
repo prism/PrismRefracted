@@ -135,7 +135,7 @@ public class SignChangeAction extends GenericAction {
         if (actionData.oldLines == null) {
             return new ChangeResultImpl(ChangeResultType.SKIPPED, null);
         }
-        return setSignLines(actionData.oldLines);
+        return setSignLines(actionData.oldLines, isPreview);
     }
 
     /**
@@ -143,16 +143,20 @@ public class SignChangeAction extends GenericAction {
      */
     @Override
     public ChangeResult applyRestore(Player player, PrismParameters parameters, boolean isPreview) {
-        return setSignLines(getLines());
+        return setSignLines(getLines(), isPreview);
     }
 
-    private ChangeResult setSignLines(String[] lines) {
+    private ChangeResult setSignLines(String[] lines, boolean isPreview) {
 
         final Block block = getWorld().getBlockAt(getLoc());
 
         // Ensure a sign exists there (and no other block)
         if (block.getType().equals(Material.AIR) || Tag.SIGNS.isTagged(block.getType())
                 || (Prism.getInstance().getServerMajorVersion() >= 20 && Tag.ALL_SIGNS.isTagged(block.getType()))) {
+            if (isPreview) {
+                // TODO: just returning PLANNED, not previewed right now.
+                return new ChangeResultImpl(ChangeResultType.PLANNED, null);
+            }
 
             if (block.getType().equals(Material.AIR)) {
                 block.setType(getSignType());

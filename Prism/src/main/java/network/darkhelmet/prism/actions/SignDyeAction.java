@@ -1,6 +1,7 @@
 package network.darkhelmet.prism.actions;
 
 import network.darkhelmet.prism.Prism;
+import network.darkhelmet.prism.api.BlockStateChange;
 import network.darkhelmet.prism.api.ChangeResult;
 import network.darkhelmet.prism.api.ChangeResultType;
 import network.darkhelmet.prism.api.PrismParameters;
@@ -43,8 +44,8 @@ public class SignDyeAction extends GenericAction {
 
     @Override
     public ChangeResult applyRollback(Player player, PrismParameters parameters, boolean isPreview) {
-        ChangeResult changeResult = setSignColor(actionData.oldColor);
-        if (changeResult.getType() == ChangeResultType.APPLIED) {
+        ChangeResult changeResult = setSignColor(actionData.oldColor, isPreview);
+        if (changeResult.getType() == ChangeResultType.APPLIED && !isPreview) {
             placeDyeItem(true);
         }
         return changeResult;
@@ -52,14 +53,14 @@ public class SignDyeAction extends GenericAction {
 
     @Override
     public ChangeResult applyRestore(Player player, PrismParameters parameters, boolean isPreview) {
-        ChangeResult changeResult = setSignColor(actionData.newColor);
-        if (changeResult.getType() == ChangeResultType.APPLIED) {
+        ChangeResult changeResult = setSignColor(actionData.newColor, isPreview);
+        if (changeResult.getType() == ChangeResultType.APPLIED && !isPreview) {
             placeDyeItem(false);
         }
         return changeResult;
     }
 
-    private ChangeResult setSignColor(DyeColor color) {
+    private ChangeResult setSignColor(DyeColor color, boolean isPreview) {
         final Block block = getWorld().getBlockAt(getLoc());
 
         // Ensure a sign exists there (and no other block)
@@ -68,6 +69,10 @@ public class SignDyeAction extends GenericAction {
 
             // Set the content
             if (block.getState() instanceof Sign) {
+                if (isPreview) {
+                    // TODO: just returning PLANNED, not previewed right now.
+                    return new ChangeResultImpl(ChangeResultType.PLANNED, null);
+                }
 
                 // Set sign data
                 final Sign sign = (Sign) block.getState();
