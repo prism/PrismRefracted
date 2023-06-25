@@ -50,6 +50,8 @@ import java.util.UUID;
 
 public class PrismPlayerEvents implements Listener {
 
+    private static final byte serverMajorVersion = Prism.getInstance().getServerMajorVersion();
+
     private final Prism plugin;
     private final List<String> illegalCommands;
     private final List<String> ignoreCommands;
@@ -256,23 +258,26 @@ public class PrismPlayerEvents implements Listener {
         String cause;
         Material newMat;
         Block spot = event.getBlockClicked().getRelative(event.getBlockFace());
-        switch (event.getBucket()) {
-            case LAVA_BUCKET:
-                cause = "lava-bucket";
-                newMat = Material.LAVA;
-                break;
-            case POWDER_SNOW_BUCKET:
-                cause = "powdersnow-bucket";
-                newMat = Material.POWDER_SNOW;
-                break;
-            case TROPICAL_FISH_BUCKET:
-            case SALMON_BUCKET:
-            case PUFFERFISH_BUCKET:
-            case WATER_BUCKET:
-            default:
-                cause = "water-bucket";
-                newMat = Material.WATER;
-                break;
+
+        Material bucket = event.getBucket();
+        if (serverMajorVersion >= 17 && bucket == Material.POWDER_SNOW_BUCKET) {
+            cause = "powdersnow-bucket";
+            newMat = Material.POWDER_SNOW;
+        } else {
+            switch (bucket) {
+                case LAVA_BUCKET:
+                    cause = "lava-bucket";
+                    newMat = Material.LAVA;
+                    break;
+                case TROPICAL_FISH_BUCKET:
+                case SALMON_BUCKET:
+                case PUFFERFISH_BUCKET:
+                case WATER_BUCKET:
+                default:
+                    cause = "water-bucket";
+                    newMat = Material.WATER;
+                    break;
+            }
         }
 
         if (!Prism.getIgnore().event(cause, player)) {
@@ -285,7 +290,7 @@ public class PrismPlayerEvents implements Listener {
         BlockData clickedData = event.getBlockClicked().getBlockData();
 
         // TODO If "Lavalogged" blocks become a thing, please revisit.
-        if (clickedData instanceof Waterlogged && event.getBucket() != Material.LAVA) {
+        if (clickedData instanceof Waterlogged && bucket != Material.LAVA) {
             Waterlogged wl = (Waterlogged) clickedData;
 
             if (!wl.isWaterlogged()) {
@@ -303,7 +308,7 @@ public class PrismPlayerEvents implements Listener {
         RecordingQueue.addToQueue(ActionFactory.createBlockChange(cause, spot.getLocation(), spot.getType(), oldData,
                 newMat, newData, player));
 
-        if (plugin.getConfig().getBoolean("prism.alerts.uses.lava") && event.getBucket() == Material.LAVA_BUCKET
+        if (plugin.getConfig().getBoolean("prism.alerts.uses.lava") && bucket == Material.LAVA_BUCKET
                 && !player.hasPermission("prism.alerts.use.lavabucket.ignore")
                 && !player.hasPermission("prism.alerts.ignore")) {
             plugin.useMonitor.alertOnItemUse(player, "poured lava", "prism.alerts.use.lavabucket");
@@ -331,7 +336,7 @@ public class PrismPlayerEvents implements Listener {
             liquidType = "water";
         } else if (spot.getType() == Material.LAVA) {
             liquidType = "lava";
-        } else if (spot.getType() == Material.POWDER_SNOW) {
+        } else if (serverMajorVersion >= 17 && spot.getType() == Material.POWDER_SNOW) {
             liquidType = "powder snow";
         }
 

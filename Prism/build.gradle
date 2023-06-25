@@ -24,9 +24,9 @@ repositories {
     maven { url = 'https://maven.addstar.com.au/artifactory/all-snapshot' }
 }
 
-group = "network.darkhelmet"
+group = project.property("group")
 version = project.property("version")
-sourceCompatibility = targetCompatibility = JavaVersion.VERSION_17
+sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 
 processResources {
     filter ReplaceTokens, tokens: [
@@ -43,7 +43,7 @@ dependencies {
     implementation 'io.papermc:paperlib:1.0.3'
     implementation 'com.zaxxer:HikariCP:4.0.3'
     implementation 'net.kyori:adventure-api:4.11.0'
-    implementation 'net.kyori:adventure-platform-bukkit:4.1.1'
+    implementation 'net.kyori:adventure-platform-bukkit:4.1.2'
     implementation 'net.kyori:adventure-text-serializer-plain:4.11.0'
     implementation 'org.kitteh:paste-gg-api:1.0.0-SNAPSHOT'
     implementation project(':Prism-Api')
@@ -77,7 +77,7 @@ runServer {
     // Configure the Minecraft version for our task.
     // This is the only required configuration besides applying the plugin.
     // Your plugin's jar (or shadowJar if present) will be used automatically.
-    minecraftVersion("1.19")
+    minecraftVersion("1.19.2")
 }
 
 gradle.buildFinished {

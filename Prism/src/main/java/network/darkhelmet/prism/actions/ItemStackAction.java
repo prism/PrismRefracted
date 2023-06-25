@@ -6,6 +6,7 @@ import network.darkhelmet.prism.api.ChangeResult;
 import network.darkhelmet.prism.api.ChangeResultType;
 import network.darkhelmet.prism.api.PrismParameters;
 import network.darkhelmet.prism.api.actions.PrismProcessType;
+import network.darkhelmet.prism.api.objects.MaterialState;
 import network.darkhelmet.prism.appliers.ChangeResultImpl;
 import network.darkhelmet.prism.utils.InventoryUtils;
 import network.darkhelmet.prism.utils.ItemUtils;
@@ -85,10 +86,8 @@ public class ItemStackAction extends GenericAction {
         }
 
         // Set basics
-        actionData = ItemStackActionData.createData(item, quantity, tempDurability, tempEnchantments);
-        if (tempDurability >= 0) {
-            tempDurability = -1;
-        }
+        actionData = ItemStackActionData.createData(item, quantity,
+                tempDurability >= 0 ? tempDurability : (short) ItemUtils.getItemDamage(item), tempEnchantments);
         setMaterial(item.getType());
     }
 
@@ -103,10 +102,20 @@ public class ItemStackAction extends GenericAction {
 
     @Override
     public void deserialize(String data) {
+        deserialize(null, data);
+    }
+
+    public void deserialize(MaterialState materialState, String data) {
         if (data == null || !data.startsWith("{")) {
             return;
         }
         actionData = gson().fromJson(data, ItemStackActionData.class);
+
+        // Old extra data doesn't include the material so
+        // this bridges the gap between old and new
+        if (materialState != null && actionData.material == null) {
+            actionData.material = materialState.material;
+        }
 
         item = actionData.toItem();
     }

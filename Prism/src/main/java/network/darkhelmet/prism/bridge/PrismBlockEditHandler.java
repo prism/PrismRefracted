@@ -22,18 +22,13 @@ public class PrismBlockEditHandler {
      */
     @Subscribe
     public void wrapForLogging(EditSessionEvent event) {
-        switch (weType) {
-            case WORLDEDIT, ASYNC_WORLDEDIT -> {
-                if (event.getStage() != EditSession.Stage.BEFORE_REORDER) return;
-            }
-            case FAST_ASYNC_WORLDEDIT -> {
-                if (event.getStage() != EditSession.Stage.BEFORE_HISTORY) return;
-            }
+        if (!weType.shouldLog(event)) {
+            return;
         }
 
         Actor actor = event.getActor();
         org.bukkit.World world = Bukkit.getWorld(event.getWorld().getName());
-        if (actor != null && actor.isPlayer() && world != null) {
+        if (actor != null && world != null) {
             event.setExtent(new PrismWorldEditLogger(actor, event.getExtent(), world));
         }
     }

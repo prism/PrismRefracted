@@ -24,6 +24,7 @@ import network.darkhelmet.prism.listeners.PaperListeners;
 import network.darkhelmet.prism.listeners.PrismBlockEvents;
 import network.darkhelmet.prism.listeners.PrismCustomEvents;
 import network.darkhelmet.prism.listeners.PrismEntityEvents;
+import network.darkhelmet.prism.listeners.PrismExplodeEvents;
 import network.darkhelmet.prism.listeners.PrismInventoryEvents;
 import network.darkhelmet.prism.listeners.PrismInventoryMoveItemEvent;
 import network.darkhelmet.prism.listeners.PrismPlayerEvents;
@@ -142,6 +143,7 @@ public class Prism extends JavaPlugin implements PrismApi {
     public BukkitTask recordingTask;
     public int totalRecordsAffected = 0;
     public long maxCycleTime = 0;
+    private byte serverMajorVersion;
 
     /**
      * We store a basic index of hanging entities we anticipate will fall, so that
@@ -374,6 +376,10 @@ public class Prism extends JavaPlugin implements PrismApi {
         return schedulePool;
     }
 
+    public byte getServerMajorVersion() {
+        return serverMajorVersion;
+    }
+
     /**
      * Enables the plugin and activates our player listeners.
      */
@@ -386,6 +392,7 @@ public class Prism extends JavaPlugin implements PrismApi {
         audiences = BukkitAudiences.create(this);
         messenger = new Messenger(pluginName, Prism.getAudiences());
         log("Initializing Prism " + pluginVersion + ". by viveleroi");
+        serverMajorVersion = Byte.parseByte(Bukkit.getServer().getBukkitVersion().split("\\.")[1].split("-")[0]);
         loadConfig();        // Load configuration, or install if new
         isPaper = PaperLib.isPaper();
         if (isPaper) {
@@ -406,8 +413,11 @@ public class Prism extends JavaPlugin implements PrismApi {
         } else {
             pasteKey = null;
         }
-        final List<String> worldNames = getServer().getWorlds().stream()
-                .map(World::getName).collect(Collectors.toList());
+
+        final List<String> worldNames = new ArrayList<>();
+        for (World world : getServer().getWorlds()) {
+            worldNames.add(world.getName());
+        }
 
         final String[] playerNames = Bukkit.getServer().getOnlinePlayers().stream()
                 .map(Player::getName).toArray(String[]::new);
@@ -516,6 +526,7 @@ public class Prism extends JavaPlugin implements PrismApi {
 
             // Assign event listeners
             getServer().getPluginManager().registerEvents(new PrismBlockEvents(this), this);
+            getServer().getPluginManager().registerEvents(new PrismExplodeEvents(this), this);
             getServer().getPluginManager().registerEvents(new PrismEntityEvents(this), this);
             getServer().getPluginManager().registerEvents(new PrismWorldEvents(), this);
             getServer().getPluginManager().registerEvents(new PrismPlayerEvents(this), this);

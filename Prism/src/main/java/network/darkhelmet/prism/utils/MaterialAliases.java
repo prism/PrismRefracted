@@ -114,7 +114,7 @@ public class MaterialAliases {
 
         query.findAllIds(material.name().toLowerCase(Locale.ENGLISH), list -> allIdsCache.put(
                 material, new HashSet<>(list)));
-        return allIdsCache.getOrDefault(material, Set.of());
+        return allIdsCache.getOrDefault(material, Collections.emptySet());
     }
 
     private void storeCache(Material material, String state, int blockId, int blockSubid) {
