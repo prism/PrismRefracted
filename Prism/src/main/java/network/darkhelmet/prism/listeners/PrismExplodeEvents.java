@@ -163,17 +163,21 @@ public class PrismExplodeEvents implements Listener {
             if (shooter instanceof Mob && ((Mob) shooter).getTarget() != null) {
                 // Ghast or something, attacking player or others.
                 addCache(shooter, "combat " + ((Mob) shooter).getName().toLowerCase(Locale.ROOT) + " shooting " + projName, ((Mob) shooter).getTarget().getName());
+                addCache(entity, "combat " + ((Mob) shooter).getName().toLowerCase(Locale.ROOT) + " shooting " + projName, ((Mob) shooter).getTarget().getName());
                 return;
             }
             // Mostly players.
             addCache(shooter, "shooting " + projName, ((Entity) shooter).getName());
+            addCache(entity, "shooting " + projName, ((Entity) shooter).getName());
 
         } else if (shooter instanceof BlockProjectileSource) {
             // Like dispenser with fireball.....
             addCache(shooter, "shooting " + projName, ((BlockProjectileSource) shooter).getBlock().getType().name());
+            addCache(entity, "shooting " + projName, ((BlockProjectileSource) shooter).getBlock().getType().name());
         } else {
             // If not listed here...
             addCache(shooter, "shooting " + projName, shooter.getClass().getName());
+            addCache(entity, "shooting " + projName, shooter.getClass().getName());
         }
     }
 
