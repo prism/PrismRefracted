@@ -69,13 +69,6 @@ public class UndoCommand implements SubHandler {
                 return;
             }
 
-            // We only support this for drains
-            if (!process.getProcessChildActionType().equals("prism-drain")) {
-                Prism.messenger.sendMessage(call.getPlayer(),
-                        Prism.messenger.playerError("You can't currently undo anything other than a drain process."));
-                return;
-            }
-
             // Pull the actual block change data for this undo event
             final QueryParameters parameters = new QueryParameters();
             parameters.setWorld(call.getPlayer().getWorld().getName());
