@@ -49,9 +49,9 @@ public class SqlSelectProcessQuery extends SqlSelectQueryBuilder implements Sele
 
     protected String where() {
         final int action_id = Prism.prismActions.get("prism-process");
-        String playerName = parameters.getKeyword();
         if (getLastID) {
             //bit hacky here we are using the id parameter which should generally refer to a player.
+            String playerName = parameters.getKeyword();
             return "WHERE action_id = " + action_id + " AND p.player = '" + playerName + "' ";
         }
         //bit hacky here we are using the id parameter which should generally refer to a player.
