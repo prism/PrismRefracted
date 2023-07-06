@@ -56,6 +56,8 @@ public class PrismInventoryEvents implements Listener {
     private static final String BREAK = "item-break";
     private final Prism plugin;
 
+    private final boolean supportGetSlot;
+
     /**
      * Constructor.
      * @param plugin Prism
@@ -66,6 +68,14 @@ public class PrismInventoryEvents implements Listener {
         this.trackingRemove = Prism.getIgnore().event(REMOVE);
         this.trackingBreaks = Prism.getIgnore().event(BREAK);
 
+        boolean supportSlot = true;
+        try {
+            ChiseledBookshelf.class.getMethod("getSlot", Vector.class);
+        } catch (NoSuchMethodException e) {
+            Prism.warn("Your server doesn't implement the methods we need, Please update to the latest build!");
+            supportSlot = false;
+        }
+        this.supportGetSlot = supportSlot;
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -92,67 +102,16 @@ public class PrismInventoryEvents implements Listener {
                 // The player is not clicking the intractable face
                 return;
             }
+            ChiseledBookshelf state = (ChiseledBookshelf) clickedBlock.getState();
             // Get the slot the player interacted
-            Vector eye = player.getEyeLocation().toVector();
-            // TODO: May not accurate if player is changing the direction *quickly* while interacting
-            Vector direction = player.getEyeLocation().getDirection();
-            Vector block = clickedBlock.getLocation().toVector();
-            if (event.getBlockFace() == BlockFace.EAST || event.getBlockFace() == BlockFace.SOUTH) {
-                block.add(event.getBlockFace().getDirection());
+            final int slot = supportGetSlot
+                    ? state.getSlot(event.getClickedPosition())
+                    : getInteractedBookshelfSlot(player, clickedBlock, event.getBlockFace());
+            if (slot == -1) {
+                return;
             }
-            double distance;
-            switch (event.getBlockFace()) {
-                case EAST:
-                case WEST:
-                    distance = (block.getX() - eye.getX()) / direction.getX();
-                    break;
-                case NORTH:
-                case SOUTH:
-                    distance = (block.getZ() - eye.getZ()) / direction.getZ();
-                    break;
-                default:
-                    // Not possible for inserting/removing
-                    return;
-            }
-            Vector clickedLoc = eye.add(direction.normalize().multiply(distance));
-            double pos = -1;
-            switch (event.getBlockFace()) {
-                case EAST:
-                    pos = Math.abs(clickedLoc.getZ() % 1);
-                    if (clickedLoc.getZ() > 0)
-                        pos = 1 - pos;
-                    break;
-                case WEST:
-                    pos = 1 - Math.abs(clickedLoc.getZ() % 1);
-                    if (clickedLoc.getZ() > 0)
-                        pos = 1 - pos;
-                    break;
-                case NORTH:
-                    pos = Math.abs(clickedLoc.getX() % 1);
-                    if (clickedLoc.getX() > 0)
-                        pos = 1 - pos;
-                    break;
-                case SOUTH:
-                    pos = 1 - Math.abs(clickedLoc.getX() % 1);
-                    if (clickedLoc.getX() > 0)
-                        pos = 1 - pos;
-                    break;
-            }
-            int slot;
-            if (pos < 0.375F)
-                slot = 0;
-            else if (pos < 0.6875F)
-                slot = 1;
-            else
-                slot = 2;
-
-            pos = clickedLoc.getY() % 1;
-            if (pos < 0.5F)
-                slot += 3;
-            // Get slot end
 
             // Process the inventory
-            ChiseledBookshelf state = (ChiseledBookshelf) clickedBlock.getState();
             ChiseledBookshelfInventory inventory = state.getInventory();
             ItemStack item = inventory.getItem(slot);
 
@@ -286,6 +245,72 @@ public class PrismInventoryEvents implements Listener {
                 }
             }
         }
+    }
+
+    /**
+     * This is used for old 1.20(.1) builds which has not been added API for getting slot.
+     * May not accurate if the player is changing the direction quickly while interacting,
+     * because of the latency.
+     *
+     * @return slot index or -1
+     */
+    private int getInteractedBookshelfSlot(Player player, Block clickedBlock, BlockFace blockFace) {
+        Vector eye = player.getEyeLocation().toVector();
+        Vector direction = player.getEyeLocation().getDirection();
+        Vector block = clickedBlock.getLocation().toVector();
+        if (blockFace == BlockFace.EAST || blockFace == BlockFace.SOUTH) {
+            block.add(blockFace.getDirection());
+        }
+        double distance;
+        switch (blockFace) {
+            case EAST:
+            case WEST:
+                distance = (block.getX() - eye.getX()) / direction.getX();
+                break;
+            case NORTH:
+            case SOUTH:
+                distance = (block.getZ() - eye.getZ()) / direction.getZ();
+                break;
+            default:
+                // Not possible for inserting/removing
+                return -1;
+        }
+        Vector clickedLoc = eye.add(direction.normalize().multiply(distance));
+        double pos = -1;
+        switch (blockFace) {
+            case EAST:
+                pos = Math.abs(clickedLoc.getZ() % 1);
+                if (clickedLoc.getZ() > 0)
+                    pos = 1 - pos;
+                break;
+            case WEST:
+                pos = 1 - Math.abs(clickedLoc.getZ() % 1);
+                if (clickedLoc.getZ() > 0)
+                    pos = 1 - pos;
+                break;
+            case NORTH:
+                pos = Math.abs(clickedLoc.getX() % 1);
+                if (clickedLoc.getX() > 0)
+                    pos = 1 - pos;
+                break;
+            case SOUTH:
+                pos = 1 - Math.abs(clickedLoc.getX() % 1);
+                if (clickedLoc.getX() > 0)
+                    pos = 1 - pos;
+                break;
+        }
+        int slot;
+        if (pos < 0.375F)
+            slot = 0;
+        else if (pos < 0.6875F)
+            slot = 1;
+        else
+            slot = 2;
+
+        pos = clickedLoc.getY() % 1;
+        if (pos < 0.5F)
+            slot += 3;
+        return slot;
     }
 
     private boolean isActuallyHoldingBook(Player player) {
