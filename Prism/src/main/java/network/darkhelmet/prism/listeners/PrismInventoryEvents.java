@@ -69,11 +69,13 @@ public class PrismInventoryEvents implements Listener {
         this.trackingBreaks = Prism.getIgnore().event(BREAK);
 
         boolean supportSlot = true;
-        try {
-            ChiseledBookshelf.class.getMethod("getSlot", Vector.class);
-        } catch (NoSuchMethodException e) {
-            Prism.warn("Your server doesn't implement the methods we need, Please update to the latest build!");
-            supportSlot = false;
+        if (Prism.getInstance().getServerMajorVersion() >= 20) {
+            try {
+                ChiseledBookshelf.class.getMethod("getSlot", Vector.class);
+            } catch (NoSuchMethodException e) {
+                Prism.warn("Your server doesn't implement the methods we need, Please update to the latest build!");
+                supportSlot = false;
+            }
         }
         this.supportGetSlot = supportSlot;
     }
