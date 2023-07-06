@@ -12,14 +12,17 @@ import org.bukkit.DyeColor;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.ShulkerBox;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.inventory.BlockInventoryHolder;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ArmorMeta;
 import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.BookMeta;
@@ -29,6 +32,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.inventory.meta.trim.ArmorTrim;
+import org.bukkit.inventory.meta.trim.TrimMaterial;
+import org.bukkit.inventory.meta.trim.TrimPattern;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 
@@ -62,6 +68,9 @@ public class ItemStackActionData {
     public String potionType;
     public boolean potionExtended;
     public boolean potionUpgraded;
+    public Boolean hasTrim;
+    public NamespacedKey trimMaterial;
+    public NamespacedKey trimPattern;
     public Map<Integer, ItemStackActionData> shulkerBoxInv;  // Deprecated
     public Map<Integer, ItemStackActionData> blockInventory;
 
@@ -166,6 +175,15 @@ public class ItemStackActionData {
                     }
                     actionData.blockInventory.put(i, createData(invItem, invItem.getAmount(), (short) ItemUtils.getItemDamage(invItem), invItem.getEnchantments()));
                 }
+            }
+        }
+        if (Prism.getInstance().getServerMajorVersion() >= 20 && meta instanceof ArmorMeta) {
+            ArmorMeta armorMeta = (ArmorMeta) meta;
+            actionData.hasTrim = armorMeta.hasTrim();
+            if (actionData.hasTrim) {
+                ArmorTrim trim = armorMeta.getTrim();
+                actionData.trimMaterial = trim.getMaterial().getKey();
+                actionData.trimPattern = trim.getPattern().getKey();
             }
         }
         return actionData;
@@ -328,6 +346,13 @@ public class ItemStackActionData {
                 }
                 ((BlockStateMeta) meta).setBlockState(blockState);
             }
+        }
+        if (Prism.getInstance().getServerMajorVersion() >= 20 && meta instanceof ArmorMeta) {
+            ArmorTrim trim = null;
+            if (hasTrim) {
+                trim = new ArmorTrim(Registry.TRIM_MATERIAL.get(trimMaterial), Registry.TRIM_PATTERN.get(trimPattern));
+            }
+            ((ArmorMeta) meta).setTrim(trim);
         }
 
         if (name != null) {
