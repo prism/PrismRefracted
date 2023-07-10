@@ -1,6 +1,12 @@
 package network.darkhelmet.prism;
 
 import io.papermc.lib.PaperLib;
+import net.kyori.adventure.identity.Identity;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import network.darkhelmet.prism.actionlibs.ActionRegistry;
 import network.darkhelmet.prism.actionlibs.ActionsQuery;
 import network.darkhelmet.prism.actionlibs.HandlerRegistry;
@@ -50,15 +56,9 @@ import network.darkhelmet.prism.players.PrismPlayer;
 import network.darkhelmet.prism.purge.PurgeManager;
 import network.darkhelmet.prism.utils.MaterialAliases;
 import network.darkhelmet.prism.utils.TypeUtils;
-import network.darkhelmet.prism.utils.folia.PrismTask;
 import network.darkhelmet.prism.utils.folia.PrismScheduler;
+import network.darkhelmet.prism.utils.folia.PrismTask;
 import network.darkhelmet.prism.wands.Wand;
-import net.kyori.adventure.identity.Identity;
-import net.kyori.adventure.platform.bukkit.BukkitAudiences;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -70,9 +70,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.plugin.java.JavaPluginLoader;
 
 import java.io.File;
 import java.io.IOException;
@@ -159,10 +157,6 @@ public class Prism extends JavaPlugin implements PrismApi {
 
     public Prism() {
         instance = this;
-    }
-
-    protected Prism(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
-        super(loader, description, dataFolder, file);
     }
 
     public static BukkitAudiences getAudiences() {
