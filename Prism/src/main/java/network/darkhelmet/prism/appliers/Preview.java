@@ -1,5 +1,6 @@
 package network.darkhelmet.prism.appliers;
 
+import io.papermc.lib.PaperLib;
 import net.kyori.adventure.text.Component;
 import network.darkhelmet.prism.Il8nHelper;
 import network.darkhelmet.prism.Prism;
@@ -37,6 +38,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
 public class Preview implements Previewable {
@@ -349,7 +351,11 @@ public class Preview implements Previewable {
                         }
                         if (add > 0) {
                             entitiesMoved.put(entity, add);
-                            EntityUtils.teleportEntity((LivingEntity) entity, l);
+                            if (Prism.isFolia) {
+                                entity.teleportAsync(l);
+                            } else {
+                                entity.teleport(l);
+                            }
                         }
                     }
                 }
