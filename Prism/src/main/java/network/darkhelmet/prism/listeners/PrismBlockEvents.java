@@ -12,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.DecoratedPot;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.block.Jukebox;
 import org.bukkit.block.Sign;
@@ -70,6 +71,14 @@ public class PrismBlockEvents extends BaseListener {
      */
     public PrismBlockEvents(Prism plugin) {
         super(plugin);
+
+        if (Prism.getInstance().getServerMajorVersion() >= 20) {
+            try {
+                DecoratedPot.class.getMethod("getSherds");
+            } catch (NoSuchMethodException e) {
+                Prism.warn("Your server doesn't implement the methods we need, Please update to the latest build!");
+            }
+        }
     }
 
     /**
