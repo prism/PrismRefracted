@@ -59,6 +59,7 @@ public class BlockChangeAction extends BlockAction {
                                     BlockData newData, Block block, boolean isDeferred) {
 
         final BlockAction b = new BlockAction();
+        b.setActionData(this.getActionData());
         b.setActionType(type);
         b.setLoc(getLoc());
         if (parameters.getProcessType().equals(PrismProcessType.ROLLBACK)) {
