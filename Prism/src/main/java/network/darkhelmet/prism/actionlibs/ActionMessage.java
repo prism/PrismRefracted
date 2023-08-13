@@ -47,8 +47,8 @@ public class ActionMessage {
      * @return String
      */
     public String getRawMessage() {
-        String format1 = "<prefix> <handlerId> <target> <actor> <extendedInfo><actorNice><count>"
-                + "<timeDiff> <location>";
+        String format1 = "<prefix> <handlerId> <target> <actor> <actorNice> <count>"
+                + "<dateTime> (<timeDiff>) <location>";
         ActionType action = handler.getActionType();
         return PlainComponentSerializer.plain().serialize(getMainMessage(action, format1));
     }
@@ -72,6 +72,11 @@ public class ActionMessage {
                       builder -> Component.text().append(getExtendedInfo()))
                 .replaceFirstText(Pattern.compile("<timeDiff>"),
                       builder -> Component.text().append(getTimeDiff()))
+                .replaceFirstText(Pattern.compile("<dateTime>"),
+                        builder -> Component.text()
+                                .content(handler.getDisplayDate() + " " + handler.getDisplayTime()))
+                .replaceFirstText(Pattern.compile("<location>"),
+                        builder -> Component.text().content(getFormattedLocation()))
                 .replaceFirstText(Pattern.compile("<count>"),
                       builder -> Component.text().append(getCount()))
                 .replaceFirstText(Pattern.compile("<actionType>"),

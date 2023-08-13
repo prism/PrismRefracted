@@ -4,23 +4,42 @@ import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.actionlibs.ActionFactory;
 import network.darkhelmet.prism.actionlibs.RecordingQueue;
 import network.darkhelmet.prism.api.actions.Handler;
+import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Tag;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.ChiseledBookshelf;
+import org.bukkit.block.Lectern;
+import org.bukkit.block.Sign;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Directional;
+import org.bukkit.block.data.Rotatable;
+import org.bukkit.block.sign.Side;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemBreakEvent;
+import org.bukkit.event.player.PlayerTakeLecternBookEvent;
+import org.bukkit.inventory.ChiseledBookshelfInventory;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.SmithingInventory;
+import org.bukkit.util.Vector;
 
 import java.util.List;
 import java.util.Map;
@@ -37,16 +56,272 @@ public class PrismInventoryEvents implements Listener {
     private static final String BREAK = "item-break";
     private final Prism plugin;
 
+    private final boolean supportGetSlot;
+
     /**
      * Constructor.
      * @param plugin Prism
      */
     public PrismInventoryEvents(Prism plugin) {
         this.plugin = plugin;
-        this.trackingInsert = !Prism.getIgnore().event(INSERT);
-        this.trackingRemove = !Prism.getIgnore().event(REMOVE);
+        this.trackingInsert = Prism.getIgnore().event(INSERT);
+        this.trackingRemove = Prism.getIgnore().event(REMOVE);
         this.trackingBreaks = Prism.getIgnore().event(BREAK);
 
+        boolean supportSlot = true;
+        if (Prism.getInstance().getServerMajorVersion() >= 20) {
+            try {
+                ChiseledBookshelf.class.getMethod("getSlot", Vector.class);
+            } catch (NoSuchMethodException e) {
+                Prism.warn("Your server doesn't implement the methods we need, Please update to the latest build!");
+                supportSlot = false;
+            }
+        }
+        this.supportGetSlot = supportSlot;
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onPlayerTakeLecternBook(final PlayerTakeLecternBookEvent event) {
+        if (trackingRemove) {
+            RecordingQueue.addToQueue(ActionFactory.createItemStack(REMOVE, event.getBook(), 1,
+                    0, null, event.getLectern().getLocation(), event.getPlayer()));
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onPlayerInteract(final PlayerInteractEvent event) {
+        if (notTrackingInsertAndRemove()) {
+            return;
+        }
+        Action action = event.getAction();
+        if (action != Action.RIGHT_CLICK_BLOCK) {
+            return;
+        }
+        Block clickedBlock = event.getClickedBlock();
+        Player player = event.getPlayer();
+        if (Prism.getInstance().getServerMajorVersion() >= 20 && clickedBlock.getType() == Material.CHISELED_BOOKSHELF) {
+            if (event.getBlockFace() != ((Directional) clickedBlock.getBlockData()).getFacing()) {
+                // The player is not clicking the intractable face
+                return;
+            }
+            ChiseledBookshelf state = (ChiseledBookshelf) clickedBlock.getState();
+            // Get the slot the player interacted
+            final int slot = supportGetSlot
+                    ? state.getSlot(event.getClickedPosition())
+                    : getInteractedBookshelfSlot(player, clickedBlock, event.getBlockFace());
+            if (slot == -1) {
+                return;
+            }
+
+            // Process the inventory
+            ChiseledBookshelfInventory inventory = state.getInventory();
+            ItemStack item = inventory.getItem(slot);
+
+            ItemStack hand = event.getItem();
+            if (player.isSneaking() && isActuallyHoldingBook(player)) {
+                // Not exchanging the items
+                return;
+            }
+            if (item == null) {
+                if (hand != null && Tag.ITEMS_BOOKSHELF_BOOKS.isTagged(hand.getType())) {
+                    RecordingQueue.addToQueue(ActionFactory.createItemStack(INSERT, hand, 1,
+                            slot, null, clickedBlock.getLocation(), player));
+                }
+            } else {
+                RecordingQueue.addToQueue(ActionFactory.createItemStack(REMOVE, item, 1,
+                        slot, null, clickedBlock.getLocation(), player));
+            }
+        } else if (clickedBlock.getType() == Material.LECTERN) {
+            Inventory inventory = ((Lectern) clickedBlock.getState()).getInventory();
+            if (inventory.isEmpty()) {
+                // Ensure there's no book on it.
+                ItemStack hand = event.getItem();
+                if (hand != null && (hand.getType() == Material.WRITABLE_BOOK || hand.getType() == Material.WRITTEN_BOOK)) {
+                    RecordingQueue.addToQueue(ActionFactory.createItemStack(INSERT, hand, 1,
+                            0, null, clickedBlock.getLocation(), player));
+                }
+            }
+        } else if (Tag.FLOWER_POTS.isTagged(clickedBlock.getType())) {
+            // Only main hand. Offhand doesn't work here.
+            ItemStack hand = player.getInventory().getItemInMainHand();
+
+            // If null, the flower in hand can't fill the pot.
+            Material changeTo = Material.matchMaterial("POTTED_" + hand.getType().name());
+            if (clickedBlock.getType() == Material.FLOWER_POT) {
+                if (changeTo == null) {
+                    // The player is not going to fill the pot.
+                    return;
+                }
+            } else {
+                if (changeTo != null) {
+                    // The player is holding a flower, can't take the flower in the pot.
+                    return;
+                }
+                changeTo = Material.FLOWER_POT;
+            }
+            RecordingQueue.addToQueue(ActionFactory.createFlowerPotChange(clickedBlock, changeTo, player));
+        } else if (Tag.SIGNS.isTagged(clickedBlock.getType())
+                || Prism.getInstance().getServerMajorVersion() >= 20 && Tag.ALL_SIGNS.isTagged(clickedBlock.getType())) {
+            Sign sign = (Sign) clickedBlock.getState();
+            if (player.isSneaking()) {
+                return;
+            }
+
+            // Only main hand. Offhand doesn't work here.
+            ItemStack hand = player.getInventory().getItemInMainHand();
+            String handMat = hand.getType().name();
+            // Get the player clicked side
+            boolean front = true;
+            if (Prism.getInstance().getServerMajorVersion() >= 20) {
+                BlockData blockData = clickedBlock.getBlockData();
+                BlockFace facing;
+                if (blockData instanceof Directional) {
+                    facing = ((Directional) blockData).getFacing();
+                } else {
+                    facing = ((Rotatable) blockData).getRotation();
+                }
+                Vector signCenter = clickedBlock.getLocation().toVector();
+                if (Tag.WALL_SIGNS.isTagged(sign.getType())) {
+                    switch (facing) {
+                        case EAST:
+                            signCenter.setX(signCenter.getX() + 0.0625);
+                            break;
+                        case SOUTH:
+                            signCenter.setZ(signCenter.getZ() + 0.0625);
+                            break;
+                        case WEST:
+                            signCenter.setX(signCenter.getX() + 1 - 0.0625);
+                            break;
+                        case NORTH:
+                            signCenter.setZ(signCenter.getZ() + 1 - 0.0625);
+                            break;
+                        default:
+                            throw new AssertionError();
+                    }
+                } else {
+                    signCenter.setX(signCenter.getX() + 0.5);
+                    signCenter.setY(signCenter.getY() + 0.5);
+                    signCenter.setZ(signCenter.getZ() + 0.5);
+                }
+
+                Vector playerDirection = new Vector(player.getLocation().getX() - signCenter.getX(), 0, player.getLocation().getZ() - signCenter.getZ());
+                float angle = facing.getDirection().angle(playerDirection);
+                front = angle <= 1.5707963267948966;
+            }
+            // Get side end
+            if (handMat.endsWith("_DYE")) {
+                if (!Prism.getIgnore().event("sign-dye", event.getPlayer())) {
+                    return;
+                }
+                DyeColor dyeColor;
+                try {
+                    dyeColor = DyeColor.valueOf(handMat.substring(0, handMat.length() - 4));
+                } catch (IllegalArgumentException ignored) {
+                    // The player is not holding a dye...
+                    return;
+                }
+                DyeColor signColor;
+                if (Prism.getInstance().getServerMajorVersion() >= 20) {
+                    signColor = sign.getSide(front ? Side.FRONT : Side.BACK).getColor();
+                } else {
+                    signColor = sign.getColor();
+                }
+                if (dyeColor != signColor) {
+                    RecordingQueue.addToQueue(
+                            ActionFactory.createSignDye(clickedBlock, dyeColor, front, event.getPlayer()));
+                }
+            } else if (Prism.getInstance().getServerMajorVersion() >= 17 && handMat.endsWith("INK_SAC")) {
+                if (!Prism.getIgnore().event("sign-glow", event.getPlayer())) {
+                    return;
+                }
+                boolean makeGlow = hand.getType() == Material.GLOW_INK_SAC;
+                boolean signGlow;
+                if (Prism.getInstance().getServerMajorVersion() >= 20) {
+                    signGlow = sign.getSide(front ? Side.FRONT : Side.BACK).isGlowingText();
+                } else {
+                    signGlow = sign.isGlowingText();
+                }
+                if (makeGlow != signGlow) {
+                    RecordingQueue.addToQueue(
+                            ActionFactory.createSignGlow(clickedBlock, makeGlow, front, event.getPlayer()));
+                }
+            }
+        }
+    }
+
+    /**
+     * This is used for old 1.20(.1) builds which has not been added API for getting slot.
+     * May not accurate if the player is changing the direction quickly while interacting,
+     * because of the latency.
+     *
+     * @return slot index or -1
+     */
+    private int getInteractedBookshelfSlot(Player player, Block clickedBlock, BlockFace blockFace) {
+        Vector eye = player.getEyeLocation().toVector();
+        Vector direction = player.getEyeLocation().getDirection();
+        Vector block = clickedBlock.getLocation().toVector();
+        if (blockFace == BlockFace.EAST || blockFace == BlockFace.SOUTH) {
+            block.add(blockFace.getDirection());
+        }
+        double distance;
+        switch (blockFace) {
+            case EAST:
+            case WEST:
+                distance = (block.getX() - eye.getX()) / direction.getX();
+                break;
+            case NORTH:
+            case SOUTH:
+                distance = (block.getZ() - eye.getZ()) / direction.getZ();
+                break;
+            default:
+                // Not possible for inserting/removing
+                return -1;
+        }
+        Vector clickedLoc = eye.add(direction.normalize().multiply(distance));
+        double pos = -1;
+        switch (blockFace) {
+            case EAST:
+                pos = Math.abs(clickedLoc.getZ() % 1);
+                if (clickedLoc.getZ() > 0)
+                    pos = 1 - pos;
+                break;
+            case WEST:
+                pos = 1 - Math.abs(clickedLoc.getZ() % 1);
+                if (clickedLoc.getZ() > 0)
+                    pos = 1 - pos;
+                break;
+            case NORTH:
+                pos = Math.abs(clickedLoc.getX() % 1);
+                if (clickedLoc.getX() > 0)
+                    pos = 1 - pos;
+                break;
+            case SOUTH:
+                pos = 1 - Math.abs(clickedLoc.getX() % 1);
+                if (clickedLoc.getX() > 0)
+                    pos = 1 - pos;
+                break;
+        }
+        int slot;
+        if (pos < 0.375F)
+            slot = 0;
+        else if (pos < 0.6875F)
+            slot = 1;
+        else
+            slot = 2;
+
+        pos = clickedLoc.getY() % 1;
+        if (pos < 0.5F)
+            slot += 3;
+        return slot;
+    }
+
+    private boolean isActuallyHoldingBook(Player player) {
+        ItemStack item = player.getInventory().getItemInMainHand();
+        if (Tag.ITEMS_BOOKSHELF_BOOKS.isTagged(item.getType())) {
+            return true;
+        }
+        item = player.getInventory().getItemInOffHand();
+        return Tag.ITEMS_BOOKSHELF_BOOKS.isTagged(item.getType());
     }
 
     /**
@@ -185,6 +460,30 @@ public class PrismInventoryEvents implements Listener {
         if (slot < 0) {
             return;
         }
+
+        // Store some info
+        final Player player = (Player) event.getWhoClicked();
+        // Check if Smithing Inventory
+        if (Prism.getInstance().getServerMajorVersion() >= 20 && event.getInventory() instanceof SmithingInventory) {
+            if (event.getSlotType() == InventoryType.SlotType.RESULT) {
+                if (!Prism.getIgnore().event("upgrade-gear", player)) {
+                    return;
+                }
+                final ItemStack item = event.getCurrentItem();
+                if (item.getType() == Material.AIR) {
+                    // Not upgraded
+                    return;
+                }
+                if (event.getAction() == InventoryAction.HOTBAR_MOVE_AND_READD) {
+                    // Forbidden action
+                    return;
+                }
+                RecordingQueue.addToQueue(
+                        ActionFactory.createItemStack("upgrade-gear", item, 1, -1, null, player.getLocation(), player));
+            }
+            return;
+        }
+
         Location containerLoc = event.getInventory().getLocation(); //this is the top Inventory
         // Virtual inventory or something (enderchest?)
         if (containerLoc == null) {
@@ -194,8 +493,6 @@ public class PrismInventoryEvents implements Listener {
         if (notTrackingInsertAndRemove()) {
             return;
         }
-        // Store some info
-        final Player player = (Player) event.getWhoClicked();
 
         // Ignore all item move events where players modify their own inventory
         if (event.getInventory().getHolder() instanceof Player) {

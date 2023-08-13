@@ -1,11 +1,11 @@
 package network.darkhelmet.prism.actions;
 
+import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.api.ChangeResult;
 import network.darkhelmet.prism.api.ChangeResultType;
 import network.darkhelmet.prism.api.PrismParameters;
 import network.darkhelmet.prism.appliers.ChangeResultImpl;
-import org.apache.commons.lang3.EnumUtils;
-import org.bukkit.TreeSpecies;
+import network.darkhelmet.prism.utils.EntityUtils;
 import org.bukkit.entity.Boat;
 import org.bukkit.entity.ChestBoat;
 import org.bukkit.entity.Entity;
@@ -19,6 +19,8 @@ import org.bukkit.entity.minecart.SpawnerMinecart;
 import org.bukkit.entity.minecart.StorageMinecart;
 
 public class VehicleAction extends GenericAction {
+
+    private static byte serverMajorVersion = Prism.getInstance().getServerMajorVersion();
 
     private VehicleActionData actionData;
 
@@ -39,16 +41,14 @@ public class VehicleAction extends GenericAction {
             actionData.vehicleName = "tnt minecart";
         } else if (vehicle instanceof StorageMinecart) {
             actionData.vehicleName = "storage minecart";
-        } else if (vehicle instanceof ChestBoat) {
+        } else if (serverMajorVersion >= 19 && vehicle instanceof ChestBoat) {
             actionData.vehicleName = "chest boat";
         } else {
             actionData.vehicleName = vehicle.getType().name().toLowerCase();
         }
 
         if (vehicle instanceof Boat) {
-            Boat boat = (Boat) vehicle;
-            TreeSpecies woodType = boat.getWoodType();
-            actionData.woodType = woodType.name();
+            actionData.woodType = EntityUtils.treeSpeciesToName(((Boat) vehicle).getWoodType());
         }
     }
 
@@ -57,7 +57,7 @@ public class VehicleAction extends GenericAction {
      */
     @Override
     public String getNiceName() {
-        return (actionData.woodType != null ? actionData.woodType.toLowerCase() + " " : "") + actionData.vehicleName;
+        return (actionData.woodType != null ? actionData.woodType + " " : "") + actionData.vehicleName;
     }
 
     @Override
@@ -86,6 +86,10 @@ public class VehicleAction extends GenericAction {
      */
     @Override
     public ChangeResult applyRollback(Player player, PrismParameters parameters, boolean isPreview) {
+        if (isPreview) {
+            // TODO: just returning PLANNED, not previewed right now.
+            return new ChangeResultImpl(ChangeResultType.PLANNED, null);
+        }
         Entity vehicle = null;
         switch (actionData.vehicleName) {
             case "command block minecart":
@@ -122,9 +126,8 @@ public class VehicleAction extends GenericAction {
             return new ChangeResultImpl(ChangeResultType.SKIPPED, null);
         }
 
-        if (vehicle instanceof Boat && actionData != null) {
-            Boat boat = (Boat) vehicle;
-            boat.setWoodType(EnumUtils.getEnum(TreeSpecies.class, actionData.woodType, TreeSpecies.GENERIC));
+        if (vehicle instanceof Boat && actionData.woodType != null) {
+            ((Boat) vehicle).setWoodType(EntityUtils.nameToTreeSpecies(actionData.woodType));
         }
 
         return new ChangeResultImpl(ChangeResultType.APPLIED, null);

@@ -3,6 +3,7 @@ package network.darkhelmet.prism.listeners;
 import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.actionlibs.ActionFactory;
 import network.darkhelmet.prism.actionlibs.RecordingQueue;
+import network.darkhelmet.prism.utils.EntityUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -27,6 +28,8 @@ public class PrismVehicleEvents implements Listener {
 
     private final Prism plugin;
 
+    private final byte serverMajorVersion;
+
     /**
      * Constructor.
      *
@@ -34,6 +37,7 @@ public class PrismVehicleEvents implements Listener {
      */
     public PrismVehicleEvents(Prism plugin) {
         this.plugin = plugin;
+        serverMajorVersion = plugin.getServerMajorVersion();
     }
 
     /**
@@ -67,7 +71,11 @@ public class PrismVehicleEvents implements Listener {
                 return;
             }
             RecordingQueue.addToQueue(ActionFactory.createVehicle("vehicle-place", vehicle, player));
+
         } else {
+            if (!Prism.getIgnore().event("vehicle-place", loc.getWorld(), "unknown")) {
+                return;
+            }
             RecordingQueue.addToQueue(ActionFactory.createVehicle("vehicle-place", vehicle, "unknown"));
         }
     }
@@ -95,12 +103,13 @@ public class PrismVehicleEvents implements Listener {
             }
         }
 
-        if (vehicle instanceof ChestBoat) {
+        if (serverMajorVersion >= 19 && vehicle instanceof ChestBoat) {
             ChestBoat chestBoat = (ChestBoat) vehicle;
             for (final ItemStack item : chestBoat.getInventory().getContents()) {
                 if (item != null && item.getType() != Material.AIR) {
-                    RecordingQueue.addToQueue(ActionFactory.createItemStack("item-drop", item, item.getAmount(), -1,
-                            null, vehicle.getLocation(), "chest boat"));
+                    RecordingQueue.addToQueue(ActionFactory.createItemStack("item-drop", item,
+                            item.getAmount(), -1, null, vehicle.getLocation(),
+                            EntityUtils.treeSpeciesToName(chestBoat.getWoodType()) + " chest boat"));
                 }
             }
 

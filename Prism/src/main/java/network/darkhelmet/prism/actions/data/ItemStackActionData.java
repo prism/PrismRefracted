@@ -1,5 +1,8 @@
 package network.darkhelmet.prism.actions.data;
 
+import com.google.gson.JsonParseException;
+import net.md_5.bungee.chat.ComponentSerializer;
+import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.api.objects.MaterialState;
 import network.darkhelmet.prism.utils.EntityUtils;
 import network.darkhelmet.prism.utils.ItemUtils;
@@ -9,11 +12,19 @@ import org.bukkit.DyeColor;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.ShulkerBox;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.inventory.BlockInventoryHolder;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ArmorMeta;
 import org.bukkit.inventory.meta.BannerMeta;
+import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.FireworkEffectMeta;
@@ -21,6 +32,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.inventory.meta.trim.ArmorTrim;
+import org.bukkit.inventory.meta.trim.TrimMaterial;
+import org.bukkit.inventory.meta.trim.TrimPattern;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 
@@ -30,6 +44,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class ItemStackActionData {
     public int amt;
@@ -40,6 +55,7 @@ public class ItemStackActionData {
     public String[] enchs;
     public String by;
     public String title;
+    public BookMeta.Generation generation;
     public String[] lore;
     public String[] content;
     public String slot = "-1";
@@ -52,6 +68,11 @@ public class ItemStackActionData {
     public String potionType;
     public boolean potionExtended;
     public boolean potionUpgraded;
+    public Boolean hasTrim;
+    public NamespacedKey trimMaterial;
+    public NamespacedKey trimPattern;
+    public Map<Integer, ItemStackActionData> shulkerBoxInv;  // Deprecated
+    public Map<Integer, ItemStackActionData> blockInventory;
 
     public static ItemStackActionData createData(ItemStack item, int quantity, short durability, Map<Enchantment, Integer> enchantments) {
 
@@ -93,7 +114,12 @@ public class ItemStackActionData {
             final BookMeta bookMeta = (BookMeta) meta;
             actionData.by = bookMeta.getAuthor();
             actionData.title = bookMeta.getTitle();
-            actionData.content = bookMeta.getPages().toArray(new String[0]);
+            actionData.generation = bookMeta.getGeneration();
+            if (Prism.isSpigot) {
+                actionData.content = bookMeta.spigot().getPages().stream().map(ComponentSerializer::toString).toArray(String[]::new);
+            } else {
+                actionData.content = bookMeta.getPages().toArray(new String[0]);
+            }
         }
 
         // Lore
@@ -135,6 +161,30 @@ public class ItemStackActionData {
             patterns.forEach(
                     pattern -> stringyPatterns.put(pattern.getPattern().getIdentifier(), pattern.getColor().name()));
             actionData.bannerMeta = stringyPatterns;
+        }
+        if (meta instanceof BlockStateMeta) {
+            BlockState blockState = ((BlockStateMeta) meta).getBlockState();
+            if (blockState instanceof BlockInventoryHolder) {
+                Inventory inventory = ((BlockInventoryHolder) blockState).getInventory();
+                ItemStack[] contents = inventory.getContents();
+                actionData.blockInventory = new HashMap<>();
+                for (int i = 0; i < contents.length; i++) {
+                    ItemStack invItem = contents[i];
+                    if (invItem == null) {
+                        continue;
+                    }
+                    actionData.blockInventory.put(i, createData(invItem, invItem.getAmount(), (short) ItemUtils.getItemDamage(invItem), invItem.getEnchantments()));
+                }
+            }
+        }
+        if (Prism.getInstance().getServerMajorVersion() >= 20 && meta instanceof ArmorMeta) {
+            ArmorMeta armorMeta = (ArmorMeta) meta;
+            actionData.hasTrim = armorMeta.hasTrim();
+            if (actionData.hasTrim) {
+                ArmorTrim trim = armorMeta.getTrim();
+                actionData.trimMaterial = trim.getMaterial().getKey();
+                actionData.trimPattern = trim.getPattern().getKey();
+            }
         }
         return actionData;
     }
@@ -239,7 +289,20 @@ public class ItemStackActionData {
             final BookMeta bookMeta = (BookMeta) meta;
             bookMeta.setAuthor(by);
             bookMeta.setTitle(title);
-            bookMeta.setPages(content);
+            bookMeta.setGeneration(generation);
+            if (content != null) {
+                // May be null if a writable book has not been opened
+                if (Prism.isSpigot) {
+                    try {
+                        bookMeta.spigot().setPages(Arrays.stream(content).map(ComponentSerializer::parse).collect(Collectors.toList()));
+                    } catch (JsonParseException ex) {
+                        // Old Prism version saves plain text
+                        bookMeta.setPages(content);
+                    }
+                } else {
+                    bookMeta.setPages(content);
+                }
+            }
             item.setItemMeta(bookMeta);
         } else if (meta instanceof PotionMeta) {
             final PotionType potionType = PotionType.valueOf(this.potionType.toUpperCase());
@@ -264,6 +327,32 @@ public class ItemStackActionData {
                 }
             });
             ((BannerMeta) meta).setPatterns(patterns);
+        }
+        if (meta instanceof BlockStateMeta) {
+            BlockState blockState = ((BlockStateMeta) meta).getBlockState();
+            if (blockState instanceof BlockInventoryHolder) {
+                if (blockInventory != null) {
+                    Inventory inventory = ((BlockInventoryHolder) blockState).getInventory();
+                    for (Map.Entry<Integer, ItemStackActionData> entry : blockInventory.entrySet()) {
+                        inventory.setItem(entry.getKey(), entry.getValue().toItem());
+                    }
+                } else if (blockState instanceof ShulkerBox  // else if : before we use blockInventory field
+                        // For older version
+                        && shulkerBoxInv != null) {
+                    Inventory inventory = ((ShulkerBox) blockState).getInventory();
+                    for (Map.Entry<Integer, ItemStackActionData> entry : shulkerBoxInv.entrySet()) {
+                        inventory.setItem(entry.getKey(), entry.getValue().toItem());
+                    }
+                }
+                ((BlockStateMeta) meta).setBlockState(blockState);
+            }
+        }
+        if (Prism.getInstance().getServerMajorVersion() >= 20 && meta instanceof ArmorMeta) {
+            ArmorTrim trim = null;
+            if (hasTrim) {
+                trim = new ArmorTrim(Registry.TRIM_MATERIAL.get(trimMaterial), Registry.TRIM_PATTERN.get(trimPattern));
+            }
+            ((ArmorMeta) meta).setTrim(trim);
         }
 
         if (name != null) {

@@ -9,6 +9,7 @@ import network.darkhelmet.prism.utils.block.Utilities;
 import org.bukkit.Art;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.GlowItemFrame;
 import org.bukkit.entity.Hanging;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Painting;
@@ -101,7 +102,6 @@ public class HangingItemAction extends GenericAction {
      * @param parameters Query params
      * @param isPreview is preview.
      * @return ChangeResult
-     * @todo I am not sure this actual is used during preview?? also no rollback info is saved to undo this.
      */
     private ChangeResult hangItem(Player player, PrismParameters parameters, boolean isPreview) {
         if (actionData == null) {
@@ -121,13 +121,20 @@ public class HangingItemAction extends GenericAction {
             return new ChangeResultImpl(ChangeResultType.SKIPPED, null);
         }
         try {
+            if (isPreview) {
+                return new ChangeResultImpl(ChangeResultType.PLANNED, null);
+            }
             if (getHangingType().equals("item_frame")) {
                 final Hanging hangingItem = getWorld().spawn(loc, ItemFrame.class);
                 hangingItem.setFacingDirection(attachedFace, true);
                 return new ChangeResultImpl(ChangeResultType.APPLIED, null); //no change recorded
+            } else if (getHangingType().equals("glow_item_frame")) {
+                final GlowItemFrame hangingItem = getWorld().spawn(loc, GlowItemFrame.class);
+                hangingItem.setFacingDirection(attachedFace, true);
+                return new ChangeResultImpl(ChangeResultType.APPLIED, null); //no change recorded
             } else if (getHangingType().equals("painting")) {
                 final Painting hangingItem = getWorld().spawn(loc, Painting.class);
-                hangingItem.setFacingDirection(getDirection(), true);
+                hangingItem.setFacingDirection(attachedFace, true);
                 Art art = Art.getByName(getArt());
                 if (art != null) {
                     hangingItem.setArt(art);

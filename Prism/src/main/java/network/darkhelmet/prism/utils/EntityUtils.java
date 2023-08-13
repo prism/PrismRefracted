@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.TreeSpecies;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ExperienceOrb;
@@ -161,5 +162,43 @@ public class EntityUtils {
     public static boolean playerMayPassThrough(Material m) {
         // Close enough, pray you don't land in a portal
         return m.isTransparent();
+    }
+
+    public static String treeSpeciesToName(TreeSpecies ts) {
+        switch (ts) {
+            case GENERIC:
+                return "oak";
+            case REDWOOD:
+                return "spruce";
+            case BIRCH:
+                return "birch";
+            case JUNGLE:
+                return "jungle";
+            case ACACIA:
+                return "acacia";
+            case DARK_OAK:
+                return "dark oak";
+            default:
+                return ts.name().toLowerCase().replace("_", " ");
+        }
+    }
+
+    public static TreeSpecies nameToTreeSpecies(String ts) {
+        switch (ts) {
+            case "oak":
+                return TreeSpecies.GENERIC;
+            case "spruce":
+                return TreeSpecies.REDWOOD;
+            case "birch":
+                return TreeSpecies.BIRCH;
+            case "jungle":
+                return TreeSpecies.JUNGLE;
+            case "acacia":
+                return TreeSpecies.ACACIA;
+            case "dark oak":
+                return TreeSpecies.DARK_OAK;
+            default:
+                return MiscUtils.getEnum(ts.toUpperCase().replace(" ", "_"), TreeSpecies.GENERIC);
+        }
     }
 }

@@ -1,10 +1,10 @@
 package network.darkhelmet.prism.database.sql;
 
-import com.google.gson.JsonSyntaxException;
 import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.actionlibs.ActionTypeImpl;
 import network.darkhelmet.prism.actionlibs.QueryResult;
 import network.darkhelmet.prism.actionlibs.RecordingManager;
+import network.darkhelmet.prism.actions.ItemStackAction;
 import network.darkhelmet.prism.api.actions.Handler;
 import network.darkhelmet.prism.api.actions.MatchRule;
 import network.darkhelmet.prism.api.actions.PrismProcessType;
@@ -229,8 +229,13 @@ public class SqlSelectQueryBuilder extends QueryBuilder implements SelectQuery {
                 Set<IntPair> allIds = Prism.getItems().materialToAllIds(m);
 
                 StringBuilder blockIds = new StringBuilder("(");
-                for (IntPair pair : allIds) {
-                    blockIds.append(pair.first).append(',');
+                if (allIds.isEmpty()) {
+                    // Not has been logged already, use an impossible id.
+                    blockIds.append(0);
+                } else {
+                    for (IntPair pair : allIds) {
+                        blockIds.append(pair.first).append(',');
+                    }
                 }
 
                 String in = blockIds.append(')').toString().replace(",)", ")");
@@ -623,8 +628,12 @@ public class SqlSelectQueryBuilder extends QueryBuilder implements SelectQuery {
 
                     // data
                     try {
-                        baseHandler.deserialize(extraData);
-                    } catch (JsonSyntaxException e) {
+                        if (baseHandler instanceof ItemStackAction) {
+                            ((ItemStackAction)baseHandler).deserialize(current, extraData);
+                        } else {
+                            baseHandler.deserialize(extraData);
+                        }
+                    } catch (Exception e) {
                         if (Prism.isDebug()) {
                             Prism.warn("Deserialization Error: " + e.getLocalizedMessage(), e);
                         }
@@ -655,7 +664,6 @@ public class SqlSelectQueryBuilder extends QueryBuilder implements SelectQuery {
                     baseHandler.setAggregateCount(aggregated);
 
                     actions.add(baseHandler);
-
                 } catch (final SQLException e) {
                     Prism.warn("Ignoring data from record #" + rowId + " because it caused an error:", e);
                 }

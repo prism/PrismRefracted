@@ -133,6 +133,7 @@ public class PrismConfig extends ConfigBase {
         config.addDefault("prism.tracking.container-access", true);
         config.addDefault("prism.tracking.cake-eat", true);
         config.addDefault("prism.tracking.craft-item", false);
+        config.addDefault("prism.tracking.upgrade-gear", false);
         config.addDefault("prism.tracking.creeper-explode", true);
         config.addDefault("prism.tracking.crop-trample", true);
         config.addDefault("prism.tracking.dragon-eat", true);
@@ -152,6 +153,7 @@ public class PrismConfig extends ConfigBase {
         config.addDefault("prism.tracking.fireball", true);
         config.addDefault("prism.tracking.fire-spread", false);
         config.addDefault("prism.tracking.firework-launch", true);
+        config.addDefault("prism.tracking.flowerpot-change", true);
         config.addDefault("prism.tracking.hangingitem-break", true);
         config.addDefault("prism.tracking.hangingitem-place", true);
         config.addDefault("prism.tracking.item-drop", true);
@@ -181,6 +183,8 @@ public class PrismConfig extends ConfigBase {
         config.addDefault("prism.tracking.potion-splash", true);
         config.addDefault("prism.tracking.sheep-eat", true);
         config.addDefault("prism.tracking.sign-change", true);
+        config.addDefault("prism.tracking.sign-dye", true);
+        config.addDefault("prism.tracking.sign-glow", true);
         config.addDefault("prism.tracking.spawnegg-use", true);
         config.addDefault("prism.tracking.target-hit", false);
         config.addDefault("prism.tracking.tnt-explode", true);

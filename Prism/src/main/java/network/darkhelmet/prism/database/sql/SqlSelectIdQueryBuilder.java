@@ -33,16 +33,19 @@ public class SqlSelectIdQueryBuilder extends SqlSelectQueryBuilder implements Se
 
     @Deprecated
     public void setMax() {
-        select = "SELECT max(id) FROM " + tableNameData + " ";
+        select = "SELECT max(" + tableNameData + ".id) FROM " + tableNameData + " ";
+        select += "LEFT JOIN " + tableNameDataExtra + " ex ON ex.data_id = " + tableNameData + ".id ";
     }
 
     @Deprecated
     public void setMin() {
-        select = "SELECT min(id) FROM " + tableNameData + " ";
+        select = "SELECT min(" + tableNameData + ".id) FROM " + tableNameData + " ";
+        select += "LEFT JOIN " + tableNameDataExtra + " ex ON ex.data_id = " + tableNameData + ".id ";
     }
 
     public void setMinMax() {
-        select = "SELECT min(id) as min, max(id) as max FROM " + tableNameData + " ";
+        select = "SELECT min(" + tableNameData + ".id) as min, max(" + tableNameData + ".id) as max FROM " + tableNameData + " ";
+        select += "LEFT JOIN " + tableNameDataExtra + " ex ON ex.data_id = " + tableNameData + ".id ";
         pair = true;
     }
 
@@ -51,9 +54,9 @@ public class SqlSelectIdQueryBuilder extends SqlSelectQueryBuilder implements Se
         long id1 = 0;
         long id2 = 0;
         try (
-                Connection connection = dataSource.getDataSource().getConnection();
-                PreparedStatement s = connection.prepareStatement(getQuery(parameters, shouldGroup));
-                ResultSet rs = s.executeQuery()
+            Connection connection = dataSource.getDataSource().getConnection();
+            PreparedStatement s = connection.prepareStatement(getQuery(parameters, shouldGroup));
+            ResultSet rs = s.executeQuery()
         ) {
             if (rs.next()) {
                 id1 = rs.getLong(1);

@@ -445,7 +445,7 @@ public class PrismEntityEvents implements Listener {
             }
 
             // Frame is empty but an item is held
-            if (frame.getItem().getType().equals(Material.AIR) && hand != null) {
+            if (frame.getItem().getType().equals(Material.AIR) && checkNotNullorAir(hand)) {
                 if (Prism.getIgnore().event("item-insert", p)) {
                     RecordingQueue.addToQueue(
                             ActionFactory.createItemFrame("item-insert", hand, 1, frame.getAttachedFace(),
@@ -454,7 +454,7 @@ public class PrismEntityEvents implements Listener {
             }
         }
 
-        if (hand != null) {
+        if (checkNotNullorAir(hand)) {
             // if they're holding coal (or charcoal, a subitem) and they click a
             // powered minecart
             if (hand.getType() == Material.COAL && e instanceof PoweredMinecart) {
@@ -636,7 +636,7 @@ public class PrismEntityEvents implements Listener {
         // If an item frame, track it's contents
         if (e instanceof ItemFrame) {
             final ItemFrame frame = (ItemFrame) e;
-            if (!checkNotNullorAir(frame.getItem())) {
+            if (checkNotNullorAir(frame.getItem())) {
                 if (player != null) {
                     RecordingQueue.addToQueue(ActionFactory.createItemStack("item-remove", frame.getItem(),
                             frame.getItem().getAmount(), -1, null, e.getLocation(), player));
@@ -683,7 +683,7 @@ public class PrismEntityEvents implements Listener {
         // If an item frame, track it's contents
         if (event.getEntity() instanceof ItemFrame) {
             final ItemFrame frame = (ItemFrame) event.getEntity();
-            if (!checkNotNullorAir(frame.getItem())) {
+            if (checkNotNullorAir(frame.getItem())) {
                 RecordingQueue.addToQueue(ActionFactory.createItemStack("item-remove", frame.getItem(),
                         frame.getItem().getAmount(), -1, null, entity.getLocation(), breakingName));
             }
@@ -728,7 +728,6 @@ public class PrismEntityEvents implements Listener {
                 }
 
                 BlockState state = event.getBlock().getState();
-                state.setBlockData(event.getBlockData());
                 RecordingQueue.addToQueue(ActionFactory.createBlock("enderman-pickup", state, entity));
             }
         } else if (to == Material.AIR && event.getEntity() instanceof Wither) {

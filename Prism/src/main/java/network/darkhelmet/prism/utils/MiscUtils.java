@@ -138,10 +138,11 @@ public class MiscUtils {
                 .build();
         if (result.getPaste().isPresent()) {
             Paste paste = result.getPaste().get();
+            String urlpaste = prismWebUrl + paste.getId();
             Prism.messenger.sendMessage(sender,
                     Prism.messenger.playerSuccess("Successfully pasted results: "
-                            + prismWebUrl
-                            + paste.getId()).clickEvent(ClickEvent.openUrl(prismWebUrl)));
+                            + urlpaste
+                            + paste.getId()).clickEvent(ClickEvent.openUrl(urlpaste)));
         } else {
             String message = result.getMessage().isPresent() ? result.getMessage().get() : "";
             Prism.messenger.sendMessage(sender,

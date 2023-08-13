@@ -3,6 +3,8 @@ wands, and so much more. Tracking so good, the NSA stole our name.
 
 Download on [Spigot][spigot]
 
+[Dev Builds][jenkins]
+
 # v3 vs v4
 
 v4 is a ground-up rewrite and is in progress now. I have no ETA for release but please feel free to contribute. Check
@@ -41,3 +43,4 @@ for the full license.
 [addstarmc]: https://github.com/AddstarMC
 [discord]: https://discord.gg/7FxZScH4EJ
 [spigot]: https://www.spigotmc.org/resources/prism-refracted.99397/
+[jenkins]: https://ci.darkhelmet.network/job/Prism/
