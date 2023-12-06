@@ -2,6 +2,7 @@ package network.darkhelmet.prism.utils.block;
 
 import network.darkhelmet.prism.utils.MaterialTag;
 import network.darkhelmet.prism.utils.MaterialTag.MatchMode;
+import network.darkhelmet.prism.utils.VersionAdapter;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.block.data.BlockData;
@@ -24,7 +25,7 @@ public class TabLibraryHelper {
             Material.SNOW,
             Material.SNOW_BLOCK,
             Material.WATER,
-            Material.GRASS,
+            VersionAdapter.MATERIAL_GRASS_BLOCK,
             Material.SOUL_SOIL,
             Material.SOUL_SAND,
             Material.NETHERRACK);
