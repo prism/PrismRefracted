@@ -8,6 +8,4 @@ pluginManagement {
 
 rootProject.name = 'PrismRefracted'
 include 'Prism-Api', 'Prism'
-include 'Prism:Folia-Wrapper'
-findProject(':Prism:Folia-Wrapper')?.name = 'Folia-Wrapper'
 
