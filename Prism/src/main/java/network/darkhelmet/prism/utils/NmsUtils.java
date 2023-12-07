@@ -14,7 +14,6 @@ import org.bukkit.inventory.ItemStack;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
@@ -25,6 +24,8 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class NmsUtils {
+
+    private static final String NMS_PACKAGE_16 = getMc16NmsPackage();
 
     private static final EnumMap<InventoryType, WrappedSlot[]> itemInventoryAccepts = new EnumMap<>(InventoryType.class);
     private static final EnumMap<InventoryType, Method> inventoryCanPlaceItem = new EnumMap<>(InventoryType.class);
@@ -150,7 +151,7 @@ public class NmsUtils {
                 abstractContainer = temp;
             }
             Field fieldSlots = Arrays.stream(abstractContainer.getDeclaredFields())
-                    .filter(it -> AbstractList.class.isAssignableFrom(it.getType())).collect(Collectors.toList()).get(1);
+                    .filter(it -> List.class.isAssignableFrom(it.getType())).collect(Collectors.toList()).get(1);
             fieldSlots.setAccessible(true);
             //noinspection unchecked
             slots = (List<Object>) fieldSlots.get(containerMenu);
@@ -183,7 +184,9 @@ public class NmsUtils {
                 Optional<Method> optional;
                 while (!(optional = Arrays.stream(canPlaceClass.getDeclaredMethods())
                         .filter(it -> it.getReturnType() == boolean.class && it.getParameterCount() == 1
-                                && it.getParameterTypes()[0] == nmsItemStack.getClass()).findFirst()).isPresent()) {
+                                && it.getParameterTypes()[0] == nmsItemStack.getClass()
+                                && !it.getName().endsWith("_")) // 1.16.5 has two methods in SlotFurnaceFuel, filter it
+                        .findFirst()).isPresent()) {
                     // The method may exist in super class.
                     canPlaceClass = canPlaceClass.getSuperclass();
                     if (canPlaceClass == Object.class) {
@@ -329,9 +332,23 @@ public class NmsUtils {
         }
     }
 
+    private static String getMc16NmsPackage() {
+        try {
+            return Arrays.stream(Package.getPackages())
+                    .filter(it -> it.getName().startsWith("net.minecraft.server.v")).findAny().get().getName();
+        } catch (Throwable t) {
+            // Maybe since 1.17?
+            return null;
+        }
+    }
+
     private static Class<?> getNmsDirection() {
         try {
-            return Class.forName("net.minecraft.core.EnumDirection");
+            if (Prism.getInstance().getServerMajorVersion() >= 17) {
+                return Class.forName("net.minecraft.core.EnumDirection");
+            } else {
+                return Class.forName(NMS_PACKAGE_16 + ".EnumDirection");
+            }
         } catch (ClassNotFoundException e) {
             Prism.getInstance().getLogger().log(Level.WARNING, "Cannot get NMS Direction class.", e);
             return null;
