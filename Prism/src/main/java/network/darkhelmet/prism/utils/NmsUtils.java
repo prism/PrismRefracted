@@ -86,14 +86,23 @@ public class NmsUtils {
         }
         Method slotsForFace = getSlotsForFace.get(type);
         if (slotsForFace == null) {
-            return null;
+            // We failed. Just return all slots.
+            int[] fail = new int[container.getContents().length];
+            for (int i = 0; i < container.getContents().length; i++) {
+                fail[i] = i;
+            }
+            return fail;
         }
 
         BlockFace facing = ((Container) container.getHolder()).getBlock().getFace(((Hopper) hopper.getHolder()).getBlock());
         Object nmsDirection;
         Class<?> nmsFacing = getNmsDirection();
         if (nmsFacing == null) {
-            return null;
+            int[] fail = new int[container.getContents().length];
+            for (int i = 0; i < container.getContents().length; i++) {
+                fail[i] = i;
+            }
+            return fail;
         }
         switch (facing) {
             case DOWN:

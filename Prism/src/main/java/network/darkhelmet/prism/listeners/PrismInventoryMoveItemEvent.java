@@ -49,60 +49,28 @@ public class PrismInventoryMoveItemEvent implements Listener {
         int stackSize = item.getType().getMaxStackSize();
         ItemStack[] contents = destHolder.getInventory().getStorageContents();
         int[] slotsAccept = NmsUtils.getSlotsForFace(event.getSource(), event.getDestination());
-        if (slotsAccept != null) {
-            // Fill item stacks first
+        // Fill item stacks first
+        for (int i : slotsAccept) {
+            ItemStack is = contents[i];
+
+            if (item.isSimilar(is) && NmsUtils.canAcceptPlace(event.getDestination(), item, i)) {
+                amount = recordTransfer(stackSize - is.getAmount(), amount, item,
+                        sourLoc, destLoc, i, source, destination);
+                if (amount <= 0) {
+                    break;
+                }
+            }
+        }
+        // Fill empty slots
+        if (amount > 0) {
             for (int i : slotsAccept) {
                 ItemStack is = contents[i];
 
-                if (item.isSimilar(is) && NmsUtils.canAcceptPlace(event.getDestination(), item, i)) {
-                    amount = recordTransfer(stackSize - is.getAmount(), amount, item,
+                if ((is == null || is.getType() == Material.AIR) && NmsUtils.canAcceptPlace(event.getDestination(), item, i)) {
+                    amount = recordTransfer(stackSize, amount, item,
                             sourLoc, destLoc, i, source, destination);
                     if (amount <= 0) {
                         break;
-                    }
-                }
-            }
-            // Fill empty slots
-            if (amount > 0) {
-                for (int i : slotsAccept) {
-                    ItemStack is = contents[i];
-
-                    if ((is == null || is.getType() == Material.AIR) && NmsUtils.canAcceptPlace(event.getDestination(), item, i)) {
-                        amount = recordTransfer(stackSize, amount, item,
-                                sourLoc, destLoc, i, source, destination);
-                        if (amount <= 0) {
-                            break;
-                        }
-                    }
-                }
-            }
-        } else {
-            // Fallback to legacy logging method.
-
-            // Fill item stacks first
-            for (int length = contents.length, i = 0; i < length; ++i) {
-                ItemStack is = contents[i];
-
-                if (item.isSimilar(is) && NmsUtils.canAcceptPlace(event.getDestination(), item, i)) {
-                    amount = recordTransfer(stackSize - is.getAmount(), amount, item,
-                            sourLoc, destLoc, i, source, destination);
-                    if (amount <= 0) {
-                        break;
-                    }
-                }
-            }
-
-            // Fill empty slots
-            if (amount > 0) {
-                for (int length = contents.length, i = 0; i < length; ++i) {
-                    ItemStack is = contents[i];
-
-                    if ((is == null || is.getType() == Material.AIR) && NmsUtils.canAcceptPlace(event.getDestination(), item, i)) {
-                        amount = recordTransfer(stackSize, amount, item,
-                                sourLoc, destLoc, i, source, destination);
-                        if (amount <= 0) {
-                            break;
-                        }
                     }
                 }
             }
