@@ -41,10 +41,9 @@ public class Messenger {
      */
     public void sendMessage(CommandSender sender, Component message) {
         if (sender instanceof ConsoleCommandSender) {
-            audienceProvider.console().sendMessage(Identity.nil(),message);
+            audienceProvider.console().sendMessage(message);
         } else {
-            ((BukkitAudiences) audienceProvider).sender(sender).sendMessage(Identity.nil(),
-                  message.colorIfAbsent(defaultColor));
+            ((BukkitAudiences) audienceProvider).sender(sender).sendMessage(message.colorIfAbsent(defaultColor));
         }
     }
 

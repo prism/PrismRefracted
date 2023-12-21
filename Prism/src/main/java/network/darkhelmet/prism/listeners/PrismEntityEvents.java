@@ -7,6 +7,7 @@ import network.darkhelmet.prism.utils.DeathUtils;
 import network.darkhelmet.prism.utils.InventoryUtils;
 import network.darkhelmet.prism.utils.MaterialTag;
 import network.darkhelmet.prism.utils.MiscUtils;
+import network.darkhelmet.prism.utils.VersionAdapter;
 import network.darkhelmet.prism.utils.WandUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -707,7 +708,7 @@ public class PrismEntityEvents extends BaseListener {
         // in case other mobs ever are made to eat. But that's not as fun
         Material to = event.getTo();
         Material from = event.getBlock().getType();
-        if (from == Material.GRASS && to == Material.DIRT) {
+        if (from == VersionAdapter.MATERIAL_GRASS_BLOCK && to == Material.DIRT) {
             if (event.getEntityType() != EntityType.SHEEP) {
                 return;
             }
