@@ -7,7 +7,7 @@ import com.google.gson.stream.JsonWriter;
 
 import java.io.IOException;
 
-public class ItemNiceNameIgnoreEmptyAdapter extends TypeAdapter<String> {
+public class ItemNameIgnoreEmptyAdapter extends TypeAdapter<String> {
 
     @Override
     public String read(JsonReader in) throws IOException {
