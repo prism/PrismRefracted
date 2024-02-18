@@ -4,6 +4,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import network.darkhelmet.prism.Prism;
 import network.darkhelmet.prism.actionlibs.ActionTypeImpl;
+import network.darkhelmet.prism.actions.typeadapter.BoolIgnoreFalseAdapter;
+import network.darkhelmet.prism.actions.typeadapter.IntIgnoreZeroAdapter;
+import network.darkhelmet.prism.actions.typeadapter.LongIgnoreZeroAdapter;
+import network.darkhelmet.prism.actions.typeadapter.ShortIgnoreZeroAdapter;
 import network.darkhelmet.prism.api.ChangeResult;
 import network.darkhelmet.prism.api.PrismParameters;
 import network.darkhelmet.prism.api.actions.ActionType;
@@ -23,7 +27,12 @@ import java.util.UUID;
 public abstract class GenericAction implements Handler {
     private static final SimpleDateFormat date = new SimpleDateFormat("yy/MM/dd");
     private static final SimpleDateFormat time = new SimpleDateFormat("hh:mm:ssa");
-    private static final Gson gson = new GsonBuilder().disableHtmlEscaping().create();
+    private static final Gson gson = new GsonBuilder().disableHtmlEscaping()
+            .registerTypeAdapter(Integer.class, new IntIgnoreZeroAdapter())
+            .registerTypeAdapter(Short.class, new ShortIgnoreZeroAdapter())
+            .registerTypeAdapter(Boolean.class, new BoolIgnoreFalseAdapter())
+            .registerTypeAdapter(Long.class, new LongIgnoreZeroAdapter())
+            .create();
     private boolean canceled = false;
     private ActionType type;
 

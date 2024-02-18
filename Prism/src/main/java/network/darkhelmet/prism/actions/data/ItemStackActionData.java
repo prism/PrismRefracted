@@ -1,8 +1,10 @@
 package network.darkhelmet.prism.actions.data;
 
 import com.google.gson.JsonParseException;
+import com.google.gson.annotations.JsonAdapter;
 import net.md_5.bungee.chat.ComponentSerializer;
 import network.darkhelmet.prism.Prism;
+import network.darkhelmet.prism.actions.typeadapter.ItemNameIgnoreEmptyAdapter;
 import network.darkhelmet.prism.api.objects.MaterialState;
 import network.darkhelmet.prism.utils.EntityUtils;
 import network.darkhelmet.prism.utils.ItemUtils;
@@ -18,7 +20,6 @@ import org.bukkit.block.ShulkerBox;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.inventory.BlockInventoryHolder;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -33,8 +34,6 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.inventory.meta.trim.ArmorTrim;
-import org.bukkit.inventory.meta.trim.TrimMaterial;
-import org.bukkit.inventory.meta.trim.TrimPattern;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 
@@ -49,6 +48,7 @@ import java.util.stream.Collectors;
 public class ItemStackActionData {
     public int amt;
     public Material material;
+    @JsonAdapter(ItemNameIgnoreEmptyAdapter.class)
     public String name;
     public int color;
     public String owner;
@@ -68,7 +68,7 @@ public class ItemStackActionData {
     public String potionType;
     public boolean potionExtended;
     public boolean potionUpgraded;
-    public Boolean hasTrim;
+    public boolean hasTrim;
     public NamespacedKey trimMaterial;
     public NamespacedKey trimPattern;
     public Map<Integer, ItemStackActionData> shulkerBoxInv;  // Deprecated
