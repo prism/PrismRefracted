@@ -1,24 +1,9 @@
 package network.darkhelmet.prism.actionlibs;
 
-import network.darkhelmet.prism.actions.BlockAction;
-import network.darkhelmet.prism.actions.BlockChangeAction;
-import network.darkhelmet.prism.actions.BlockFallAction;
-import network.darkhelmet.prism.actions.BlockShiftAction;
-import network.darkhelmet.prism.actions.EntityAction;
-import network.darkhelmet.prism.actions.EntityTravelAction;
-import network.darkhelmet.prism.actions.GrowAction;
-import network.darkhelmet.prism.actions.HangingItemAction;
-import network.darkhelmet.prism.actions.ItemStackAction;
-import network.darkhelmet.prism.actions.PlayerAction;
-import network.darkhelmet.prism.actions.PlayerDeathAction;
-import network.darkhelmet.prism.actions.PortalCreateAction;
-import network.darkhelmet.prism.actions.PrismProcessAction;
-import network.darkhelmet.prism.actions.PrismRollbackAction;
-import network.darkhelmet.prism.actions.SignAction;
-import network.darkhelmet.prism.actions.UseAction;
-import network.darkhelmet.prism.actions.VehicleAction;
+import network.darkhelmet.prism.actions.*;
 import network.darkhelmet.prism.api.actions.Handler;
 import network.darkhelmet.prism.api.actions.PrismProcessType;
+import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -171,6 +156,20 @@ public class ActionFactory {
                                             Material newMat, BlockData newData, String nonPlayer) {
         final Handler a = createBlockChange(actionType, loc, oldMat, oldData, newMat, newData, (OfflinePlayer) null);
         a.setSourceName(nonPlayer);
+        return a;
+    }
+
+    /**
+     * PlayerInteractEvent.
+     *
+     */
+    public static Handler createFlowerPotChange(Block oldBlock, Material newMat, OfflinePlayer player) {
+        final FlowerPotChangeAction a = new FlowerPotChangeAction();
+        a.setActionType("flowerpot-change");
+        a.setLoc(oldBlock.getLocation());
+        a.setOldMaterial(oldBlock.getType());
+        a.setMaterial(newMat);
+        a.setPlayer(player);
         return a;
     }
 
@@ -554,17 +553,45 @@ public class ActionFactory {
     }
 
     /**
-     * SignAction.
+     * SignChangeAction.
      *
      * @param actionType the action
      * @param block      the block acted on
      * @param player     the acting player
      */
-    public static Handler createSign(String actionType, Block block, String[] lines, OfflinePlayer player) {
-        final SignAction a = new SignAction();
+    public static Handler createSignChange(String actionType, Block block, String[] lines, boolean isFront, OfflinePlayer player) {
+        final SignChangeAction a = new SignChangeAction();
         a.setActionType(actionType);
         a.setPlayer(player);
-        a.setBlock(block, lines);
+        a.setBlock(block, lines, isFront);
+        return a;
+    }
+
+    /**
+     * PlayerInteractEvent.
+     *
+     * @param block      the block acted on
+     * @param player     the acting player
+     */
+    public static Handler createSignDye(Block block, DyeColor color, boolean isFront, OfflinePlayer player) {
+        final SignDyeAction a = new SignDyeAction();
+        a.setActionType("sign-dye");
+        a.setPlayer(player);
+        a.setBlock(block, color, isFront);
+        return a;
+    }
+
+    /**
+     * PlayerInteractEvent.
+     *
+     * @param block      the block acted on
+     * @param player     the acting player
+     */
+    public static Handler createSignGlow(Block block, boolean makeGlow, boolean isFront, OfflinePlayer player) {
+        final SignGlowAction a = new SignGlowAction();
+        a.setActionType("sign-glow");
+        a.setPlayer(player);
+        a.setBlock(block, makeGlow, isFront);
         return a;
     }
 

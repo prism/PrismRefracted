@@ -12,13 +12,14 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.DecoratedPot;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.block.Jukebox;
 import org.bukkit.block.Sign;
 import org.bukkit.block.data.type.Bed;
 import org.bukkit.block.data.type.Chest;
 import org.bukkit.block.data.type.Chest.Type;
-import org.bukkit.block.data.type.RespawnAnchor;
+import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -70,6 +71,14 @@ public class PrismBlockEvents extends BaseListener {
      */
     public PrismBlockEvents(Prism plugin) {
         super(plugin);
+
+        if (Prism.getInstance().getServerMajorVersion() >= 20) {
+            try {
+                DecoratedPot.class.getMethod("getSherds");
+            } catch (NoSuchMethodException e) {
+                Prism.warn("Your server doesn't implement the methods we need, Please update to the latest build!");
+            }
+        }
     }
 
     /**
@@ -453,8 +462,12 @@ public class PrismBlockEvents extends BaseListener {
             return;
         }
         if (event.getBlock().getState() instanceof Sign) {
+            boolean front = true;
+            if (Prism.getInstance().getServerMajorVersion() >= 20) {
+                front = event.getSide() == Side.FRONT;
+            }
             RecordingQueue.addToQueue(
-                    ActionFactory.createSign("sign-change", event.getBlock(), event.getLines(), event.getPlayer()));
+                    ActionFactory.createSignChange("sign-change", event.getBlock(), event.getLines(), front, event.getPlayer()));
         }
     }
 

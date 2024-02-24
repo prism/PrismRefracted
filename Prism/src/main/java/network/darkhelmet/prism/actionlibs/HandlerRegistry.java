@@ -14,7 +14,7 @@ import network.darkhelmet.prism.actions.PlayerDeathAction;
 import network.darkhelmet.prism.actions.PortalCreateAction;
 import network.darkhelmet.prism.actions.PrismProcessAction;
 import network.darkhelmet.prism.actions.PrismRollbackAction;
-import network.darkhelmet.prism.actions.SignAction;
+import network.darkhelmet.prism.actions.SignChangeAction;
 import network.darkhelmet.prism.actions.UseAction;
 import network.darkhelmet.prism.actions.VehicleAction;
 import network.darkhelmet.prism.api.actions.Handler;
@@ -85,7 +85,7 @@ public class HandlerRegistry {
         registeredHandlers.add(PortalCreateAction.class);
         registeredHandlers.add(PrismProcessAction.class);
         registeredHandlers.add(PrismRollbackAction.class);
-        registeredHandlers.add(SignAction.class);
+        registeredHandlers.add(SignChangeAction.class);
         registeredHandlers.add(UseAction.class);
         registeredHandlers.add(VehicleAction.class);
     }

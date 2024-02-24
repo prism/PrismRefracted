@@ -111,6 +111,7 @@ public class Prism extends JavaPlugin implements PrismApi {
     private static String baseUrl = "https://prism-bukkit.readthedocs.io/en/latest/";
     public static Messenger messenger;
     public static FileConfiguration config;
+    public static boolean isSpigot = true;
     public static boolean isPaper = true;
     public static boolean isFolia = false;
     private static Logger prismLog;
@@ -144,6 +145,7 @@ public class Prism extends JavaPlugin implements PrismApi {
     public int totalRecordsAffected = 0;
     public long maxCycleTime = 0;
     private byte serverMajorVersion;
+    private byte serverMinorVersion;
 
     /**
      * We store a basic index of hanging entities we anticipate will fall, so that
@@ -376,6 +378,10 @@ public class Prism extends JavaPlugin implements PrismApi {
         return serverMajorVersion;
     }
 
+    public byte getServerMinorVersion() {
+        return serverMinorVersion;
+    }
+
     /**
      * Enables the plugin and activates our player listeners.
      */
@@ -388,8 +394,11 @@ public class Prism extends JavaPlugin implements PrismApi {
         audiences = BukkitAudiences.create(this);
         messenger = new Messenger(pluginName, Prism.getAudiences());
         log("Initializing Prism " + pluginVersion + ". by viveleroi");
-        serverMajorVersion = Byte.parseByte(Bukkit.getServer().getBukkitVersion().split("\\.")[1].split("-")[0]);
+        String[] split = Bukkit.getServer().getBukkitVersion().split("\\.");
+        serverMajorVersion = Byte.parseByte(split[1].split("-")[0]);
+        serverMinorVersion = split.length > 2 ? Byte.parseByte(split[2].split("-")[0]) : 0;
         loadConfig();        // Load configuration, or install if new
+        isSpigot = PaperLib.isSpigot();
         isPaper = PaperLib.isPaper();
         if (isPaper) {
             Prism.log("Optional Paper Events will be enabled.");

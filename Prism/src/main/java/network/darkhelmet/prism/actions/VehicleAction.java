@@ -86,6 +86,10 @@ public class VehicleAction extends GenericAction {
      */
     @Override
     public ChangeResult applyRollback(Player player, PrismParameters parameters, boolean isPreview) {
+        if (isPreview) {
+            // TODO: just returning PLANNED, not previewed right now.
+            return new ChangeResultImpl(ChangeResultType.PLANNED, null);
+        }
         Entity vehicle = null;
         switch (actionData.vehicleName) {
             case "command block minecart":

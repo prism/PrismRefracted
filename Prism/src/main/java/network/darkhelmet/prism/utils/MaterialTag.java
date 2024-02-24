@@ -20,7 +20,7 @@ public class MaterialTag implements Tag<Material> {
             Material.DEAD_TUBE_CORAL_WALL_FAN, Material.DEAD_BRAIN_CORAL_WALL_FAN,
             Material.BRAIN_CORAL_WALL_FAN, Material.BUBBLE_CORAL_WALL_FAN, Material.FIRE_CORAL_WALL_FAN,
             Material.HORN_CORAL_WALL_FAN, Material.TUBE_CORAL_WALL_FAN);
-    public static final MaterialTag PLANTS = new MaterialTag(Material.GRASS, Material.FERN, Material.DEAD_BUSH,
+    public static final MaterialTag PLANTS = new MaterialTag(VersionAdapter.MATERIAL_GRASS_BLOCK, Material.FERN, Material.DEAD_BUSH,
             Material.DANDELION, Material.POPPY, Material.BLUE_ORCHID, Material.ALLIUM, Material.AZURE_BLUET,
             Material.RED_TULIP, Material.ORANGE_TULIP, Material.WHITE_TULIP, Material.PINK_TULIP, Material.OXEYE_DAISY,
             Material.BROWN_MUSHROOM, Material.RED_MUSHROOM, Material.LILY_PAD, Material.KELP, Material.KELP_PLANT,

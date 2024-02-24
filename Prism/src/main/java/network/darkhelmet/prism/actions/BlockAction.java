@@ -13,8 +13,8 @@ import network.darkhelmet.prism.utils.MaterialTag;
 import network.darkhelmet.prism.utils.TypeUtils;
 import network.darkhelmet.prism.utils.block.Utilities;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
+import org.bukkit.Material;
 import org.bukkit.Nameable;
 import org.bukkit.Tag;
 import org.bukkit.block.Banner;
@@ -23,6 +23,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.CommandBlock;
 import org.bukkit.block.CreatureSpawner;
+import org.bukkit.block.DecoratedPot;
 import org.bukkit.block.Sign;
 import org.bukkit.block.Skull;
 import org.bukkit.block.banner.Pattern;
@@ -35,32 +36,25 @@ import org.bukkit.block.data.Rotatable;
 import org.bukkit.block.data.Waterlogged;
 import org.bukkit.block.data.type.Bed;
 import org.bukkit.block.data.type.Bed.Part;
+import org.bukkit.block.sign.Side;
+import org.bukkit.block.sign.SignSide;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.bukkit.Material.AIR;
-import static org.bukkit.Material.CHEST;
-import static org.bukkit.Material.COMMAND_BLOCK;
-import static org.bukkit.Material.FARMLAND;
-import static org.bukkit.Material.FIRE;
-import static org.bukkit.Material.JUKEBOX;
-import static org.bukkit.Material.NETHER_PORTAL;
-import static org.bukkit.Material.OBSIDIAN;
-import static org.bukkit.Material.PLAYER_HEAD;
-import static org.bukkit.Material.PLAYER_WALL_HEAD;
-import static org.bukkit.Material.SPAWNER;
-import static org.bukkit.Material.TRAPPED_CHEST;
-import static org.bukkit.Material.WATER;
+import static org.bukkit.Material.*;
 
 
 public class BlockAction extends GenericAction {
+
+    private static final boolean POST_20 = Prism.getInstance().getServerMajorVersion() >= 20;
 
     private BlockActionData actionData;
 
@@ -125,13 +119,28 @@ public class BlockAction extends GenericAction {
                 actionData = commandActionData;
                 break;
             default:
-                if (Tag.SIGNS.isTagged(state.getType())) {
+                if (Tag.SIGNS.isTagged(state.getType()) || (POST_20 && Tag.ALL_SIGNS.isTagged(state.getType()))) {
                     final SignActionData signActionData = new SignActionData();
                     final Sign sign = (Sign) state;
                     signActionData.lines = sign.getLines();
+                    signActionData.color = sign.getColor();
+                    if (Prism.getInstance().getServerMajorVersion() >= 17)
+                        signActionData.glowing = sign.isGlowingText();
+                    if (POST_20) {
+                        SignSide backSide = sign.getSide(Side.BACK);
+                        signActionData.backLines = backSide.getLines();
+                        signActionData.backColor = backSide.getColor();
+                        signActionData.backGlowing = backSide.isGlowingText();
+                    }
                     actionData = signActionData;
-                }
-                if (Tag.BANNERS.isTagged(state.getType())) {
+                } else if (POST_20 && state.getType() == Material.DECORATED_POT) {
+                    final DecoratedPot pot = (DecoratedPot) state;
+                    final PotActionData potActionData = new PotActionData();
+                    Map<DecoratedPot.Side, Material> sherds = pot.getSherds();
+                    potActionData.sherds = Arrays.stream(DecoratedPot.Side.values()).map(sherds::get).toArray(Material[]::new);
+                    setBlockRotation(state, potActionData);
+                    actionData = potActionData;
+                } else if (Tag.BANNERS.isTagged(state.getType())) {
                     final BannerActionData bannerActionData = new BannerActionData();
                     final Banner banner = (Banner) state;
                     bannerActionData.patterns = new HashMap<>();
@@ -181,18 +190,24 @@ public class BlockAction extends GenericAction {
                 actionData = gson().fromJson(data, SkullActionData.class);
             } else if (getMaterial() == SPAWNER) {
                 actionData = gson().fromJson(data, SpawnerActionData.class);
-            } else if (Tag.SIGNS.isTagged(getMaterial())) {
+            } else if (Tag.SIGNS.isTagged(getMaterial()) || (POST_20 && Tag.ALL_SIGNS.isTagged(getMaterial()))) {
                 actionData = gson().fromJson(data, SignActionData.class);
             } else if (getMaterial() == COMMAND_BLOCK) {
                 actionData = new CommandActionData();
                 ((CommandActionData) actionData).command = data;
+            } else if (POST_20 && getMaterial() == DECORATED_POT) {
+                actionData = gson().fromJson(data, PotActionData.class);
             } else {
                 actionData = gson().fromJson(data, BlockActionData.class);
             }
         }
     }
 
-    private BlockActionData getActionData() {
+    protected void setActionData(BlockActionData actionData) {
+        this.actionData = actionData;
+    }
+
+    protected BlockActionData getActionData() {
         return actionData;
     }
 
@@ -217,7 +232,22 @@ public class BlockAction extends GenericAction {
         if (blockActionData instanceof SignActionData) {
             final SignActionData ad = (SignActionData) blockActionData;
             if (ad.lines != null && ad.lines.length > 0) {
-                name += " (" + TypeUtils.join(ad.lines, ", ") + ")";
+                name += " (";
+                boolean joined = false;
+                String join = TypeUtils.join(ad.lines, ", ");
+                if (!join.isEmpty()) {
+                    name += join + ", ";
+                    joined = true;
+                }
+                if (ad.backLines != null) {
+                    join = TypeUtils.join(ad.backLines, ", ");
+                    name += join;
+                    joined = joined || !join.isEmpty();
+                }
+                if (!joined) {
+                    name += "no text";
+                }
+                name += ")";
             }
         } else if (blockActionData instanceof CommandActionData) {
             final CommandActionData ad = (CommandActionData) blockActionData;
@@ -287,6 +317,7 @@ public class BlockAction extends GenericAction {
         // (essentially liquid/air).
 
         final boolean cancelIfBadPlace = !getActionType().requiresHandler(BlockChangeAction.class)
+                && !getActionType().requiresHandler(FlowerPotChangeAction.class)
                 && !getActionType().requiresHandler(PrismRollbackAction.class) && !parameters.hasFlag(Flag.OVERWRITE);
 
         if (cancelIfBadPlace && !Utilities.isAcceptableForBlockPlace(block.getType())) {
@@ -408,8 +439,7 @@ public class BlockAction extends GenericAction {
                     && !blockActionData.customName.equals("")) {
                 ((Nameable) newState).setCustomName(blockActionData.customName);
             }
-            if (parameters.getProcessType() == PrismProcessType.ROLLBACK
-                    && Tag.SIGNS.isTagged(getMaterial())
+            if ((Tag.SIGNS.isTagged(getMaterial()) || (POST_20 && Tag.ALL_SIGNS.isTagged(getMaterial())))
                     && blockActionData instanceof SignActionData) {
 
                 final SignActionData s = (SignActionData) blockActionData;
@@ -420,12 +450,42 @@ public class BlockAction extends GenericAction {
                 // cannot be cast to org.bukkit.block.Sign
                 // https://snowy-evening.com/botsko/prism/455/
                 if (newState instanceof Sign) {
+                    Sign signState = (Sign) newState;
                     if (s.lines != null) {
                         for (int i = 0; i < s.lines.length; ++i) {
-                            ((Sign) newState).setLine(i, s.lines[i]);
+                            signState.setLine(i, s.lines[i]);
                         }
                     }
+                    if (s.color != null) {
+                        signState.setColor(s.color);
+                    }
+                    if (Prism.getInstance().getServerMajorVersion() >= 17) {
+                        signState.setGlowingText(s.glowing);
+                    }
+                    if (POST_20 && s.backLines != null) {
+                        SignSide signSide = signState.getSide(Side.BACK);
+                        for (int i = 0; i < s.backLines.length; ++i) {
+                            signSide.setLine(i, s.backLines[i]);
+                        }
+                        signSide.setColor(s.backColor);
+                        signSide.setGlowingText(s.backGlowing);
+                    }
                 }
+            }
+            if (POST_20 && getMaterial() == DECORATED_POT && actionData instanceof PotActionData) {
+                PotActionData potActionData = (PotActionData) actionData;
+                if (potActionData.sherds != null) {
+                    DecoratedPot pot = (DecoratedPot) newState;
+
+                    DecoratedPot.Side[] sides = DecoratedPot.Side.values();
+                    // Math.min : not necessary but might be safe for later minecraft updates
+                    for (int i = 0, length = Math.min(sides.length, potActionData.sherds.length); i < length; i++) {
+                        DecoratedPot.Side side = sides[i];
+                        pot.setSherd(side, potActionData.sherds[i]);
+                    }
+                }
+
+                setBlockRotatable(newState, potActionData);
             }
         } else {
             Prism.debug("BlockAction Data was null with " + parameters.toString());
@@ -637,6 +697,15 @@ public class BlockAction extends GenericAction {
 
     }
 
+    public static class PotActionData extends RotatableActionData {
+
+        /**
+         * BACK, LEFT, RIGHT, FRONT on Spigot 1.20.1
+         */
+        Material[] sherds;
+
+    }
+
     /**
      * Not to be confused with SignChangeActionData, which records additional data
      * we don't need here.
@@ -645,6 +714,11 @@ public class BlockAction extends GenericAction {
      */
     public static class SignActionData extends BlockActionData {
         String[] lines;
+        DyeColor color;
+        boolean glowing;
+        String[] backLines;
+        DyeColor backColor;
+        boolean backGlowing;
     }
 
     public static class BannerActionData extends RotatableActionData {
