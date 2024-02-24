@@ -37,7 +37,7 @@ processResources {
 
 dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.20.1-R0.1-SNAPSHOT'
-    compileOnly 'org.spigotmc:spigot:1.20.1-R0.1-SNAPSHOT:remapped-mojang' // We actually don't use it in project, all reflect
+//    compileOnly 'org.spigotmc:spigot:1.20.1-R0.1-SNAPSHOT:remapped-mojang' // We actually don't use it in project, all reflect
     compileOnly 'com.sk89q.worldedit:worldedit-core:7.2.0-SNAPSHOT'
     compileOnly 'com.sk89q.worldedit:worldedit-bukkit:7.2.0-SNAPSHOT'
     implementation 'org.apache.commons:commons-lang3:3.12.0'
