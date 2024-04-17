@@ -51,6 +51,14 @@ import java.util.function.Consumer;
 public class PrismBlockEvents implements Listener {
 
     private final Prism plugin;
+    private final Cache<Location, PlayerBed> bedWeakCache = CacheBuilder
+            .newBuilder()
+            .expireAfterWrite(30, TimeUnit.SECONDS)
+            .build();
+    private final Cache<Location, Player> interactWeakCache = CacheBuilder
+            .newBuilder()
+            .expireAfterWrite(30, TimeUnit.SECONDS)
+            .build();
 
     /**
      * Constructor.
@@ -352,7 +360,56 @@ public class PrismBlockEvents implements Listener {
     }
 
     /**
-     * Tracks players entering a bed.
+     * Primarily for tracking respawn anchor explosions in the world and end,
+     * and bed explosions in the nether and end.
+     * @param event BlockExplodeEvent
+     */
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onBlockExplode(BlockExplodeEvent event) {
+        if (event.getBlock().getBlockData() instanceof Bed) {
+            if (!Prism.getIgnore().event("bed-explode", event.getBlock())) {
+                return;
+            }
+            //while it might be nice to check that it's a bed - the block is already air
+            PlayerBed playerBed = bedWeakCache.getIfPresent(event.getBlock().getLocation());
+            if (playerBed == null) {
+                return;
+            }
+            String source = playerBed.player.getName();
+            List<Block> affected = event.blockList();
+            RecordingQueue.addToQueue(ActionFactory.createBlock("bed-explode", playerBed.bed, playerBed.player));
+            contructBlockEvent("bed-explode", source, affected);
+            bedWeakCache.invalidate(event.getBlock().getLocation());
+        } else if (event.getBlock().getType() == Material.RESPAWN_ANCHOR) {
+            if (!Prism.getIgnore().event("respawnanchor-explode", event.getBlock())) {
+                return;
+            }
+            Player player = interactWeakCache.getIfPresent(event.getBlock().getLocation());
+            if (player == null) {
+                return;
+            }
+            String source = player.getName();
+            List<Block> affected = event.blockList();
+            RecordingQueue.addToQueue(ActionFactory.createBlock("respawnanchor-explode", event.getBlock().getState(), player));
+            contructBlockEvent("respawnanchor-explode", source, affected);
+            interactWeakCache.invalidate(event.getBlock().getLocation());
+        }
+    }
+
+    /**
+     * Tracks players use respawn anchor to set spawnpoint and cache it in case of explosion.
+     * @param event PlayerInteractEvent
+     */
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onRespawnAnchorUse(PlayerInteractEvent event) {
+        if (event.hasBlock()
+                && (event.getClickedBlock().getType() == Material.RESPAWN_ANCHOR || event.getClickedBlock().getType() == Material.DRAGON_EGG)) {
+            interactWeakCache.put(event.getClickedBlock().getLocation(), event.getPlayer());
+        }
+    }
+
+    /**
+     * Tracks players entering a bed and where its not possible cache's it in case of explosion.
      * @param enterEvent PlayerBedEnterEvent
      */
     @EventHandler(priority = EventPriority.MONITOR)
@@ -566,39 +623,46 @@ public class PrismBlockEvents implements Listener {
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockFromTo(final BlockFromToEvent event) {
+        Block block = event.getBlock();
+        if (block.isLiquid()) {
+            final BlockState from = block.getState();
+            final BlockState to = event.getToBlock().getState();
 
-        // Ignore blocks that aren't liquid. @todo what else triggers this?
-        if (!event.getBlock().isLiquid()) {
-            return;
-        }
+            // Watch for blocks that the liquid can break
+            if (Utilities.canFlowBreakMaterial(to.getType())) {
+                if (from.getType() == Material.WATER) {
+                    if (Prism.getIgnore().event("water-break", block)) {
+                        RecordingQueue.addToQueue(ActionFactory.createBlock("water-break", event.getToBlock(), "Water"));
+                    }
+                } else if (from.getType() == Material.LAVA) {
+                    if (Prism.getIgnore().event("lava-break", block)) {
+                        RecordingQueue.addToQueue(ActionFactory.createBlock("lava-break", event.getToBlock(), "Lava"));
+                    }
+                }
+            }
 
-        final BlockState from = event.getBlock().getState();
-        final BlockState to = event.getToBlock().getState();
-
-        // Watch for blocks that the liquid can break
-        if (Utilities.canFlowBreakMaterial(to.getType())) {
+            // Record water flow
             if (from.getType() == Material.WATER) {
-                if (Prism.getIgnore().event("water-break", event.getBlock())) {
-                    RecordingQueue.addToQueue(ActionFactory.createBlock("water-break", event.getToBlock(), "Water"));
-                }
-            } else if (from.getType() == Material.LAVA) {
-                if (Prism.getIgnore().event("lava-break", event.getBlock())) {
-                    RecordingQueue.addToQueue(ActionFactory.createBlock("lava-break", event.getToBlock(), "Lava"));
+                if (Prism.getIgnore().event("water-flow", block)) {
+                    RecordingQueue.addToQueue(ActionFactory.createBlock("water-flow", block, "Water"));
                 }
             }
-        }
 
-        // Record water flow
-        if (from.getType() == Material.WATER) {
-            if (Prism.getIgnore().event("water-flow", event.getBlock())) {
-                RecordingQueue.addToQueue(ActionFactory.createBlock("water-flow", event.getBlock(), "Water"));
+            // Record lava flow
+            if (from.getType() == Material.LAVA) {
+                if (Prism.getIgnore().event("lava-flow", block)) {
+                    RecordingQueue.addToQueue(ActionFactory.createBlock("lava-flow", block, "Lava"));
+                }
             }
-        }
 
-        // Record lava flow
-        if (from.getType() == Material.LAVA) {
-            if (Prism.getIgnore().event("lava-flow", event.getBlock())) {
-                RecordingQueue.addToQueue(ActionFactory.createBlock("lava-flow", event.getBlock(), "Lava"));
+        } else if (block.getType() == Material.DRAGON_EGG) {
+            if (Prism.getIgnore().event("dragonegg-click", block)) {
+                RecordingQueue.addToQueue(ActionFactory.createBlockTeleport("dragonegg-click", block, event.getToBlock(),
+                        true, interactWeakCache.getIfPresent(block.getLocation())));
+            }
+            if (Prism.getIgnore().event("dragonegg-teleport", block)) {
+                RecordingQueue.addToQueue(ActionFactory.createBlockTeleport("dragonegg-teleport", block, event.getToBlock(),
+                        false, interactWeakCache.getIfPresent(block.getLocation())));
             }
         }
     }

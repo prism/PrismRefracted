@@ -187,6 +187,23 @@ public class ActionFactory {
         return a;
     }
 
+    /**
+     * BlockFromToEvent.
+     *
+     * @param actionType the action.
+     * @param from teleported block from.
+     * @param to teleported block to.
+     * @param isFrom if the location is where the block teleported from.
+     */
+    public static Handler createBlockTeleport(String actionType, Block from, Block to, boolean isFrom, Player player) {
+        final BlockTeleportAction a = new BlockTeleportAction();
+        a.setActionType(actionType);
+        a.setPlayer(player);
+        a.setFrom(isFrom);
+        a.setBlock(from, to);
+        return a;
+    }
+
 
     /**
      * BlockFallAction.
