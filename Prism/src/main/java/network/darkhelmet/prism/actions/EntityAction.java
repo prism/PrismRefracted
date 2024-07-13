@@ -103,7 +103,8 @@ public class EntityAction extends GenericAction {
             if (!isPreview) {
                 final Location loc = getLoc().add(0.5, 0.0, 0.5);
                 if (entityType.getEntityClass() != null && loc.getWorld() != null) {
-                    loc.getWorld().spawn(loc, entityType.getEntityClass(), entity -> serializer.deserialize(entity));
+                    Entity entity = loc.getWorld().spawn(loc, entityType.getEntityClass());
+                    serializer.deserialize(entity);
                 } else {
                     return new ChangeResultImpl(ChangeResultType.SKIPPED, null);
                 }
