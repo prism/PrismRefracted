@@ -34,8 +34,6 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.inventory.meta.trim.ArmorTrim;
-import org.bukkit.potion.PotionData;
-import org.bukkit.potion.PotionType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -66,8 +64,6 @@ public class ItemStackActionData {
     public short durability = 0;
     public Map<String, String> bannerMeta;
     public String potionType;
-    public boolean potionExtended;
-    public boolean potionUpgraded;
     public boolean hasTrim;
     public NamespacedKey trimMaterial;
     public NamespacedKey trimPattern;
@@ -94,24 +90,18 @@ public class ItemStackActionData {
         if (meta != null) {
             actionData.name = meta.getDisplayName();
         }
-        if (meta instanceof LeatherArmorMeta) {
-            final LeatherArmorMeta lam = (LeatherArmorMeta) meta;
+        if (meta instanceof LeatherArmorMeta lam) {
             actionData.color = lam.getColor().asRGB();
-        } else if (meta instanceof SkullMeta) {
-            final SkullMeta skull = (SkullMeta) meta;
+        } else if (meta instanceof SkullMeta skull) {
             if (skull.hasOwner()) {
                 actionData.owner = Objects.requireNonNull(skull.getOwningPlayer()).getUniqueId().toString();
             }
-        } else if (meta instanceof PotionMeta) {
-            final PotionMeta potion = (PotionMeta) meta;
-            actionData.potionType = potion.getBasePotionData().getType().toString().toLowerCase();
-            actionData.potionExtended = potion.getBasePotionData().isExtended();
-            actionData.potionUpgraded = potion.getBasePotionData().isUpgraded();
+        } else if (meta instanceof PotionMeta potion) {
+            actionData.potionType = potion.getBasePotionType().getKey().getKey();
         }
 
         // Written books
-        if (meta instanceof BookMeta) {
-            final BookMeta bookMeta = (BookMeta) meta;
+        if (meta instanceof BookMeta bookMeta) {
             actionData.by = bookMeta.getAuthor();
             actionData.title = bookMeta.getTitle();
             actionData.generation = bookMeta.getGeneration();
@@ -137,10 +127,9 @@ public class ItemStackActionData {
                 i++;
             }
             actionData.enchs = enchs;
-        } else if (meta instanceof EnchantmentStorageMeta) {
-            final EnchantmentStorageMeta bookEnchantments = (EnchantmentStorageMeta) meta;
+        } else if (meta instanceof EnchantmentStorageMeta bookEnchantments) {
             if (bookEnchantments.hasStoredEnchants()) {
-                if (bookEnchantments.getStoredEnchants().size() > 0) {
+                if (!bookEnchantments.getStoredEnchants().isEmpty()) {
                     final String[] enchs = new String[bookEnchantments.getStoredEnchants().size()];
                     int i = 0;
                     for (final Map.Entry<Enchantment, Integer> ench : bookEnchantments.getStoredEnchants().entrySet()) {
@@ -159,7 +148,7 @@ public class ItemStackActionData {
             List<Pattern> patterns = ((BannerMeta) meta).getPatterns();
             Map<String, String> stringyPatterns = new HashMap<>();
             patterns.forEach(
-                    pattern -> stringyPatterns.put(pattern.getPattern().getIdentifier(), pattern.getColor().name()));
+                    pattern -> stringyPatterns.put(pattern.getPattern().getKey().getKey(), pattern.getColor().name()));
             actionData.bannerMeta = stringyPatterns;
         }
         if (meta instanceof BlockStateMeta) {
@@ -177,8 +166,7 @@ public class ItemStackActionData {
                 }
             }
         }
-        if (Prism.getInstance().getServerMajorVersion() >= 20 && meta instanceof ArmorMeta) {
-            ArmorMeta armorMeta = (ArmorMeta) meta;
+        if (Prism.getInstance().getServerMajorVersion() >= 20 && meta instanceof ArmorMeta armorMeta) {
             actionData.hasTrim = armorMeta.hasTrim();
             if (actionData.hasTrim) {
                 ArmorTrim trim = armorMeta.getTrim();
@@ -253,10 +241,12 @@ public class ItemStackActionData {
     public ItemStack toItem() {
         ItemStack item = new ItemStack(material, amt);
 
-        MaterialState.setItemDamage(item, durability);
+        if (durability > 0) {
+            MaterialState.setItemDamage(item, durability);
+        }
 
         // Restore enchantment
-        if (enchs != null && enchs.length > 0) {
+        if (enchs != null) {
             for (final String ench : enchs) {
                 final String[] enchArgs = ench.split(":");
                 Enchantment enchantment = Enchantment.getByKey(NamespacedKey.minecraft(enchArgs[0]));
@@ -277,16 +267,13 @@ public class ItemStackActionData {
         ItemMeta meta = item.getItemMeta();
 
         // Leather color
-        if (meta instanceof LeatherArmorMeta && color > 0) {
-            final LeatherArmorMeta lam = (LeatherArmorMeta) meta;
+        if (meta instanceof LeatherArmorMeta lam && color > 0) {
             lam.setColor(Color.fromRGB(color));
             item.setItemMeta(lam);
-        } else if (meta instanceof SkullMeta && owner != null) {
-            final SkullMeta skull = (SkullMeta) meta;
+        } else if (meta instanceof SkullMeta skull && owner != null) {
             skull.setOwningPlayer(Bukkit.getOfflinePlayer(EntityUtils.uuidOf(owner)));
             item.setItemMeta(skull);
-        } else if (meta instanceof BookMeta) {
-            final BookMeta bookMeta = (BookMeta) meta;
+        } else if (meta instanceof BookMeta bookMeta) {
             bookMeta.setAuthor(by);
             bookMeta.setTitle(title);
             bookMeta.setGeneration(generation);
@@ -304,11 +291,14 @@ public class ItemStackActionData {
                 }
             }
             item.setItemMeta(bookMeta);
-        } else if (meta instanceof PotionMeta) {
-            final PotionType potionType = PotionType.valueOf(this.potionType.toUpperCase());
-            final PotionMeta potionMeta = (PotionMeta) meta;
-            potionMeta.setBasePotionData(new PotionData(potionType, potionExtended,
-                    potionUpgraded));
+        } else if (meta instanceof PotionMeta potionMeta) {
+            var namespacedKey = NamespacedKey.fromString(this.potionType);
+            if (namespacedKey != null) {
+                var potionType = Registry.POTION.get(namespacedKey);
+                if (potionType != null) {
+                    potionMeta.setBasePotionType(potionType);
+                }
+            }
         }
         if (meta instanceof FireworkEffectMeta && effectColors != null
                 && effectColors.length > 0) {
@@ -318,12 +308,15 @@ public class ItemStackActionData {
         if (meta instanceof BannerMeta && bannerMeta != null) {
             Map<String, String> stringStringMap = bannerMeta;
             List<Pattern> patterns = new ArrayList<>();
-            stringStringMap.forEach((patternIdentifier, dyeName) -> {
-                PatternType type = PatternType.getByIdentifier(patternIdentifier);
-                DyeColor color = DyeColor.valueOf(dyeName);
-                if (type != null && color != null) {
-                    Pattern p = new Pattern(color, type);
-                    patterns.add(p);
+            stringStringMap.forEach((patternKey, dyeName) -> {
+                var namespacedKey = NamespacedKey.fromString(patternKey);
+                if (namespacedKey != null) {
+                    var bannerPattern = Registry.BANNER_PATTERN.get(namespacedKey);
+                    if (bannerPattern != null) {
+                        DyeColor color = DyeColor.valueOf(dyeName);
+                        Pattern p = new Pattern(color, bannerPattern);
+                        patterns.add(p);
+                    }
                 }
             });
             ((BannerMeta) meta).setPatterns(patterns);
@@ -378,7 +371,7 @@ public class ItemStackActionData {
         if (meta != null) {
             item.setItemMeta(meta);
         }
+
         return item;
     }
-
 }

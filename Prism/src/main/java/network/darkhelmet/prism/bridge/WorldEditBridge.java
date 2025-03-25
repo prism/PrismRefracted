@@ -36,10 +36,10 @@ public class WorldEditBridge {
             if (region == null) {
                 return false;
             }
-            final Vector minLoc = new Vector(region.getMinimumPoint().getX(), region.getMinimumPoint().getY(),
-                    region.getMinimumPoint().getZ());
-            final Vector maxLoc = new Vector(region.getMaximumPoint().getX(), region.getMaximumPoint().getY(),
-                    region.getMaximumPoint().getZ());
+            final Vector minLoc = new Vector(region.getMinimumPoint().x(), region.getMinimumPoint().y(),
+                    region.getMinimumPoint().z());
+            final Vector maxLoc = new Vector(region.getMaximumPoint().x(), region.getMaximumPoint().y(),
+                    region.getMaximumPoint().z());
             final Region sel = session.getRegionSelector(lw).getRegion();
             final double lRadius = ((float)sel.getLength() + 1) / 2;
             final double wRadius = ((float)sel.getWidth() + 1) / 2;

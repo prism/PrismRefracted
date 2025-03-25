@@ -50,9 +50,9 @@ public class AbstractHorseSerializer extends EntitySerializer {
         dom = h.getDomestication();
         maxDom = h.getMaxDomestication();
         jump = h.getJumpStrength();
-        maxHealth = h.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
+        maxHealth = h.getAttribute(Attribute.MAX_HEALTH).getBaseValue();
 
-        AttributeInstance attributeInstance = h.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
+        AttributeInstance attributeInstance = h.getAttribute(Attribute.MOVEMENT_SPEED);
         if (attributeInstance != null) {
             movementSpeed = attributeInstance.getBaseValue();
         }
@@ -91,9 +91,9 @@ public class AbstractHorseSerializer extends EntitySerializer {
         h.setDomestication(dom);
         h.setMaxDomestication(maxDom);
         h.setJumpStrength(jump);
-        h.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
+        h.getAttribute(Attribute.MAX_HEALTH).setBaseValue(maxHealth);
 
-        AttributeInstance attributeInstance = h.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
+        AttributeInstance attributeInstance = h.getAttribute(Attribute.MOVEMENT_SPEED);
         if (attributeInstance != null) {
             attributeInstance.setBaseValue(movementSpeed);
         }

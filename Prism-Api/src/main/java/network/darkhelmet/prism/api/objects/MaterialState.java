@@ -47,6 +47,10 @@ public class MaterialState {
      * @return ItemStack
      */
     public ItemStack asItem() {
+        if (!material.isItem()) {
+            return null;
+        }
+
         ItemStack item = new ItemStack(material, 1);
 
         if (!state.isEmpty()) {

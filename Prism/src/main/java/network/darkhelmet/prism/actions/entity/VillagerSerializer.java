@@ -1,9 +1,10 @@
 package network.darkhelmet.prism.actions.entity;
 
 import network.darkhelmet.prism.utils.MiscUtils;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Villager;
-import org.bukkit.entity.Villager.Profession;
 
 public class VillagerSerializer extends MerchantSerializer {
     protected String profession = null;
@@ -14,8 +15,8 @@ public class VillagerSerializer extends MerchantSerializer {
     @Override
     protected void serializer(Entity entity) {
         Villager villager = (Villager) entity;
-        profession = villager.getProfession().name().toLowerCase();
-        type = villager.getVillagerType().name().toLowerCase();
+        profession = villager.getProfession().getKey().getKey().toLowerCase();
+        type = villager.getVillagerType().getKey().getKey().toLowerCase();
         level = villager.getVillagerLevel();
         experience = villager.getVillagerExperience();
         super.serializer(entity);
@@ -24,8 +25,23 @@ public class VillagerSerializer extends MerchantSerializer {
     @Override
     protected void deserializer(Entity entity) {
         Villager villager = (Villager) entity;
-        villager.setProfession(MiscUtils.getEnum(profession, Profession.FARMER));
-        villager.setVillagerType(MiscUtils.getEnum(type, Villager.Type.PLAINS));
+
+        var namespacedProfessionKey = NamespacedKey.fromString(profession);
+        if (namespacedProfessionKey != null) {
+            var profession = Registry.VILLAGER_PROFESSION.get(namespacedProfessionKey);
+            if (profession != null) {
+                villager.setProfession(profession);
+            }
+        }
+
+        var namespacedTypeKey = NamespacedKey.fromString(type);
+        if (namespacedTypeKey != null) {
+            var villagerType = Registry.VILLAGER_TYPE.get(namespacedTypeKey);
+            if (villagerType != null) {
+                villager.setVillagerType(villagerType);
+            }
+        }
+
         if (level != -1) {
             villager.setVillagerLevel(level);
         }
