@@ -18,7 +18,10 @@ public class EntitySerializerFactory {
         entitySerializers.put(EntityType.SKELETON_HORSE, AbstractHorseSerializer.class);
 
         entitySerializers.put(EntityType.CAT, CatSerializer.class);
+        entitySerializers.put(EntityType.CHICKEN, ChickenSerializer.class);
+        entitySerializers.put(EntityType.COW, CowSerializer.class);
         entitySerializers.put(EntityType.PARROT, ParrotSerializer.class);
+        entitySerializers.put(EntityType.PIG, PigSerializer.class);
         entitySerializers.put(EntityType.SHEEP, SheepSerializer.class);
         entitySerializers.put(EntityType.VILLAGER, VillagerSerializer.class);
         entitySerializers.put(EntityType.WANDERING_TRADER, WanderingTraderSerializer.class);
