@@ -88,7 +88,8 @@ public class BlockAction extends GenericAction {
             case SPAWNER:
                 final SpawnerActionData spawnerActionData = new SpawnerActionData();
                 final CreatureSpawner spawner = (CreatureSpawner) state;
-                spawnerActionData.entityType = spawner.getSpawnedType().name().toLowerCase();
+                spawnerActionData.entityType = spawner.getSpawnedType() != null
+                    ? spawner.getSpawnedType().name().toLowerCase() : "unknown";
                 spawnerActionData.delay = spawner.getDelay();
                 actionData = spawnerActionData;
                 break;
