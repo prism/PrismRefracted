@@ -92,7 +92,10 @@ public class ItemStackAction extends GenericAction {
     }
 
     public void setSlot(String slot) {
-        actionData.slot = slot;
+        // Action data might be null if setItem found an invalid item and cancelled
+        if (actionData != null) {
+            actionData.slot = slot;
+        }
     }
 
     @Override
