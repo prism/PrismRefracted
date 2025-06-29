@@ -268,7 +268,7 @@ public class Preview implements Previewable {
                         if (!isPreview) {
                             iterator.remove();
                         }
-                    } catch (final Exception e) {
+                    } catch (final Error e) {
                         String msg = e.getMessage() == null ? "unknown cause" : e.getMessage();
                         Prism.log(String.format("Applier error: %s (ID: %d)", msg, a.getId()));
                         Prism.log(String.format("Block type: %s (old %s)", a.getMaterial(), a.getOldMaterial()));
