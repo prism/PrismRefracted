@@ -129,13 +129,6 @@ public class LookupCommand implements SubHandler {
                         Prism.messenger.sendMessage(player, Prism.messenger
                                 .playerError(Il8nHelper.getMessage("no-pagination-found")));
                     }
-                    if (parameters.hasFlag(Flag.PASTE)) {
-                        StringBuilder paste = new StringBuilder();
-                        for (final Handler a : results.getActionResults()) {
-                            paste.append(new ActionMessage(a).getRawMessage()).append("\r\n");
-                        }
-                        MiscUtils.paste_results(player, paste.toString());
-                    }
                 } else {
                     if (defaultsReminder.length() > 0) {
                         if (isSender) {

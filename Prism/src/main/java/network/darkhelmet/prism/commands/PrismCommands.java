@@ -24,7 +24,6 @@ public class PrismCommands extends Executor {
     private void setupCommands(boolean failed) {
         final Prism prism = (Prism) plugin;
         addSub(new String[]{"about", "default"}, "prism.help").allowConsole().setHandler(new AboutCommand(prism));
-        addSub("debug", "prism.debug").allowConsole().setHandler(new DebugCommand());
         addSub(new String[]{"help", "?"}, "prism.help").allowConsole().setHandler(new HelpCommand(failed));
         addSub("flags", "prism.help").allowConsole().setHandler(new FlagsCommand());
         addSub("params", "prism.help").allowConsole().setHandler(new ParamsCommand());

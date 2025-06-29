@@ -19,11 +19,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.kitteh.pastegg.Paste;
-import org.kitteh.pastegg.PasteBuilder;
-import org.kitteh.pastegg.PasteContent;
-import org.kitteh.pastegg.PasteFile;
-import org.kitteh.pastegg.Visibility;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -106,53 +101,6 @@ public class MiscUtils {
     public static String niceName(String in) {
         String[] parts = in.replace('_', ' ').trim().split("", 2);
         return parts[0].toUpperCase() + parts[1].toLowerCase();
-    }
-
-    /**
-     * Paste results and return a web address.
-     * Async Method.
-     *
-     * @param sender  CommandSender.
-     * @param results String
-     */
-    public static void paste_results(CommandSender sender, String results) {
-
-        final String prismWebUrl = "https://paste.gg/";
-
-        if (!Prism.getInstance().getConfig().getBoolean("prism.paste.enable")) {
-            Prism.messenger.sendMessage(sender,
-                    Prism.messenger.playerError(
-                            Component.text("Paste.gg support is currently disabled by config.")));
-            return;
-        }
-        ZonedDateTime expire = ZonedDateTime.now().plusMinutes(60);
-        PasteFile file = new PasteFile("Prism Result",
-                new PasteContent(PasteContent.ContentType.TEXT, results));
-
-        final PasteBuilder.PasteResult result
-                = new PasteBuilder().name("Prism Results")
-                .setApiKey(Prism.getPasteKey())
-                .expires(expire)
-                .addFile(file)
-                .visibility(Visibility.UNLISTED)
-                .build();
-        if (result.getPaste().isPresent()) {
-            Paste paste = result.getPaste().get();
-            String urlpaste = prismWebUrl + paste.getId();
-            Prism.messenger.sendMessage(sender,
-                    Prism.messenger.playerSuccess("Successfully pasted results: "
-                            + urlpaste
-                            + paste.getId()).clickEvent(ClickEvent.openUrl(urlpaste)));
-        } else {
-            String message = result.getMessage().isPresent() ? result.getMessage().get() : "";
-            Prism.messenger.sendMessage(sender,
-                    Prism.messenger.playerError(
-                            Component.text("Unable to paste results (")
-                                    .append(Component.text(message).color(NamedTextColor.YELLOW))
-                                    .append(Component.text(")."))
-                    ));
-        }
-
     }
 
     /**

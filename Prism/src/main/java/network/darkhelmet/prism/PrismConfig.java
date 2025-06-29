@@ -39,9 +39,6 @@ public class PrismConfig extends ConfigBase {
         // Database
         PrismDatabaseFactory.createDefaultConfig(config);
 
-        // paste.gg sharing.
-        config.addDefault("prism.paste.enable", true);
-        config.addDefault("prism.paste.api-key", "API key from http://paste.gg");
         // Wands
         config.addDefault("prism.wands.default-mode", "hand"); // hand, item,
         // or block

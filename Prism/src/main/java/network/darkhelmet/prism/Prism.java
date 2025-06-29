@@ -118,7 +118,6 @@ public class Prism extends JavaPlugin implements PrismApi {
     private static List<EntityType> illegalEntities;
     private static PrismDataSource prismDataSource = null;
     private static String pluginName;
-    private static String pasteKey;
     private static MaterialAliases items;
     private static ActionRegistry actionRegistry;
     private static HandlerRegistry handlerRegistry;
@@ -197,10 +196,6 @@ public class Prism extends JavaPlugin implements PrismApi {
 
     public static PrismDataSource getPrismDataSource() {
         return prismDataSource;
-    }
-
-    public static String getPasteKey() {
-        return pasteKey;
     }
 
     /**
@@ -411,16 +406,6 @@ public class Prism extends JavaPlugin implements PrismApi {
             }
         }
         checkPluginDependencies();
-        if (getConfig().getBoolean("prism.paste.enable")) {
-            pasteKey = Prism.config.getString("prism.paste.api-key", "API KEY");
-            if (pasteKey != null && (pasteKey.startsWith("API key") || pasteKey.length() < 6)) {
-                pasteKey = null;
-            } else {
-                Prism.log("PasteApi is configured and available");
-            }
-        } else {
-            pasteKey = null;
-        }
 
         final List<String> worldNames = new ArrayList<>();
         for (World world : getServer().getWorlds()) {
