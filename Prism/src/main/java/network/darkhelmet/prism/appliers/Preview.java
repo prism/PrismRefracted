@@ -268,15 +268,15 @@ public class Preview implements Previewable {
                         if (!isPreview) {
                             iterator.remove();
                         }
-                    } catch (final Error e) {
-                        String msg = e.getMessage() == null ? "unknown cause" : e.getMessage();
+                    } catch (final Throwable t) {
+                        String msg = t.getMessage() == null ? "unknown cause" : t.getMessage();
                         Prism.log(String.format("Applier error: %s (ID: %d)", msg, a.getId()));
                         Prism.log(String.format("Block type: %s (old %s)", a.getMaterial(), a.getOldMaterial()));
                         Prism.log(String.format("Block location: %d, %d, %d",
                                 a.getLoc().getBlockX(),
                                 a.getLoc().getBlockY(),
                                 a.getLoc().getBlockZ()));
-                        e.printStackTrace();
+                        t.printStackTrace();
 
                         // Count as skipped, remove from queue
                         skippedBlockCount++;
