@@ -39,7 +39,7 @@ processResources {
 }
 
 dependencies {
-    compileOnly 'org.spigotmc:spigot-api:1.21.6-R0.1-SNAPSHOT'
+    compileOnly 'org.spigotmc:spigot-api:1.21.7-R0.1-SNAPSHOT'
     compileOnly 'com.sk89q.worldedit:worldedit-core:7.4.0-SNAPSHOT'
     compileOnly 'com.sk89q.worldedit:worldedit-bukkit:7.4.0-SNAPSHOT'
     implementation 'org.apache.commons:commons-lang3:3.17.0'
@@ -79,7 +79,7 @@ runServer {
     // Configure the Minecraft version for our task.
     // This is the only required configuration besides applying the plugin.
     // Your plugin's jar (or shadowJar if present) will be used automatically.
-    minecraftVersion("1.21.6")
+    minecraftVersion("1.21.7")
 }
 
 gradle.buildFinished {
